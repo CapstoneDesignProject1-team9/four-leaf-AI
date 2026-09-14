@@ -25,3 +25,16 @@ class HealthResponse(BaseModel):
     status: str
     service: str
     version: str
+
+
+class AdvisorReportRequest(BaseModel):
+    """교수자용 통계/요약 요청 스키마"""
+    course_name: str = Field(..., description="강의명")
+    student_questions: list[str] = Field(..., description="수집된 학생들의 질문 목록")
+
+
+class AdvisorReportResponse(BaseModel):
+    """교수자용 통계/요약 응답 스키마"""
+    summary: str = Field(..., description="학생 질문 전반적 요약")
+    keywords: list[str] = Field(default=[], description="자주 언급된 핵심 키워드")
+    recommendations: list[str] = Field(default=[], description="교수자를 위한 AI 제안 사항")

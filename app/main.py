@@ -3,7 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.v1 import chat, health
+from app.api.v1 import chat, health, advisor
 from app.core.config import settings
 
 
@@ -35,4 +35,5 @@ app.add_middleware(
 
 # 라우터 등록
 app.include_router(health.router, tags=["health"])
-app.include_router(chat.router, prefix="/api/v1", tags=["chat"])
+app.include_router(chat.router, prefix="/api/v1/tutor", tags=["tutor"])
+app.include_router(advisor.router, prefix="/api/v1/advisor", tags=["advisor"])
