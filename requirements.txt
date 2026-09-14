@@ -1,0 +1,40 @@
+# ─────────────────────────────────────────
+# FastAPI Core
+# ─────────────────────────────────────────
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
+python-dotenv==1.0.1
+pydantic-settings==2.5.2
+httpx==0.27.2
+
+# ─────────────────────────────────────────
+# LangChain
+# ─────────────────────────────────────────
+langchain==0.3.0
+langchain-core==0.3.0
+langchain-community==0.3.0
+langchain-text-splitters==0.3.0
+
+# ─────────────────────────────────────────
+# Vector Store & Embeddings (RAG)
+# ─────────────────────────────────────────
+langchain-chroma==0.1.4
+chromadb==0.5.11
+
+# NAVER Clova Studio 한국어 임베딩 대안
+# (Clova Embedding API 직접 호출 또는 sentence-transformers)
+sentence-transformers==3.1.1
+
+# ─────────────────────────────────────────
+# Document Loaders (RAG 지식베이스)
+# ─────────────────────────────────────────
+pypdf==4.3.1         # PDF 문서 로드
+python-docx==1.1.2   # Word 문서 로드
+
+# ─────────────────────────────────────────
+# Test
+# ─────────────────────────────────────────
+pytest==8.3.3
+pytest-asyncio==0.24.0
+pytest-mock==3.14.0
+httpx==0.27.2         # FastAPI TestClient용

@@ -1,0 +1,14 @@
+# ruff.toml — Python 린터/포매터 설정
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "UP"]
+ignore = [
+    "E501",  # line too long (formatter가 처리)
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
