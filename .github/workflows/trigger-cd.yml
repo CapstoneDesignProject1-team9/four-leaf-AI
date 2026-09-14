@@ -14,8 +14,8 @@ on:
     branches: [main]
 
 env:
-  AWS_REGION: ap-northeast-2
-  ECR_REPOSITORY: four-leaf-ai
+  NCR_REGISTRY: my-ncr.kr.ncr.ntruss.com
+  IMAGE_NAME: four-leaf-ai
   PYTHON_VERSION: '3.12'
 
 jobs:
@@ -71,31 +71,26 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+      - name: Login to NCP Container Registry
+        uses: docker/login-action@v3
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
-
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
+          registry: ${{ env.NCR_REGISTRY }}
+          username: ${{ secrets.NCP_ACCESS_KEY }}
+          password: ${{ secrets.NCP_SECRET_KEY }}
 
       - name: Build and push Docker image
         id: build
         env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
           docker build \
-            -t $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:$IMAGE_TAG \
-            -t $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:latest \
+            -t ${{ env.NCR_REGISTRY }}/${{ env.IMAGE_NAME }}:$IMAGE_TAG \
+            -t ${{ env.NCR_REGISTRY }}/${{ env.IMAGE_NAME }}:latest \
             .
-          docker push $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:$IMAGE_TAG
-          docker push $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:latest
-          echo "image=$ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:$IMAGE_TAG" >> $GITHUB_OUTPUT
-          echo "registry=$ECR_REGISTRY" >> $GITHUB_OUTPUT
+          docker push ${{ env.NCR_REGISTRY }}/${{ env.IMAGE_NAME }}:$IMAGE_TAG
+          docker push ${{ env.NCR_REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          echo "image=${{ env.NCR_REGISTRY }}/${{ env.IMAGE_NAME }}:$IMAGE_TAG" >> $GITHUB_OUTPUT
+          echo "registry=${{ env.NCR_REGISTRY }}" >> $GITHUB_OUTPUT
 
       - name: Trigger four-leaf-infra CD
         uses: peter-evans/repository-dispatch@v3
