@@ -1,8 +1,7 @@
 # 🍀 four-leaf-AI
 
-> **Four-Leaf** 프로젝트의 AI 튜터 서비스입니다.  
-> NAVER HyperCLOVA X와 LangChain RAG 파이프라인을 활용하여  
-> 대학생들의 **대학생활 상담**과 **진로 상담**을 제공하는 대화형 AI 튜터입니다.
+> **Four-Leaf** 프로젝트의 AI 튜터 서비스 파이프라인입니다.  
+> 대학생들의 **대학생활 상담**과 **진로 상담**을 제공하는 대화형 AI 튜터를 만들기 위해, **Gemini를 활용한 합성 데이터(Synthetic Data) 생성**부터 **A100 GPU 기반의 오픈소스 LLM(Llama-3) 파인튜닝**, 그리고 결과 모델 서빙까지의 전체 파이프라인을 포함하고 있습니다.
 
 ---
 
@@ -10,242 +9,134 @@
 
 | 분류 | 기술 |
 |------|------|
-| 프레임워크 | FastAPI 0.115 |
-| 언어 | Python 3.12 |
-| LLM | NAVER HyperCLOVA X (HCX-DASH-001) |
-| AI 오케스트레이션 | LangChain 0.3 |
-| 벡터 DB | ChromaDB 0.5 |
-| 임베딩 | KR-ELECTRA (한국어 특화, sentence-transformers) |
-| 린터 | ruff |
-| 컨테이너 | Docker (python:3.12-slim) |
-| CI | GitHub Actions |
+| **Base Model** | 오픈소스 Llama-3 (Bllossom-8B) |
+| **Data Generation** | Google Gemini 1.5 Flash (Synthetic Data Generation) |
+| **Fine-Tuning** | Unsloth, Hugging Face `trl`, `peft` (QLoRA) |
+| **프레임워크** | FastAPI 0.115 (모델 데모 서빙용) |
+| **언어** | Python 3.12 |
+| **오케스트레이션** | LangChain 0.3 |
+| **린터** | ruff |
+| **CI** | GitHub Actions |
 
 ---
 
-## 🏛 아키텍처
-
-### 전체 흐름
+## 🏛 전체 파이프라인 아키텍처
 
 ```
-사용자 질문 (POST /api/v1/chat)
-        │
-        ▼
-  ┌─────────────────────────────────┐
-  │         RAG 파이프라인           │
-  │                                  │
-  │  1. 질문 임베딩 (KR-ELECTRA)    │
-  │         │                        │
-  │         ▼                        │
-  │  2. ChromaDB 유사 문서 검색      │
-  │     (knowledge/ 폴더 인덱싱)    │
-  │         │                        │
-  │         ▼                        │
-  │  3. 시스템 프롬프트 조합         │
-  │     + 검색 문서 (context)        │
-  │     + 사용자 질문                │
-  └─────────────────────────────────┘
-        │
-        ▼
-  HyperCLOVA X (Clova Studio API)
-        │
-        ▼
-  답변 + 참고 문서 반환
-```
+1. Data Generation (scripts/)
+   원천 텍스트 (규정집 등)
+         │
+         ▼ (Google Gemini API)
+   고품질 Q&A 학습 데이터셋 생성 (JSONL)
 
-### RAG (Retrieval Augmented Generation) 이란?
+2. Model Fine-Tuning (train/)
+   베이스 모델 (Llama-3 8B) + 학습 데이터셋
+         │
+         ▼ (A100 GPU / Unsloth 4bit QLoRA)
+   대학 특화 AI 튜터 파인튜닝 모델 (LoRA Weights)
 
-```
-일반 LLM:   질문 → 모델 내 학습 데이터만으로 답변 (환각 발생 가능)
-
-RAG:        질문 → [관련 문서 검색] → 검색 결과 + 질문 → 답변
-                         ↑
-                   우리 학교 자료
-                   (PDF, TXT 등)
-```
-
-> RAG를 사용하면 **우리 학교/서비스에 특화된 정보**로 답변할 수 있습니다.
-
-### Docker 이미지 구조 (멀티스테이지)
-
-```
-Stage 1: python:3.12-slim + build-essential
-  → pip install -r requirements.txt
-
-Stage 2: python:3.12-slim (경량화)
-  → non-root 사용자 실행
-  → uvicorn 서버 구동 (포트 8000)
+3. Model Serving (app/)
+   파인튜닝된 모델
+         │
+         ▼ (FastAPI / RAG)
+   프론트엔드/백엔드와 연동되어 실제 사용자에게 데모 제공
 ```
 
 ---
 
 ## 📁 프로젝트 구조
 
-```
+```text
 four-leaf-AI/
-├── .github/
-│   └── workflows/
-│       ├── ci.yml            # ruff lint + pytest (mock 기반)
-│       └── trigger-cd.yml    # main push 시 ECR push → infra dispatch
 ├── app/
-│   ├── main.py               # FastAPI 앱 진입점
+│   ├── main.py               # FastAPI 앱 진입점 (데모 서빙)
 │   ├── core/
-│   │   └── config.py         # 환경변수 설정 (Clova API 키 등)
+│   │   └── config.py         # 환경변수 설정
 │   ├── models/
-│   │   ├── clova_llm.py      # HyperCLOVA X LangChain 커스텀 래퍼
-│   │   └── schemas.py        # 요청/응답 Pydantic 스키마
+│   │   ├── local_llm.py      # 파인튜닝된 로컬 모델 서빙 래퍼
+│   │   └── schemas.py        # 요청/응답 스키마
 │   ├── chains/
-│   │   └── rag_chain.py      # RAG 파이프라인 (ChromaDB + LangChain)
+│   │   └── rag_chain.py      # 향후 확장용 RAG 파이프라인
 │   └── api/v1/
 │       ├── chat.py           # POST /api/v1/chat
-│       └── health.py         # GET /health
-├── knowledge/                # 📚 RAG 지식베이스 문서 폴더
-│   └── README.md             # 문서 추가 가이드
-├── tests/
-│   └── test_health.py        # pytest (Clova API mock)
-├── Dockerfile                # 프로덕션
+│       └── advisor.py        # AI 튜터 라우터
+├── data/
+│   ├── knu_schedule.txt      # 원본 텍스트 데이터 (Seed Data)
+│   └── synthetic_dataset.jsonl # Gemini가 생성한 최종 파인튜닝용 데이터셋
+├── scripts/
+│   ├── generate_dataset.py   # Gemini API를 이용한 합성 데이터 생성 스크립트
+│   └── test_api.py           # Gemini API 연결 및 모델 권한 테스트용 스크립트
+├── train/
+│   └── finetune.py           # Unsloth 기반 A100 파인튜닝 스크립트 (QLoRA)
+├── eval/                     # 모델 평가 스크립트 폴더
+├── tests/                    # pytest 폴더
 ├── requirements.txt
-└── ruff.toml                 # lint/format 설정
+└── ruff.toml                 # lint/format 설정 (ruff check .)
 ```
 
 ---
 
-## 🌐 API 엔드포인트
+## 🚀 시작하기
 
-### `GET /health`
-
-헬스체크 (CD 파이프라인 자동 호출)
-
-```json
-{
-  "status": "ok",
-  "service": "four-leaf-ai",
-  "version": "1.0.0"
-}
-```
-
-### `POST /api/v1/chat`
-
-AI 튜터 대화
-
-**Request:**
-```json
-{
-  "message": "복수전공 신청은 어떻게 해야 하나요?",
-  "session_id": "optional-session-id"
-}
-```
-
-**Response:**
-```json
-{
-  "answer": "복수전공 신청은 2학년 1학기부터 가능하며...",
-  "sources": [
-    {
-      "content": "복수전공 신청 관련 학사 안내...",
-      "source": "학사안내_2024.pdf",
-      "category": "학사정보"
-    }
-  ],
-  "session_id": "optional-session-id"
-}
-```
-
----
-
-## 📚 지식베이스 구성 (RAG)
-
-`knowledge/` 폴더에 문서를 추가하면 앱 시작 시 자동으로 ChromaDB에 인덱싱됩니다.
-
-```
-knowledge/
-├── 학사안내_2024.pdf         ← 학사 정보, 수강신청 등
-├── 취업지원센터_FAQ.txt      ← 자주 묻는 취업 질문
-├── 전공별_진로안내.pdf        ← 전공별 진로 정보
-└── 장학금_안내.txt           ← 장학금 신청 안내
-```
-
-> 문서 추가/변경 후 `chroma_db/` 폴더를 삭제하고 앱을 재시작하면 재인덱싱됩니다.
-
----
-
-## 🔄 CI/CD 파이프라인
-
-### CI (`ci.yml`) — PR + main push
-
-```
-pip install -r requirements.txt
-  → ruff check . (lint)
-  → ruff format --check . (포매팅)
-  → pytest tests/ (Clova API는 mock 처리 → 실제 키 없이 실행 가능)
-```
-
-### CD (`trigger-cd.yml`) — main push만
-
-```
-CI 통과
-  → Docker image build
-  → AWS ECR push (SHA tag + latest)
-  → repository_dispatch → four-leaf-infra
-    → EC2에 자동 배포
-```
-
----
-
-## 💻 로컬 개발
-
-### 가상환경 설정
+### 1. 가상환경 및 의존성 설치
 
 ```bash
-python -m venv .venv
-source .venv/bin/activate   # macOS/Linux
+python -m venv venv
+source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 환경변수 설정
+### 2. 학습 데이터 생성 (Gemini API 활용)
 
-```bash
-cp .env.example .env   # 없는 경우 직접 생성
-```
+프로젝트 루트에 `.env` 파일을 생성하고 Google AI Studio에서 발급받은 API 키를 입력합니다.
 
-`.env` 파일:
 ```env
-CLOVA_API_KEY=발급받은_NCP_API_KEY
-CLOVA_API_KEY_PRIMARY_VAL=발급받은_Clova_Studio_API_KEY
-CLOVA_MODEL=HCX-DASH-001
+# .env 파일
+GOOGLE_API_KEY="AIzaSy..."
 ```
 
-### 서버 실행
+그 후 데이터 생성 스크립트를 실행합니다.
+
+```bash
+python scripts/generate_dataset.py
+```
+> 실행이 완료되면 `data/synthetic_dataset.jsonl` 파일에 파인튜닝용 Q&A 데이터가 생성됩니다.
+
+### 3. 모델 파인튜닝 (A100 서버 환경)
+
+파인튜닝은 로컬 Mac이 아닌 **NVIDIA Ampere 아키텍처 이상(A100 등)의 Linux 서버**에서 진행하는 것을 권장합니다.
+서버에서 아래 명령어로 초고속 파인튜닝 라이브러리인 `unsloth`를 추가 설치합니다.
+
+```bash
+pip install "unsloth[cu121-ampere] @ git+https://github.com/unslothai/unsloth.git"
+```
+
+그 후 학습 스크립트를 실행합니다.
+
+```bash
+python train/finetune.py
+```
+> 학습이 완료되면 `logs/lora_model` 에 LoRA 가중치가 저장됩니다.
+
+### 4. 모델 서빙 (데모 확인)
+
+학습된 모델을 백엔드에서 통신해 볼 수 있도록 FastAPI 서버를 띄웁니다.
 
 ```bash
 uvicorn app.main:app --reload --port 8000
-# http://localhost:8000/health
-# http://localhost:8000/docs  (Swagger UI)
+# http://localhost:8000/docs (Swagger UI)
 ```
 
-### Docker로 실행 (전체 스택)
+---
+
+## 🔄 코드 컨벤션 (Lint)
+
+본 프로젝트는 `ruff`를 통해 엄격한 코드 스타일을 유지합니다.
 
 ```bash
-cd ../four-leaf-infra
-docker compose -f docker-compose.dev.yml up -d --build
+# 린트 에러 검사
+ruff check .
+
+# 린트 에러 자동 수정
+ruff check --fix .
 ```
-
----
-
-## 🔑 NAVER Clova Studio API 키 발급
-
-1. [NAVER Cloud Platform](https://www.ncloud.com) 가입
-2. **AI·NAVER API** → **CLOVA Studio** 신청
-3. 테스트 앱 생성 → API 키 발급
-4. 사용 모델:
-   - `HCX-DASH-001` : 빠른 응답 속도 (권장)
-   - `HCX-003` : 높은 성능
-
----
-
-## 🔐 GitHub Secrets (CD 사용 시)
-
-| Secret | 설명 |
-|--------|------|
-| `AWS_ACCESS_KEY_ID` | ECR push 권한 IAM 키 |
-| `AWS_SECRET_ACCESS_KEY` | IAM 시크릿 |
-| `INFRA_DISPATCH_TOKEN` | infra 레포 트리거용 PAT |
