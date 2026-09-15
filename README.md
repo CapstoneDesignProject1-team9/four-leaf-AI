@@ -76,6 +76,25 @@ four-leaf-AI/
 
 ---
 
+## 👥 팀원 역할 및 협업 가이드
+
+본 프로젝트는 깃(Git) 충돌을 최소화하고 효율적으로 작업하기 위해 4개의 역할로 나누어 진행합니다.
+각 역할별로 주로 수정하는 **'담당 폴더'**가 분리되어 있습니다.
+
+| 역할 | 주 담당 업무 | 주 작업 폴더 및 파일 |
+|------|------------|----------------|
+| **1. Data Engineer** | 학사 규정, 공지사항 등 원본 데이터 크롤링 및 RAG 지식베이스 구축 | `knowledge/`, `app/chains/` |
+| **2. Data Synthesizer** | Gemini를 활용한 고품질 Instruction 데이터셋(Q&A) 합성 및 프롬프트 엔지니어링 | `scripts/`, `data/` |
+| **3. LLM Trainer** | A100 서버에서 Unsloth & QLoRA를 활용한 오픈소스 LLM(Llama-3) 파인튜닝 | `train/`, `logs/` |
+| **4. MLOps Engineer** | 파인튜닝된 모델의 FastAPI 서빙, 자동화(CI/CD) 파이프라인 구축 및 평가 | `app/`, `eval/`, `.github/`, `Dockerfile` |
+
+> 💡 **협업 규칙 (GitHub Flow)**
+> 1. `main` 브랜치에 직접 푸시하지 않고, 각자의 기능 브랜치(`feat/데이터생성` 등)를 생성하여 작업합니다.
+> 2. 기능 구현이 완료되면 Pull Request(PR)를 올리고, 다른 팀원의 리뷰를 거친 후 `main`에 병합(Merge)합니다.
+> 3. `data/*.jsonl` 이나 파인튜닝된 모델 가중치(`logs/`) 같은 **대용량 파일은 절대 GitHub에 올리지 않고(.gitignore)** 구글 드라이브 등을 통해 공유합니다.
+
+---
+
 ## 🚀 시작하기
 
 ### 1. 가상환경 및 의존성 설치
