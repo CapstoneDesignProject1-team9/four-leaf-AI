@@ -31,7 +31,7 @@ def generate_synthetic_data(context_text: str, num_pairs: int = 5) -> List[dict]
     주어진 텍스트 컨텍스트를 바탕으로 sLLM 파인튜닝용 
     Instruction-Output 쌍을 생성합니다. (HyperCLOVA X 활용)
     """
-    llm = ChatGoogleGenerativeAI(model="gemini-3-pro-latest")
+    llm = ChatGoogleGenerativeAI(model="gemini-3.5-flash")
     parser = JsonOutputParser(pydantic_object=QADataset)
     
     system_prompt = """당신은 대학교 학사 규정, 공지사항, 진로 가이드 등을 기반으로
