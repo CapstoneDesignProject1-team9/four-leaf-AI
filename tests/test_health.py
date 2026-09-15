@@ -4,9 +4,10 @@ AI 튜터 헬스체크 테스트
 - CI 환경에서 외부 의존성(Clova, ChromaDB) 없이 실행 가능
 """
 
+from unittest.mock import AsyncMock, MagicMock, patch
+
 import pytest
 from fastapi.testclient import TestClient
-from unittest.mock import AsyncMock, patch, MagicMock
 
 
 @pytest.fixture

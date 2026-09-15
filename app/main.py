@@ -3,7 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.v1 import chat, health, advisor
+from app.api.v1 import advisor, chat, health
 from app.core.config import settings
 
 

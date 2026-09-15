@@ -23,13 +23,12 @@ from pathlib import Path
 from langchain.chains import RetrievalQA
 from langchain.prompts import ChatPromptTemplate
 from langchain_chroma import Chroma
-from langchain_community.document_loaders import DirectoryLoader, TextLoader
-from langchain_community.document_loaders import PyPDFLoader
+from langchain_community.document_loaders import PyPDFLoader, TextLoader
 from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 from app.core.config import settings
-from langchain_google_genai import ChatGoogleGenerativeAI
 
 logger = logging.getLogger(__name__)
 

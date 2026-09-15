@@ -13,13 +13,13 @@ class Settings(BaseSettings):
     # Google Gemini
     GOOGLE_API_KEY: str = ""
     GEMINI_MODEL: str = "gemini-1.5-flash"
-            
+
     # Clova Studio API 엔드포인트
-    
+
     # 사용 모델 (HyperCLOVA X)
     # HCX-DASH-001: 빠른 응답 (추천)
     # HCX-003: 고성능
-    
+
     # ─────────────────────────────────────────
     # 앱 설정
     # ─────────────────────────────────────────

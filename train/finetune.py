@@ -8,6 +8,7 @@ Hugging Face `TRL`의 `SFTTrainer`와 `peft`를 이용해 대학 특화 데이�
 """
 
 import os
+
 import torch
 from datasets import load_dataset
 from transformers import TrainingArguments
@@ -29,7 +30,7 @@ def main():
     # 1. 모델 로드 설정
     max_seq_length = 2048 # 데이터 길이에 맞게 조절
     model_name = "Bllossom/llama-3.1-Korean-Bllossom-8B" # 한국어가 잘 지원되는 오픈소스 Llama 3 기반
-    
+
     print(f"[{model_name}] 모델 로딩 중...")
     model, tokenizer = FastLanguageModel.from_pretrained(
         model_name=model_name,
@@ -58,7 +59,7 @@ def main():
         print(f"데이터셋을 찾을 수 없습니다: {dataset_path}")
         print("먼저 scripts/generate_dataset.py 를 실행하세요.")
         return
-        
+
     dataset = load_dataset("json", data_files={"train": dataset_path}, split="train")
 
     # 채팅 템플릿 포맷 함수 (Llama-3 인스트럭션 형식 등 모델에 맞게 수정 가능)
@@ -78,7 +79,7 @@ def main():
             text = alpaca_prompt.format(instruction, output)
             texts.append(text)
         return { "text" : texts, }
-    
+
     # 맵핑 수행
     dataset = dataset.map(formatting_prompts_func, batched = True)
 

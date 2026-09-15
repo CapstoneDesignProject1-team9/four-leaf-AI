@@ -1,13 +1,12 @@
 import logging
-import json
 
 from fastapi import APIRouter, HTTPException
-
-from langchain_google_genai import ChatGoogleGenerativeAI
-from app.models.schemas import AdvisorReportRequest, AdvisorReportResponse
-from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import JsonOutputParser
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_google_genai import ChatGoogleGenerativeAI
 from pydantic import BaseModel, Field
+
+from app.models.schemas import AdvisorReportRequest, AdvisorReportResponse
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -36,7 +35,7 @@ async def generate_advisor_report(request: AdvisorReportRequest):
 학생들이 수업 '{course_name}'에 대해 남긴 질문들을 분석해서 다음 JSON 형식으로 리포트를 작성해주세요.
 {format_instructions}
 """
-        
+
         prompt = ChatPromptTemplate.from_messages([
             ("system", system_prompt),
             ("human", "학생들의 질문 목록:\n{questions}"),
@@ -45,7 +44,7 @@ async def generate_advisor_report(request: AdvisorReportRequest):
         chain = prompt | llm | parser
 
         questions_text = "\n".join([f"- {q}" for q in request.student_questions])
-        
+
         result = chain.invoke({
             "course_name": request.course_name,
             "questions": questions_text,
