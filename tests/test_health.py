@@ -53,7 +53,7 @@ def test_chat_endpoint_with_mock(client):
         mock_chain_builder.return_value = mock_chain
 
         response = client.post(
-            "/api/v1/chat",
+            "/api/v1/tutor/chat",
             json={"message": "취업 준비는 어떻게 해야 하나요?"},
         )
 
