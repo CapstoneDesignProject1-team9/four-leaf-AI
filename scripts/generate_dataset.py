@@ -62,18 +62,19 @@ def generate_synthetic_data(context_text: str, num_pairs: int = 5) -> List[dict]
         return []
 
 def main():
-    # 예시 텍스트 (실제로는 knowledge/ 폴더의 PDF에서 파싱하여 사용)
-    sample_context = """
-    제 14 조 (수강신청)
-    ① 학생은 매 학기 지정된 기간 내에 지도교수의 지도를 받아 수강신청을 해야 한다.
-    ② 수강신청 학점은 매 학기 최저 12학점에서 최고 19학점까지로 한다. 단, 직전 학기 평점평균이 4.0 이상인 학생은 22학점까지 신청할 수 있다.
-    ③ 수강신청 변경은 개강 후 1주일 이내에 지정된 기간에만 가능하다.
-    """
-    
+    # 저장해둔 경북대학교 학사일정 텍스트 파일 읽기
+    input_txt_path = os.path.join("data", "knu_schedule.txt")
     output_path = os.path.join("data", "synthetic_dataset.jsonl")
     
-    # 데이터 생성
-    qa_pairs = generate_synthetic_data(sample_context, num_pairs=3)
+    try:
+        with open(input_txt_path, 'r', encoding='utf-8') as f:
+            context_text = f.read()
+    except FileNotFoundError:
+        logger.error(f"{input_txt_path} 파일을 찾을 수 없습니다.")
+        return
+        
+    # 데이터 생성 (예: 10쌍 생성)
+    qa_pairs = generate_synthetic_data(context_text, num_pairs=10)
     
     # JSONL 형태로 저장 (파인튜닝 포맷)
     if qa_pairs:
