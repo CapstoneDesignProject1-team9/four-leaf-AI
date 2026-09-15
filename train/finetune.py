@@ -3,7 +3,7 @@ A100 파인튜닝(SFT) 스크립트 - QLoRA 기반
 
 Hugging Face `TRL`의 `SFTTrainer`와 `peft`를 이용해 대학 특화 데이터셋을 파인튜닝합니다.
 빠른 속도와 메모리 최적화를 위해 Unsloth 사용을 권장합니다.
-(Unsloth가 설치되어 있지 않은 환경에서는 일반 transformers 방식으로 우회 가능하도록 구조화할 수 있으나, 
+(Unsloth가 설치되어 있지 않은 환경에서는 일반 transformers 방식으로 우회 가능하도록 구조화할 수 있으나,
 여기서는 Unsloth 기반의 최신 템플릿을 제공합니다.)
 """
 

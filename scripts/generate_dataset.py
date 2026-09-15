@@ -4,16 +4,15 @@ import os
 import sys
 
 from dotenv import load_dotenv
+from langchain_core.output_parsers import JsonOutputParser
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_google_genai import ChatGoogleGenerativeAI
+from pydantic import BaseModel, Field
 
 load_dotenv()
 
 # 프로젝트 루트 폴더(four-leaf-AI)를 파이썬 경로에 추가하여 'app' 모듈을 찾을 수 있도록 함
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-from langchain_core.output_parsers import JsonOutputParser
-from langchain_core.prompts import ChatPromptTemplate
-from langchain_google_genai import ChatGoogleGenerativeAI
-from pydantic import BaseModel, Field
 
 # 로깅 설정
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -28,7 +27,7 @@ class QADataset(BaseModel):
 
 def generate_synthetic_data(context_text: str, num_pairs: int = 5) -> list[dict]:
     """
-    주어진 텍스트 컨텍스트를 바탕으로 sLLM 파인튜닝용 
+    주어진 텍스트 컨텍스트를 바탕으로 sLLM 파인튜닝용
     Instruction-Output 쌍을 생성합니다. (HyperCLOVA X 활용)
     """
     llm = ChatGoogleGenerativeAI(model="gemini-3.5-flash")
@@ -37,7 +36,7 @@ def generate_synthetic_data(context_text: str, num_pairs: int = 5) -> list[dict]
     system_prompt = """당신은 대학교 학사 규정, 공지사항, 진로 가이드 등을 기반으로
 인공지능 모델 파인튜닝을 위한 고품질 Instruction 데이터셋을 생성하는 전문가입니다.
 
-제공된 [참고 문서]를 읽고, 실제 대학생이 할 법한 질문({num_pairs}개)과 
+제공된 [참고 문서]를 읽고, 실제 대학생이 할 법한 질문({num_pairs}개)과
 그에 대한 친절하고 정확한 AI 튜터의 답변을 생성해주세요.
 답변은 반드시 [참고 문서]의 내용만을 기반으로 해야 하며, 친절한 해요체를 사용하세요.
 
