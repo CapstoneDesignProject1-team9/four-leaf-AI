@@ -11,11 +11,13 @@ from app.models.schemas import AdvisorReportRequest, AdvisorReportResponse
 logger = logging.getLogger(__name__)
 router = APIRouter()
 
+
 # JSON 파싱을 위한 내부 Pydantic 모델
 class ReportFormat(BaseModel):
     summary: str = Field(description="학생 질문 전반적 요약 (3~4문장)")
     keywords: list[str] = Field(description="자주 언급된 핵심 키워드 3~5개")
     recommendations: list[str] = Field(description="교수자를 위한 구체적인 AI 제안 사항 2~3개")
+
 
 @router.post("/report", response_model=AdvisorReportResponse)
 async def generate_advisor_report(request: AdvisorReportRequest):
@@ -36,25 +38,29 @@ async def generate_advisor_report(request: AdvisorReportRequest):
 {format_instructions}
 """
 
-        prompt = ChatPromptTemplate.from_messages([
-            ("system", system_prompt),
-            ("human", "학생들의 질문 목록:\n{questions}"),
-        ])
+        prompt = ChatPromptTemplate.from_messages(
+            [
+                ("system", system_prompt),
+                ("human", "학생들의 질문 목록:\n{questions}"),
+            ]
+        )
 
         chain = prompt | llm | parser
 
         questions_text = "\n".join([f"- {q}" for q in request.student_questions])
 
-        result = chain.invoke({
-            "course_name": request.course_name,
-            "questions": questions_text,
-            "format_instructions": parser.get_format_instructions()
-        })
+        result = chain.invoke(
+            {
+                "course_name": request.course_name,
+                "questions": questions_text,
+                "format_instructions": parser.get_format_instructions(),
+            }
+        )
 
         return AdvisorReportResponse(
             summary=result.get("summary", ""),
             keywords=result.get("keywords", []),
-            recommendations=result.get("recommendations", [])
+            recommendations=result.get("recommendations", []),
         )
 
     except Exception as e:

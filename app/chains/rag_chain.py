@@ -89,6 +89,7 @@ async def init_vectorstore():
         # 지식베이스가 없으면 기본 샘플 데이터로 초기화
         logger.warning("knowledge/ 폴더가 비어있습니다. 샘플 데이터로 초기화합니다.")
         from langchain_core.documents import Document
+
         documents = [
             Document(
                 page_content="사학년 1학기에 졸업논문을 제출해야 합니다. 지도교수와 미리 주제를 협의하세요.",
@@ -143,10 +144,12 @@ def build_rag_chain():
 {context}
 """
 
-    prompt = ChatPromptTemplate.from_messages([
-        ("system", system_prompt),
-        ("human", "{question}"),
-    ])
+    prompt = ChatPromptTemplate.from_messages(
+        [
+            ("system", system_prompt),
+            ("human", "{question}"),
+        ]
+    )
 
     llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash")
     retriever = vectorstore.as_retriever(

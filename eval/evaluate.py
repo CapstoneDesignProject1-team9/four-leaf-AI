@@ -8,11 +8,15 @@ from pydantic import BaseModel, Field
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 class EvalResult(BaseModel):
     score: int = Field(description="1점부터 5점까지의 평가 점수")
     reason: str = Field(description="점수를 부여한 구체적인 이유")
 
-def evaluate_response_llm_as_a_judge(question: str, ground_truth: str, generated_answer: str) -> dict:
+
+def evaluate_response_llm_as_a_judge(
+    question: str, ground_truth: str, generated_answer: str
+) -> dict:
     """
     LLM-as-a-Judge 기법: HyperCLOVA X(또는 GPT-4)를 심판으로 사용하여
     파인튜닝된 모델의 응답 품질을 자동 평가합니다.
@@ -37,24 +41,26 @@ def evaluate_response_llm_as_a_judge(question: str, ground_truth: str, generated
 [모델의 답변]: {generated_answer}
 """
 
-    prompt = ChatPromptTemplate.from_messages([
-        ("system", "당신은 AI 모델 평가 전문가입니다."),
-        ("human", prompt_template)
-    ])
+    prompt = ChatPromptTemplate.from_messages(
+        [("system", "당신은 AI 모델 평가 전문가입니다."), ("human", prompt_template)]
+    )
 
     chain = prompt | evaluator_llm | parser
 
     try:
-        result = chain.invoke({
-            "question": question,
-            "ground_truth": ground_truth,
-            "generated_answer": generated_answer,
-            "format_instructions": parser.get_format_instructions()
-        })
+        result = chain.invoke(
+            {
+                "question": question,
+                "ground_truth": ground_truth,
+                "generated_answer": generated_answer,
+                "format_instructions": parser.get_format_instructions(),
+            }
+        )
         return result
     except Exception as e:
         logger.error(f"평가 중 오류: {e}")
         return {"score": 0, "reason": "Error during evaluation"}
+
 
 def main():
     # 실제 실험 시:
@@ -70,7 +76,7 @@ def main():
     # 예시 모델들의 가상 응답
     responses = {
         "Base Model": "복수전공 신청은 학교마다 다릅니다. 홈페이지를 참고하세요.",
-        "Fine-tuned Model": "학생님! 복수전공 신청은 2학년 1학기부터 가능하며, 평점 3.0 이상이어야 신청할 수 있습니다."
+        "Fine-tuned Model": "학생님! 복수전공 신청은 2학년 1학기부터 가능하며, 평점 3.0 이상이어야 신청할 수 있습니다.",
     }
 
     results = {}
@@ -79,6 +85,7 @@ def main():
         eval_res = evaluate_response_llm_as_a_judge(question, ground_truth, answer)
         results[model_name] = eval_res
         logger.info(f"결과: {eval_res}\n")
+
 
 if __name__ == "__main__":
     main()

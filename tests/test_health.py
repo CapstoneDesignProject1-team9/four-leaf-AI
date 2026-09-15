@@ -18,6 +18,7 @@ def client():
     """
     with patch("app.chains.rag_chain.init_vectorstore", new_callable=AsyncMock):
         from app.main import app
+
         with TestClient(app) as c:
             yield c
 

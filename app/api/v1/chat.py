@@ -26,11 +26,13 @@ async def chat(request: ChatRequest):
         # 참고 문서 파싱
         sources = []
         for doc in result.get("source_documents", []):
-            sources.append(SourceDocument(
-                content=doc.page_content[:200],  # 요약
-                source=doc.metadata.get("source", "unknown"),
-                category=doc.metadata.get("category"),
-            ))
+            sources.append(
+                SourceDocument(
+                    content=doc.page_content[:200],  # 요약
+                    source=doc.metadata.get("source", "unknown"),
+                    category=doc.metadata.get("category"),
+                )
+            )
 
         return ChatResponse(
             answer=result["result"],

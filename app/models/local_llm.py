@@ -7,6 +7,7 @@ from langchain_core.outputs import ChatGeneration, ChatResult
 
 logger = logging.getLogger(__name__)
 
+
 class LocalFinetunedLLM(BaseChatModel):
     """
     A100에서 파인튜닝된 로컬 오픈소스 모델(Llama-3, Qwen 등)을 서빙하기 위한 LangChain 래퍼 클래스.
@@ -14,7 +15,7 @@ class LocalFinetunedLLM(BaseChatModel):
     여기서는 단일 파이프라인에서 직접 인퍼런스하는 예제 클래스를 구성합니다.)
     """
 
-    model_path: str = "logs/lora_model" # 파인튜닝 저장 경로
+    model_path: str = "logs/lora_model"  # 파인튜닝 저장 경로
     max_tokens: int = 1024
     temperature: float = 0.5
 
@@ -72,10 +73,10 @@ class LocalFinetunedLLM(BaseChatModel):
             prompt,
             max_new_tokens=self.max_tokens,
             temperature=self.temperature,
-            eos_token_id=LocalFinetunedLLM._pipeline.tokenizer.eos_token_id
+            eos_token_id=LocalFinetunedLLM._pipeline.tokenizer.eos_token_id,
         )
 
-        generated_text = outputs[0]["generated_text"][len(prompt):]
+        generated_text = outputs[0]["generated_text"][len(prompt) :]
 
         message = AIMessage(content=generated_text.strip())
         return ChatResult(generations=[ChatGeneration(message=message)])

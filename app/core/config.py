@@ -33,8 +33,8 @@ class Settings(BaseSettings):
     # ─────────────────────────────────────────
     # Vector Store (ChromaDB)
     # ─────────────────────────────────────────
-    CHROMA_PERSIST_DIR: str = "./chroma_db"   # 로컬 영속 저장 경로
-    KNOWLEDGE_BASE_DIR: str = "./knowledge"    # RAG용 문서 디렉토리
+    CHROMA_PERSIST_DIR: str = "./chroma_db"  # 로컬 영속 저장 경로
+    KNOWLEDGE_BASE_DIR: str = "./knowledge"  # RAG용 문서 디렉토리
 
     # ─────────────────────────────────────────
     # Backend API (AI → Spring Boot 호출 시)

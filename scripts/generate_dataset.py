@@ -15,15 +15,20 @@ load_dotenv()
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # 로깅 설정
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
 logger = logging.getLogger(__name__)
+
 
 class QAPair(BaseModel):
     instruction: str = Field(description="학생이 대학 생활, 학사, 진로 등에 대해 질문하는 프롬프트")
     output: str = Field(description="AI 튜터의 상세하고 친절한 답변")
 
+
 class QADataset(BaseModel):
     pairs: list[QAPair] = Field(description="생성된 Q&A 쌍의 리스트")
+
 
 def generate_synthetic_data(context_text: str, num_pairs: int = 5) -> list[dict]:
     """
@@ -44,20 +49,21 @@ def generate_synthetic_data(context_text: str, num_pairs: int = 5) -> list[dict]
 {format_instructions}
 """
 
-    prompt = ChatPromptTemplate.from_messages([
-        ("system", system_prompt),
-        ("human", "[참고 문서]:\n{context}")
-    ])
+    prompt = ChatPromptTemplate.from_messages(
+        [("system", system_prompt), ("human", "[참고 문서]:\n{context}")]
+    )
 
     chain = prompt | llm | parser
 
     try:
         logger.info(f"데이터 생성 요청 중... (목표: {num_pairs}개)")
-        result = chain.invoke({
-            "context": context_text,
-            "num_pairs": num_pairs,
-            "format_instructions": parser.get_format_instructions()
-        })
+        result = chain.invoke(
+            {
+                "context": context_text,
+                "num_pairs": num_pairs,
+                "format_instructions": parser.get_format_instructions(),
+            }
+        )
 
         # pydantic 객체 파싱 결과에서 리스트 추출
         pairs = result.get("pairs", [])
@@ -67,13 +73,14 @@ def generate_synthetic_data(context_text: str, num_pairs: int = 5) -> list[dict]
         logger.error(f"데이터 생성 중 오류 발생: {e}")
         return []
 
+
 def main():
     # 저장해둔 경북대학교 학사일정 텍스트 파일 읽기
     input_txt_path = os.path.join("data", "knu_schedule.txt")
     output_path = os.path.join("data", "synthetic_dataset.jsonl")
 
     try:
-        with open(input_txt_path, encoding='utf-8') as f:
+        with open(input_txt_path, encoding="utf-8") as f:
             context_text = f.read()
     except FileNotFoundError:
         logger.error(f"{input_txt_path} 파일을 찾을 수 없습니다.")
@@ -84,17 +91,18 @@ def main():
 
     # JSONL 형태로 저장 (파인튜닝 포맷)
     if qa_pairs:
-        with open(output_path, 'a', encoding='utf-8') as f:
+        with open(output_path, "a", encoding="utf-8") as f:
             for pair in qa_pairs:
-                json_line = json.dumps({
-                    "instruction": pair["instruction"],
-                    "output": pair["output"]
-                }, ensure_ascii=False)
-                f.write(json_line + '\n')
+                json_line = json.dumps(
+                    {"instruction": pair["instruction"], "output": pair["output"]},
+                    ensure_ascii=False,
+                )
+                f.write(json_line + "\n")
 
         logger.info(f"성공적으로 {len(qa_pairs)}개의 데이터를 {output_path}에 저장했습니다.")
     else:
         logger.warning("데이터 생성에 실패했습니다.")
+
 
 if __name__ == "__main__":
     main()

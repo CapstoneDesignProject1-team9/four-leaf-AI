@@ -12,6 +12,7 @@ async def lifespan(app: FastAPI):
     """앱 시작/종료 시 실행되는 lifecycle 훅"""
     # 시작: 벡터스토어 초기화
     from app.chains.rag_chain import init_vectorstore
+
     await init_vectorstore()
     yield
     # 종료: 리소스 정리 (필요시)
