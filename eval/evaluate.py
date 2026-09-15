@@ -6,7 +6,7 @@ from typing import Dict, List
 from pydantic import BaseModel, Field
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import JsonOutputParser
-from app.models.clova_llm import HyperClovaXChat
+from langchain_google_genai import ChatGoogleGenerativeAI
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -21,7 +21,7 @@ def evaluate_response_llm_as_a_judge(question: str, ground_truth: str, generated
     파인튜닝된 모델의 응답 품질을 자동 평가합니다.
     논문 작성 시 ROUGE/BLEU 스코어와 함께 정성적/정량적 지표로 활용할 수 있습니다.
     """
-    evaluator_llm = HyperClovaXChat(max_tokens=1024, temperature=0.0)
+    evaluator_llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash")
     parser = JsonOutputParser(pydantic_object=EvalResult)
     
     prompt_template = """당신은 인공지능 모델의 답변 품질을 평가하는 공정한 심판입니다.

@@ -1,12 +1,19 @@
 import os
+import sys
 import json
 import logging
 from typing import List
+from dotenv import load_dotenv
+
+load_dotenv()
+
+# 프로젝트 루트 폴더(four-leaf-AI)를 파이썬 경로에 추가하여 'app' 모듈을 찾을 수 있도록 함
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from pydantic import BaseModel, Field
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import JsonOutputParser
-from app.models.clova_llm import HyperClovaXChat
+from langchain_google_genai import ChatGoogleGenerativeAI
 
 # 로깅 설정
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -24,7 +31,7 @@ def generate_synthetic_data(context_text: str, num_pairs: int = 5) -> List[dict]
     주어진 텍스트 컨텍스트를 바탕으로 sLLM 파인튜닝용 
     Instruction-Output 쌍을 생성합니다. (HyperCLOVA X 활용)
     """
-    llm = HyperClovaXChat(max_tokens=2048, temperature=0.7)
+    llm = ChatGoogleGenerativeAI(model="gemini-3-pro-latest")
     parser = JsonOutputParser(pydantic_object=QADataset)
     
     system_prompt = """당신은 대학교 학사 규정, 공지사항, 진로 가이드 등을 기반으로

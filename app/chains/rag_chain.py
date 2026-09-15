@@ -29,7 +29,7 @@ from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 from app.core.config import settings
-from app.models.clova_llm import HyperClovaXChat
+from langchain_google_genai import ChatGoogleGenerativeAI
 
 logger = logging.getLogger(__name__)
 
@@ -149,7 +149,7 @@ def build_rag_chain():
         ("human", "{question}"),
     ])
 
-    llm = HyperClovaXChat()
+    llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash")
     retriever = vectorstore.as_retriever(
         search_type="similarity",
         search_kwargs={"k": 3},  # 상위 3개 문서 검색

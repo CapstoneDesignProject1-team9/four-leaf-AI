@@ -3,7 +3,7 @@ import json
 
 from fastapi import APIRouter, HTTPException
 
-from app.models.clova_llm import HyperClovaXChat
+from langchain_google_genai import ChatGoogleGenerativeAI
 from app.models.schemas import AdvisorReportRequest, AdvisorReportResponse
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import JsonOutputParser
@@ -29,7 +29,7 @@ async def generate_advisor_report(request: AdvisorReportRequest):
         raise HTTPException(status_code=400, detail="학생 질문 목록이 비어있습니다.")
 
     try:
-        llm = HyperClovaXChat(max_tokens=1024, temperature=0.3)
+        llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash")
         parser = JsonOutputParser(pydantic_object=ReportFormat)
 
         system_prompt = """당신은 대학교 교수자를 돕는 'AI 어드바이저'입니다.

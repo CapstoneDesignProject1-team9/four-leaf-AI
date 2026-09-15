@@ -10,21 +10,16 @@ class Settings(BaseSettings):
     )
 
     # ─────────────────────────────────────────
-    # NAVER Clova Studio (HyperCLOVA X)
-    # https://www.ncloud.com/product/aiService/clovaStudio
-    # ─────────────────────────────────────────
-    CLOVA_API_KEY: str = ""                  # NCP API Key (X-NCP-APIGW-API-KEY)
-    CLOVA_API_KEY_PRIMARY_VAL: str = ""      # X-NCP-CLOVASTUDIO-API-KEY
-    CLOVA_REQUEST_ID: str = ""               # X-NCP-CLOVASTUDIO-REQUEST-ID
-
+    # Google Gemini
+    GOOGLE_API_KEY: str = ""
+    GEMINI_MODEL: str = "gemini-1.5-flash"
+            
     # Clova Studio API 엔드포인트
-    CLOVA_API_HOST: str = "https://clovastudio.stream.ntruss.com"
-
+    
     # 사용 모델 (HyperCLOVA X)
     # HCX-DASH-001: 빠른 응답 (추천)
     # HCX-003: 고성능
-    CLOVA_MODEL: str = "HCX-DASH-001"
-
+    
     # ─────────────────────────────────────────
     # 앱 설정
     # ─────────────────────────────────────────
