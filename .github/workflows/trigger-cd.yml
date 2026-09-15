@@ -57,7 +57,7 @@ jobs:
           fi
         env:
           APP_ENV: test
-          OPENAI_API_KEY: test-key-not-real
+          GOOGLE_API_KEY: test-key-not-real
 
   # ────────────────────────────────────────
   # Step 2: Docker 빌드 & ECR push & Infra dispatch
