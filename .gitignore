@@ -11,6 +11,8 @@ venv/
 # 로컬 개발 데이터 (git에 올리지 않음)
 chroma_db/
 knowledge/
+data/*.jsonl
+logs/
 
 # 테스트
 .pytest_cache/
