@@ -1,3 +1,5 @@
+# 컴퓨터학부 공지사항 크롤링.
+
 import json
 import time
 from io import BytesIO
@@ -12,19 +14,17 @@ import urllib3
 from bs4 import BeautifulSoup
 from PIL import Image
 
+# 운영체제(OS)에 따른 Tesseract 경로 설정
+# 2026/09/22  탁 : 해보니까 window에서 tesseract 경로 하드코딩되어 있어서 수정함. 
+# mac의 경우 homebrew 로 설치하면 자동으로 위치 찾아줌.
 
-# ============================================================
-# 기본 설정
-# ============================================================
-
-# 운영체제(OS)에 따른 Tesseract 경로 동적 설정
 if sys.platform == "win32":
-    # 윈도우 환경 (팀원용)
+    # Windows
     pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 else:
-    # Mac/Linux 환경 (질문자님용)
+    # Mac/Linux
     tesseract_path = shutil.which("tesseract")
-    if tesseract_path:
+    if tesseract_path: # path 존재하면 바로 사용.
         pytesseract.pytesseract.tesseract_cmd = tesseract_path
     else:
         # PATH에 안 걸릴 경우 M1/M2 Mac Homebrew 기본 경로로 폴백
