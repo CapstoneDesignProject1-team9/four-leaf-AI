@@ -3,6 +3,8 @@ import time
 from io import BytesIO
 from pathlib import Path
 from urllib.parse import urljoin
+import sys
+import shutil
 
 import pytesseract
 import requests
@@ -15,11 +17,18 @@ from PIL import Image
 # 기본 설정
 # ============================================================
 
-# Windows에 설치된 Tesseract 경로
-# 설치 위치가 다르면 이 경로를 수정하세요.
-pytesseract.pytesseract.tesseract_cmd = (
-    r"C:\Program Files\Tesseract-OCR\tesseract.exe"
-)
+# 운영체제(OS)에 따른 Tesseract 경로 동적 설정
+if sys.platform == "win32":
+    # 윈도우 환경 (팀원용)
+    pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+else:
+    # Mac/Linux 환경 (질문자님용)
+    tesseract_path = shutil.which("tesseract")
+    if tesseract_path:
+        pytesseract.pytesseract.tesseract_cmd = tesseract_path
+    else:
+        # PATH에 안 걸릴 경우 M1/M2 Mac Homebrew 기본 경로로 폴백
+        pytesseract.pytesseract.tesseract_cmd = "/opt/homebrew/bin/tesseract"
 
 # SSL 경고 메시지 숨김
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
