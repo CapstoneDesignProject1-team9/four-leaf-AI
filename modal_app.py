@@ -48,6 +48,10 @@ image = (
         # Google Gemini
         "langchain-google-genai>=1.0.8",
     )
+    # 소스 코드를 컨테이너에 마운트 (기존 modal.Mount 대체)
+    .add_local_dir("app", remote_path="/root/app")
+    .add_local_dir("knowledge", remote_path="/root/knowledge")
+    .add_local_dir("data", remote_path="/root/data")
 )
 
 # ─────────────────────────────────────────
@@ -63,12 +67,6 @@ model_cache_volume = modal.Volume.from_name("four-leaf-model-cache", create_if_m
 # ─────────────────────────────────────────
 @app.function(
     image=image,
-    # 소스 코드를 컨테이너에 마운트
-    mounts=[
-        modal.Mount.from_local_dir("app", remote_path="/root/app"),
-        modal.Mount.from_local_dir("knowledge", remote_path="/root/knowledge"),
-        modal.Mount.from_local_dir("data", remote_path="/root/data"),
-    ],
     # 볼륨 마운트: ChromaDB와 HuggingFace 모델 캐시
     volumes={
         "/root/chroma_db": chroma_volume,
