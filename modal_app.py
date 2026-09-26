@@ -62,6 +62,7 @@ image = (
 chroma_volume = modal.Volume.from_name("four-leaf-chroma-db", create_if_missing=True)
 model_cache_volume = modal.Volume.from_name("four-leaf-model-cache", create_if_missing=True)
 
+
 # ─────────────────────────────────────────
 # FastAPI 앱을 Modal ASGI 앱으로 서빙
 # ─────────────────────────────────────────
@@ -75,10 +76,10 @@ model_cache_volume = modal.Volume.from_name("four-leaf-model-cache", create_if_m
     # 시크릿: Modal Dashboard에서 설정 (Settings → Secrets)
     secrets=[modal.Secret.from_name("four-leaf-ai-secrets")],
     # 리소스 설정
-    cpu=2.0,           # CPU 코어 (필요 시 조정)
-    memory=2048,       # 메모리 2GB (임베딩 모델 로딩용)
+    cpu=2.0,  # CPU 코어 (필요 시 조정)
+    memory=2048,  # 메모리 2GB (임베딩 모델 로딩용)
     # 타임아웃 & 동시성
-    timeout=300,       # 요청 최대 5분 (RAG 응답 생성 시간 고려)
+    timeout=300,  # 요청 최대 5분 (RAG 응답 생성 시간 고려)
     # 최소 0개 → Scale-to-Zero (비용 0원)
     # 트래픽이 있을 때만 컨테이너가 올라옵니다.
     min_containers=0,
