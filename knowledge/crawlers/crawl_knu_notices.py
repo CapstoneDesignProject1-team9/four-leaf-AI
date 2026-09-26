@@ -1,12 +1,12 @@
 # 컴퓨터학부 공지사항 크롤링.
 
 import json
+import shutil
+import sys
 import time
 from io import BytesIO
 from pathlib import Path
 from urllib.parse import urljoin
-import sys
-import shutil
 
 import pytesseract
 import requests
@@ -15,7 +15,7 @@ from bs4 import BeautifulSoup
 from PIL import Image
 
 # 운영체제(OS)에 따른 Tesseract 경로 설정
-# 2026/09/22  탁 : 해보니까 window에서 tesseract 경로 하드코딩되어 있어서 수정함. 
+# 2026/09/22  탁 : 해보니까 window에서 tesseract 경로 하드코딩되어 있어서 수정함.
 # mac의 경우 homebrew 로 설치하면 자동으로 위치 찾아줌.
 
 if sys.platform == "win32":
@@ -24,7 +24,7 @@ if sys.platform == "win32":
 else:
     # Mac/Linux
     tesseract_path = shutil.which("tesseract")
-    if tesseract_path: # path 존재하면 바로 사용.
+    if tesseract_path:  # path 존재하면 바로 사용.
         pytesseract.pytesseract.tesseract_cmd = tesseract_path
     else:
         # PATH에 안 걸릴 경우 M1/M2 Mac Homebrew 기본 경로로 폴백
@@ -51,6 +51,7 @@ OUTPUT_FILE = OUTPUT_DIR / "knu_notices_all.jsonl"
 # ============================================================
 # 공지사항 전체 크롤링
 # ============================================================
+
 
 def crawl_knu_notices_all_pages() -> None:
     """경북대학교 컴퓨터학부 공지사항을 전체 페이지 순회하며 JSONL로 저장한다."""
@@ -83,12 +84,7 @@ def crawl_knu_notices_all_pages() -> None:
     # "w" 모드이므로 실행할 때마다 기존 결과 파일을 새로 생성한다.
     with OUTPUT_FILE.open("w", encoding="utf-8") as output_file:
         while True:
-            target_url = (
-                f"{base_url}"
-                f"?bo_table={bo_table}"
-                f"&lang={lang}"
-                f"&page={page}"
-            )
+            target_url = f"{base_url}?bo_table={bo_table}&lang={lang}&page={page}"
 
             print(f"\n[목록 페이지 {page}] {target_url}")
 
@@ -107,9 +103,7 @@ def crawl_knu_notices_all_pages() -> None:
 
             # 사이트 HTML 구조가 조금 바뀌어도 대응할 수 있도록
             # 여러 selector를 함께 사용한다.
-            post_elements = soup.select(
-                ".subject a, td.subject a, .bo_tit a"
-            )
+            post_elements = soup.select(".subject a, td.subject a, .bo_tit a")
 
             # 같은 링크가 여러 selector에 중복으로 잡힐 수 있으므로
             # 페이지 안에서도 URL 기준으로 한 번 더 중복 제거한다.
@@ -136,25 +130,17 @@ def crawl_knu_notices_all_pages() -> None:
                 page_posts.append((title, link))
 
             # 현재 페이지에서 아직 처리하지 않은 게시글만 남긴다.
-            new_posts = [
-                (title, link)
-                for title, link in page_posts
-                if link not in seen_links
-            ]
+            new_posts = [(title, link) for title, link in page_posts if link not in seen_links]
 
             # 새로운 게시글이 하나도 없으면 마지막 페이지로 판단한다.
             if not new_posts:
-                print(
-                    f"\n[종료] {page}페이지에서 새로운 게시글을 찾지 못했습니다."
-                )
+                print(f"\n[종료] {page}페이지에서 새로운 게시글을 찾지 못했습니다.")
                 break
 
             print(f"[확인] 새로운 게시글 {len(new_posts)}개 발견")
 
             for index, (title, link) in enumerate(new_posts, start=1):
-                print(
-                    f"  [{index}/{len(new_posts)}] 수집 중: {title}"
-                )
+                print(f"  [{index}/{len(new_posts)}] 수집 중: {title}")
 
                 seen_links.add(link)
 
@@ -175,9 +161,8 @@ def crawl_knu_notices_all_pages() -> None:
                 )
 
                 # 게시글 본문
-                content_element = (
-                    detail_soup.select_one("#bo_v_con")
-                    or detail_soup.select_one(".bo_v_atc")
+                content_element = detail_soup.select_one("#bo_v_con") or detail_soup.select_one(
+                    ".bo_v_atc"
                 )
 
                 if content_element is not None:
@@ -216,9 +201,7 @@ def crawl_knu_notices_all_pages() -> None:
                             )
                             image_response.raise_for_status()
 
-                            image = Image.open(
-                                BytesIO(image_response.content)
-                            ).convert("RGB")
+                            image = Image.open(BytesIO(image_response.content)).convert("RGB")
 
                             ocr_text = pytesseract.image_to_string(
                                 image,
@@ -231,10 +214,7 @@ def crawl_knu_notices_all_pages() -> None:
                         except Exception as exc:
                             # 이미지 다운로드 실패, 깨진 이미지,
                             # OCR 오류 등이 있어도 전체 크롤링은 계속 진행한다.
-                            print(
-                                "    "
-                                f"[OCR 오류] 이미지 {image_index}: {exc}"
-                            )
+                            print(f"    [OCR 오류] 이미지 {image_index}: {exc}")
 
                 # ========================================================
                 # JSONL 한 줄에 게시글 하나 저장
