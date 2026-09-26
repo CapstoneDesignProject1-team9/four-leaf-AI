@@ -42,5 +42,8 @@ build/
 .vscode/
 *.iml
 
+# Modal
+.modal/
+
 # macOS
 .DS_Store
