@@ -2,7 +2,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 import asyncio
+import json
 import logging
+import os
 
 from langchain_core.output_parsers import JsonOutputParser
 from langchain_core.prompts import ChatPromptTemplate
@@ -75,36 +77,84 @@ async def evaluate_responses_batch(eval_items: list[dict]) -> list[dict]:
 
 
 async def async_main():
-    question = "복수전공 신청 기준이 어떻게 되나요?"
-    ground_truth = "복수전공은 2학년 1학기부터 신청 가능하며, 직전 학기까지의 평점평균이 3.0 이상이어야 합니다."
+    dataset_path = os.path.join(os.path.dirname(__file__), "eval_dataset.json")
+    
+    if not os.path.exists(dataset_path):
+        logger.error(f"테스트 데이터셋 파일이 없습니다: {dataset_path}")
+        return
 
-    # 예시 모델들의 가상 응답
-    responses = {
-        "Base Model": "복수전공 신청은 학교마다 다릅니다. 홈페이지를 참고하세요.",
-        "Fine-tuned Model": "학생님! 복수전공 신청은 2학년 1학기부터 가능하며, 평점 3.0 이상이어야 신청할 수 있습니다.",
-    }
+    with open(dataset_path, "r", encoding="utf-8") as f:
+        dataset = json.load(f)
 
-    # 비동기 처리를 위해 입력 데이터 리스트(배치) 생성
     parser = JsonOutputParser(pydantic_object=EvalResult)
     format_instructions = parser.get_format_instructions()
 
     eval_items = []
-    model_names = []
+    metadata = []  # 결과를 매핑하기 위한 메타데이터
 
-    for model_name, answer in responses.items():
-        eval_items.append({
-            "question": question,
-            "ground_truth": ground_truth,
-            "generated_answer": answer,
-            "format_instructions": format_instructions
-        })
-        model_names.append(model_name)
+    for item_idx, item in enumerate(dataset):
+        question = item["question"]
+        ground_truth = item["ground_truth"]
+        
+        for model_name, answer in item["models"].items():
+            eval_items.append({
+                "question": question,
+                "ground_truth": ground_truth,
+                "generated_answer": answer,
+                "format_instructions": format_instructions
+            })
+            metadata.append({"item_idx": item_idx, "model_name": model_name})
 
-    logger.info("GPT-4o(ChatGPT-5급) 기반 비동기 평가 시작...")
+    logger.info(f"총 {len(dataset)}개의 질문, {len(eval_items)}개의 응답에 대한 비동기 평가 시작...")
     results = await evaluate_responses_batch(eval_items)
 
-    for model_name, res in zip(model_names, results):
-        logger.info(f"[{model_name}] 결과: {res}\n")
+    # 평가 결과 출력 및 평균 계산용 변수
+    model_scores = {}
+    
+    # CSV 저장을 위한 데이터 구성
+    csv_data = []
+
+    for meta, item, res in zip(metadata, eval_items, results):
+        q_idx = meta['item_idx'] + 1
+        m_name = meta['model_name']
+        score = res.get('score', 0)
+        reason = res.get('reason', '')
+        
+        logger.info(f"[질문 {q_idx} | {m_name}] 점수: {score} - {reason}")
+        
+        if m_name not in model_scores:
+            model_scores[m_name] = []
+        model_scores[m_name].append(score)
+        
+        # CSV 행 추가
+        csv_data.append({
+            "Question_ID": q_idx,
+            "Question": item["question"],
+            "Ground_Truth": item["ground_truth"],
+            "Model": m_name,
+            "Generated_Answer": item["generated_answer"],
+            "Score": score,
+            "Reason": reason
+        })
+
+    # 평균 점수 집계 및 출력
+    logger.info("=" * 40)
+    logger.info("📊 모델별 최종 평균 점수")
+    logger.info("=" * 40)
+    for m_name, scores in model_scores.items():
+        avg = sum(scores) / len(scores) if scores else 0
+        logger.info(f" - {m_name}: {avg:.2f}점 (총 {len(scores)}개)")
+        
+    # 결과를 CSV로 저장
+    import csv
+    output_path = os.path.join(os.path.dirname(__file__), "eval_results.csv")
+    if csv_data:
+        keys = csv_data[0].keys()
+        with open(output_path, "w", encoding="utf-8-sig", newline="") as f:
+            dict_writer = csv.DictWriter(f, fieldnames=keys)
+            dict_writer.writeheader()
+            dict_writer.writerows(csv_data)
+        logger.info(f"✅ 평가 결과가 '{output_path}'에 저장되었습니다.")
 
 
 def main():
