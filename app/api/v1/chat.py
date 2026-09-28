@@ -15,9 +15,9 @@ async def chat(request: ChatRequest):
     AI 튜터 채팅 엔드포인트
 
     RAG 파이프라인:
-    1. 사용자 질문 임베딩
-    2. ChromaDB에서 유사 문서 검색 (top-3)
-    3. HyperCLOVA X로 답변 생성
+    1. BGE-M3로 사용자 질문 임베딩
+    2. 공지 ChromaDB에서 유사 청크 검색 (top-5)
+    3. Gemini가 검색 공지를 근거로 답변 생성
     """
     try:
         chain = build_rag_chain()
@@ -29,8 +29,8 @@ async def chat(request: ChatRequest):
             sources.append(
                 SourceDocument(
                     content=doc.page_content[:200],  # 요약
-                    source=doc.metadata.get("source", "unknown"),
-                    category=doc.metadata.get("category"),
+                    source=doc.metadata.get("url", "unknown"),
+                    category=doc.metadata.get("source_type"),
                 )
             )
 

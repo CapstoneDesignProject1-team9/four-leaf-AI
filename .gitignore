@@ -44,3 +44,19 @@ build/
 
 # macOS
 .DS_Store
+
+# 추가 환경설정 파일 제외 (예시 파일은 허용)
+.env.*
+!.env.example
+
+# 다운로드한 BGE-M3 모델
+.cache/embedding_models/
+
+# 새 ChromaDB 벡터 데이터베이스
+knowledge/vectorstores/
+
+# 다운로드한 공지 첨부파일
+knowledge/raw/notices/attachments/
+
+# 로컬 데이터 처리 보고서
+knowledge/processed/**/*.report.json

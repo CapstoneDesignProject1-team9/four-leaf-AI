@@ -1,168 +1,120 @@
-"""
-RAG (Retrieval Augmented Generation) 파이프라인
-
-흐름:
-  사용자 질문
-    → 질문 임베딩
-    → ChromaDB에서 유사 문서 검색
-    → 검색된 문서 + 질문을 HyperCLOVA X에게 전달
-    → 답변 생성
-
-지식베이스:
-  ./knowledge/ 폴더에 PDF/TXT 파일 넣으면 자동 인덱싱
-  예시:
-    - 학교생활_가이드.pdf
-    - 진로_상담_FAQ.txt
-    - 전공별_취업정보.pdf
-"""
+"""BGE-M3 공지 ChromaDB 검색과 Gemini 답변 생성."""
+from __future__ import annotations
 
 import logging
-import os
 from pathlib import Path
+from typing import Any
 
-from langchain.chains import RetrievalQA
-from langchain.prompts import ChatPromptTemplate
-from langchain_chroma import Chroma
-from langchain_community.document_loaders import PyPDFLoader, TextLoader
-from langchain_community.embeddings import HuggingFaceEmbeddings
+import chromadb
+from chromadb.config import Settings
+from langchain_core.documents import Document
 from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_text_splitters import RecursiveCharacterTextSplitter
+from sentence_transformers import SentenceTransformer
 
 from app.core.config import settings
 
 logger = logging.getLogger(__name__)
-
-# 전역 벡터스토어 인스턴스
-_vectorstore: Chroma | None = None
-
-
-def _get_embeddings():
-    """
-    한국어 임베딩 모델
-    - 로컬 실행: sentence-transformers (KLUE/RoBERTa 기반)
-    - 프로덕션: NAVER Clova Embedding API로 교체 가능
-    """
-    return HuggingFaceEmbeddings(
-        model_name="snunlp/KR-ELECTRA-discriminator",  # 한국어 특화 모델
-        model_kwargs={"device": "cpu"},
-        encode_kwargs={"normalize_embeddings": True},
-    )
+_collection: Any | None = None
+_embedder: "BgeM3Embedder | None" = None
 
 
-async def init_vectorstore():
-    """앱 시작 시 벡터스토어 초기화"""
-    global _vectorstore
+class BgeM3Embedder:
+    def __init__(self) -> None:
+        self.model: SentenceTransformer | None = None
 
-    embeddings = _get_embeddings()
-    persist_dir = settings.CHROMA_PERSIST_DIR
-    knowledge_dir = settings.KNOWLEDGE_BASE_DIR
+    def load(self) -> None:
+        if self.model:
+            return
+        snapshot = (Path(settings.EMBEDDING_MODEL_CACHE_DIR) / "models--BAAI--bge-m3"
+                    / "snapshots" / settings.EMBEDDING_MODEL_REVISION)
+        if not snapshot.is_dir():
+            raise RuntimeError("BGE-M3 모델 캐시가 없습니다. embed_notices.py index를 먼저 실행하세요.")
+        if settings.EMBEDDING_DEVICE == "cpu":
+            import torch
+            torch.set_num_threads(settings.EMBEDDING_CPU_THREADS)
+        self.model = SentenceTransformer(str(snapshot), device=settings.EMBEDDING_DEVICE,
+                                         local_files_only=True, trust_remote_code=False)
+        if self.model.get_sentence_embedding_dimension() != 1024:
+            raise RuntimeError("BGE-M3 임베딩 차원이 1024가 아닙니다.")
 
-    # 기존 ChromaDB가 있으면 로드
-    if os.path.exists(persist_dir) and os.listdir(persist_dir):
-        logger.info("기존 ChromaDB 로드: %s", persist_dir)
-        _vectorstore = Chroma(
-            persist_directory=persist_dir,
-            embedding_function=embeddings,
-        )
-        return
-
-    # 새로 생성: knowledge/ 폴더 문서 인덱싱
-    logger.info("ChromaDB 새로 생성 중...")
-    documents = []
-
-    if os.path.exists(knowledge_dir):
-        # PDF 로드
-        pdf_files = list(Path(knowledge_dir).glob("**/*.pdf"))
-        for pdf_path in pdf_files:
-            loader = PyPDFLoader(str(pdf_path))
-            documents.extend(loader.load())
-            logger.info("PDF 로드: %s", pdf_path.name)
-
-        # TXT 로드
-        txt_files = list(Path(knowledge_dir).glob("**/*.txt"))
-        for txt_path in txt_files:
-            loader = TextLoader(str(txt_path), encoding="utf-8")
-            documents.extend(loader.load())
-            logger.info("TXT 로드: %s", txt_path.name)
-
-    if not documents:
-        # 지식베이스가 없으면 기본 샘플 데이터로 초기화
-        logger.warning("knowledge/ 폴더가 비어있습니다. 샘플 데이터로 초기화합니다.")
-        from langchain_core.documents import Document
-
-        documents = [
-            Document(
-                page_content="사학년 1학기에 졸업논문을 제출해야 합니다. 지도교수와 미리 주제를 협의하세요.",
-                metadata={"source": "sample", "category": "학사정보"},
-            ),
-            Document(
-                page_content="취업 준비를 위해 학교 취업지원센터를 활용하세요. 이력서 첨삭, 모의면접 등 서비스를 제공합니다.",
-                metadata={"source": "sample", "category": "취업"},
-            ),
-            Document(
-                page_content="복수전공 신청은 2학년 1학기부터 가능하며, 학점 3.0 이상이어야 합니다.",
-                metadata={"source": "sample", "category": "학사정보"},
-            ),
-        ]
-
-    # 문서 청크 분할
-    splitter = RecursiveCharacterTextSplitter(
-        chunk_size=500,
-        chunk_overlap=50,
-        separators=["\n\n", "\n", "。", ".", " "],
-    )
-    chunks = splitter.split_documents(documents)
-    logger.info("총 %d개 청크 생성", len(chunks))
-
-    # ChromaDB에 저장
-    _vectorstore = Chroma.from_documents(
-        documents=chunks,
-        embedding=embeddings,
-        persist_directory=persist_dir,
-    )
-    logger.info("ChromaDB 초기화 완료")
+    def embed_query(self, query: str) -> list[float]:
+        self.load()
+        assert self.model is not None
+        if len(self.model.tokenizer(query, truncation=False)["input_ids"]) > self.model.max_seq_length:
+            raise ValueError("질문이 BGE-M3 입력 길이를 초과했습니다.")
+        return self.model.encode([query], normalize_embeddings=True, convert_to_numpy=True,
+                                 show_progress_bar=False)[0].tolist()
 
 
-def get_vectorstore() -> Chroma:
-    if _vectorstore is None:
-        raise RuntimeError("벡터스토어가 초기화되지 않았습니다.")
-    return _vectorstore
+def _validate(collection: Any) -> None:
+    metadata = collection.metadata or {}
+    expected = {"schema_version": 1, "embedding_model": settings.EMBEDDING_MODEL_NAME,
+                "model_revision": settings.EMBEDDING_MODEL_REVISION, "dimension": 1024,
+                "normalized": True, "distance_metric": "cosine", "index_state": "ready"}
+    bad = [key for key, value in expected.items() if metadata.get(key) != value]
+    if bad or int(metadata.get("active_chunks", 0)) < 1:
+        raise RuntimeError("공지 벡터 DB 설정이 일치하지 않거나 색인이 완료되지 않았습니다: " + ", ".join(bad))
 
 
-def build_rag_chain():
-    """RAG QA 체인 생성"""
-    vectorstore = get_vectorstore()
+async def init_vectorstore() -> None:
+    global _collection, _embedder
+    db_path = Path(settings.CHROMA_PERSIST_DIR)
+    if not db_path.is_dir():
+        raise RuntimeError(f"공지 벡터 DB가 없습니다: {db_path}. embed_notices.py index를 실행하세요.")
+    client = chromadb.PersistentClient(path=str(db_path), settings=Settings(anonymized_telemetry=False))
+    try:
+        collection = client.get_collection(settings.CHROMA_COLLECTION_NAME, embedding_function=None)
+    except Exception as exc:
+        raise RuntimeError("공지 ChromaDB 컬렉션을 열지 못했습니다.") from exc
+    _validate(collection)
+    embedder = BgeM3Embedder()
+    embedder.load()
+    _collection, _embedder = collection, embedder
+    logger.info("공지 RAG 준비 완료: %s개 청크", collection.metadata["active_chunks"])
 
-    # AI 튜터 시스템 프롬프트
-    system_prompt = """당신은 대학생들을 위한 친근한 AI 튜터입니다.
-대학생활 적응, 학사 정보, 진로 상담, 취업 준비 등 다양한 주제로 도움을 드립니다.
 
-아래 참고 자료를 활용하여 정확하고 도움이 되는 답변을 한국어로 제공하세요.
-참고 자료에 없는 내용은 솔직하게 모른다고 말하고, 관련 부서(학생처, 취업지원센터 등)를 안내하세요.
+def _ready() -> tuple[Any, BgeM3Embedder]:
+    if _collection is None or _embedder is None:
+        raise RuntimeError("RAG가 초기화되지 않았습니다.")
+    return _collection, _embedder
 
-참고 자료:
-{context}
-"""
 
-    prompt = ChatPromptTemplate.from_messages(
-        [
-            ("system", system_prompt),
-            ("human", "{question}"),
-        ]
-    )
+def search_notices(question: str) -> list[Document]:
+    collection, embedder = _ready()
+    result = collection.query(query_embeddings=[embedder.embed_query(question)],
+                              n_results=min(settings.RAG_TOP_K, int(collection.metadata["active_chunks"])),
+                              where={"active": True}, include=["documents", "metadatas", "distances"])
+    return [Document(page_content=text, metadata={**metadata, "distance": float(distance)})
+            for text, metadata, distance in zip(result["documents"][0], result["metadatas"][0], result["distances"][0])]
 
-    llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash")
-    retriever = vectorstore.as_retriever(
-        search_type="similarity",
-        search_kwargs={"k": 3},  # 상위 3개 문서 검색
-    )
 
-    chain = RetrievalQA.from_chain_type(
-        llm=llm,
-        chain_type="stuff",
-        retriever=retriever,
-        chain_type_kwargs={"prompt": prompt},
-        return_source_documents=True,
-    )
+def _context(documents: list[Document]) -> str:
+    return "\n\n".join(f"[공지 {i}]\n제목: {d.metadata.get('title', '')}\n게시일: {d.metadata.get('date', '')}\nURL: {d.metadata.get('url', '')}\n내용:\n{d.page_content}"
+                       for i, d in enumerate(documents, 1)) or "검색된 공지가 없습니다."
 
-    return chain
+
+class NoticeRagChain:
+    def __init__(self, llm: Any) -> None:
+        self.llm = llm
+
+    def invoke(self, inputs: dict[str, str]) -> dict[str, Any]:
+        question = str(inputs.get("query", "")).strip()
+        if not question:
+            raise ValueError("질문이 비어 있습니다.")
+        documents = search_notices(question)
+        prompt = f"""당신은 경북대학교 학생을 돕는 AI 튜터입니다. 아래 공지 자료만 근거로 한국어로 답변하세요. 자료에 없는 내용은 추측하지 말고 알 수 없다고 답하세요. 사용한 공지의 제목과 URL을 밝혀 출처를 확인할 수 있게 하세요.
+
+[공지 자료]
+{_context(documents)}
+
+[질문]
+{question}"""
+        response = self.llm.invoke(prompt)
+        return {"result": str(response.content), "source_documents": documents}
+
+
+def build_rag_chain() -> NoticeRagChain:
+    _ready()
+    return NoticeRagChain(ChatGoogleGenerativeAI(model=settings.GEMINI_MODEL,
+                                                  google_api_key=settings.GOOGLE_API_KEY or None,
+                                                  temperature=0))

@@ -18,8 +18,7 @@ langchain-text-splitters==0.3.0
 # ─────────────────────────────────────────
 # Vector Store & Embeddings (RAG)
 # ─────────────────────────────────────────
-langchain-chroma==0.1.4
-chromadb==0.5.11
+chromadb==1.0.20
 
 # NAVER Clova Studio 한국어 임베딩 대안
 # (Clova Embedding API 직접 호출 또는 sentence-transformers)
