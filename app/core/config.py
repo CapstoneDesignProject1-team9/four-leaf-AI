@@ -33,8 +33,14 @@ class Settings(BaseSettings):
     # ─────────────────────────────────────────
     # Vector Store (ChromaDB)
     # ─────────────────────────────────────────
-    CHROMA_PERSIST_DIR: str = "./chroma_db"  # 로컬 영속 저장 경로
-    KNOWLEDGE_BASE_DIR: str = "./knowledge"  # RAG용 문서 디렉토리
+    CHROMA_PERSIST_DIR: str = "./knowledge/vectorstores/knu_bge_m3"
+    CHROMA_COLLECTION_NAME: str = "knu_notices_bge_m3_v1"
+    EMBEDDING_MODEL_NAME: str = "BAAI/bge-m3"
+    EMBEDDING_MODEL_REVISION: str = "5617a9f61b028005a4858fdac845db406aefb181"
+    EMBEDDING_MODEL_CACHE_DIR: str = "./.cache/embedding_models"
+    EMBEDDING_DEVICE: str = "cpu"
+    EMBEDDING_CPU_THREADS: int = 4
+    RAG_TOP_K: int = 5
 
     # ─────────────────────────────────────────
     # Backend API (AI → Spring Boot 호출 시)
