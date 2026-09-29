@@ -1,16 +1,15 @@
-from dotenv import load_dotenv
-
-load_dotenv()
-
 import asyncio
 import json
 import logging
 import os
 
+from dotenv import load_dotenv
 from langchain_core.output_parsers import JsonOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
 from pydantic import BaseModel, Field
+
+load_dotenv()
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -33,7 +32,7 @@ async def evaluate_responses_batch(eval_items: list[dict]) -> list[dict]:
 아래의 [질문], [모범 답안], 그리고 인공지능이 생성한 [모델의 답변]을 읽고 평가를 진행해주세요.
 
 [구체적 채점 루브릭]
-5점 (매우 우수): 
+5점 (매우 우수):
  - 모범 답안의 사실과 100% 일치함
  - 대학 AI 튜터로서 매우 친절하고 명확한 어조를 완벽히 구사함
  - 환각(Hallucination)이 전혀 없으며, 질문자가 필요한 정보를 충분히 제공함
