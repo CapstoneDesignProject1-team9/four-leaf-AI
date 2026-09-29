@@ -10,17 +10,18 @@
 본문/이미지 OCR/첨부를 별도 문서로 보존하며 청킹과 임베딩은 수행하지 않는다.
 OCR 오류나 조각난 표를 추측해서 복원하지 않는다. 품질 보고서는 출력 옆에 저장한다.
 """
+
 from __future__ import annotations
 
 import argparse
-from collections import Counter
 import hashlib
 import json
 import os
-from pathlib import Path
 import re
 import tempfile
 import unicodedata
+from collections import Counter
+from pathlib import Path
 from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 
@@ -35,8 +36,11 @@ def normalize_text(value: object) -> str:
 
 def stable_url(value: object) -> str:
     parts = urlsplit(str(value or ""))
-    query = sorted((k, v) for k, v in parse_qsl(parts.query, keep_blank_values=True)
-                   if k not in {"nonce", "page"})
+    query = sorted(
+        (k, v)
+        for k, v in parse_qsl(parts.query, keep_blank_values=True)
+        if k not in {"nonce", "page"}
+    )
     return urlunsplit((parts.scheme, parts.netloc, parts.path, urlencode(query), ""))
 
 
@@ -75,8 +79,10 @@ def prepare(path: Path) -> tuple[list[dict], dict]:
         date = str(item.get("date") or "")
         if date:
             dates.append(date)
-        sources = [("body", "body", item.get("content"), "html", None),
-                   ("image_ocr", "image_ocr", item.get("ocr_text"), "ocr", None)]
+        sources = [
+            ("body", "body", item.get("content"), "html", None),
+            ("image_ocr", "image_ocr", item.get("ocr_text"), "ocr", None),
+        ]
         attachment_keys = Counter()
         for index, attachment in enumerate(item.get("attachments", []), 1):
             if not isinstance(attachment, dict):
@@ -92,8 +98,14 @@ def prepare(path: Path) -> tuple[list[dict], dict]:
             text = normalize_text(raw_text)
             if not text:
                 if attachment is not None:
-                    issues.append({"post_id": post_id, "issue": "attachment_without_text",
-                                   "name": attachment.get("name", ""), "text_extraction": method})
+                    issues.append(
+                        {
+                            "post_id": post_id,
+                            "issue": "attachment_without_text",
+                            "name": attachment.get("name", ""),
+                            "text_extraction": method,
+                        }
+                    )
                 continue
             flags = []
             if method == "ocr":
@@ -104,8 +116,12 @@ def prepare(path: Path) -> tuple[list[dict], dict]:
             if len(lines) >= 10 and sum(len(line) <= 3 for line in lines) / len(lines) > 0.3:
                 flags.append("fragmented_lines")
             metadata = {
-                "post_id": post_id, "title": title, "date": date, "url": notice_url,
-                "source_type": source_type, "text_extraction": method,
+                "post_id": post_id,
+                "title": title,
+                "date": date,
+                "url": notice_url,
+                "source_type": source_type,
+                "text_extraction": method,
                 "attachment_name": str((attachment or {}).get("name") or ""),
                 "attachment_url": stable_url((attachment or {}).get("url")),
                 "attachment_sha256": str((attachment or {}).get("sha256") or ""),
@@ -117,15 +133,24 @@ def prepare(path: Path) -> tuple[list[dict], dict]:
             if attachment is not None:
                 prefix += f"\n첨부파일: {metadata['attachment_name']}"
             document_text = f"{prefix}\n\n{text}"
-            documents.append({"document_id": digest(f"knu_notice:{post_id}:{source_key}"),
-                              "text": text, "document_text": document_text,
-                              "content_hash": digest(document_text), "metadata": metadata})
+            documents.append(
+                {
+                    "document_id": digest(f"knu_notice:{post_id}:{source_key}"),
+                    "text": text,
+                    "document_text": document_text,
+                    "content_hash": digest(document_text),
+                    "metadata": metadata,
+                }
+            )
         if before == len(documents):
             issues.append({"post_id": post_id, "issue": "notice_without_text"})
     report = {
-        "input": str(path.resolve()), "input_posts": len(posts),
-        "duplicate_post_records": duplicates, "documents": len(documents),
-        "date_min": min(dates, default=""), "date_max": max(dates, default=""),
+        "input": str(path.resolve()),
+        "input_posts": len(posts),
+        "duplicate_post_records": duplicates,
+        "documents": len(documents),
+        "date_min": min(dates, default=""),
+        "date_max": max(dates, default=""),
         "source_types": dict(Counter(d["metadata"]["source_type"] for d in documents)),
         "attachment_methods": dict(methods),
         "flagged_documents": sum(bool(d["metadata"]["quality_flags"]) for d in documents),
@@ -142,8 +167,9 @@ def write_output(path: Path, content: str, overwrite: bool) -> None:
         return
     name = None
     try:
-        with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", newline="\n",
-                                         dir=path.parent, delete=False) as file:
+        with tempfile.NamedTemporaryFile(
+            mode="w", encoding="utf-8", newline="\n", dir=path.parent, delete=False
+        ) as file:
             name = file.name
             file.write(content)
             file.flush()
@@ -156,8 +182,12 @@ def write_output(path: Path, content: str, overwrite: bool) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--input", type=Path, default=Path("knowledge/raw/notices/knu_notices_all.jsonl"))
-    parser.add_argument("--output", type=Path, default=Path("knowledge/processed/notices/knu_documents.jsonl"))
+    parser.add_argument(
+        "--input", type=Path, default=Path("knowledge/raw/notices/knu_notices_all.jsonl")
+    )
+    parser.add_argument(
+        "--output", type=Path, default=Path("knowledge/processed/notices/knu_documents.jsonl")
+    )
     parser.add_argument("--overwrite", action="store_true")
     args = parser.parse_args()
     report_path = args.output.with_suffix(".report.json")
@@ -167,8 +197,14 @@ def main() -> None:
     if not args.overwrite and any(p.exists() for p in (args.output, report_path)):
         parser.error("출력이 이미 있습니다. 다른 경로나 --overwrite를 사용하세요")
     documents, report = prepare(args.input)
-    write_output(args.output, "".join(json.dumps(d, ensure_ascii=False) + "\n" for d in documents), args.overwrite)
-    write_output(report_path, json.dumps(report, ensure_ascii=False, indent=2) + "\n", args.overwrite)
+    write_output(
+        args.output,
+        "".join(json.dumps(d, ensure_ascii=False) + "\n" for d in documents),
+        args.overwrite,
+    )
+    write_output(
+        report_path, json.dumps(report, ensure_ascii=False, indent=2) + "\n", args.overwrite
+    )
     print(json.dumps(report, ensure_ascii=False, indent=2))
 
 

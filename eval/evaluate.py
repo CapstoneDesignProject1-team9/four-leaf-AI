@@ -1,4 +1,5 @@
 from dotenv import load_dotenv
+
 load_dotenv()
 
 import asyncio
@@ -78,12 +79,12 @@ async def evaluate_responses_batch(eval_items: list[dict]) -> list[dict]:
 
 async def async_main():
     dataset_path = os.path.join(os.path.dirname(__file__), "eval_dataset.json")
-    
+
     if not os.path.exists(dataset_path):
         logger.error(f"테스트 데이터셋 파일이 없습니다: {dataset_path}")
         return
 
-    with open(dataset_path, "r", encoding="utf-8") as f:
+    with open(dataset_path, encoding="utf-8") as f:
         dataset = json.load(f)
 
     parser = JsonOutputParser(pydantic_object=EvalResult)
@@ -95,47 +96,53 @@ async def async_main():
     for item_idx, item in enumerate(dataset):
         question = item["question"]
         ground_truth = item["ground_truth"]
-        
+
         for model_name, answer in item["models"].items():
-            eval_items.append({
-                "question": question,
-                "ground_truth": ground_truth,
-                "generated_answer": answer,
-                "format_instructions": format_instructions
-            })
+            eval_items.append(
+                {
+                    "question": question,
+                    "ground_truth": ground_truth,
+                    "generated_answer": answer,
+                    "format_instructions": format_instructions,
+                }
+            )
             metadata.append({"item_idx": item_idx, "model_name": model_name})
 
-    logger.info(f"총 {len(dataset)}개의 질문, {len(eval_items)}개의 응답에 대한 비동기 평가 시작...")
+    logger.info(
+        f"총 {len(dataset)}개의 질문, {len(eval_items)}개의 응답에 대한 비동기 평가 시작..."
+    )
     results = await evaluate_responses_batch(eval_items)
 
     # 평가 결과 출력 및 평균 계산용 변수
     model_scores = {}
-    
+
     # CSV 저장을 위한 데이터 구성
     csv_data = []
 
     for meta, item, res in zip(metadata, eval_items, results):
-        q_idx = meta['item_idx'] + 1
-        m_name = meta['model_name']
-        score = res.get('score', 0)
-        reason = res.get('reason', '')
-        
+        q_idx = meta["item_idx"] + 1
+        m_name = meta["model_name"]
+        score = res.get("score", 0)
+        reason = res.get("reason", "")
+
         logger.info(f"[질문 {q_idx} | {m_name}] 점수: {score} - {reason}")
-        
+
         if m_name not in model_scores:
             model_scores[m_name] = []
         model_scores[m_name].append(score)
-        
+
         # CSV 행 추가
-        csv_data.append({
-            "Question_ID": q_idx,
-            "Question": item["question"],
-            "Ground_Truth": item["ground_truth"],
-            "Model": m_name,
-            "Generated_Answer": item["generated_answer"],
-            "Score": score,
-            "Reason": reason
-        })
+        csv_data.append(
+            {
+                "Question_ID": q_idx,
+                "Question": item["question"],
+                "Ground_Truth": item["ground_truth"],
+                "Model": m_name,
+                "Generated_Answer": item["generated_answer"],
+                "Score": score,
+                "Reason": reason,
+            }
+        )
 
     # 평균 점수 집계 및 출력
     logger.info("=" * 40)
@@ -144,9 +151,10 @@ async def async_main():
     for m_name, scores in model_scores.items():
         avg = sum(scores) / len(scores) if scores else 0
         logger.info(f" - {m_name}: {avg:.2f}점 (총 {len(scores)}개)")
-        
+
     # 결과를 CSV로 저장
     import csv
+
     output_path = os.path.join(os.path.dirname(__file__), "eval_results.csv")
     if csv_data:
         keys = csv_data[0].keys()

@@ -13,15 +13,16 @@ index 재실행으로 재개 가능. 저장 완료된 동일 텍스트는 재임
 색인 중단/실패 중에는 검색을 차단한다. 한 DB에 index를 동시에 실행하지 말 것.
 기존 KR-ELECTRA DB와 다른 경로/컬렉션을 사용한다. LLM API는 호출하지 않는다.
 """
+
 from __future__ import annotations
 
 import argparse
-from collections import Counter
 import hashlib
 import json
 import math
-from pathlib import Path
 import time
+from collections import Counter
+from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_INPUT = PROJECT_ROOT / "knowledge/processed/notices/knu_notice_chunks.jsonl"
@@ -95,8 +96,12 @@ def inspect_input(path: Path):
         sources[str(row["metadata"].get("source_type", "unknown"))] += 1
     if not ids:
         raise ValueError("입력이 비었습니다. 기존 색인을 비활성화하지 않습니다")
-    return ids, {"chunks": len(ids), "documents": len(document_ids),
-                 "posts": len(post_ids), "sources": dict(sources)}
+    return ids, {
+        "chunks": len(ids),
+        "documents": len(document_ids),
+        "posts": len(post_ids),
+        "sources": dict(sources),
+    }
 
 
 def batches(rows, size):
@@ -111,8 +116,12 @@ def batches(rows, size):
 
 
 def stored_metadata(row):
-    return {**row["metadata"], "document_id": row["document_id"],
-            "content_hash": row["content_hash"], "active": True}
+    return {
+        **row["metadata"],
+        "document_id": row["document_id"],
+        "content_hash": row["content_hash"],
+        "active": True,
+    }
 
 
 class Embedder:
@@ -130,6 +139,7 @@ class Embedder:
 
         if self.device == "cpu":
             import torch
+
             torch.set_num_threads(4)
 
         print("BGE-M3 로딩 중 (최초 실행은 다운로드 포함)...", flush=True)
@@ -147,8 +157,11 @@ class Embedder:
                     "캐시된 모델 revision을 찾지 못했습니다. 먼저 인터넷 연결 상태에서 index를 실행하세요"
                 )
         self.model = SentenceTransformer(
-            str(model_source), device=self.device, cache_folder=str(self.cache_dir),
-            revision=self.revision, local_files_only=self.local_only,
+            str(model_source),
+            device=self.device,
+            cache_folder=str(self.cache_dir),
+            revision=self.revision,
+            local_files_only=self.local_only,
             trust_remote_code=False,
         )
         # 최초로 다운로드한 모델 revision을 컬렉션에 고정한다.
@@ -169,8 +182,11 @@ class Embedder:
         if max(lengths) > self.model.max_seq_length:
             raise ValueError(f"모델 입력 한도 초과: {max(lengths)} 토큰. 해당 청크를 확인하세요")
         vectors = self.model.encode(
-            texts, batch_size=len(texts), normalize_embeddings=True,
-            convert_to_numpy=True, show_progress_bar=False,
+            texts,
+            batch_size=len(texts),
+            normalize_embeddings=True,
+            convert_to_numpy=True,
+            show_progress_bar=False,
         )
         import numpy as np
 
@@ -186,11 +202,13 @@ def open_collection(db_path, create=False):
     if not create and not db_path.exists():
         raise ValueError("색인이 없습니다. 먼저 index를 실행하세요")
     client = chromadb.PersistentClient(
-        path=str(db_path), settings=Settings(anonymized_telemetry=False),
+        path=str(db_path),
+        settings=Settings(anonymized_telemetry=False),
     )
     if create:
         collection = client.get_or_create_collection(
-            name=COLLECTION_NAME, metadata={**SPEC, "index_state": "empty"},
+            name=COLLECTION_NAME,
+            metadata={**SPEC, "index_state": "empty"},
             configuration={"hnsw": {"space": "cosine"}},
             embedding_function=None,
         )
@@ -218,13 +236,16 @@ def upsert_batch(collection, embedder, rows):
     if changed:
         vectors = embedder.encode([r["chunk_text"] for r in changed])
         collection.upsert(
-            ids=[r["chunk_id"] for r in changed], embeddings=vectors,
+            ids=[r["chunk_id"] for r in changed],
+            embeddings=vectors,
             documents=[r["chunk_text"] for r in changed],
             metadatas=[stored_metadata(r) for r in changed],
         )
     if metadata_updates:
-        collection.update(ids=[r["chunk_id"] for r in metadata_updates],
-                          metadatas=[stored_metadata(r) for r in metadata_updates])
+        collection.update(
+            ids=[r["chunk_id"] for r in metadata_updates],
+            metadatas=[stored_metadata(r) for r in metadata_updates],
+        )
     return len(changed), reused
 
 
@@ -266,13 +287,21 @@ def index(args):
         new, old = upsert_batch(collection, embedder, batch)
         encoded += new
         reused += old
-        print(f"[{encoded + reused}/{report['chunks']}] 새 임베딩 {encoded}, 재사용 {reused}", flush=True)
+        print(
+            f"[{encoded + reused}/{report['chunks']}] 새 임베딩 {encoded}, 재사용 {reused}",
+            flush=True,
+        )
     if input_digest(args.input) != fingerprint:
         raise ValueError("처리 중 입력 파일이 변경됐습니다. index를 다시 실행하세요")
     inactive = deactivate_stale(collection, active_ids)
-    report.update(encoded=encoded, reused=reused, deactivated=inactive,
-                  seconds=round(time.perf_counter() - started, 2),
-                  model_revision=meta["model_revision"], db=str(args.db.resolve()))
+    report.update(
+        encoded=encoded,
+        reused=reused,
+        deactivated=inactive,
+        seconds=round(time.perf_counter() - started, 2),
+        model_revision=meta["model_revision"],
+        db=str(args.db.resolve()),
+    )
     meta.update(index_state="ready", active_chunks=len(active_ids))
     collection.modify(metadata=meta)
     print(json.dumps(report, ensure_ascii=False, indent=2))
@@ -289,13 +318,20 @@ def search(args):
     embedder = Embedder(args.device, args.cache_dir, meta["model_revision"], args.offline)
     vector = embedder.encode([args.question])
     results = collection.query(
-        query_embeddings=vector, n_results=min(args.top_k, int(meta["active_chunks"])),
-        where={"active": True}, include=["documents", "metadatas", "distances"],
+        query_embeddings=vector,
+        n_results=min(args.top_k, int(meta["active_chunks"])),
+        where={"active": True},
+        include=["documents", "metadatas", "distances"],
     )
-    for rank, (chunk_id, document, metadata, distance) in enumerate(zip(
-        results["ids"][0], results["documents"][0],
-        results["metadatas"][0], results["distances"][0],
-    ), 1):
+    for rank, (chunk_id, document, metadata, distance) in enumerate(
+        zip(
+            results["ids"][0],
+            results["documents"][0],
+            results["metadatas"][0],
+            results["distances"][0],
+        ),
+        1,
+    ):
         print(f"\n[{rank}] {metadata.get('title', '')}")
         print(f"출처: {metadata.get('source_type', '')} / {metadata.get('attachment_name', '')}")
         print(f"URL: {metadata.get('url', '')}")

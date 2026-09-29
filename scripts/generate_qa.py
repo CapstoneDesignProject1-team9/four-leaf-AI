@@ -145,7 +145,9 @@ def main():
         logger.warning("생성된 데이터가 없습니다.")
         return
 
-    logger.info(f"생성 완료된 {len(generated_pairs)}개 데이터에 대해 LLM-as-a-Judge 품질 검증을 시작합니다...")
+    logger.info(
+        f"생성 완료된 {len(generated_pairs)}개 데이터에 대해 LLM-as-a-Judge 품질 검증을 시작합니다..."
+    )
 
     passed_count = 0
     rejected_count = 0
@@ -157,7 +159,7 @@ def main():
 
         # 기본 형식 검증
         if not instruction or not output:
-            logger.warning(f"[{idx+1}/{len(generated_pairs)}] 형식 오류 (빈 값 포함) - 탈락")
+            logger.warning(f"[{idx + 1}/{len(generated_pairs)}] 형식 오류 (빈 값 포함) - 탈락")
             rejected_count += 1
             continue
 
@@ -166,18 +168,25 @@ def main():
 
         if is_pass:
             passed_count += 1
-            logger.info(f"[{idx+1}/{len(generated_pairs)}] 통과 ✅ - 사유: {reason}")
+            logger.info(f"[{idx + 1}/{len(generated_pairs)}] 통과 ✅ - 사유: {reason}")
             with open(validated_output_path, "a", encoding="utf-8") as f:
-                json_line = json.dumps({"instruction": instruction, "output": output}, ensure_ascii=False)
+                json_line = json.dumps(
+                    {"instruction": instruction, "output": output}, ensure_ascii=False
+                )
                 f.write(json_line + "\n")
         else:
             rejected_count += 1
-            logger.info(f"[{idx+1}/{len(generated_pairs)}] 탈락 ❌ - 사유: {reason}")
+            logger.info(f"[{idx + 1}/{len(generated_pairs)}] 탈락 ❌ - 사유: {reason}")
             with open(rejected_output_path, "a", encoding="utf-8") as f:
-                json_line = json.dumps({"instruction": instruction, "output": output, "reject_reason": reason}, ensure_ascii=False)
+                json_line = json.dumps(
+                    {"instruction": instruction, "output": output, "reject_reason": reason},
+                    ensure_ascii=False,
+                )
                 f.write(json_line + "\n")
 
-    logger.info(f"\n[최종 결과 Summary] 총 {len(generated_pairs)}개 중 통과: {passed_count}개 / 탈락: {rejected_count}개")
+    logger.info(
+        f"\n[최종 결과 Summary] 총 {len(generated_pairs)}개 중 통과: {passed_count}개 / 탈락: {rejected_count}개"
+    )
 
 
 if __name__ == "__main__":

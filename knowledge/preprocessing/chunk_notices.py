@@ -22,15 +22,14 @@
 from __future__ import annotations
 
 import argparse
-from collections import Counter
 import hashlib
 import json
 import os
-from pathlib import Path
 import re
 import tempfile
-from typing import Iterable
-
+from collections import Counter
+from collections.abc import Iterable
+from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_INPUT = PROJECT_ROOT / "knowledge" / "processed" / "notices" / "knu_documents.jsonl"
@@ -68,7 +67,7 @@ def split_long_piece(piece: str, limit: int) -> list[str]:
 
     words = re.findall(r"\S+\s*", piece)
     if len(words) <= 1:
-        return [piece[index:index + limit] for index in range(0, len(piece), limit)]
+        return [piece[index : index + limit] for index in range(0, len(piece), limit)]
 
     parts: list[str] = []
     current = ""
@@ -78,7 +77,7 @@ def split_long_piece(piece: str, limit: int) -> list[str]:
             if current:
                 parts.append(current)
                 current = ""
-            parts.extend(word[index:index + limit] for index in range(0, len(word), limit))
+            parts.extend(word[index : index + limit] for index in range(0, len(word), limit))
             continue
         candidate = f"{current} {word}".strip() if current else word
         if len(candidate) <= limit:
@@ -114,7 +113,7 @@ def overlap_tail(text: str, target: int) -> str:
         return text
     tail = text[-target:]
     boundary = re.search(r"\s+", tail)
-    return tail[boundary.end():] if boundary and boundary.end() < len(tail) else tail
+    return tail[boundary.end() :] if boundary and boundary.end() < len(tail) else tail
 
 
 def split_text(text: str, limit: int, overlap: int) -> list[str]:
@@ -291,7 +290,9 @@ def main() -> None:
     report["output"] = str(args.output.resolve())
     jsonl = "".join(json.dumps(chunk, ensure_ascii=False) + "\n" for chunk in chunks)
     atomic_write(args.output, jsonl, args.overwrite)
-    atomic_write(report_path, json.dumps(report, ensure_ascii=False, indent=2) + "\n", args.overwrite)
+    atomic_write(
+        report_path, json.dumps(report, ensure_ascii=False, indent=2) + "\n", args.overwrite
+    )
     print(json.dumps(report, ensure_ascii=False, indent=2))
 
 

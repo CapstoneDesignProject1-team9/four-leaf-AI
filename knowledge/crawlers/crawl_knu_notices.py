@@ -66,11 +66,12 @@ import time
 import xml.etree.ElementTree as ET
 import zipfile
 import zlib
+from collections.abc import Iterable
 from dataclasses import dataclass
 from datetime import datetime
 from io import BytesIO
 from pathlib import Path
-from typing import Iterable, Literal
+from typing import Literal
 from urllib.parse import parse_qs, urlencode, urljoin, urlparse, urlunparse
 
 import pytesseract
@@ -163,14 +164,19 @@ IMAGE_SELECTORS = (
 
 HWP_LONG_CONTROLS = frozenset(range(1, 10)) | {11, 12} | frozenset(range(14, 24))
 HWP_CONTROL_TEXT = {
-    9: b"\t\x00", 10: b"\n\x00", 13: b"\n\x00",
-    24: b"-\x00", 30: b" \x00", 31: b" \x00",
+    9: b"\t\x00",
+    10: b"\n\x00",
+    13: b"\n\x00",
+    24: b"-\x00",
+    30: b" \x00",
+    31: b" \x00",
 }
 
 
 # ============================================================
 # 자료형
 # ============================================================
+
 
 @dataclass(slots=True)
 class ListPost:
@@ -206,6 +212,7 @@ Mode = Literal["full", "resume", "update"]
 # ============================================================
 # CLI / 환경
 # ============================================================
+
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="경북대학교 컴퓨터학부 공지사항 수집기")
@@ -244,7 +251,11 @@ def configure_tesseract() -> bool:
     auto_path = shutil.which("tesseract")
     windows_default = Path(r"C:\Program Files\Tesseract-OCR\tesseract.exe")
 
-    for candidate in (env_path, auto_path, str(windows_default) if windows_default.exists() else None):
+    for candidate in (
+        env_path,
+        auto_path,
+        str(windows_default) if windows_default.exists() else None,
+    ):
         if candidate and (Path(candidate).is_file() or shutil.which(candidate)):
             pytesseract.pytesseract.tesseract_cmd = candidate
             return True
@@ -286,6 +297,7 @@ def get(session: requests.Session, url: str, **kwargs) -> requests.Response:
 # ============================================================
 # URL / 날짜 / 해시
 # ============================================================
+
 
 def normalize_url(url: str) -> str:
     parsed = urlparse(url)
@@ -405,6 +417,7 @@ def calculate_content_hash(item: dict) -> str:
 # JSONL 저장
 # ============================================================
 
+
 def load_existing() -> tuple[list[dict], dict[str, dict]]:
     if not OUTPUT.exists():
         return [], {}
@@ -497,6 +510,7 @@ def replace_item_and_save(items: list[dict], new_item: dict) -> None:
 # HTML 파싱
 # ============================================================
 
+
 def list_date(anchor) -> datetime | None:
     row = anchor.find_parent("tr")
     if row is None:
@@ -535,9 +549,7 @@ def detail_date(soup: BeautifulSoup) -> datetime | None:
 
 def extract_content(soup: BeautifulSoup) -> str:
     element = (
-        soup.select_one("#bo_v_con")
-        or soup.select_one(".bo_v_con")
-        or soup.select_one(".bo_v_atc")
+        soup.select_one("#bo_v_con") or soup.select_one(".bo_v_con") or soup.select_one(".bo_v_atc")
     )
     if element is None:
         return ""
@@ -649,6 +661,7 @@ def fetch_snapshot(
 # 이미지 OCR
 # ============================================================
 
+
 def tesseract_available() -> bool:
     command = getattr(pytesseract.pytesseract, "tesseract_cmd", "tesseract")
     return Path(command).is_file() or shutil.which(command) is not None
@@ -705,6 +718,7 @@ def run_ocr(session: requests.Session, url: str, ocr_enabled: bool) -> str:
 # ============================================================
 # PDF / 첨부파일
 # ============================================================
+
 
 def safe_filename(name: str, fallback: str) -> str:
     name = re.sub(r'[\\/:*?"<>|]', "_", name).strip(" .")
@@ -1039,8 +1053,11 @@ def process_attachments(
 ) -> list[dict]:
     processed: list[dict] = []
     method_kinds = {
-        "pypdf": "pdf", "ocr": "pdf", "hwpx_xml": "hwpx",
-        "hwp_bodytext": "hwp", "text_decode": "text",
+        "pypdf": "pdf",
+        "ocr": "pdf",
+        "hwpx_xml": "hwpx",
+        "hwp_bodytext": "hwp",
+        "text_decode": "text",
     }
     cached_text: dict[tuple[str, str], tuple[str, str]] = {}
     for previous in previous_attachments:
@@ -1133,7 +1150,11 @@ def process_attachments(
                 result["text"] = decode_text_bytes(data)
                 result["text_extraction"] = "text_decode" if result["text"] else "none"
 
-            if result["text"].strip() and result["text_extraction"] in method_kinds and not invalid_pdf:
+            if (
+                result["text"].strip()
+                and result["text_extraction"] in method_kinds
+                and not invalid_pdf
+            ):
                 cached_text[(result["sha256"], kind)] = (result["text"], result["text_extraction"])
 
         except KeyboardInterrupt:
@@ -1155,6 +1176,7 @@ def process_attachments(
 # 게시글 완성
 # ============================================================
 
+
 def materialize_item(
     session: requests.Session,
     snapshot: PostSnapshot,
@@ -1163,7 +1185,7 @@ def materialize_item(
 ) -> dict:
     """변경/신규 게시글에 대해서만 OCR과 첨부파일 다운로드를 수행한다."""
     ocr_texts: list[str] = []
-    for image_url in (snapshot.image_urls if ocr_enabled else ()):
+    for image_url in snapshot.image_urls if ocr_enabled else ():
         text = run_ocr(session, image_url, ocr_enabled)
         if text:
             ocr_texts.append(text)
@@ -1198,6 +1220,7 @@ def materialize_item(
 # ============================================================
 # PDF 복구
 # ============================================================
+
 
 def is_pdf_attachment(attachment: dict) -> bool:
     name = str(attachment.get("name", ""))
@@ -1284,6 +1307,7 @@ def repair_existing_pdf_text() -> None:
 # ============================================================
 # 크롤링
 # ============================================================
+
 
 def mode_name(mode: Mode) -> str:
     return {
@@ -1407,7 +1431,9 @@ def crawl(mode: Mode = "update", max_pages: int = 0) -> None:
 
                 # 핵심 최적화: 기존 글의 HTML 수준 source_hash가 같으면 OCR/PDF 처리 생략.
                 if mode == "update" and old_item is not None:
-                    old_source_hash = str(old_item.get("source_hash") or source_hash_from_item(old_item))
+                    old_source_hash = str(
+                        old_item.get("source_hash") or source_hash_from_item(old_item)
+                    )
                     if snapshot.source_hash == old_source_hash:
                         stats["unchanged"] += 1
                         stats["lightweight_skip"] += 1

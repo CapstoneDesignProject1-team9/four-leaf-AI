@@ -1,4 +1,5 @@
 """BGE-M3 공지 ChromaDB 검색과 Gemini 답변 생성."""
+
 from __future__ import annotations
 
 import logging
@@ -15,7 +16,7 @@ from app.core.config import settings
 
 logger = logging.getLogger(__name__)
 _collection: Any | None = None
-_embedder: "BgeM3Embedder | None" = None
+_embedder: BgeM3Embedder | None = None
 
 
 class BgeM3Embedder:
@@ -25,43 +26,70 @@ class BgeM3Embedder:
     def load(self) -> None:
         if self.model:
             return
-        snapshot = (Path(settings.EMBEDDING_MODEL_CACHE_DIR) / "models--BAAI--bge-m3"
-                    / "snapshots" / settings.EMBEDDING_MODEL_REVISION)
+        snapshot = (
+            Path(settings.EMBEDDING_MODEL_CACHE_DIR)
+            / "models--BAAI--bge-m3"
+            / "snapshots"
+            / settings.EMBEDDING_MODEL_REVISION
+        )
         if not snapshot.is_dir():
-            raise RuntimeError("BGE-M3 모델 캐시가 없습니다. embed_notices.py index를 먼저 실행하세요.")
+            raise RuntimeError(
+                "BGE-M3 모델 캐시가 없습니다. embed_notices.py index를 먼저 실행하세요."
+            )
         if settings.EMBEDDING_DEVICE == "cpu":
             import torch
+
             torch.set_num_threads(settings.EMBEDDING_CPU_THREADS)
-        self.model = SentenceTransformer(str(snapshot), device=settings.EMBEDDING_DEVICE,
-                                         local_files_only=True, trust_remote_code=False)
+        self.model = SentenceTransformer(
+            str(snapshot),
+            device=settings.EMBEDDING_DEVICE,
+            local_files_only=True,
+            trust_remote_code=False,
+        )
         if self.model.get_sentence_embedding_dimension() != 1024:
             raise RuntimeError("BGE-M3 임베딩 차원이 1024가 아닙니다.")
 
     def embed_query(self, query: str) -> list[float]:
         self.load()
         assert self.model is not None
-        if len(self.model.tokenizer(query, truncation=False)["input_ids"]) > self.model.max_seq_length:
+        if (
+            len(self.model.tokenizer(query, truncation=False)["input_ids"])
+            > self.model.max_seq_length
+        ):
             raise ValueError("질문이 BGE-M3 입력 길이를 초과했습니다.")
-        return self.model.encode([query], normalize_embeddings=True, convert_to_numpy=True,
-                                 show_progress_bar=False)[0].tolist()
+        return self.model.encode(
+            [query], normalize_embeddings=True, convert_to_numpy=True, show_progress_bar=False
+        )[0].tolist()
 
 
 def _validate(collection: Any) -> None:
     metadata = collection.metadata or {}
-    expected = {"schema_version": 1, "embedding_model": settings.EMBEDDING_MODEL_NAME,
-                "model_revision": settings.EMBEDDING_MODEL_REVISION, "dimension": 1024,
-                "normalized": True, "distance_metric": "cosine", "index_state": "ready"}
+    expected = {
+        "schema_version": 1,
+        "embedding_model": settings.EMBEDDING_MODEL_NAME,
+        "model_revision": settings.EMBEDDING_MODEL_REVISION,
+        "dimension": 1024,
+        "normalized": True,
+        "distance_metric": "cosine",
+        "index_state": "ready",
+    }
     bad = [key for key, value in expected.items() if metadata.get(key) != value]
     if bad or int(metadata.get("active_chunks", 0)) < 1:
-        raise RuntimeError("공지 벡터 DB 설정이 일치하지 않거나 색인이 완료되지 않았습니다: " + ", ".join(bad))
+        raise RuntimeError(
+            "공지 벡터 DB 설정이 일치하지 않거나 색인이 완료되지 않았습니다: " + ", ".join(bad)
+        )
 
 
 async def init_vectorstore() -> None:
     global _collection, _embedder
     db_path = Path(settings.CHROMA_PERSIST_DIR)
     if not db_path.is_dir():
-        raise RuntimeError(f"공지 벡터 DB가 없습니다: {db_path}. embed_notices.py index를 실행하세요.")
-    client = chromadb.PersistentClient(path=str(db_path), settings=Settings(anonymized_telemetry=False))
+        raise RuntimeError(
+            f"공지 벡터 DB가 없습니다: {db_path}. embed_notices.py index를 실행하세요."
+        )
+    client = chromadb.PersistentClient(
+        path=str(db_path), settings=Settings(anonymized_telemetry=False)
+    )
     try:
         collection = client.get_collection(settings.CHROMA_COLLECTION_NAME, embedding_function=None)
     except Exception as exc:
@@ -81,16 +109,28 @@ def _ready() -> tuple[Any, BgeM3Embedder]:
 
 def search_notices(question: str) -> list[Document]:
     collection, embedder = _ready()
-    result = collection.query(query_embeddings=[embedder.embed_query(question)],
-                              n_results=min(settings.RAG_TOP_K, int(collection.metadata["active_chunks"])),
-                              where={"active": True}, include=["documents", "metadatas", "distances"])
-    return [Document(page_content=text, metadata={**metadata, "distance": float(distance)})
-            for text, metadata, distance in zip(result["documents"][0], result["metadatas"][0], result["distances"][0])]
+    result = collection.query(
+        query_embeddings=[embedder.embed_query(question)],
+        n_results=min(settings.RAG_TOP_K, int(collection.metadata["active_chunks"])),
+        where={"active": True},
+        include=["documents", "metadatas", "distances"],
+    )
+    return [
+        Document(page_content=text, metadata={**metadata, "distance": float(distance)})
+        for text, metadata, distance in zip(
+            result["documents"][0], result["metadatas"][0], result["distances"][0]
+        )
+    ]
 
 
 def _context(documents: list[Document]) -> str:
-    return "\n\n".join(f"[공지 {i}]\n제목: {d.metadata.get('title', '')}\n게시일: {d.metadata.get('date', '')}\nURL: {d.metadata.get('url', '')}\n내용:\n{d.page_content}"
-                       for i, d in enumerate(documents, 1)) or "검색된 공지가 없습니다."
+    return (
+        "\n\n".join(
+            f"[공지 {i}]\n제목: {d.metadata.get('title', '')}\n게시일: {d.metadata.get('date', '')}\nURL: {d.metadata.get('url', '')}\n내용:\n{d.page_content}"
+            for i, d in enumerate(documents, 1)
+        )
+        or "검색된 공지가 없습니다."
+    )
 
 
 class NoticeRagChain:
@@ -115,6 +155,10 @@ class NoticeRagChain:
 
 def build_rag_chain() -> NoticeRagChain:
     _ready()
-    return NoticeRagChain(ChatGoogleGenerativeAI(model=settings.GEMINI_MODEL,
-                                                  google_api_key=settings.GOOGLE_API_KEY or None,
-                                                  temperature=0))
+    return NoticeRagChain(
+        ChatGoogleGenerativeAI(
+            model=settings.GEMINI_MODEL,
+            google_api_key=settings.GOOGLE_API_KEY or None,
+            temperature=0,
+        )
+    )
