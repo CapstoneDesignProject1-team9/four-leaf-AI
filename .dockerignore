@@ -1,0 +1,47 @@
+# Git
+.git/
+.gitignore
+
+# 환경변수
+.env
+.env.*
+!.env.example
+
+# Python 가상환경
+.venv/
+.venv*/
+venv/
+env/
+
+# Python 캐시
+**/__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# 로컬 모델 및 캐시
+.cache/
+huggingface/
+models/
+
+# 크롤링 및 가공 데이터
+knowledge/raw/
+knowledge/processed/
+
+# 로컬 벡터 DB
+knowledge/vectorstores/
+chroma_db/
+
+# 기타 대용량 로컬 파일
+*.jsonl
+*.sqlite
+*.sqlite3
+
+# IDE
+.vscode/
+.idea/
+
+# 운영체제 파일
+.DS_Store
+Thumbs.db
