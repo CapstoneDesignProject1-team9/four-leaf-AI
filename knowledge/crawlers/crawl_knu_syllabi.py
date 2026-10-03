@@ -1,216 +1,300 @@
-"""경북대학교 컴퓨터학부 강의계획서 수집기.
-
-`crawl_knu_notices.py`와 동일하게 requests + BeautifulSoup으로 HTTP/HTML을 처리합니다.
-강의계획서 포털이 제공하는 공개 조회 결과 및 강의계획서 링크를 따라가며 HTML 내용을 JSONL로 저장합니다.
-포털의 검색 요청 파라미터가 변경되면 환경변수 KNU_SYLLABUS_LIST_URL로 검색 결과 URL을 지정할 수 있습니다.
-
-예시:
-    python knowledge/crawlers/crawl_knu_syllabi.py --help
-    python knowledge/crawlers/crawl_knu_syllabi.py --list-url 'https://...'
-
-저장 위치:
-    knowledge/raw/syllabi/knu_cs_syllabi.jsonl
-"""
+"""Selenium crawler for public KNU Computer Science syllabi."""
 
 from __future__ import annotations
 
 import argparse
 import hashlib
 import json
-import os
 import re
 import sys
 import time
+from datetime import date
 from pathlib import Path
-from urllib.parse import urljoin, urlparse
 
-import requests
-from bs4 import BeautifulSoup
-from requests.adapters import HTTPAdapter
-from urllib3.util.retry import Retry
+from selenium import webdriver
+from selenium.common.exceptions import StaleElementReferenceException, TimeoutException, WebDriverException
+from selenium.webdriver import ActionChains
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import Select, WebDriverWait
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 OUTPUT = PROJECT_ROOT / "knowledge" / "raw" / "syllabi" / "knu_cs_syllabi.jsonl"
-DEFAULT_LIST_URL = os.getenv("KNU_SYLLABUS_LIST_URL", "https://sy.knu.ac.kr/")
-TIMEOUT = 25
-DELAY = 0.4
-USER_AGENT = (
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-    "(KHTML, like Gecko) Chrome/120.0 Safari/537.36"
-)
-
-
-def make_session() -> requests.Session:
-    retry = Retry(
-        total=3,
-        connect=3,
-        read=3,
-        status=3,
-        backoff_factor=0.7,
-        status_forcelist=(429, 500, 502, 503, 504),
-        allowed_methods=frozenset({"GET", "HEAD"}),
-        raise_on_status=False,
-    )
-    session = requests.Session()
-    session.headers.update({"User-Agent": USER_AGENT, "Accept-Language": "ko-KR,ko;q=0.9,en;q=0.8"})
-    adapter = HTTPAdapter(max_retries=retry)
-    session.mount("https://", adapter)
-    session.mount("http://", adapter)
-    return session
-
-
-def clean_text(value: str) -> str:
-    return re.sub(r"\s+", " ", value).strip()
-
-
-def extract_department_text(soup: BeautifulSoup) -> str:
-    """페이지 안의 컴퓨터학부/컴퓨터학과 표시를 포함한 행 텍스트를 찾습니다."""
-    for row in soup.select("tr"):
-        text = clean_text(row.get_text(" ", strip=True))
-        if any(name in text for name in ("컴퓨터학부", "컴퓨터학과")):
-            return text
-    return ""
-
-
-def collect_course_links(soup: BeautifulSoup, page_url: str) -> list[dict[str, str]]:
-    """강의계획서/강의상세 링크를 모읍니다. 검색 결과 행의 학과명이 있는 경우만 포함합니다."""
-    courses: list[dict[str, str]] = []
-    seen: set[str] = set()
-    for row in soup.select("tr"):
-        row_text = clean_text(row.get_text(" ", strip=True))
-        department = (
-            row_text
-            if any(name in row_text for name in ("컴퓨터학부", "컴퓨터학과"))
-            else ""
-        )
-        if not department:
-            continue
-        for anchor in row.select("a[href]"):
-            href = anchor.get("href", "").strip()
-            label = clean_text(anchor.get_text(" ", strip=True))
-            if not href or href.startswith(("javascript:", "#")):
-                continue
-            # 포털에서 강의계획서 상세 링크를 구분하는 링크 텍스트 또는 URL만 대상으로 합니다.
-            if not any(token in (label + " " + href).lower() for token in ("강의계획", "교과목상세", "lectpln", "syllabus")):
-                continue
-            url = urljoin(page_url, href)
-            if url in seen:
-                continue
-            seen.add(url)
-            courses.append({"url": url, "title": label or row_text, "department_row": department})
-    return courses
-
-
-def parse_course_detail(html: str, url: str, fallback_title: str, department_row: str) -> dict:
-    soup = BeautifulSoup(html, "html.parser")
-    for element in soup.select("script, style, noscript, nav, header, footer"):
-        element.decompose()
-    main = soup.select_one("#content, #contents, main, .content, .sub_content") or soup.body or soup
-    text = "\n".join(
-        clean_text(line)
-        for line in main.get_text("\n", strip=True).splitlines()
-        if clean_text(line)
-    )
-    title = clean_text(soup.title.get_text(" ", strip=True)) if soup.title else fallback_title
-    title = title or fallback_title
-    course_code = ""
-    match = re.search(r"(?<!\d)(\d{5,10})(?!\d)", department_row)
-    if match:
-        course_code = match.group(1)
-    return {
-        "course_code": course_code,
-        "title": title,
-        "department": "컴퓨터학부",
-        "department_row": department_row,
-        "url": url,
-        "content": text,
-        "content_hash": hashlib.sha256(text.encode("utf-8")).hexdigest(),
-    }
+START_URL = "https://knuin.knu.ac.kr/public/stddm/lectPlnInqr.knu"
+DEFAULT_TIMEOUT = 30
+GRID_ID = "grid01"
+GRID_COLUMNS = {
+    "year": 0,
+    "semester": 1,
+    "grade": 2,
+    "category": 3,
+    "college": 4,
+    "department": 5,
+    "course_code": 6,
+    "course_name": 7,
+    "credits": 8,
+    "lecture_hours": 9,
+    "practice_hours": 10,
+    "instructor": 11,
+    "class_time": 12,
+    "actual_time": 13,
+    "classroom": 14,
+    "room": 15,
+    "capacity": 16,
+    "enrolled": 17,
+}
+SYLLABUS_TABS = {
+    "general": "tabs1",
+    "core_competencies": "tabs2",
+    "evaluation_methods": "tabs3",
+    "disability_support": "tabs4",
+    "weekly_schedule": "tabs5",
+    "course_evaluation": "tabs6",
+}
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="경북대학교 컴퓨터학부 강의계획서 수집기")
-    parser.add_argument(
-        "--list-url",
-        default=DEFAULT_LIST_URL,
-        help="강의계획서 조회 결과 URL (기본값: KNU_SYLLABUS_LIST_URL 또는 sy.knu.ac.kr)",
-    )
-    parser.add_argument("--output", type=Path, default=OUTPUT, help=f"JSONL 출력 경로 (기본값: {OUTPUT})")
-    parser.add_argument("--max-pages", type=int, default=0, help="다음/페이지 링크를 따라갈 최대 목록 페이지 수 (0: 제한 없음)")
-    parser.add_argument("--delay", type=float, default=DELAY, help="요청 사이 대기 시간(초)")
+    parser.add_argument("--year", type=int, default=date.today().year, help="개설연도")
+    parser.add_argument("--semester", default="2학기", help="개설학기 (예: 1학기, 2학기, 계절학기(하계))")
+    parser.add_argument("--output", type=Path, default=OUTPUT, help="JSONL 결과 파일")
+    parser.add_argument("--max-courses", type=int, default=0, help="최대 강좌 수 (0은 제한 없음)")
+    parser.add_argument("--delay", type=float, default=0.25, help="과목 간 대기 시간(초)")
+    parser.add_argument("--timeout", type=int, default=DEFAULT_TIMEOUT, help="요소 대기 시간(초)")
+    parser.add_argument("--headless", action="store_true", help="브라우저 창 없이 실행")
+    parser.add_argument("--append", action="store_true", help="기존 JSONL에 이어 쓰기")
     return parser.parse_args()
+
+
+def make_driver(headless: bool = False) -> webdriver.Chrome:
+    options = webdriver.ChromeOptions()
+    options.add_argument("--lang=ko-KR")
+    options.add_argument("--window-size=1600,1100")
+    options.add_argument("--disable-notifications")
+    if headless:
+        options.add_argument("--headless=new")
+    return webdriver.Chrome(options=options)
+
+
+def wait_for_id(driver: webdriver.Chrome, element_id: str, timeout: int):
+    return WebDriverWait(driver, timeout).until(
+        EC.presence_of_element_located((By.ID, element_id))
+    )
+
+
+def choose_websquare_option(
+    driver: webdriver.Chrome, element_id: str, value: str, timeout: int
+) -> None:
+    element = wait_for_id(driver, element_id, timeout)
+    if element.tag_name.lower() == "select":
+        selector = Select(element)
+        normalized = lambda text: " ".join((text or "").split())
+        target = next(
+            (
+                option
+                for option in selector.options
+                if normalized(option.text) == normalized(value)
+                or normalized(option.get_attribute("value")) == normalized(value)
+            ),
+            None,
+        )
+        if target is None:
+            choices = [option.text or option.get_attribute("value") for option in selector.options]
+            raise RuntimeError(f"{element_id}: '{value}' 선택지를 찾지 못했습니다. 현재 옵션: {choices}")
+        selector.select_by_value(target.get_attribute("value"))
+        driver.execute_script(
+            "arguments[0].dispatchEvent(new Event('change', { bubbles: true }));",
+            element,
+        )
+        return
+
+    element.click()
+    options = driver.find_elements(
+        By.XPATH, f"//*[normalize-space(.)={json.dumps(value, ensure_ascii=False)}]"
+    )
+    for option in options:
+        try:
+            if option.is_displayed() and option.is_enabled():
+                option.click()
+                return
+        except StaleElementReferenceException:
+            continue
+    element.send_keys(value)
+    element.send_keys(Keys.ENTER)
+
+
+def set_search_filters(driver: webdriver.Chrome, year: int, semester: str, timeout: int) -> None:
+    year_input = wait_for_id(driver, "schEstblYear___input", timeout)
+    year_input.click()
+    year_input.send_keys(Keys.COMMAND, "a")
+    year_input.send_keys(str(year))
+    year_input.send_keys(Keys.TAB)
+    choose_websquare_option(driver, "schEstblSmstrSctcd", semester, timeout)
+    choose_websquare_option(driver, "schSbjetCd1", "대학", timeout)
+    choose_websquare_option(driver, "schSbjetCd2", "IT대학", timeout)
+    choose_websquare_option(driver, "schSbjetCd3", "컴퓨터학부", timeout)
+
+
+def click_search(driver: webdriver.Chrome, timeout: int) -> None:
+    wait_for_id(driver, "btnSearch", timeout).click()
+    WebDriverWait(driver, timeout).until(
+        lambda current: current.find_elements(
+            By.CSS_SELECTOR, f"[id^='{GRID_ID}_cell_'][id$='_6']"
+        )
+    )
+
+
+def read_rendered_rows(driver: webdriver.Chrome) -> list[dict[str, str]]:
+    cells = driver.find_elements(By.CSS_SELECTOR, f"[id^='{GRID_ID}_cell_'][id$='_6']")
+    indexes = set()
+    for cell in cells:
+        match = re.match(rf"{GRID_ID}_cell_(\d+)_6$", cell.get_attribute("id") or "")
+        if match:
+            indexes.add(int(match.group(1)))
+
+    rows = []
+    for index in sorted(indexes):
+        row = {}
+        for field, column in GRID_COLUMNS.items():
+            try:
+                element = driver.find_element(By.ID, f"{GRID_ID}_cell_{index}_{column}")
+                row[field] = " ".join(element.text.split())
+            except WebDriverException:
+                row[field] = ""
+        if row.get("course_code") and "컴퓨터학부" in row.get("department", ""):
+            row["_grid_index"] = str(index)
+            rows.append(row)
+    return rows
+
+
+def collect_all_rows(driver: webdriver.Chrome, timeout: int) -> list[dict[str, str]]:
+    """그리드가 가상 렌더링을 사용해도 스크롤해 전체 강좌를 읽습니다."""
+    rows_by_code: dict[str, dict[str, str]] = {}
+    body = wait_for_id(driver, f"{GRID_ID}_body_tbody", timeout)
+    container = driver.execute_script(
+        """
+        let node = arguments[0];
+        while (node && node !== document.body) {
+          if (node.scrollHeight > node.clientHeight + 5) return node;
+          node = node.parentElement;
+        }
+        return arguments[0];
+        """,
+        body,
+    )
+    last_top = -1
+    while True:
+        for row in read_rendered_rows(driver):
+            rows_by_code[row["course_code"]] = row
+        top, height, view = driver.execute_script(
+            "return [arguments[0].scrollTop, arguments[0].scrollHeight, arguments[0].clientHeight]",
+            container,
+        )
+        if top + view >= height - 2 or top == last_top:
+            break
+        last_top = top
+        driver.execute_script(
+            "arguments[0].scrollTop = Math.min(arguments[0].scrollTop + arguments[0].clientHeight * 0.8, arguments[0].scrollHeight)",
+            container,
+        )
+        time.sleep(0.2)
+    driver.execute_script("arguments[0].scrollTop = 0", container)
+    return list(rows_by_code.values())
+
+
+def open_course_detail(driver: webdriver.Chrome, row: dict[str, str], timeout: int):
+    main_handle = driver.current_window_handle
+    handles_before = set(driver.window_handles)
+    cell = driver.find_element(By.ID, f"{GRID_ID}_cell_{row['_grid_index']}_0")
+    ActionChains(driver).double_click(cell).perform()
+    try:
+        WebDriverWait(driver, timeout).until(
+            lambda current: len(set(current.window_handles) - handles_before) > 0
+        )
+    except TimeoutException:
+        return None
+    detail_handle = (set(driver.window_handles) - handles_before).pop()
+    driver.switch_to.window(detail_handle)
+    wait_for_id(driver, "popupContent", timeout)
+    return main_handle, detail_handle
+
+
+def read_syllabus_tabs(driver: webdriver.Chrome, timeout: int) -> dict[str, str]:
+    details = {}
+    for name, suffix in SYLLABUS_TABS.items():
+        tab_id = f"popupContent_tabCon_tab_{suffix}_tabHTML"
+        try:
+            tab = WebDriverWait(driver, timeout).until(EC.element_to_be_clickable((By.ID, tab_id)))
+            tab.click()
+            time.sleep(0.15)
+            details[name] = driver.find_element(By.ID, "popupContent").text.strip()
+        except TimeoutException:
+            details[name] = ""
+    return details
+
+
+def close_course_detail(driver: webdriver.Chrome, handles: tuple[str, str]) -> None:
+    main_handle, detail_handle = handles
+    if detail_handle in driver.window_handles:
+        driver.switch_to.window(detail_handle)
+        driver.close()
+    if main_handle in driver.window_handles:
+        driver.switch_to.window(main_handle)
+
+
+def save_item(output, row: dict[str, str], details: dict[str, str]) -> None:
+    content = "\n\n".join(f"[{name}]\n{text}" for name, text in details.items() if text)
+    item = {
+        **{key: value for key, value in row.items() if not key.startswith("_")},
+        "department": "컴퓨터학부",
+        "syllabus": details,
+        "content": content,
+        "content_hash": hashlib.sha256(content.encode("utf-8")).hexdigest(),
+        "url": START_URL,
+    }
+    output.write(json.dumps(item, ensure_ascii=False, separators=(",", ":")) + "\n")
+    output.flush()
 
 
 def main() -> int:
     args = parse_args()
-    session = make_session()
-    queue = [args.list_url]
-    visited_pages: set[str] = set()
-    visited_courses: set[str] = set()
-    page_count = 0
-    # 목록 화면은 사용자가 포털에서 조회한 결과 URL로 제공할 수 있습니다.
-    # 시스템 내부에서 조회 조건을 임의 추측해 전체 과목을 누락시키지 않습니다.
-    with args.output.open("w", encoding="utf-8", newline="\n") as output:
-        while queue and (args.max_pages <= 0 or page_count < args.max_pages):
-            page_url = queue.pop(0)
-            if page_url in visited_pages:
-                continue
-            visited_pages.add(page_url)
-            page_count += 1
-            print(f"[목록 {page_count}] {page_url}")
-            try:
-                response = session.get(page_url, timeout=TIMEOUT)
-                response.raise_for_status()
-            except requests.RequestException as exc:
-                print(f"[목록 요청 실패] {exc}", file=sys.stderr)
-                continue
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    driver = make_driver(args.headless)
+    try:
+        driver.set_page_load_timeout(args.timeout)
+        driver.get(START_URL)
+        set_search_filters(driver, args.year, args.semester, args.timeout)
+        click_search(driver, args.timeout)
+        rows = collect_all_rows(driver, args.timeout)
+        if args.max_courses > 0:
+            rows = rows[: args.max_courses]
+        print(f"검색 완료: {args.year} {args.semester}, 컴퓨터학부 {len(rows)}개 강좌")
 
-            soup = BeautifulSoup(response.text, "html.parser")
-            course_links = collect_course_links(soup, response.url)
-            if not course_links and page_count == 1:
-                print(
-                    "[안내] 강의계획서 조회 결과에서 강의 링크를 찾지 못했습니다. "
-                    "sy.knu.ac.kr에서 컴퓨터학부 검색을 실행한 결과 URL을 --list-url로 전달해 주세요.",
-                    file=sys.stderr,
-                )
-            for course in course_links:
-                url = course["url"]
-                if url in visited_courses:
+        with args.output.open("a" if args.append else "w", encoding="utf-8", newline="\n") as output:
+            for number, row in enumerate(rows, start=1):
+                print(f"[{number}/{len(rows)}] {row['course_code']} {row['course_name']}")
+                handles = open_course_detail(driver, row, args.timeout)
+                if handles is None:
+                    print("  [강의계획서 없음 또는 열기 실패]")
                     continue
-                visited_courses.add(url)
                 try:
-                    detail_response = session.get(url, timeout=TIMEOUT)
-                    detail_response.raise_for_status()
-                except requests.RequestException as exc:
-                    print(f"[강의계획서 요청 실패] {url}: {exc}", file=sys.stderr)
-                    continue
-                item = parse_course_detail(
-                    detail_response.text,
-                    detail_response.url,
-                    course["title"],
-                    course["department_row"],
-                )
-                output.write(json.dumps(item, ensure_ascii=False, separators=(",", ":")) + "\n")
-                output.flush()
-                print(f"[저장] {item['title']}")
+                    details = read_syllabus_tabs(driver, args.timeout)
+                    save_item(output, row, details)
+                    print(f"  [저장] {args.output}")
+                except (TimeoutException, WebDriverException) as exc:
+                    print(f"  [상세 읽기 실패] {exc}")
+                finally:
+                    close_course_detail(driver, handles)
                 time.sleep(max(args.delay, 0))
 
-            # 동일 호스트의 다음/페이지 이동 링크만 수집합니다.
-            host = urlparse(response.url).netloc
-            for anchor in soup.select("a[href]"):
-                label = clean_text(anchor.get_text(" ", strip=True)).lower()
-                href = anchor.get("href", "").strip()
-                if not href or href.startswith(("javascript:", "#")):
-                    continue
-                if not any(token in label for token in ("다음", "next", "›", ">")):
-                    continue
-                next_url = urljoin(response.url, href)
-                if urlparse(next_url).netloc == host and next_url not in visited_pages:
-                    queue.append(next_url)
-            time.sleep(max(args.delay, 0))
-
-    print(f"완료: 목록 {page_count}페이지, 상세 {len(visited_courses)}건 확인, 저장 위치: {args.output}")
-    return 0
+        print(f"완료: {len(rows)}개 강좌 확인, 저장 위치: {args.output}")
+        return 0
+    except TimeoutException as exc:
+        print(f"[시간 초과] 조회 결과가 나타나지 않았습니다: {exc}", file=sys.stderr)
+        return 1
+    finally:
+        driver.quit()
 
 
 if __name__ == "__main__":
