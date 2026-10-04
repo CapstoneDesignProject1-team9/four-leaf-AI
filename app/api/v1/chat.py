@@ -16,8 +16,8 @@ async def chat(request: ChatRequest):
 
     RAG 파이프라인:
     1. BGE-M3로 사용자 질문 임베딩
-    2. 공지 ChromaDB에서 유사 청크 검색 (top-5)
-    3. Gemini가 검색 공지를 근거로 답변 생성
+    2. 공지와 강의계획서 ChromaDB에서 유사 청크 검색 (통합 top-5)
+    3. Gemini가 검색된 공지와 강의계획서를 근거로 답변 생성
     """
     try:
         chain = build_rag_chain()
