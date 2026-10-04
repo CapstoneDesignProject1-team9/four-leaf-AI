@@ -375,6 +375,8 @@ def course_metadata_from_syllabus(details: dict[str, str]) -> dict[str, str]:
             metadata["course_code"] = match.group(1).strip()
             metadata["course_name"] = match.group(2).strip()
             break
+    if not metadata["course_code"]:
+        return metadata
 
     field_patterns = {
         "year": (r"\bYear\s+(\d{4})\b", r"개설연도\s+(\d{4})\b"),
@@ -427,6 +429,47 @@ def course_identity_from_syllabus(details: dict[str, str]) -> dict[str, str]:
     return {key: metadata[key] for key in ("course_code", "course_name") if metadata[key]}
 
 
+def normalize_semester(value: str) -> str:
+    normalized = " ".join((value or "").split()).lower()
+    aliases = {
+        "1st semester": "1학기",
+        "first semester": "1학기",
+        "2nd semester": "2학기",
+        "second semester": "2학기",
+    }
+    return aliases.get(normalized, normalized)
+
+
+def course_key(row: dict[str, str]) -> tuple[str, str, str] | None:
+    code = (row.get("course_code") or "").strip()
+    if not code:
+        return None
+    return (
+        (row.get("year") or "").strip(),
+        normalize_semester(row.get("semester", "")),
+        code,
+    )
+
+
+def load_existing_course_keys(path: Path) -> set[tuple[str, str, str]]:
+    keys: set[tuple[str, str, str]] = set()
+    if not path.exists():
+        return keys
+    with path.open(encoding="utf-8") as source:
+        for line in source:
+            try:
+                item = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            metadata = course_metadata_from_syllabus(item.get("syllabus", {}))
+            row = dict(metadata)
+            row.update({key: value for key, value in item.items() if value})
+            key = course_key(row)
+            if key:
+                keys.add(key)
+    return keys
+
+
 def listen_for_manual_commands(
     commands: queue.Queue[str], ready_for_command: threading.Event
 ) -> None:
@@ -452,6 +495,7 @@ def collect_manual_details(
     total_saved: int,
     commands: queue.Queue[str],
     ready_for_command: threading.Event,
+    saved_course_keys: set[tuple[str, str, str]],
 ) -> tuple[int, bool]:
     main_handle = driver.current_window_handle
     rows_by_code = {row.get("course_code"): row for row in rows}
@@ -488,7 +532,15 @@ def collect_manual_details(
                     }
                 )
                 row["_department_filter"] = department
+                key = course_key(row)
+                if key is None:
+                    print("  [건너뜀: 강좌 코드를 읽지 못함]", flush=True)
+                    continue
+                if key in saved_course_keys:
+                    print(f"  [중복 건너뜀] {row['course_code']}", flush=True)
+                    continue
                 save_item(output, row, details)
+                saved_course_keys.add(key)
                 total_saved += 1
                 print(
                     f"  [자동 저장 후 창 닫음] {row.get('course_code', '과목 정보')} "
@@ -540,6 +592,7 @@ def main() -> int:
         total_saved = 0
         total_attempted = 0
         seen_course_codes: set[str] = set()
+        saved_course_keys = load_existing_course_keys(args.output)
         commands: queue.Queue[str] = queue.Queue()
         ready_for_command = threading.Event()
         if args.manual_details:
@@ -568,6 +621,7 @@ def main() -> int:
                         total_saved,
                         commands,
                         ready_for_command,
+                        saved_course_keys,
                     )
                     if should_stop or (args.max_courses > 0 and total_saved >= args.max_courses):
                         break
