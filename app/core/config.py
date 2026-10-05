@@ -44,6 +44,13 @@ class Settings(BaseSettings):
     EMBEDDING_CPU_THREADS: int = 4
     RAG_TOP_K: int = 5
 
+    # PostgreSQL connection used for persisted student questions
+    DB_HOST: str = "localhost"
+    DB_PORT: int = 5432
+    DB_NAME: str = "fourleaf_dev"
+    DB_USER: str = "fourleaf"
+    DB_PASSWORD: str = "devpassword"
+
     # ─────────────────────────────────────────
     # Backend API (AI → Spring Boot 호출 시)
     # ─────────────────────────────────────────

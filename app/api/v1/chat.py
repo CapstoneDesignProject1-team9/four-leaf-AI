@@ -4,6 +4,7 @@ from fastapi import APIRouter, HTTPException
 
 from app.chains.rag_chain import build_rag_chain
 from app.models.schemas import ChatRequest, ChatResponse, SourceDocument
+from app.storage.student_questions import save_student_question
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -20,6 +21,13 @@ async def chat(request: ChatRequest):
     3. Gemini가 검색된 공지와 강의계획서를 근거로 답변 생성
     """
     try:
+        # Save the student's question even if response generation later fails.
+        save_student_question(
+            message=request.message,
+            course_name=request.course_name,
+            session_id=request.session_id,
+        )
+
         chain = build_rag_chain()
         result = chain.invoke({"query": request.message})
 

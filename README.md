@@ -159,3 +159,38 @@ ruff check .
 # 린트 에러 자동 수정
 ruff check --fix .
 ```
+# 학생 질문 저장 및 교수자 리포트
+
+AI 서버는 채팅 요청의 학생 질문을 기존 PostgreSQL 데이터베이스의
+`student_questions` 테이블에 저장합니다. 연결 설정은 `DB_HOST`, `DB_PORT`, `DB_NAME`,
+`DB_USER`, `DB_PASSWORD` 환경 변수로 지정하며, Docker Compose에서는 기존 PostgreSQL
+서비스에 연결합니다.
+
+로컬에서 AI 서버를 직접 실행할 때는 `.env.example`을 `.env`로 복사한 뒤
+`GOOGLE_API_KEY`와 PostgreSQL 연결 정보를 환경에 맞게 설정합니다. Docker Compose 전체 스택은
+`four-leaf-infra/.env.dev`의 설정을 사용합니다.
+
+채팅 요청에 `course_name`을 포함하면 강의별로 분류됩니다. 생략하면 `미지정`으로 저장됩니다.
+교수자 리포트는 질문 목록을 직접 전달해도 되고, `student_questions`를 생략하거나 빈 배열로
+보내면 해당 강의명으로 저장된 질문을 불러와 요약합니다.
+
+```http
+POST /api/v1/tutor/chat
+Content-Type: application/json
+
+{
+  "message": "자료구조 과제 범위가 어디까지인가요?",
+  "course_name": "자료구조"
+}
+```
+
+```http
+POST /api/v1/advisor/report
+Content-Type: application/json
+
+{
+  "course_name": "자료구조"
+}
+```
+
+현재 채팅 화면에는 강의 선택 기능이 없으므로, 해당 화면에서 들어온 질문은 `미지정`에 저장됩니다.
