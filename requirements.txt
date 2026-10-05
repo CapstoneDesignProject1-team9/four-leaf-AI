@@ -11,10 +11,11 @@ psycopg[binary]>=3.2,<4
 # ─────────────────────────────────────────
 # LangChain
 # ─────────────────────────────────────────
-langchain==0.3.0
-langchain-core==0.3.0
-langchain-community==0.3.0
-langchain-text-splitters==0.3.0
+langchain==0.3.27
+langchain-core>=0.3.75,<0.4.0
+langchain-community==0.3.27
+langchain-text-splitters==0.3.9
+langchain-ollama==0.2.3
 
 # ─────────────────────────────────────────
 # Vector Store & Embeddings (RAG)
@@ -56,7 +57,7 @@ tqdm>=4.66.4
 # vllm>=0.5.0          # 파인튜닝된 모델의 고속 추론 서빙용
 
 
-langchain-google-genai>=1.0.8
+langchain-google-genai>=2.1.12,<3.0.0
 
 # WebSquare 강의계획서 화면 자동 조회
 selenium==4.49.0

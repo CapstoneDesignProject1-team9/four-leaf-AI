@@ -17,8 +17,8 @@ async def chat(request: ChatRequest):
 
     RAG 파이프라인:
     1. BGE-M3로 사용자 질문 임베딩
-    2. 공지와 강의계획서 ChromaDB에서 유사 청크 검색 (통합 top-5)
-    3. Gemini가 검색된 공지와 강의계획서를 근거로 답변 생성
+    2. 강의 질문은 학년·과목 조건에 맞춰 강의계획서에서 검색하고, 그 외 질문은 공지와 함께 검색
+    3. 로컬 Ollama Llama 3.1 8B가 검색된 공지와 강의계획서를 근거로 답변 생성
     """
     try:
         # Save the student's question even if response generation later fails.

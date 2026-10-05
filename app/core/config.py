@@ -14,6 +14,12 @@ class Settings(BaseSettings):
     GOOGLE_API_KEY: str = ""
     GEMINI_MODEL: str = "gemini-1.5-flash"
 
+    # Local chat generation through Ollama (M1 Air friendly Q4_K_M quantization)
+    OLLAMA_BASE_URL: str = "http://localhost:11434"
+    OLLAMA_MODEL: str = "llama3.1:8b"
+    OLLAMA_NUM_CTX: int = 4096
+    OLLAMA_NUM_PREDICT: int = 768
+
     # Clova Studio API 엔드포인트
 
     # 사용 모델 (HyperCLOVA X)
