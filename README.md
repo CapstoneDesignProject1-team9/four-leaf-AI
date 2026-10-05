@@ -1,7 +1,7 @@
 # 🍀 four-leaf-AI
 
 > **Four-Leaf** 프로젝트의 AI 튜터 서비스 파이프라인입니다.  
-> 대학생들의 **대학생활 상담**과 **진로 상담**을 제공하는 대화형 AI 튜터를 만들기 위해, **Gemini를 활용한 합성 데이터(Synthetic Data) 생성**부터 **A100 GPU 기반의 오픈소스 LLM(Llama-3) 파인튜닝**, 그리고 결과 모델 서빙까지의 전체 파이프라인을 포함하고 있습니다.
+> 학생 채팅은 로컬 Ollama의 Llama 3.1 8B 모델로 답변하며, Gemini는 합성 학습 데이터 생성과 교수자 리포트에 사용합니다. 프로젝트에는 A100 GPU 기반 오픈소스 LLM 파인튜닝 및 모델 서빙 파이프라인도 포함되어 있습니다.
 
 ---
 
@@ -9,7 +9,8 @@
 
 | 분류 | 기술 |
 |------|------|
-| **Base Model** | 오픈소스 Llama-3 (Bllossom-8B) |
+| **Chat Model** | Ollama `llama3.1:8b` (로컬 양자화 모델) |
+| **Fine-Tuning Base Model** | 오픈소스 Llama-3 (Bllossom-8B) |
 | **Data Generation** | Google Gemini 1.5 Flash (Synthetic Data Generation) |
 | **Fine-Tuning** | Unsloth, Hugging Face `trl`, `peft` (QLoRA) |
 | **프레임워크** | FastAPI 0.115 (모델 데모 서빙용) |
@@ -105,6 +106,16 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
+### 로컬 채팅 모델 준비 (Mac)
+
+학생 채팅은 Gemini API를 호출하지 않고 Ollama를 통해 로컬 Llama 3.1 8B 양자화 모델을 실행합니다. Ollama를 설치한 뒤 모델을 한 번 받아두세요.
+
+```bash
+ollama pull llama3.1:8b
+```
+
+기본 연결값은 `.env.example`에 적힌 `OLLAMA_BASE_URL=http://localhost:11434`이며, 기본 컨텍스트 길이는 메모리 사용을 줄이도록 4096 토큰입니다. 모델 파일은 약 4.9GB이고 실행 중에는 추가 메모리가 필요합니다. Ollama가 실행 중인 상태에서 API를 시작하세요. Docker 안에서 API를 실행한다면 `.env`의 `OLLAMA_BASE_URL`을 `http://host.docker.internal:11434`로 설정해야 합니다.
+
 ### 2. 학습 데이터 생성 (Gemini API 활용)
 
 프로젝트 루트에 `.env` 파일을 생성하고 Google AI Studio에서 발급받은 API 키를 입력합니다.
@@ -167,7 +178,7 @@ AI 서버는 채팅 요청의 학생 질문을 기존 PostgreSQL 데이터베이
 서비스에 연결합니다.
 
 로컬에서 AI 서버를 직접 실행할 때는 `.env.example`을 `.env`로 복사한 뒤
-`GOOGLE_API_KEY`와 PostgreSQL 연결 정보를 환경에 맞게 설정합니다. Docker Compose 전체 스택은
+Ollama 및 PostgreSQL 연결 정보를 환경에 맞게 설정합니다. `GOOGLE_API_KEY`는 학생 채팅에는 필요하지 않으며 Gemini 기반 교수자 리포트 등 별도 기능에 사용됩니다. Docker Compose 전체 스택은
 `four-leaf-infra/.env.dev`의 설정을 사용합니다.
 
 채팅 요청에 `course_name`을 포함하면 강의별로 분류됩니다. 생략하면 `미지정`으로 저장됩니다.

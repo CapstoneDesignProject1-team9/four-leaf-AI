@@ -1,4 +1,4 @@
-"""BGE-M3 공지·강의계획서 ChromaDB 검색과 Gemini 답변 생성."""
+"""BGE-M3 공지·강의계획서 ChromaDB 검색과 Ollama 답변 생성."""
 
 from __future__ import annotations
 
@@ -9,7 +9,7 @@ from typing import Any
 import chromadb
 from chromadb.config import Settings
 from langchain_core.documents import Document
-from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_ollama import ChatOllama
 from sentence_transformers import SentenceTransformer
 
 from app.core.config import settings
@@ -228,9 +228,11 @@ class NoticeRagChain:
 def build_rag_chain() -> NoticeRagChain:
     _ready()
     return NoticeRagChain(
-        ChatGoogleGenerativeAI(
-            model=settings.GEMINI_MODEL,
-            google_api_key=settings.GOOGLE_API_KEY or None,
-            temperature=0,
+        ChatOllama(
+            model=settings.OLLAMA_MODEL,
+            base_url=settings.OLLAMA_BASE_URL,
+            temperature=0.2,
+            num_ctx=settings.OLLAMA_NUM_CTX,
+            num_predict=settings.OLLAMA_NUM_PREDICT,
         )
     )
