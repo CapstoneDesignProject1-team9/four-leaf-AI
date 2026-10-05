@@ -1,12 +1,12 @@
 """공지 JSONL을 출처별 RAG 문서로 전처리한다. Python 3.10+, 추가 패키지 없음.
 
-권장 위치: knowledge/processors/prepare_knu_notices.py
+위치: knowledge/preprocessing/preprocess_notices.py
 실행 (프로젝트 루트):
-    python knowledge/processors/prepare_knu_notices.py
+    python knowledge/preprocessing/preprocess_notices.py
 입출력 직접 지정:
-    python prepare_knu_notices.py --input raw.jsonl --output documents.jsonl
+    python knowledge/preprocessing/preprocess_notices.py --input raw.jsonl --output documents.jsonl
 
-원본은 변경하지 않는다. 출력 파일이 존재하면 --overwrite가 있어야 교체한다.
+원본은 변경하지 않는다. 기존 출력 파일과 품질 보고서는 실행 시 자동으로 교체한다.
 본문/이미지 OCR/첨부를 별도 문서로 보존하며 청킹과 임베딩은 수행하지 않는다.
 OCR 오류나 조각난 표를 추측해서 복원하지 않는다. 품질 보고서는 출력 옆에 저장한다.
 """
@@ -134,12 +134,8 @@ def prepare(path: Path) -> tuple[list[dict], dict]:
     return documents, report
 
 
-def write_output(path: Path, content: str, overwrite: bool) -> None:
+def write_output(path: Path, content: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    if not overwrite:
-        with path.open("x", encoding="utf-8", newline="\n") as file:
-            file.write(content)
-        return
     name = None
     try:
         with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", newline="\n",
@@ -155,20 +151,20 @@ def write_output(path: Path, content: str, overwrite: bool) -> None:
 
 
 def main() -> None:
+    # 기본 경로는 실행 폴더가 아닌 이 파일의 프로젝트 루트를 기준으로 한다.
+    # 사용자가 지정한 상대 경로는 기존처럼 현재 실행 폴더를 기준으로 한다.
+    project_root = Path(__file__).resolve().parents[2]
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--input", type=Path, default=Path("knowledge/raw/notices/knu_notices_all.jsonl"))
-    parser.add_argument("--output", type=Path, default=Path("knowledge/processed/notices/knu_documents.jsonl"))
-    parser.add_argument("--overwrite", action="store_true")
+    parser.add_argument("--input", type=Path, default=project_root / "knowledge/raw/notices/knu_notices_all.jsonl")
+    parser.add_argument("--output", type=Path, default=project_root / "knowledge/processed/notices/knu_documents.jsonl")
     args = parser.parse_args()
     report_path = args.output.with_suffix(".report.json")
     paths = [p.resolve() for p in (args.input, args.output, report_path)]
     if len(set(paths)) != 3:
         parser.error("입력·출력·보고서 경로는 서로 달라야 합니다")
-    if not args.overwrite and any(p.exists() for p in (args.output, report_path)):
-        parser.error("출력이 이미 있습니다. 다른 경로나 --overwrite를 사용하세요")
     documents, report = prepare(args.input)
-    write_output(args.output, "".join(json.dumps(d, ensure_ascii=False) + "\n" for d in documents), args.overwrite)
-    write_output(report_path, json.dumps(report, ensure_ascii=False, indent=2) + "\n", args.overwrite)
+    write_output(args.output, "".join(json.dumps(d, ensure_ascii=False) + "\n" for d in documents))
+    write_output(report_path, json.dumps(report, ensure_ascii=False, indent=2) + "\n")
     print(json.dumps(report, ensure_ascii=False, indent=2))
 
 
