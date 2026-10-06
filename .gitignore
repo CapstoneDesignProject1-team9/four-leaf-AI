@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 __pycache__/
 *.py[cod]
 *$py.class
@@ -63,3 +64,26 @@ knowledge/raw/notices/attachments/
 
 # 로컬 데이터 처리 보고서
 knowledge/processed/**/*.report.json
+=======
+# Python 및 가상환경
+__pycache__/
+*.py[cod]
+venv/
+.venv/
+
+# 데이터 및 가중치/로그 (용량이 크므로 제외)
+data/
+logs/
+*.jsonl
+*.pt
+*.safetensors
+*.bin
+
+# 환경 변수 및 개인 키 (보안)
+.env
+.env.local
+
+# IDE 설정
+.vscode/
+.idea/
+>>>>>>> ca402a8 (feat: finetune.py 스크립트 고도화)
