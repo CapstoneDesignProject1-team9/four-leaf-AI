@@ -9,6 +9,7 @@ import json
 import math
 import os
 import re
+import sys
 import unicodedata
 from datetime import datetime, timezone
 from pathlib import Path
@@ -85,6 +86,45 @@ def search_url(query):
 
 class SearchSessionError(RuntimeError):
     """The session needs user attention; do not keep sending searches."""
+
+
+class DialogMonitor:
+    """Handle dialogs explicitly instead of the driver's unhandled auto-close."""
+
+    def __init__(self):
+        self.events = []
+
+    def handle(self, dialog):
+        # Never read prompt defaults, login fields or cookies.
+        event = {'type': dialog.type, 'message': dialog.message[:500]}
+        self.events.append(event)
+        print(f"브라우저 알림 [{event['type']}]: {event['message']}", flush=True)
+        try:
+            dialog.dismiss()
+        except Exception as exc:
+            if 'No dialog is showing' in str(exc):
+                event['already_closed'] = True
+            else:
+                event['error'] = str(exc)
+                print(f'알림창 처리 오류: {exc}', flush=True)
+        # Report errors from the main control flow, never the event callback.
+
+    def check(self):
+        if self.events:
+            raise SearchSessionError(
+                '사이트 알림이 표시되어 검색을 중단합니다. 위 알림 내용을 확인하세요. '
+                '접근 제한이나 인증 안내는 자동으로 재시도하지 않습니다.'
+            )
+
+
+def close_search_context(context):
+    original_error = sys.exc_info()[0] is not None
+    try:
+        context.close()
+    except Exception as exc:
+        if not original_error:
+            raise
+        print(f'브라우저 정리 중 추가 오류(원래 오류 유지): {exc}', file=sys.stderr)
 
 
 def search_direct(page, query, config, timeout, max_scrolls):
@@ -277,10 +317,13 @@ def main(argv=None):
         print('검색할 새 과목이 없습니다. 재검색은 --retry를 사용하세요.'); return 0
     with sync_playwright() as pw:
         context = pw.chromium.launch_persistent_context(str(args.profile_dir.resolve()),headless=False,locale='ko-KR')
+        dialogs = DialogMonitor()
+        context.on('dialog', dialogs.handle)
         try:
             page = context.new_page()
             page.goto(config['search_url'], wait_until='domcontentloaded')
             input('브라우저에서 직접 로그인하고 경북대 강의평 검색 화면을 확인한 뒤 Enter: ')
+            dialogs.check()
             failure_count = 0
             for course_number, course in enumerate(pending, 1):
                 print(f"[{course_number}/{len(pending)}] {course['course_name']} 검색 시작", flush=True)
@@ -293,12 +336,15 @@ def main(argv=None):
                     query_errors = []
                     for query in course['queries']:
                         page.wait_for_timeout(args.delay*1000)
+                        dialogs.check()
                         print(f'  검색어: {query}', flush=True)
                         try:
                             scan = search(page,query,config,args.timeout,args.max_result_scrolls)
+                            dialogs.check()
                         except SearchSessionError:
                             raise
                         except Exception as exc:
+                            dialogs.check()
                             if page.is_closed():
                                 raise SearchSessionError('브라우저가 닫혀 검색을 중단합니다.') from exc
                             query_errors.append({'query':query, 'url':page.url, 'error':str(exc)})
@@ -340,7 +386,7 @@ def main(argv=None):
                 save_json(args.output,state)
                 print(course['course_code'],course['course_name'],record['search_status'],len(record['candidates']))
         finally:
-            context.close()
+            close_search_context(context)
     print(f'저장: {args.output.resolve()}')
     print(f'이번 실행 확인 필요 과목: {failure_count}개 (query_errors에 원인 기록)')
     return 2 if failure_count else 0
