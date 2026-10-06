@@ -1,7 +1,7 @@
 # 🍀 four-leaf-AI
 
 > **Four-Leaf** 프로젝트의 AI 튜터 서비스 파이프라인입니다.  
-> 학생 채팅은 로컬 Ollama의 Llama 3.1 8B 모델로 답변하며, Gemini는 합성 학습 데이터 생성과 교수자 리포트에 사용합니다. 프로젝트에는 A100 GPU 기반 오픈소스 LLM 파인튜닝 및 모델 서빙 파이프라인도 포함되어 있습니다.
+> 학생 채팅은 로컬 Ollama의 Llama 3.1 8B 모델로 답변하며, Cluade 합성 학습 데이터 생성과 교수자 리포트에 사용합니다. 프로젝트에는 A100 GPU 기반 오픈소스 LLM 파인튜닝 및 모델 서빙 파이프라인도 포함되어 있습니다.
 
 ---
 
@@ -10,8 +10,8 @@
 | 분류 | 기술 |
 |------|------|
 | **Chat Model** | Ollama `llama3.1:8b` (로컬 양자화 모델) |
-| **Fine-Tuning Base Model** | 오픈소스 Llama-3 (Bllossom-8B) |
-| **Data Generation** | Google Gemini 1.5 Flash (Synthetic Data Generation) |
+| **Fine-Tuning Base Model** | 오픈소스 Llama-3.1 8b |
+| **Data Generation** | Claude Opus 5 (Synthetic Data Generation) |
 | **Fine-Tuning** | Unsloth, Hugging Face `trl`, `peft` (QLoRA) |
 | **프레임워크** | FastAPI 0.115 (모델 데모 서빙용) |
 | **언어** | Python 3.12 |
@@ -24,10 +24,13 @@
 ## 🏛 전체 파이프라인 아키텍처
 
 ```
+1. Data Crawling (knowledge/crawler/)
+         |
+         ▼ 
 1. Data Generation (scripts/)
    원천 텍스트 (규정집 등)
          │
-         ▼ (Google Gemini API)
+         ▼ (Claude Opus API)
    고품질 Q&A 학습 데이터셋 생성 (JSONL)
 
 2. Model Fine-Tuning (train/)
