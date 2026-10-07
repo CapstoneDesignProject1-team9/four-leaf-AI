@@ -1,8 +1,4 @@
-"""
-AI 튜터 헬스체크 테스트
-- Clova API 실제 호출 없이 FastAPI 앱 동작 검증
-- CI 환경에서 외부 의존성(Clova, ChromaDB) 없이 실행 가능
-"""
+"""실제 DB·벡터 초기화·AI 호출 없이 서버 API를 검증한다."""
 
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -12,52 +8,89 @@ from fastapi.testclient import TestClient
 
 @pytest.fixture
 def client():
-    """
-    테스트용 FastAPI 클라이언트
-    벡터스토어 초기화를 mock으로 대체
-    """
-    with patch("app.chains.rag_chain.init_vectorstore", new_callable=AsyncMock):
+    with (
+        patch("app.main.initialize_question_store") as mock_init_db,
+        patch(
+            "app.chains.rag_chain.init_vectorstore",
+            new_callable=AsyncMock,
+        ) as mock_init_vector,
+        patch("app.api.v1.chat.save_student_question") as mock_save,
+        patch("app.api.v1.chat.build_rag_chain") as mock_builder,
+    ):
         from app.main import app
 
-        with TestClient(app) as c:
-            yield c
+        mock_builder.return_value.invoke.return_value = {
+            "result": "테스트 답변",
+            "source_documents": [],
+        }
+
+        with TestClient(app) as test_client:
+            yield test_client, mock_save, mock_builder
+
+        mock_init_db.assert_called_once_with()
+        mock_init_vector.assert_awaited_once_with()
 
 
 def test_health_endpoint(client):
-    """GET /health 응답 확인"""
-    response = client.get("/health")
+    test_client, mock_save, mock_builder = client
+
+    response = test_client.get("/health")
+
     assert response.status_code == 200
-    data = response.json()
-    assert data["status"] == "ok"
-    assert data["service"] == "four-leaf-ai"
+    assert response.json()["status"] == "ok"
+    assert response.json()["service"] == "four-leaf-ai"
+    mock_save.assert_not_called()
+    mock_builder.assert_not_called()
 
 
 def test_chat_endpoint_with_mock(client):
-    """
-    POST /api/v1/chat 동작 확인 (Clova API mock)
-    실제 Clova API 키 없이 CI에서 실행 가능
-    """
-    mock_result = {
-        "result": "대학 취업지원센터를 방문하시면 이력서 첨삭 서비스를 받을 수 있습니다.",
+    test_client, mock_save, mock_builder = client
+    question = "취업 준비는 어떻게 해야 하나요?"
+    answer = "학교 취업지원센터를 활용하세요."
+
+    mock_builder.return_value.invoke.return_value = {
+        "result": answer,
         "source_documents": [
             MagicMock(
-                page_content="취업 준비를 위해 학교 취업지원센터를 활용하세요.",
-                metadata={"source": "sample", "category": "취업"},
+                page_content="취업지원센터에서 이력서 첨삭을 제공합니다.",
+                metadata={
+                    "url": "https://example.com/notice/1",
+                    "source_type": "notice",
+                },
             )
         ],
     }
 
-    with patch("app.api.v1.chat.build_rag_chain") as mock_chain_builder:
-        mock_chain = MagicMock()
-        mock_chain.invoke.return_value = mock_result
-        mock_chain_builder.return_value = mock_chain
-
-        response = client.post(
-            "/api/v1/tutor/chat",
-            json={"message": "취업 준비는 어떻게 해야 하나요?"},
-        )
+    response = test_client.post(
+        "/api/v1/tutor/chat",
+        json={"message": question},
+    )
 
     assert response.status_code == 200
     data = response.json()
-    assert "answer" in data
-    assert len(data["answer"]) > 0
+    assert data["answer"] == answer
+    assert len(data["sources"]) == 1
+    assert data["sources"][0]["source"] == "https://example.com/notice/1"
+
+    mock_save.assert_called_once()
+    assert mock_save.call_args.kwargs["message"] == question
+    mock_builder.return_value.invoke.assert_called_once_with(
+        {"query": question}
+    )
+
+
+def test_chat_generation_failure(client):
+    test_client, mock_save, mock_builder = client
+    mock_builder.return_value.invoke.side_effect = RuntimeError(
+        "internal-test-error"
+    )
+
+    response = test_client.post(
+        "/api/v1/tutor/chat",
+        json={"message": "테스트 질문"},
+    )
+
+    assert response.status_code == 500
+    assert response.json()["detail"] == "AI 튜터 응답 생성 중 오류가 발생했습니다."
+    assert "internal-test-error" not in response.text
+    mock_save.assert_called_once()
