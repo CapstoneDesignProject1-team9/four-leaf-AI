@@ -39,7 +39,7 @@ class Settings(BaseSettings):
     # ─────────────────────────────────────────
     # Vector Store (ChromaDB)
     # ─────────────────────────────────────────
-    CHROMA_PERSIST_DIR: str = "./knowledge/vectorstores/knu_bge_m3"
+    CHROMA_PERSIST_DIR: str = "./knowledge/vectorstores/knu_notice_bge_m3"
     CHROMA_COLLECTION_NAME: str = "knu_notices_bge_m3_v1"
     CHROMA_SYLLABI_PERSIST_DIR: str = "./knowledge/vectorstores/knu_syllabi_bge_m3"
     CHROMA_SYLLABI_COLLECTION_NAME: str = "knu_syllabi_bge_m3_v1"

@@ -72,7 +72,7 @@ four-leaf-AI/
 │   ├── raw/everytime_lectures/        # 에타 원본·진행 기록·조회 JSON
 │   ├── processed/everytime_lectures/  # 향후 에타 전처리 결과
 │   ├── processed/notices/            # 전처리·청킹 결과와 보고서
-│   └── vectorstores/knu_bge_m3/       # 생성되는 로컬 ChromaDB
+│   └── vectorstores/knu_notice_bge_m3/ # 생성되는 공지사항 로컬 ChromaDB
 ├── .cache/embedding_models/          # 다운로드되는 모델 캐시
 ├── data/                             # 합성 데이터 원천 및 생성 결과
 ├── scripts/generate_dataset.py       # 합성 학습 데이터 생성
@@ -133,7 +133,7 @@ DB_PASSWORD=환경에_맞는_DB_비밀번호
 # 아래 Gemini 설정은 합성 데이터·교수자 리포트용
 GOOGLE_API_KEY=발급받은_API_키
 GEMINI_MODEL=계정에서_호출_가능한_모델_ID
-CHROMA_PERSIST_DIR=./knowledge/vectorstores/knu_bge_m3
+CHROMA_PERSIST_DIR=./knowledge/vectorstores/knu_notice_bge_m3
 CHROMA_COLLECTION_NAME=knu_notices_bge_m3_v1
 EMBEDDING_MODEL_CACHE_DIR=./.cache/embedding_models
 EMBEDDING_DEVICE=cpu
@@ -220,7 +220,7 @@ API 키와 모델 ID의 안내 문구는 실제 값으로 교체해야 합니다
 | 전처리 | `knowledge/processed/notices/knu_documents.jsonl` |
 | 청킹 | `knowledge/processed/notices/knu_notice_chunks.jsonl` |
 | 보고서 | 각 전처리·청킹 출력 옆의 `*.report.json` |
-| 벡터 DB | `knowledge/vectorstores/knu_bge_m3/` |
+| 벡터 DB | `knowledge/vectorstores/knu_notice_bge_m3/` |
 | 모델 캐시 | `.cache/embedding_models/` |
 
 ### 에브리타임 강의평 (공지와 별도)
@@ -301,7 +301,7 @@ Content-Type: application/json
 ## 7. 팀원에게 DB 공유하기
 
 1. 임베딩 완료를 확인하고 해당 DB를 사용하는 프로그램을 종료합니다.
-2. `knowledge/vectorstores/knu_bge_m3` 폴더 전체를 공유합니다. ZIP 압축을 권장하지만 필수는 아닙니다.
+2. `knowledge/vectorstores/knu_notice_bge_m3` 폴더 전체를 공유합니다. ZIP 압축을 권장하지만 필수는 아닙니다.
 3. 팀원은 같은 프로젝트 위치에 복원합니다. `chroma.sqlite3`뿐 아니라 하위 폴더도 모두 필요합니다.
 4. ChromaDB 버전·컬렉션·모델 revision을 맞추고 검색 테스트를 수행합니다.
 

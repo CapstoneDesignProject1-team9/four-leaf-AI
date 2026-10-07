@@ -29,7 +29,7 @@ from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_INPUT = PROJECT_ROOT / "knowledge/processed/notices/knu_notice_chunks.jsonl"
-DEFAULT_DB = PROJECT_ROOT / "knowledge/vectorstores/knu_bge_m3"
+DEFAULT_DB = PROJECT_ROOT / "knowledge/vectorstores/knu_notice_bge_m3"
 MODEL_NAME = "BAAI/bge-m3"
 MODEL_REVISION = "5617a9f61b028005a4858fdac845db406aefb181"
 COLLECTION_NAME = "knu_notices_bge_m3_v1"

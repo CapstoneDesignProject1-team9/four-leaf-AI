@@ -28,7 +28,7 @@ python -m venv .venv-embedding
 ```
 
 처음에는 약 2.3GB의 모델 가중치와 관련 파일을 다운로드합니다. 다운로드 시간과 최초 로딩 시간은 검색 시간과 구분하세요.
-DB는 `knowledge/vectorstores/knu_bge_m3`, 모델 캐시는 `.cache/embedding_models`에 생성됩니다.
+DB는 `knowledge/vectorstores/knu_notice_bge_m3`, 모델 캐시는 `.cache/embedding_models`에 생성됩니다.
 해당 폴더 및 가상환경은 Git에 올리지 않도록 프로젝트의 `.gitignore`에 제외하세요.
 
 ## 강의계획서 색인
@@ -48,7 +48,7 @@ python knowledge/embeddings/embed_notices.py search "자연어처리개론 강�
 
 기존 출력 파일을 다시 만들 때는 전처리기와 청커에 `--overwrite`를 추가하세요.
 강의계획서 DB는 `knowledge/vectorstores/knu_syllabi_bge_m3`, 컬렉션은
-`knu_syllabi_bge_m3_v1`입니다. 공지 DB인 `knu_bge_m3`와 분리되어 있습니다.
+`knu_syllabi_bge_m3_v1`입니다. 공지 DB인 `knu_notice_bge_m3`와 분리되어 있습니다.
 
 ## 동작
 
