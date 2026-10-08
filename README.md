@@ -1,161 +1,378 @@
 # 🍀 four-leaf-AI
 
-> **Four-Leaf** 프로젝트의 AI 튜터 서비스 파이프라인입니다.  
-> 대학생들의 **대학생활 상담**과 **진로 상담**을 제공하는 대화형 AI 튜터를 만들기 위해, **Gemini를 활용한 합성 데이터(Synthetic Data) 생성**부터 **A100 GPU 기반의 오픈소스 LLM(Llama-3) 파인튜닝**, 그리고 결과 모델 서빙까지의 전체 파이프라인을 포함하고 있습니다.
+Four-Leaf 프로젝트의 AI 서비스 저장소입니다. 경북대학교 컴퓨터학부 공지사항·강의계획서를 수집·가공하고, **BGE-M3와 ChromaDB로 관련 문서를 검색한 뒤 로컬 Ollama 모델로 근거 기반 답변을 생성**합니다.
 
----
+대학생활·진로 상담으로의 확장을 목표로 하며, 합성 학습 데이터 생성과 오픈소스 모델 파인튜닝 스크립트도 포함합니다. **현재 학생 채팅은 Ollama의 `llama3.1:8b`가 기본**이며, 합성 데이터 생성과 교수자 리포트는 Gemini를 사용합니다. 파인튜닝 결과가 학생 채팅에 자동 연결되는 구조는 아닙니다.
 
-## 🏗 기술 스택
+## 1. 구현 범위 및 기술 스택
 
-| 분류 | 기술 |
-|------|------|
-| **Base Model** | 오픈소스 Llama-3 (Bllossom-8B) |
-| **Data Generation** | Google Gemini 1.5 Flash (Synthetic Data Generation) |
-| **Fine-Tuning** | Unsloth, Hugging Face `trl`, `peft` (QLoRA) |
-| **프레임워크** | FastAPI 0.115 (모델 데모 서빙용) |
-| **언어** | Python 3.12 |
-| **오케스트레이션** | LangChain 0.3 |
-| **린터** | ruff |
-| **CI** | GitHub Actions |
+| 영역 | 구현 및 사용 기술 |
+| --- | --- |
+| 공지 수집 | requests, BeautifulSoup / 본문·첨부 수집, 증분 업데이트, 중단 후 재개 |
+| 텍스트 추출 | pypdf, PyMuPDF, pytesseract, Pillow, olefile, ZIP/XML |
+| 전처리·청킹 | 출처별 문서 생성, 품질 보고서, 청크와 메타데이터 생성 |
+| 임베딩·검색 | BAAI/bge-m3, sentence-transformers, ChromaDB 1.0.20 |
+| 학생 답변·API | Ollama (`llama3.1:8b` 기본), LangChain, FastAPI, Uvicorn |
+| 합성 데이터·교수자 리포트 | Gemini API (학생 채팅과 별도) |
+| 질문 저장 | PostgreSQL `student_questions` |
+| 에타 수집 | Playwright, 수동 로그인, 리뷰 JSONL 및 과목·교수별 JSON |
+| 학습 개발 | Bllossom 계열 모델, Unsloth, TRL, PEFT / QLoRA |
+| 실행·개발 환경 | Python 3.12 권장, pytest, Ruff 설정, Docker, GitHub Actions 워크플로 |
 
----
+이 문서는 현재 `develop` 구현을 기준으로 정리했습니다. 이번 문서 병합에서 서버 실행·모델 호출을 재검증한 것은 아닙니다. 전체 데이터 검색 품질·동시 요청·배포 성능은 별도로 검증해야 합니다. 교수자 분석, 합성 데이터 품질 평가, 파인튜닝 모델 서빙 연동도 별도 검증 대상입니다.
 
-## 🏛 전체 파이프라인 아키텍처
+`session_id` 필드의 존재만으로 이전 대화를 기억하는 멀티턴 기능이 구현된 것은 아닙니다.
 
-```
-1. Data Generation (scripts/)
-   원천 텍스트 (규정집 등)
-         │
-         ▼ (Google Gemini API)
-   고품질 Q&A 학습 데이터셋 생성 (JSONL)
+## 2. 전체 흐름
 
-2. Model Fine-Tuning (train/)
-   베이스 모델 (Llama-3 8B) + 학습 데이터셋
-         │
-         ▼ (A100 GPU / Unsloth 4bit QLoRA)
-   대학 특화 AI 튜터 파인튜닝 모델 (LoRA Weights)
+```text
+공지 수집 → 원본 JSONL → 전처리 → 문서 JSONL → 청킹 JSONL
+                                               ↓
+                                         BGE-M3 임베딩
+                                               ↓
+                                            ChromaDB
 
-3. Model Serving (app/)
-   파인튜닝된 모델
-         │
-         ▼ (FastAPI / RAG)
-   프론트엔드/백엔드와 연동되어 실제 사용자에게 데모 제공
+학생 질문 → 질문 임베딩 → 관련 청크 검색 → Ollama → 답변 + 출처
 ```
 
----
+합성 데이터와 학습은 별도 흐름입니다.
 
-## 📁 프로젝트 구조
+```text
+원천 텍스트 → Gemini Q&A 생성 → 데이터 검토 → QLoRA 학습
+                                              ↓
+                                         LoRA 가중치
+                                              ↓
+                                    평가 및 서빙 연동 검증
+```
+
+## 3. 프로젝트 구조
 
 ```text
 four-leaf-AI/
 ├── app/
-│   ├── main.py               # FastAPI 앱 진입점 (데모 서빙)
-│   ├── core/
-│   │   └── config.py         # 환경변수 설정
-│   ├── models/
-│   │   ├── local_llm.py      # 파인튜닝된 로컬 모델 서빙 래퍼
-│   │   └── schemas.py        # 요청/응답 스키마
-│   ├── chains/
-│   │   └── rag_chain.py      # 향후 확장용 RAG 파이프라인
+│   ├── main.py                       # FastAPI 진입점
+│   ├── core/config.py                # 환경변수 및 RAG 설정
+│   ├── chains/rag_chain.py           # BGE-M3 검색 + Ollama 답변
+│   ├── models/                       # 요청·응답 스키마, 모델 관련 코드
 │   └── api/v1/
-│       ├── chat.py           # POST /api/v1/chat
-│       └── advisor.py        # AI 튜터 라우터
-├── data/
-│   ├── knu_schedule.txt      # 원본 텍스트 데이터 (Seed Data)
-│   └── synthetic_dataset.jsonl # Gemini가 생성한 최종 파인튜닝용 데이터셋
-├── scripts/
-│   ├── generate_dataset.py   # Gemini API를 이용한 합성 데이터 생성 스크립트
-│   └── test_api.py           # Gemini API 연결 및 모델 권한 테스트용 스크립트
-├── train/
-│   └── finetune.py           # Unsloth 기반 A100 파인튜닝 스크립트 (QLoRA)
-├── eval/                     # 모델 평가 스크립트 폴더
-├── tests/                    # pytest 폴더
+│       ├── chat.py                   # 학생용 채팅
+│       ├── advisor.py                # 교수자 보고서
+│       └── health.py                 # 상태 확인
+├── knowledge/
+│   ├── crawlers/crawl_knu_notices.py
+│   ├── crawlers/crawl_knu_syllabi.py   # 강의계획서 수집
+│   ├── crawlers/everytime/            # 에타 강의평 코드·설정·사용법
+│   ├── preprocessing/
+│   │   ├── preprocess_notices.py
+│   │   └── chunk_notices.py
+│   ├── embeddings/
+│   │   ├── embed_notices.py
+│   │   └── requirements-embedding.txt
+│   ├── raw/notices/                  # 공지 원본 JSONL·첨부파일
+│   ├── raw/everytime_lectures/        # 에타 원본·진행 기록·조회 JSON
+│   ├── processed/everytime_lectures/  # 향후 에타 전처리 결과
+│   ├── processed/notices/            # 전처리·청킹 결과와 보고서
+│   └── vectorstores/knu_notice_bge_m3/ # 생성되는 공지사항 로컬 ChromaDB
+├── .cache/embedding_models/          # 다운로드되는 모델 캐시
+├── data/                             # 합성 데이터 원천 및 생성 결과
+├── scripts/generate_dataset.py       # 합성 학습 데이터 생성
+├── train/finetune.py                  # 파인튜닝 스크립트
+├── eval/                             # 평가 관련 영역
+├── tests/
+├── .github/workflows/
+├── Dockerfile
 ├── requirements.txt
-└── ruff.toml                 # lint/format 설정 (ruff check .)
+└── ruff.toml
 ```
 
----
+생성 데이터·모델·가상환경은 저장소를 내려받는 것만으로 제공되지 않습니다.
 
-## 👥 팀원 역할 및 협업 가이드
+## 4. 로컬 실행 준비
 
-본 프로젝트는 깃(Git) 충돌을 최소화하고 효율적으로 작업하기 위해 4개의 역할로 나누어 진행합니다.
-각 역할별로 주로 수정하는 **'담당 폴더'**가 분리되어 있습니다.
+아래 명령어는 **Windows PowerShell, four-leaf-AI 프로젝트 루트 기준**입니다.
 
-| 역할 | 주 담당 업무 | 주 작업 폴더 및 파일 |
-|------|------------|----------------|
-| **1. Data Engineer** | 학사 규정, 공지사항 등 원본 데이터 크롤링 및 RAG 지식베이스 구축 | `knowledge/`, `app/chains/` |
-| **2. Data Synthesizer** | Gemini를 활용한 고품질 Instruction 데이터셋(Q&A) 합성 및 프롬프트 엔지니어링 | `scripts/`, `data/` |
-| **3. LLM Trainer** | A100 서버에서 Unsloth & QLoRA를 활용한 오픈소스 LLM(Llama-3) 파인튜닝 | `train/`, `logs/` |
-| **4. MLOps Engineer** | 파인튜닝된 모델의 FastAPI 서빙, 자동화(CI/CD) 파이프라인 구축 및 평가 | `app/`, `eval/`, `.github/`, `Dockerfile` |
+### 가상환경 및 패키지
 
-> 💡 **협업 규칙 (GitHub Flow)**
-> 1. `main` 브랜치에 직접 푸시하지 않고, 각자의 기능 브랜치(`feat/데이터생성` 등)를 생성하여 작업합니다.
-> 2. 기능 구현이 완료되면 Pull Request(PR)를 올리고, 다른 팀원의 리뷰를 거친 후 `main`에 병합(Merge)합니다.
-> 3. `data/*.jsonl` 이나 파인튜닝된 모델 가중치(`logs/`) 같은 **대용량 파일은 절대 GitHub에 올리지 않고(.gitignore)** 구글 드라이브 등을 통해 공유합니다.
+```powershell
+py -3.12 -m venv .venv312
+.\.venv312\Scripts\python.exe -m pip install -r requirements.txt -r knowledge/embeddings/requirements-embedding.txt
+.\.venv312\Scripts\python.exe -m pip install requests beautifulsoup4 pillow pytesseract pypdf pymupdf olefile
+.\.venv312\Scripts\python.exe -m pip check
+```
 
----
+이미 구성한 `.venv312`는 다시 만들 필요가 없습니다. 가상환경 활성화 없이 해당 Python을 직접 실행하는 방식입니다. 전처리·청킹은 추가 패키지가 필요 없지만, 크롤링·임베딩·서버에는 패키지가 필요합니다.
 
-## 🚀 시작하기
+OCR에는 Python 패키지 외에 **Tesseract 실행 프로그램과 한국어·영어 언어 데이터**가 필요합니다. HWPX는 표준 라이브러리로 처리하고 binary HWP는 `olefile`을 사용합니다. 암호화·배포용 HWP와 HWP 3.x는 지원하지 않습니다.
 
-### 1. 가상환경 및 의존성 설치
+학습용 GPU 환경은 로컬 RAG 환경과 분리해 관리합니다. 패키지 버전은 실제 의존성 파일을 확인합니다.
+
+### 로컬 학생 채팅 모델 준비
+
+Ollama를 설치하고 실행한 뒤 기본 모델을 준비합니다.
 
 ```bash
-python -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
+ollama pull llama3.1:8b
 ```
 
-### 2. 학습 데이터 생성 (Gemini API 활용)
+모델은 `OLLAMA_MODEL`로 변경할 수 있습니다. API를 Docker에서 실행하고 Ollama가 호스트에서 실행된다면 해당 환경에 맞는 `OLLAMA_BASE_URL`을 지정하세요(예: `http://host.docker.internal:11434`). 컨텍스트 기본값은 4096이며 메모리·응답 품질은 실행 환경에서 검증해야 합니다.
 
-프로젝트 루트에 `.env` 파일을 생성하고 Google AI Studio에서 발급받은 API 키를 입력합니다.
+### 환경변수
 
-```env
-# .env 파일
-GOOGLE_API_KEY="AIzaSy..."
+프로젝트 루트의 `.env.example`을 참고해 `.env`를 생성합니다. 기존 `.env`가 있으면 덮어쓰지 말고 필요한 항목을 확인하세요.
+
+```dotenv
+OLLAMA_BASE_URL=http://localhost:11434
+OLLAMA_MODEL=llama3.1:8b
+OLLAMA_NUM_CTX=4096
+OLLAMA_NUM_PREDICT=768
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=fourleaf_dev
+DB_USER=fourleaf
+DB_PASSWORD=환경에_맞는_DB_비밀번호
+# 아래 Gemini 설정은 합성 데이터·교수자 리포트용
+GOOGLE_API_KEY=발급받은_API_키
+GEMINI_MODEL=계정에서_호출_가능한_모델_ID
+CHROMA_PERSIST_DIR=./knowledge/vectorstores/knu_notice_bge_m3
+CHROMA_COLLECTION_NAME=knu_notices_bge_m3_v1
+EMBEDDING_MODEL_CACHE_DIR=./.cache/embedding_models
+EMBEDDING_DEVICE=cpu
+RAG_TOP_K=5
+LANGCHAIN_TRACING_V2=false
 ```
 
-그 후 데이터 생성 스크립트를 실행합니다.
+API 키와 모델 ID의 안내 문구는 실제 값으로 교체해야 합니다. `GEMINI_MODEL`은 프로젝트 이름이 아닙니다. 코드의 기본 모델 ID가 현재 계정에서 사용 가능한지는 별도 확인이 필요합니다. 추적 기능을 사용하지 않으면 `LANGCHAIN_API_KEY`는 필요하지 않습니다.
 
-```bash
-python scripts/generate_dataset.py
-```
-> 실행이 완료되면 `data/synthetic_dataset.jsonl` 파일에 파인튜닝용 Q&A 데이터가 생성됩니다.
+`.env`와 API 키는 GitHub에 올리지 않습니다. API 비용·할당량은 사용하는 계정과 모델을 확인합니다.
 
-### 3. 모델 파인튜닝 (A100 서버 환경)
+## 5. 공지 데이터 구축
 
-파인튜닝은 로컬 Mac이 아닌 **NVIDIA Ampere 아키텍처 이상(A100 등)의 Linux 서버**에서 진행하는 것을 권장합니다.
-서버에서 아래 명령어로 초고속 파인튜닝 라이브러리인 `unsloth`를 추가 설치합니다.
+### ① 크롤링
 
-```bash
-pip install "unsloth[cu121-ampere] @ git+https://github.com/unslothai/unsloth.git"
+최신 공지부터 2022년 1월 1일까지, 기존 결과를 유지하면서 없는 공지를 수집합니다.
+
+```powershell
+.\.venv312\Scripts\python.exe knowledge/crawlers/crawl_knu_notices.py --resume-full --min-date 2022-01-01
 ```
 
-그 후 학습 스크립트를 실행합니다.
+일상적인 신규·최근 수정 공지 확인:
+
+```powershell
+.\.venv312\Scripts\python.exe knowledge/crawlers/crawl_knu_notices.py --min-date 2022-01-01
+```
+
+- `--resume-full`은 저장된 공지를 건너뛰므로 기존 공지 전체의 재검사 옵션이 아닙니다.
+- 일반 업데이트는 최근 페이지의 기존 공지만 재검사하므로 모든 과거 수정 사항을 탐지하지는 않습니다.
+- **`--full`은 기존 원본 JSONL과 첨부파일을 삭제하고 재수집합니다.** 초기화가 필요할 때만 백업 후 사용합니다.
+
+### ② 전처리
+
+```powershell
+.\.venv312\Scripts\python.exe knowledge/preprocessing/preprocess_notices.py
+```
+
+본문·이미지 OCR·첨부 텍스트를 출처별 문서로 정리합니다. `notice_without_text`는 세 종류의 텍스트가 모두 비어 문서를 만들지 못한 공지입니다. 해당 원본과 추출 상태를 확인합니다.
+
+### ③ 청킹
+
+```powershell
+.\.venv312\Scripts\python.exe knowledge/preprocessing/chunk_notices.py
+```
+
+기본 청크 크기는 **700자**, 겹침 목표는 **100자**입니다. 토큰 수 기준이 아니며 제목·메타데이터와 문장 경계에 따라 실제 크기·겹침이 달라집니다.
+
+전처리·청킹은 기존 결과와 보고서를 **자동으로 교체**하고 입력은 변경하지 않습니다. `--overwrite` 옵션은 제거되었습니다. 기본 경로는 프로젝트 위치 기준이므로 `종프` 폴더를 열고 각 파일에서 F5로 실행해도 됩니다. 직접 지정한 `--input`·`--output`의 상대 경로는 실행 폴더 기준입니다.
+
+### ④ 입력 검사 및 임베딩
+
+```powershell
+.\.venv312\Scripts\python.exe knowledge/embeddings/embed_notices.py check
+.\.venv312\Scripts\python.exe knowledge/embeddings/embed_notices.py index
+```
+
+- `check`는 입력 청크 검사이며 실제 임베딩·검색 성공 검증은 아닙니다.
+- 기본값은 CPU, 배치 8, 정규화된 1024차원 dense 벡터와 cosine 거리입니다.
+- 최초 실행에는 모델 다운로드·로딩 시간이 추가됩니다.
+- 재실행 시 기존 임베딩을 재사용합니다. 중단 후 같은 명령으로 실행하면 완료된 배치를 활용합니다.
+- 입력은 전체 스냅샷으로 취급합니다. 성공 후 입력에 없는 기존 청크는 비활성화하며 물리적으로 삭제하지 않습니다.
+- 색인 중 입력 파일을 교체하거나 같은 DB에 다른 색인을 실행하지 않습니다. AI 서버도 중지한 상태에서 갱신하고 완료 후 재시작합니다.
+
+메모리 부담을 줄이려면 배치를 낮출 수 있습니다.
+
+```powershell
+.\.venv312\Scripts\python.exe knowledge/embeddings/embed_notices.py index --batch-size 4
+```
+
+### ⑤ 검색 확인
+
+```powershell
+.\.venv312\Scripts\python.exe knowledge/embeddings/embed_notices.py search "수강정정 신청 방법은?"
+```
+
+관련 청크·출처를 확인하는 검색 테스트이며 LLM 답변을 생성하지 않습니다. 수집 문서에 답이 있는 질문으로 원문과 비교합니다. 검색 거리는 정답 확률이 아닙니다.
+
+### 저장 결과
+
+| 단계 | 프로젝트 기준 경로 |
+| --- | --- |
+| 원본 | `knowledge/raw/notices/knu_notices_all.jsonl` |
+| 첨부파일 | `knowledge/raw/notices/attachments/` |
+| 전처리 | `knowledge/processed/notices/knu_documents.jsonl` |
+| 청킹 | `knowledge/processed/notices/knu_notice_chunks.jsonl` |
+| 보고서 | 각 전처리·청킹 출력 옆의 `*.report.json` |
+| 벡터 DB | `knowledge/vectorstores/knu_notice_bge_m3/` |
+| 모델 캐시 | `.cache/embedding_models/` |
+
+### 에브리타임 강의평 (공지와 별도)
+
+설치·강의 목록 검색·리뷰 수집·재개 옵션은 [에타 크롤러 사용법](knowledge/crawlers/everytime/README.md)을 따릅니다.
+
+- 코드: `knowledge/crawlers/everytime/`
+- 원본 및 진행 기록: `knowledge/raw/everytime_lectures/`
+- 향후 전처리 결과: `knowledge/processed/everytime_lectures/`
+- 원본·진행 기록·로그인 프로필은 Git에 포함하지 않습니다.
+- 현재 강의평은 수집·조회 JSON 생성까지 구현되어 있습니다. 전처리·임베딩·학생 채팅 검색에는 아직 연결하지 않았습니다.
+
+### 강의계획서 검색
+
+현재 RAG는 공지와 강의계획서 컬렉션을 구분합니다. 강의계획서 DB 경로·컬렉션은 `CHROMA_SYLLABI_PERSIST_DIR`, `CHROMA_SYLLABI_COLLECTION_NAME`으로 설정합니다. 강의계획서 DB 폴더가 없으면 서버는 경고 후 공지만 준비하지만, 강의 관련 질문은 강의계획서 검색으로 분기하므로 근거가 없을 수 있습니다. 강의계획서 수집·전처리 코드는 `crawl_knu_syllabi.py`, `preprocess_syllabi.py`를 참고하세요.
+
+## 6. 서버 및 답변 테스트
+
+완료된 공지 ChromaDB, 같은 revision의 BGE-M3 모델 캐시, 실행 중인 Ollama와 PostgreSQL 연결을 준비한 뒤 **프로젝트 루트에서** 실행합니다.
+
+```powershell
+.\.venv312\Scripts\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8000
+```
+
+- API 문서: <http://127.0.0.1:8000/docs>
+- 상태 확인: <http://127.0.0.1:8000/health>
+- AI 직접 호출: `POST /api/v1/tutor/chat`
+- 교수자 보고서: `POST /api/v1/advisor/report` (별도 기능 검증 대상)
+
+API 문서에서 채팅 요청을 실행합니다.
+
+```json
+{
+  "message": "수강정정 신청 방법을 알려줘"
+}
+```
+
+응답의 `answer`와 `sources`를 확인합니다. `sources`는 문자열 배열이 아니라 `content`, `source`, `category`를 가진 객체 배열입니다. 상태 확인 성공만으로 학생 채팅 응답이나 교수자 리포트 성공을 보장하지는 않습니다.
+
+전체 웹 테스트는 별도 저장소 `four-leaf-frontend`, `four-leaf-backend`, `four-leaf-infra`가 필요합니다. Docker Compose 실행·환경변수·포트·볼륨은 infra 저장소 설정을 따릅니다. 웹 프록시 경로와 AI 직접 호출 경로는 다를 수 있습니다.
+
+### 학생 질문 저장 및 교수자 리포트
+
+AI 서버는 채팅 요청의 학생 질문을 기존 PostgreSQL 데이터베이스의
+`student_questions` 테이블에 저장합니다. 연결 설정은 `DB_HOST`, `DB_PORT`, `DB_NAME`,
+`DB_USER`, `DB_PASSWORD` 환경 변수로 지정하며, Docker Compose에서는 기존 PostgreSQL
+서비스에 연결합니다.
+
+로컬에서 AI 서버를 직접 실행할 때는 `.env.example`을 `.env`로 복사한 뒤
+Ollama 및 PostgreSQL 연결 정보를 환경에 맞게 설정합니다. `GOOGLE_API_KEY`는 학생 채팅에는 필요하지 않으며 Gemini 기반 교수자 리포트 등 별도 기능에 사용됩니다. Docker Compose 전체 스택은
+`four-leaf-infra/.env.dev`의 설정을 사용합니다.
+
+채팅 요청에 `course_name`을 포함하면 강의별로 분류됩니다. 생략하면 `미지정`으로 저장됩니다.
+교수자 리포트는 질문 목록을 직접 전달해도 되고, `student_questions`를 생략하거나 빈 배열로
+보내면 해당 강의명으로 저장된 질문을 불러와 요약합니다.
+
+```http
+POST /api/v1/tutor/chat
+Content-Type: application/json
+
+{
+  "message": "자료구조 과제 범위가 어디까지인가요?",
+  "course_name": "자료구조"
+}
+```
+
+```http
+POST /api/v1/advisor/report
+Content-Type: application/json
+
+{
+  "course_name": "자료구조"
+}
+```
+
+요청에 `course_name`이 없으면 `미지정`으로 저장됩니다. 프론트엔드의 강의 선택 지원 여부는 별도 저장소에서 확인하세요.
+
+## 7. 팀원에게 DB 공유하기
+
+1. 임베딩 완료를 확인하고 해당 DB를 사용하는 프로그램을 종료합니다.
+2. `knowledge/vectorstores/knu_notice_bge_m3` 폴더 전체를 공유합니다. ZIP 압축을 권장하지만 필수는 아닙니다.
+3. 팀원은 같은 프로젝트 위치에 복원합니다. `chroma.sqlite3`뿐 아니라 하위 폴더도 모두 필요합니다.
+4. ChromaDB 버전·컬렉션·모델 revision을 맞추고 검색 테스트를 수행합니다.
+
+**DB와 모델 캐시는 별개입니다.** 현재 서버는 로컬 BGE-M3 캐시를 요구합니다. 캐시를 함께 전달받거나, 인터넷 연결 상태에서 위 `search` 명령으로 같은 revision의 모델을 내려받은 뒤 서버를 시작합니다. 문서 임베딩을 다시 계산할 필요는 없습니다.
+
+데이터 기준일·청크 수·모델 revision·패키지 버전·검증 결과를 함께 기록합니다. Google Drive는 전달용으로 사용하며, 동기화 폴더의 DB를 여러 사람이 동시에 열지 않습니다.
+
+## 8. 합성 데이터 및 파인튜닝
+
+현재 Ollama 기반 학생 RAG 실행에 필수인 단계는 아닙니다.
+
+### 합성 데이터 생성
+
+```powershell
+.\.venv312\Scripts\python.exe scripts/generate_dataset.py
+```
+
+- 입력: `data/knu_schedule.txt`
+- 출력: `data/synthetic_dataset.jsonl` (추가 저장)
+- 현재 생성 스크립트는 모델 ID를 코드에 직접 지정합니다. `.env`의 `GEMINI_MODEL`만 바꿔서는 이 스크립트의 모델이 바뀌지 않습니다. 실행 전 모델 ID와 API 접근 가능 여부를 확인합니다.
+- 생성 결과는 정답으로 간주하지 않고 원문 근거·중복·형식 오류를 검토합니다.
+
+### 파인튜닝
+
+별도 Linux/NVIDIA GPU 환경에서 CUDA·PyTorch·Unsloth·TRL 호환성을 맞춘 뒤 실행합니다. 이 README의 로컬 설치만으로 GPU 학습 환경이 완성되는 것은 아닙니다.
 
 ```bash
 python train/finetune.py
 ```
-> 학습이 완료되면 `logs/lora_model` 에 LoRA 가중치가 저장됩니다.
 
-### 4. 모델 서빙 (데모 확인)
+입력은 `data/synthetic_dataset.jsonl`, LoRA 가중치 저장 위치는 `logs/lora_model`입니다. 모델 평가와 Modal 등 추론 서비스 연동은 별도 검증합니다.
 
-학습된 모델을 백엔드에서 통신해 볼 수 있도록 FastAPI 서버를 띄웁니다.
+## 9. 팀원 역할 및 협업
 
-```bash
-uvicorn app.main:app --reload --port 8000
-# http://localhost:8000/docs (Swagger UI)
+| 역할 | 담당 업무 | 주요 영역 |
+| --- | --- | --- |
+| Data Engineer | 수집·전처리·청킹·RAG 지식베이스 | `knowledge/`, `app/chains/` |
+| Data Synthesizer | 합성 데이터·프롬프트·품질 관리 | `scripts/`, `data/` |
+| LLM Trainer | 파인튜닝·학습 결과 관리 | `train/`, `logs/` |
+| MLOps Engineer | 서빙·배포·평가·자동화 | `app/`, `eval/`, `.github/`, `Dockerfile` |
+
+- 개발 변경은 `develop`에서 통합·테스트한 뒤 리뷰를 거쳐 `main`에 반영합니다. `main`에 직접 커밋·푸시하지 않습니다.
+- 기능 브랜치를 사용하는 경우 먼저 `develop`에 통합합니다. 보호 브랜치의 PR·리뷰 규칙을 따릅니다.
+- 공통 영역인 `app/chains/`, 설정·의존성 변경은 담당자끼리 먼저 조율합니다.
+- 가상환경, `.env`, 원본·가공 데이터, ChromaDB, 모델 캐시·가중치는 Git에 올리지 않습니다. 커밋 전 `.gitignore`와 스테이징 목록을 확인합니다.
+- 전체 수집 → 검색 → 웹 답변을 먼저 검증하고 반복 작업 자동화와 운영 문서를 보강합니다.
+
+## 10. 점검 및 문제 해결
+
+| 증상 | 확인 사항 |
+| --- | --- |
+| 입력 파일을 찾지 못함 | 이전 단계 결과 존재 여부, 직접 지정한 입력 경로 |
+| `notice_without_text` | 원본의 `content`, `ocr_text`, 첨부 `text` 및 추출 상태 |
+| 모듈을 찾지 못함 | 패키지를 설치한 환경과 실행 Python 일치 여부 |
+| 서버 시작 시 DB·캐시 오류 | 색인 완료 여부, DB 위치, 캐시·모델 revision |
+| 질문 후 지연·오류 | 서버 로그의 모델 로딩·Ollama 연결·PostgreSQL 오류 (리포트는 Gemini 권한·할당량도 확인) |
+| 팀원 검색 결과가 다름 | DB 버전·활성 청크·모델 revision·검색 설정 |
+
+테스트 실행:
+
+```powershell
+.\.venv312\Scripts\python.exe -m pytest
 ```
 
----
+Ruff는 별도 설치한 개발 환경에서 사용합니다.
 
-## 🔄 코드 컨벤션 (Lint)
-
-본 프로젝트는 `ruff`를 통해 엄격한 코드 스타일을 유지합니다.
-
-```bash
-# 린트 에러 검사
-ruff check .
-
-# 린트 에러 자동 수정
-ruff check --fix .
+```powershell
+.\.venv312\Scripts\python.exe -m pip install ruff
+.\.venv312\Scripts\python.exe -m ruff check .
 ```
+
+테스트 통과 여부와 전체 RAG 품질은 별개입니다. 수집 기준일·문서 수·청크 수·검색 근거·답변 정확성·소요 시간·최대 메모리를 기록해 검증합니다.
+
+> 하위 문서 일부에는 과거 ChromaDB 0.5.x 분리 환경이나 KR-ELECTRA 연결 안내가 남아 있습니다. 현재 실행은 실제 코드·의존성 파일과 이 루트 README를 기준으로 확인하세요.

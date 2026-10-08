@@ -53,7 +53,7 @@ async def call_with_retry(chain, payload, max_retries=5):
             msg = str(e)
             # 3. 일일 한도(PerDay) 초과 시 무의미한 대기 없이 즉시 종료
             if "PerDay" in msg or "GenerateRequestsPerDay" in msg:
-                logger.error("일일 API 한도(PerDay) 초과! 데이터를 보존하고 스크립트를 즉시 종료합니다.")
+                logger.error("일일 API 한도 초과! 데이터를 보존하고 스크립트를 즉시 종료합니다.")
                 sys.exit(0)
                 
             if any(k in msg for k in ["429", "Quota", "RESOURCE_EXHAUSTED", "503"]):
@@ -124,7 +124,7 @@ async def validate_qa_batch_async(context_text: str, qa_pairs: list[dict]) -> li
             )
             return res.get("results", [])
         except Exception as e:
-            logger.warning(f"API 오류 (건너뜀): {e}")
+            logger.warning(f"일괄 검증 중 API 오류 (건너뜀): {e}")
             return [None] * len(qa_pairs)  # API 에러 시 None 반환
 
 # --- 메인 실행 ---
@@ -135,7 +135,7 @@ async def main():
             done_keys = set(f.read().splitlines())
 
     # 4. jsonl 확장자 추가 
-    input_files = list(DATA_DIR.glob("**/*.json")) + list(DATA_DIR.glob("**/*.jsonl"))
+    input_files = list(DATA_DIR.glob("**/*.json")) + list(DATA_DIR.glob("**/*.jsonl")) + list(DATA_DIR.glob("**/*.txt"))
     
     for file_path in input_files:
         try:
@@ -152,7 +152,7 @@ async def main():
                 if doc_key in done_keys:
                     continue
 
-                logger.info(f"Processing: {file_path.name} (청크 {i+1}/{len(chunks)})")
+                logger.info(f"처리 중: {file_path.name} (청크 {i+1}/{len(chunks)})")
                 
                 qa_pairs = await generate_synthetic_data_async(chunk, num_pairs=15)
                 if not qa_pairs:
@@ -179,12 +179,12 @@ async def main():
                     if is_pass:
                         with open(VALIDATED_PATH, "a", encoding="utf-8") as f_val:
                             f_val.write(json.dumps(record, ensure_ascii=False) + "\n")
-                        logger.info(f"Pass: {record['question'][:20]}...")
+                        logger.info(f"통과: {record['question'][:20]}...")
                     else:
                         record["reject_reason"] = reason
                         with open(REJECTED_PATH, "a", encoding="utf-8") as f_rej:
                             f_rej.write(json.dumps(record, ensure_ascii=False) + "\n")
-                        logger.info(f"Fail ({reason}): {record['question'][:20]}...")
+                        logger.info(f"탈락 ({reason}): {record['question'][:20]}...")
 
                 with open(PROGRESS_PATH, "a", encoding="utf-8") as f_prog:
                     f_prog.write(doc_key + "\n")

@@ -1,0 +1,5229 @@
+{
+  "checked_on": "2026-10-04",
+  "scope": "공식 홈페이지 5개 전공의 현재 게시 교육과정. 실제 학기별 개설 강좌 목록이 아님. 교육과정 포함 과목이며 개설 주관학과를 보장하지 않음.",
+  "sources": [
+    {
+      "major": "심화컴퓨팅전공",
+      "curriculum_year": "2026",
+      "url": "https://computer.knu.ac.kr/sub3_2_b.php",
+      "title": "컴퓨터학부 심화컴퓨팅전공 교육과정(2026학년도 기준)"
+    },
+    {
+      "major": "첨단컴퓨팅연구전공",
+      "curriculum_year": "2026",
+      "url": "https://computer.knu.ac.kr/sub3_3_b.php",
+      "title": "컴퓨터학부 첨단컴퓨팅연구전공 교육과정(2026학년도 기준)"
+    },
+    {
+      "major": "인공지능컴퓨팅전공",
+      "curriculum_year": "2026",
+      "url": "https://computer.knu.ac.kr/sub3_4_b.php",
+      "title": "컴퓨터학부 인공지능컴퓨팅전공 교육과정(2026학년도 기준)"
+    },
+    {
+      "major": "플랫폼SW데이터과학전공",
+      "curriculum_year": "2025",
+      "url": "https://computer.knu.ac.kr/sub3_5_b.php",
+      "title": "컴퓨터학부 플랫폼SW&데이터과학전공 교육과정(2025학년도 기준)"
+    },
+    {
+      "major": "글로벌SW융합전공",
+      "curriculum_year": "2025",
+      "url": "https://computer.knu.ac.kr/sub3_6_b.php",
+      "title": "컴퓨터학부 글로벌SW융합전공 교육과정(2025학년도 기준)"
+    }
+  ],
+  "course_count": 122,
+  "major_course_count": 98,
+  "courses": [
+    {
+      "course_code": "COMP0220",
+      "course_name": "AI심화글쓰기",
+      "official_name_variants": [
+        "AI심화글쓰기"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "인공지능컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_4_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "AI심화글쓰기"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "COMP0428",
+      "course_name": "IT기술경영개론",
+      "official_name_variants": [
+        "IT기술경영개론"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "4",
+          "category": "기본소양",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        },
+        {
+          "major": "글로벌SW융합전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_6_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "IT기술경영개론"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "ITEC0403",
+      "course_name": "IT지식재산권",
+      "official_name_variants": [
+        "IT지식재산권"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "4",
+          "category": "기본소양",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        },
+        {
+          "major": "글로벌SW융합전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_6_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "IT지식재산권"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "GLSO0219",
+      "course_name": "SW공학및테스팅",
+      "official_name_variants": [
+        "SW공학및테스팅"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "글로벌SW융합전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "3학년",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_6_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "SW공학및테스팅"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "GLSO0214",
+      "course_name": "SW진로설계",
+      "official_name_variants": [
+        "SW진로설계"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "글로벌SW융합전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "2",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_6_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "SW진로설계"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "GLSO0229",
+      "course_name": "SW창업프로젝트",
+      "official_name_variants": [
+        "SW창업프로젝트"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "글로벌SW융합전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-2-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_6_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "SW창업프로젝트"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "CAIB0216",
+      "course_name": "강화학습개론",
+      "official_name_variants": [
+        "강화학습개론"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "첨단컴퓨팅연구전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_3_b.php"
+        },
+        {
+          "major": "인공지능컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "3",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_4_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "강화학습개론"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "COMP0336",
+      "course_name": "객체지향프로그래밍기초",
+      "official_name_variants": [
+        "객체지향프로그래밍기초"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "2",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-2-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "첨단컴퓨팅연구전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "1",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-2-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_3_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "객체지향프로그래밍기초"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "ITEC0415",
+      "course_name": "고급문제해결",
+      "official_name_variants": [
+        "고급문제해결"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-2-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "첨단컴퓨팅연구전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "3",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-2-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_3_b.php"
+        },
+        {
+          "major": "인공지능컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-2-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_4_b.php"
+        },
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "4",
+          "category": "공학전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-2-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        },
+        {
+          "major": "글로벌SW융합전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "3학년",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-2-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_6_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "고급문제해결"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "ITEC0416",
+      "course_name": "고급웹프로그래밍",
+      "official_name_variants": [
+        "고급웹프로그래밍"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "2",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-2-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "4",
+          "category": "공학전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-2-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "고급웹프로그래밍"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "COMP0510",
+      "course_name": "고급컴퓨터구조",
+      "official_name_variants": [
+        "고급컴퓨터구조"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "첨단컴퓨팅연구전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_3_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "고급컴퓨터구조"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "ITEC0417",
+      "course_name": "기계학습개론",
+      "official_name_variants": [
+        "기계학습개론"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "3",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "첨단컴퓨팅연구전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "3",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_3_b.php"
+        },
+        {
+          "major": "인공지능컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "3",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": true,
+          "source_url": "https://computer.knu.ac.kr/sub3_4_b.php"
+        },
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "3",
+          "category": "공학전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        },
+        {
+          "major": "글로벌SW융합전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "3학년",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_6_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "기계학습개론"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "FUTR0201",
+      "course_name": "기업가정신과 벤처창업",
+      "official_name_variants": [
+        "기업가정신과 벤처창업"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "인공지능컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "4",
+          "category": "일반선택",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_4_b.php"
+        },
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "3",
+          "category": "기본소양",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        },
+        {
+          "major": "글로벌SW융합전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "2",
+          "category": "일반선택",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_6_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "기업가정신과 벤처창업",
+        "기업가정신과벤처창업"
+      ],
+      "is_major_course": false
+    },
+    {
+      "course_code": "CLTR0819",
+      "course_name": "기초수학 2",
+      "official_name_variants": [
+        "기초수학 2",
+        "기초수학2"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "1",
+          "category": "교양",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "첨단컴퓨팅연구전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "1",
+          "category": "교양",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_3_b.php"
+        },
+        {
+          "major": "인공지능컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "1",
+          "category": "교양",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_4_b.php"
+        },
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "1",
+          "category": "전공기반",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": true,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        },
+        {
+          "major": "글로벌SW융합전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "1",
+          "category": "교양",
+          "recommended_semester": 1,
+          "credit_structure": "3-2-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_6_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "기초수학 2",
+        "기초수학2"
+      ],
+      "is_major_course": false
+    },
+    {
+      "course_code": "COMP0205",
+      "course_name": "기초창의공학설계",
+      "official_name_variants": [
+        "기초창의공학설계"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "인공지능컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "1",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-2-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_4_b.php"
+        },
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "1",
+          "category": "공학전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-2-2",
+          "required": true,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "기초창의공학설계"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "COMP0206",
+      "course_name": "기초프로그래밍",
+      "official_name_variants": [
+        "기초프로그래밍"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "1",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-2-2",
+          "required": true,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "첨단컴퓨팅연구전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "1",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-2-2",
+          "required": true,
+          "source_url": "https://computer.knu.ac.kr/sub3_3_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "기초프로그래밍"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "COMP0207",
+      "course_name": "기초프로그래밍실습",
+      "official_name_variants": [
+        "기초프로그래밍실습"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "1",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-1-4",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "기초프로그래밍실습"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "FUTR0226",
+      "course_name": "나의 첫 사업제안서",
+      "official_name_variants": [
+        "나의 첫 사업제안서"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "글로벌SW융합전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "4",
+          "category": "일반선택",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_6_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "나의 첫 사업제안서",
+        "나의첫사업제안서"
+      ],
+      "is_major_course": false
+    },
+    {
+      "course_code": "EECS0312",
+      "course_name": "네트워크프로그래밍",
+      "official_name_variants": [
+        "네트워크프로그래밍"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "글로벌SW융합전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "3학년",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-2-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_6_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "네트워크프로그래밍"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "CLTR0045",
+      "course_name": "논리와 비판적 사고",
+      "official_name_variants": [
+        "논리와 비판적 사고"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "인공지능컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "1",
+          "category": "교양",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_4_b.php"
+        },
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "1",
+          "category": "기본소양",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "논리와 비판적 사고",
+        "논리와비판적사고"
+      ],
+      "is_major_course": false
+    },
+    {
+      "course_code": "ELEC0247",
+      "course_name": "논리회로",
+      "official_name_variants": [
+        "논리회로"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "2",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "첨단컴퓨팅연구전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "1",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_3_b.php"
+        },
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "2",
+          "category": "공학전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "논리회로"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "ITEC0514",
+      "course_name": "뇌인지공학개론",
+      "official_name_variants": [
+        "뇌인지공학개론"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "인공지능컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_4_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "뇌인지공학개론"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "ITEC0418",
+      "course_name": "대규모병렬컴퓨팅",
+      "official_name_variants": [
+        "대규모병렬컴퓨팅"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "첨단컴퓨팅연구전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_3_b.php"
+        },
+        {
+          "major": "인공지능컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_4_b.php"
+        },
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "4",
+          "category": "공학전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-0-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        },
+        {
+          "major": "글로벌SW융합전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_6_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "대규모병렬컴퓨팅"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "CLTR0205",
+      "course_name": "대학글쓰기",
+      "official_name_variants": [
+        "대학글쓰기"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "1",
+          "category": "교양",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "첨단컴퓨팅연구전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "1",
+          "category": "교양",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_3_b.php"
+        },
+        {
+          "major": "인공지능컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "1",
+          "category": "교양",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_4_b.php"
+        },
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "1",
+          "category": "기본소양",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        },
+        {
+          "major": "글로벌SW융합전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "1",
+          "category": "교양",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_6_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "대학글쓰기"
+      ],
+      "is_major_course": false
+    },
+    {
+      "course_code": "COMP0322",
+      "course_name": "데이타베이스",
+      "official_name_variants": [
+        "데이타베이스",
+        "데이터베이스"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "인공지능컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "3",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-2-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_4_b.php"
+        },
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "3",
+          "category": "공학전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-2-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        },
+        {
+          "major": "글로벌SW융합전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "3학년",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-2-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_6_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "데이타베이스",
+        "데이터베이스"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "COMP0323",
+      "course_name": "데이타통신",
+      "official_name_variants": [
+        "데이타통신"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "3",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "첨단컴퓨팅연구전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "2",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_3_b.php"
+        },
+        {
+          "major": "인공지능컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "3",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_4_b.php"
+        },
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "3",
+          "category": "공학전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        },
+        {
+          "major": "글로벌SW융합전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "2",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_6_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "데이타통신"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "ITEC0419",
+      "course_name": "데이터과학기초",
+      "official_name_variants": [
+        "데이터과학기초"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "2",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "첨단컴퓨팅연구전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "2",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_3_b.php"
+        },
+        {
+          "major": "인공지능컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "2",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_4_b.php"
+        },
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "2",
+          "category": "전공기반",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        },
+        {
+          "major": "글로벌SW융합전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "3학년",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_6_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "데이터과학기초"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "COMP0462",
+      "course_name": "데이터마이닝이론및응용",
+      "official_name_variants": [
+        "데이터마이닝이론및응용",
+        "데이터마이닝 이론 및 응용"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "3",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "첨단컴퓨팅연구전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "3",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_3_b.php"
+        },
+        {
+          "major": "인공지능컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_4_b.php"
+        },
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "4",
+          "category": "공학전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        },
+        {
+          "major": "글로벌SW융합전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_6_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "데이터마이닝이론및응용",
+        "데이터마이닝 이론 및 응용"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "COME0427",
+      "course_name": "데이터베이스",
+      "official_name_variants": [
+        "데이터베이스"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "3",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "첨단컴퓨팅연구전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "3",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_3_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "데이터베이스"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "COMP0333",
+      "course_name": "데이터분석을 위한 파이썬프로그래밍",
+      "official_name_variants": [
+        "데이터분석을 위한 파이썬프로그래밍"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "1",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-2-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "데이터분석을 위한 파이썬프로그래밍",
+        "데이터분석을위한파이썬프로그래밍"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "COMP0435",
+      "course_name": "디지털미디어아트",
+      "official_name_variants": [
+        "디지털미디어아트"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "4",
+          "category": "공학전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "디지털미디어아트"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "COMP0225",
+      "course_name": "디지털설계및실험",
+      "official_name_variants": [
+        "디지털설계및실험"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "2",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-2-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "첨단컴퓨팅연구전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "2",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-2-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_3_b.php"
+        },
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "2",
+          "category": "공학전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-2-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "디지털설계및실험"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "MOBI0224",
+      "course_name": "딥러닝",
+      "official_name_variants": [
+        "딥러닝"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "3",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "첨단컴퓨팅연구전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "3",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_3_b.php"
+        },
+        {
+          "major": "인공지능컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "3",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_4_b.php"
+        },
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "4",
+          "category": "공학전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        },
+        {
+          "major": "글로벌SW융합전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_6_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "딥러닝"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "COMP0458",
+      "course_name": "모바일네트워크",
+      "official_name_variants": [
+        "모바일네트워크"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "4",
+          "category": "공학전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "모바일네트워크"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "COMP0328",
+      "course_name": "모바일앱프로그래밍1",
+      "official_name_variants": [
+        "모바일앱프로그래밍1",
+        "모바일앱프로그래밍 1"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-2-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "인공지능컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-2-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_4_b.php"
+        },
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "3",
+          "category": "공학전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-2-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        },
+        {
+          "major": "글로벌SW융합전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "3학년",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-2-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_6_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "모바일앱프로그래밍1",
+        "모바일앱프로그래밍 1"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "COMP0420",
+      "course_name": "모바일앱프로그래밍2",
+      "official_name_variants": [
+        "모바일앱프로그래밍2",
+        "모바일앱프로그래밍 2"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "4",
+          "category": "공학전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-2-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        },
+        {
+          "major": "글로벌SW융합전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-2-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_6_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "모바일앱프로그래밍2",
+        "모바일앱프로그래밍 2"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "COMP0340",
+      "course_name": "모바일컴퓨팅",
+      "official_name_variants": [
+        "모바일컴퓨팅"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "첨단컴퓨팅연구전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "3",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_3_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "모바일컴퓨팅"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "COMP0461",
+      "course_name": "문제해결기반 공학연수실습(심화컴퓨터학)",
+      "official_name_variants": [
+        "문제해결기반 공학연수실습(심화컴퓨터학)"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "2-1-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "첨단컴퓨팅연구전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "2-1-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_3_b.php"
+        },
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "4",
+          "category": "공학전공",
+          "recommended_semester": 2,
+          "credit_structure": "2-1-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "문제해결기반 공학연수실습(심화컴퓨터학)",
+        "문제해결기반공학연수실습(심화컴퓨터학)"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "COMP0460",
+      "course_name": "문제해결기반 공학연수실습(컴퓨터학)",
+      "official_name_variants": [
+        "문제해결기반 공학연수실습(컴퓨터학)"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "2-1-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "첨단컴퓨팅연구전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "3",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "2-1-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_3_b.php"
+        },
+        {
+          "major": "인공지능컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "2-1-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_4_b.php"
+        },
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "4",
+          "category": "공학전공",
+          "recommended_semester": 1,
+          "credit_structure": "2-1-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        },
+        {
+          "major": "글로벌SW융합전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "3학년",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "2-1-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_6_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "문제해결기반 공학연수실습(컴퓨터학)",
+        "문제해결기반공학연수실습(컴퓨터학)"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "CLTR0213",
+      "course_name": "물리학 I",
+      "official_name_variants": [
+        "물리학 I"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "2",
+          "category": "전공기반",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "물리학 I",
+        "물리학I"
+      ],
+      "is_major_course": false
+    },
+    {
+      "course_code": "FUTR0208",
+      "course_name": "미래산업과 직업선택",
+      "official_name_variants": [
+        "미래산업과 직업선택"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "인공지능컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "2",
+          "category": "일반선택",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_4_b.php"
+        },
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "2",
+          "category": "기본소양",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        },
+        {
+          "major": "글로벌SW융합전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "2",
+          "category": "일반선택",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_6_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "미래산업과 직업선택",
+        "미래산업과직업선택"
+      ],
+      "is_major_course": false
+    },
+    {
+      "course_code": "GLSO0224",
+      "course_name": "사물인터넷",
+      "official_name_variants": [
+        "사물인터넷"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "4",
+          "category": "공학전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "사물인터넷"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "MBIO0402",
+      "course_name": "생물정보학개론",
+      "official_name_variants": [
+        "생물정보학개론"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "첨단컴퓨팅연구전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_3_b.php"
+        },
+        {
+          "major": "인공지능컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_4_b.php"
+        },
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "4",
+          "category": "공학전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        },
+        {
+          "major": "글로벌SW융합전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_6_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "생물정보학개론"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "CLTR0112",
+      "course_name": "생활속의통계",
+      "official_name_variants": [
+        "생활속의통계"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "1",
+          "category": "기본소양",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "생활속의통계"
+      ],
+      "is_major_course": false
+    },
+    {
+      "course_code": "CLTR0043",
+      "course_name": "서양의 역사와 문화",
+      "official_name_variants": [
+        "서양의 역사와 문화",
+        "서양의 역사와 문화 ("
+      ],
+      "curriculum_entries": [
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "4",
+          "category": "기본소양",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        },
+        {
+          "major": "글로벌SW융합전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "2",
+          "category": "교양",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_6_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "서양의 역사와 문화",
+        "서양의역사와문화",
+        "서양의 역사와 문화 (",
+        "서양의역사와문화("
+      ],
+      "is_major_course": false
+    },
+    {
+      "course_code": "MTED0231",
+      "course_name": "선형대수",
+      "official_name_variants": [
+        "선형대수"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "1",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "첨단컴퓨팅연구전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "1",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_3_b.php"
+        },
+        {
+          "major": "인공지능컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "2",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_4_b.php"
+        },
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "2",
+          "category": "전공기반",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "선형대수"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "CLTR0264",
+      "course_name": "소셜네트워크",
+      "official_name_variants": [
+        "소셜네트워크"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "3",
+          "category": "기본소양",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        },
+        {
+          "major": "글로벌SW융합전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "3학년",
+          "category": "교양",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_6_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "소셜네트워크"
+      ],
+      "is_major_course": false
+    },
+    {
+      "course_code": "COMP0422",
+      "course_name": "소프트웨어공학",
+      "official_name_variants": [
+        "소프트웨어공학"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "3",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "첨단컴퓨팅연구전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "3",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_3_b.php"
+        },
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "3",
+          "category": "공학전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "소프트웨어공학"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "COMP0224",
+      "course_name": "소프트웨어설계",
+      "official_name_variants": [
+        "소프트웨어설계"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "2",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "첨단컴퓨팅연구전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "2",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_3_b.php"
+        },
+        {
+          "major": "인공지능컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "2",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_4_b.php"
+        },
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "2",
+          "category": "공학전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        },
+        {
+          "major": "글로벌SW융합전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "2",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_6_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "소프트웨어설계"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "GLSO0212",
+      "course_name": "소프트웨어수학",
+      "official_name_variants": [
+        "소프트웨어수학"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "글로벌SW융합전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "2",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_6_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "소프트웨어수학"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "ITEC0414",
+      "course_name": "소프트웨어테스팅이론",
+      "official_name_variants": [
+        "소프트웨어테스팅이론",
+        "소프트웨어테스팅 이론"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "첨단컴퓨팅연구전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_3_b.php"
+        },
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "4",
+          "category": "공학전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "소프트웨어테스팅이론",
+        "소프트웨어테스팅 이론"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "COMP0432",
+      "course_name": "소프트웨어특강",
+      "official_name_variants": [
+        "소프트웨어특강",
+        "소프트웨어 특강"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "2",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "2-2-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "2",
+          "category": "공학전공",
+          "recommended_semester": 2,
+          "credit_structure": "2-2-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        },
+        {
+          "major": "글로벌SW융합전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "3학년",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "2-2-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_6_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "소프트웨어특강",
+        "소프트웨어 특강"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "STAT0452",
+      "course_name": "수치해석",
+      "official_name_variants": [
+        "수치해석"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "3",
+          "category": "전공기반",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "수치해석"
+      ],
+      "is_major_course": false
+    },
+    {
+      "course_code": "CLTR0211",
+      "course_name": "수학 I",
+      "official_name_variants": [
+        "수학 I",
+        "수학Ⅰ"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "1",
+          "category": "교양",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "첨단컴퓨팅연구전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "1",
+          "category": "교양",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_3_b.php"
+        },
+        {
+          "major": "인공지능컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "1",
+          "category": "교양",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_4_b.php"
+        },
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "1",
+          "category": "전공기반",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        },
+        {
+          "major": "글로벌SW융합전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "1",
+          "category": "교양",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_6_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "수학 I",
+        "수학I",
+        "수학Ⅰ"
+      ],
+      "is_major_course": false
+    },
+    {
+      "course_code": "CLTR0212",
+      "course_name": "수학Ⅱ",
+      "official_name_variants": [
+        "수학Ⅱ"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "인공지능컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "3",
+          "category": "교양",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_4_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "수학Ⅱ"
+      ],
+      "is_major_course": false
+    },
+    {
+      "course_code": "GLSO0223",
+      "course_name": "스타트업설계",
+      "official_name_variants": [
+        "스타트업설계"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "글로벌SW융합전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_6_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "스타트업설계"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "ELEC0462",
+      "course_name": "시스템프로그래밍",
+      "official_name_variants": [
+        "시스템프로그래밍"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "2",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-2-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "첨단컴퓨팅연구전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "2",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-2-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_3_b.php"
+        },
+        {
+          "major": "인공지능컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "2",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-2-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_4_b.php"
+        },
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "2",
+          "category": "공학전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-2-2",
+          "required": true,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "시스템프로그래밍"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "CAIB0234",
+      "course_name": "신경망개론",
+      "official_name_variants": [
+        "신경망개론"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "인공지능컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_4_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "신경망개론"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "CLTR0003",
+      "course_name": "실용화법",
+      "official_name_variants": [
+        "실용화법"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "1",
+          "category": "교양",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "첨단컴퓨팅연구전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "1",
+          "category": "교양",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_3_b.php"
+        },
+        {
+          "major": "인공지능컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "1",
+          "category": "교양",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_4_b.php"
+        },
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "1",
+          "category": "기본소양",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        },
+        {
+          "major": "글로벌SW융합전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "1",
+          "category": "교양",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_6_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "실용화법"
+      ],
+      "is_major_course": false
+    },
+    {
+      "course_code": "CLTR0078",
+      "course_name": "심리학의 이해",
+      "official_name_variants": [
+        "심리학의 이해"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "인공지능컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "4",
+          "category": "교양",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_4_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "심리학의 이해",
+        "심리학의이해"
+      ],
+      "is_major_course": false
+    },
+    {
+      "course_code": "COMP0319",
+      "course_name": "알고리즘 1",
+      "official_name_variants": [
+        "알고리즘 1",
+        "알고리즘1"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "3",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": true,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "첨단컴퓨팅연구전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "2",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": true,
+          "source_url": "https://computer.knu.ac.kr/sub3_3_b.php"
+        },
+        {
+          "major": "인공지능컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "3",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": true,
+          "source_url": "https://computer.knu.ac.kr/sub3_4_b.php"
+        },
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "3",
+          "category": "공학전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": true,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "알고리즘 1",
+        "알고리즘1"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "COMP0320",
+      "course_name": "알고리즘 2",
+      "official_name_variants": [
+        "알고리즘 2"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "3",
+          "category": "공학전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-2-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "알고리즘 2",
+        "알고리즘2"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "GLSO0216",
+      "course_name": "알고리즘실습",
+      "official_name_variants": [
+        "알고리즘실습"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "글로벌SW융합전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "2",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-2-2",
+          "required": true,
+          "source_url": "https://computer.knu.ac.kr/sub3_6_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "알고리즘실습"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "FUTR0231",
+      "course_name": "알기쉬운 창업마케팅과 스피치",
+      "official_name_variants": [
+        "알기쉬운 창업마케팅과 스피치"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "글로벌SW융합전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "4",
+          "category": "일반선택",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_6_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "알기쉬운 창업마케팅과 스피치",
+        "알기쉬운창업마케팅과스피치"
+      ],
+      "is_major_course": false
+    },
+    {
+      "course_code": "COMP0226",
+      "course_name": "양자컴퓨팅개론",
+      "official_name_variants": [
+        "양자컴퓨팅개론"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-2-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "첨단컴퓨팅연구전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-2-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_3_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "양자컴퓨팅개론"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "CAIB0233",
+      "course_name": "영상이해",
+      "official_name_variants": [
+        "영상이해"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "인공지능컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "3",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_4_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "영상이해"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "COMP0315",
+      "course_name": "오토마타 및 형식언어",
+      "official_name_variants": [
+        "오토마타 및 형식언어",
+        "오토마타및형식언어"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "2",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "첨단컴퓨팅연구전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "2",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_3_b.php"
+        },
+        {
+          "major": "인공지능컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "2",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_4_b.php"
+        },
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "2",
+          "category": "공학전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "오토마타 및 형식언어",
+        "오토마타및형식언어"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "GLSO0215",
+      "course_name": "오픈소스프로그래밍",
+      "official_name_variants": [
+        "오픈소스프로그래밍"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "인공지능컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "3",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-2-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_4_b.php"
+        },
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "4",
+          "category": "공학전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-2-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        },
+        {
+          "major": "글로벌SW융합전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-2-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_6_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "오픈소스프로그래밍"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "COMP0312",
+      "course_name": "운영체제",
+      "official_name_variants": [
+        "운영체제"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "3",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "첨단컴퓨팅연구전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "2",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_3_b.php"
+        },
+        {
+          "major": "인공지능컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "2",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_4_b.php"
+        },
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "3",
+          "category": "공학전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": true,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        },
+        {
+          "major": "글로벌SW융합전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "2",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": true,
+          "source_url": "https://computer.knu.ac.kr/sub3_6_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "운영체제"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "COMP0341",
+      "course_name": "웹보안",
+      "official_name_variants": [
+        "웹보안"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-2-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "웹보안"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "CAIB0225",
+      "course_name": "음성인식",
+      "official_name_variants": [
+        "음성인식"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "인공지능컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_4_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "음성인식"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "COMP0457",
+      "course_name": "의료인공지능",
+      "official_name_variants": [
+        "의료인공지능"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "첨단컴퓨팅연구전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_3_b.php"
+        },
+        {
+          "major": "인공지능컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_4_b.php"
+        },
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "4",
+          "category": "공학전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        },
+        {
+          "major": "글로벌SW융합전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_6_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "의료인공지능"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "COME0301",
+      "course_name": "이산수학",
+      "official_name_variants": [
+        "이산수학"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "1",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "첨단컴퓨팅연구전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "1",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_3_b.php"
+        },
+        {
+          "major": "인공지능컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "1",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_4_b.php"
+        },
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "1",
+          "category": "전공기반",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": true,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        },
+        {
+          "major": "글로벌SW융합전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "1",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_6_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "이산수학"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "COMP0324",
+      "course_name": "인공지능",
+      "official_name_variants": [
+        "인공지능"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "2",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "첨단컴퓨팅연구전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "2",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_3_b.php"
+        },
+        {
+          "major": "인공지능컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "2",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": true,
+          "source_url": "https://computer.knu.ac.kr/sub3_4_b.php"
+        },
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "3",
+          "category": "공학전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        },
+        {
+          "major": "글로벌SW융합전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "2",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_6_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "인공지능"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "COMP0218",
+      "course_name": "인공지능과컴퓨팅",
+      "official_name_variants": [
+        "인공지능과컴퓨팅"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "1",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "첨단컴퓨팅연구전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "1",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_3_b.php"
+        },
+        {
+          "major": "인공지능컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "1",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_4_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "인공지능과컴퓨팅"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "COMP0454",
+      "course_name": "인공지능수학기초",
+      "official_name_variants": [
+        "인공지능수학기초"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "인공지능컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "1",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": true,
+          "source_url": "https://computer.knu.ac.kr/sub3_4_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "인공지능수학기초"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "COMP0219",
+      "course_name": "인공지능수학심화",
+      "official_name_variants": [
+        "인공지능수학심화"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "인공지능컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_4_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "인공지능수학심화"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "CAIB0222",
+      "course_name": "인공지능시스템",
+      "official_name_variants": [
+        "인공지능시스템"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "인공지능컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_4_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "인공지능시스템"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "COMP0342",
+      "course_name": "인공지능융합응용특강",
+      "official_name_variants": [
+        "인공지능융합응용특강"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "첨단컴퓨팅연구전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_3_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "인공지능융합응용특강"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "COMP0339",
+      "course_name": "인공지능융합프로그래밍실습",
+      "official_name_variants": [
+        "인공지능융합프로그래밍실습"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "3",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-2-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "인공지능융합프로그래밍실습"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "CAIB0223",
+      "course_name": "인공지능프로그래밍실습",
+      "official_name_variants": [
+        "인공지능프로그래밍실습"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "3",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-2-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "첨단컴퓨팅연구전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "3",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-2-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_3_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "인공지능프로그래밍실습"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "CLTR0246",
+      "course_name": "일반생명과학Ⅰ",
+      "official_name_variants": [
+        "일반생명과학Ⅰ",
+        "일반생명과학 Ⅰ"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "인공지능컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "2",
+          "category": "교양",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_4_b.php"
+        },
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "2",
+          "category": "전공기반",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "일반생명과학Ⅰ",
+        "일반생명과학 Ⅰ"
+      ],
+      "is_major_course": false
+    },
+    {
+      "course_code": "EECS0442",
+      "course_name": "임베디드소프트웨어설계",
+      "official_name_variants": [
+        "임베디드소프트웨어설계"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "임베디드소프트웨어설계"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "COME0331",
+      "course_name": "자료구조",
+      "official_name_variants": [
+        "자료구조"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "1",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": true,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "첨단컴퓨팅연구전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "1",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": true,
+          "source_url": "https://computer.knu.ac.kr/sub3_3_b.php"
+        },
+        {
+          "major": "인공지능컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "2",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": true,
+          "source_url": "https://computer.knu.ac.kr/sub3_4_b.php"
+        },
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "2",
+          "category": "공학전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": true,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        },
+        {
+          "major": "글로벌SW융합전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "1",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": true,
+          "source_url": "https://computer.knu.ac.kr/sub3_6_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "자료구조"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "COMP0335",
+      "course_name": "자료구조실습",
+      "official_name_variants": [
+        "자료구조실습"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "1",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-1-4",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "자료구조실습"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "COMP0216",
+      "course_name": "자료구조응용",
+      "official_name_variants": [
+        "자료구조응용"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "인공지능컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "2",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-2-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_4_b.php"
+        },
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "2",
+          "category": "공학전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-2-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        },
+        {
+          "major": "글로벌SW융합전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "1",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-2-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_6_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "자료구조응용"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "COMP0217",
+      "course_name": "자바프로그래밍",
+      "official_name_variants": [
+        "자바프로그래밍"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "인공지능컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "2",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-2-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_4_b.php"
+        },
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "2",
+          "category": "공학전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-2-2",
+          "required": true,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        },
+        {
+          "major": "글로벌SW융합전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "2",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-2-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_6_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "자바프로그래밍"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "CAIB0211",
+      "course_name": "자연어처리개론",
+      "official_name_variants": [
+        "자연어처리개론"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "3",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "첨단컴퓨팅연구전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_3_b.php"
+        },
+        {
+          "major": "인공지능컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "3",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_4_b.php"
+        },
+        {
+          "major": "글로벌SW융합전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_6_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "자연어처리개론"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "COMP0419",
+      "course_name": "정보검색",
+      "official_name_variants": [
+        "정보검색"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "인공지능컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_4_b.php"
+        },
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "4",
+          "category": "공학전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "정보검색"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "COMP0345",
+      "course_name": "정보보안개론",
+      "official_name_variants": [
+        "정보보안개론"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "첨단컴퓨팅연구전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "3",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_3_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "정보보안개론"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "COME0368",
+      "course_name": "정보보호론",
+      "official_name_variants": [
+        "정보보호론"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "인공지능컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_4_b.php"
+        },
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "4",
+          "category": "공학전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        },
+        {
+          "major": "글로벌SW융합전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_6_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "정보보호론"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "CAIB0224",
+      "course_name": "정보이론기초",
+      "official_name_variants": [
+        "정보이론기초"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "인공지능컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_4_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "정보이론기초"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "ITEC0402",
+      "course_name": "종합설계프로젝트 2",
+      "official_name_variants": [
+        "종합설계프로젝트 2"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "4",
+          "category": "공학전공",
+          "recommended_semester": 1,
+          "credit_structure": "4-3-2",
+          "required": true,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "종합설계프로젝트 2",
+        "종합설계프로젝트2"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "ITEC0401",
+      "course_name": "종합설계프로젝트1",
+      "official_name_variants": [
+        "종합설계프로젝트1",
+        "종합설계프로젝트 1"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "4-3-2",
+          "required": true,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "첨단컴퓨팅연구전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "4-3-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_3_b.php"
+        },
+        {
+          "major": "인공지능컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "3",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "4-3-2",
+          "required": true,
+          "source_url": "https://computer.knu.ac.kr/sub3_4_b.php"
+        },
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "3",
+          "category": "공학전공",
+          "recommended_semester": 2,
+          "credit_structure": "4-3-2",
+          "required": true,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        },
+        {
+          "major": "글로벌SW융합전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "4-3-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_6_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "종합설계프로젝트1",
+        "종합설계프로젝트 1"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "COMP0436",
+      "course_name": "증강현실",
+      "official_name_variants": [
+        "증강현실"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "첨단컴퓨팅연구전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_3_b.php"
+        },
+        {
+          "major": "인공지능컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_4_b.php"
+        },
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "4",
+          "category": "공학전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        },
+        {
+          "major": "글로벌SW융합전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_6_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "증강현실"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "COMP0455",
+      "course_name": "지능HCI",
+      "official_name_variants": [
+        "지능HCI"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "첨단컴퓨팅연구전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_3_b.php"
+        },
+        {
+          "major": "인공지능컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_4_b.php"
+        },
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "4",
+          "category": "공학전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "지능HCI"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "FUTR0214",
+      "course_name": "창업과 경영",
+      "official_name_variants": [
+        "창업과 경영"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "3",
+          "category": "기본소양",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        },
+        {
+          "major": "글로벌SW융합전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "2",
+          "category": "일반선택",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_6_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "창업과 경영",
+        "창업과경영"
+      ],
+      "is_major_course": false
+    },
+    {
+      "course_code": "GLSO0213",
+      "course_name": "창의융합설계",
+      "official_name_variants": [
+        "창의융합설계"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "글로벌SW융합전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "1",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-2-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_6_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "창의융합설계"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "COMP0344",
+      "course_name": "첨단컴퓨팅특강",
+      "official_name_variants": [
+        "첨단컴퓨팅특강"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "첨단컴퓨팅연구전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "2",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "1-1-0",
+          "required": true,
+          "source_url": "https://computer.knu.ac.kr/sub3_3_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "첨단컴퓨팅특강"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "COMP0321",
+      "course_name": "컴파일러",
+      "official_name_variants": [
+        "컴파일러"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "첨단컴퓨팅연구전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_3_b.php"
+        },
+        {
+          "major": "인공지능컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "3",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_4_b.php"
+        },
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "3",
+          "category": "공학전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        },
+        {
+          "major": "글로벌SW융합전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_6_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "컴파일러"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "TCHR0499",
+      "course_name": "컴퓨터 논리 및 논술지도",
+      "official_name_variants": [
+        "컴퓨터 논리 및 논술지도"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "3",
+          "category": "교직",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "3",
+          "category": "교직",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "컴퓨터 논리 및 논술지도",
+        "컴퓨터논리및논술지도"
+      ],
+      "is_major_course": false
+    },
+    {
+      "course_code": "ITEC0425",
+      "course_name": "컴퓨터게임제작",
+      "official_name_variants": [
+        "컴퓨터게임제작"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "4",
+          "category": "공학전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "컴퓨터게임제작"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "TCHR0593",
+      "course_name": "컴퓨터교육론",
+      "official_name_variants": [
+        "컴퓨터교육론"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "3",
+          "category": "교직",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "3",
+          "category": "교직",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "컴퓨터교육론"
+      ],
+      "is_major_course": false
+    },
+    {
+      "course_code": "TCHR0594",
+      "course_name": "컴퓨터교재연구및지도법",
+      "official_name_variants": [
+        "컴퓨터교재연구및지도법"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "3",
+          "category": "교직",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "3",
+          "category": "교직",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "컴퓨터교재연구및지도법"
+      ],
+      "is_major_course": false
+    },
+    {
+      "course_code": "COMP0411",
+      "course_name": "컴퓨터구조",
+      "official_name_variants": [
+        "컴퓨터구조"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "2",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "첨단컴퓨팅연구전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "2",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_3_b.php"
+        },
+        {
+          "major": "인공지능컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "2",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_4_b.php"
+        },
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "2",
+          "category": "공학전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": true,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        },
+        {
+          "major": "글로벌SW융합전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "2",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_6_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "컴퓨터구조"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "COMP0413",
+      "course_name": "컴퓨터그래픽스",
+      "official_name_variants": [
+        "컴퓨터그래픽스"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "첨단컴퓨팅연구전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "3",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_3_b.php"
+        },
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "4",
+          "category": "공학전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        },
+        {
+          "major": "글로벌SW융합전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_6_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "컴퓨터그래픽스"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "COMP0414",
+      "course_name": "컴퓨터망",
+      "official_name_variants": [
+        "컴퓨터망"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "3",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "첨단컴퓨팅연구전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "3",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_3_b.php"
+        },
+        {
+          "major": "인공지능컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_4_b.php"
+        },
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "4",
+          "category": "공학전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        },
+        {
+          "major": "글로벌SW융합전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "3학년",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_6_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "컴퓨터망"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "ITEC0424",
+      "course_name": "컴퓨터비전",
+      "official_name_variants": [
+        "컴퓨터비전"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "3",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "첨단컴퓨팅연구전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "3",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_3_b.php"
+        },
+        {
+          "major": "인공지능컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "3",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_4_b.php"
+        },
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "4",
+          "category": "공학전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        },
+        {
+          "major": "글로벌SW융합전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_6_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "컴퓨터비전"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "COMP0417",
+      "course_name": "컴퓨터윤리",
+      "official_name_variants": [
+        "컴퓨터윤리"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "4",
+          "category": "기본소양",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "컴퓨터윤리"
+      ],
+      "is_major_course": false
+    },
+    {
+      "course_code": "COMP0343",
+      "course_name": "컴퓨터융합응용특강",
+      "official_name_variants": [
+        "컴퓨터융합응용특강"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "첨단컴퓨팅연구전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_3_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "컴퓨터융합응용특강"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "ITEC0201",
+      "course_name": "컴퓨터학개론",
+      "official_name_variants": [
+        "컴퓨터학개론"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "1",
+          "category": "공학전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        },
+        {
+          "major": "글로벌SW융합전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "1",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_6_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "컴퓨터학개론"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "COMP0453",
+      "course_name": "컴퓨팅사고와 SW코딩",
+      "official_name_variants": [
+        "컴퓨팅사고와 SW코딩"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "인공지능컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "1",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-2-2",
+          "required": true,
+          "source_url": "https://computer.knu.ac.kr/sub3_4_b.php"
+        },
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "1",
+          "category": "공학전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-2-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        },
+        {
+          "major": "글로벌SW융합전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "1",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-2-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_6_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "컴퓨팅사고와 SW코딩",
+        "컴퓨팅사고와SW코딩"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "GLSO0227",
+      "course_name": "클라우드컴퓨팅",
+      "official_name_variants": [
+        "클라우드컴퓨팅"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "첨단컴퓨팅연구전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_3_b.php"
+        },
+        {
+          "major": "인공지능컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_4_b.php"
+        },
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "4",
+          "category": "공학전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        },
+        {
+          "major": "글로벌SW융합전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_6_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "클라우드컴퓨팅"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "COMP0204",
+      "course_name": "프로그래밍기초",
+      "official_name_variants": [
+        "프로그래밍기초"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "인공지능컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "1",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "6-4-4",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_4_b.php"
+        },
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "1",
+          "category": "공학전공",
+          "recommended_semester": 2,
+          "credit_structure": "6-4-4",
+          "required": true,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        },
+        {
+          "major": "글로벌SW융합전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "1",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "6-4-4",
+          "required": true,
+          "source_url": "https://computer.knu.ac.kr/sub3_6_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "프로그래밍기초"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "COMP0423",
+      "course_name": "프로그래밍언어론",
+      "official_name_variants": [
+        "프로그래밍언어론"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "3",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "첨단컴퓨팅연구전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "3",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_3_b.php"
+        },
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "3",
+          "category": "공학전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        },
+        {
+          "major": "글로벌SW융합전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "4",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_6_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "프로그래밍언어론"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "COMP0332",
+      "course_name": "프로그래밍연습1",
+      "official_name_variants": [
+        "프로그래밍연습1"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "1",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "1-0-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "첨단컴퓨팅연구전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "1",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "1-0-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_3_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "프로그래밍연습1"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "COMP0334",
+      "course_name": "프로그래밍연습2",
+      "official_name_variants": [
+        "프로그래밍연습2"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "1",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "1-0-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "첨단컴퓨팅연구전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "1",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "1-0-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_3_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "프로그래밍연습2"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "COMP0337",
+      "course_name": "프로그래밍연습3",
+      "official_name_variants": [
+        "프로그래밍연습3"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "2",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "1-0-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "첨단컴퓨팅연구전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "2",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "1-0-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_3_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "프로그래밍연습3"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "COMP0338",
+      "course_name": "프로그래밍연습4",
+      "official_name_variants": [
+        "프로그래밍연습4"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "2",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "1-0-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "첨단컴퓨팅연구전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "2",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "1-0-2",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_3_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "프로그래밍연습4"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "TCHR0522",
+      "course_name": "학교현장실습",
+      "official_name_variants": [
+        "학교현장실습"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "4",
+          "category": "교직",
+          "recommended_semester": 1,
+          "credit_structure": "2-0-4주",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "4",
+          "category": "교직",
+          "recommended_semester": 1,
+          "credit_structure": "2-0-4주",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "학교현장실습"
+      ],
+      "is_major_course": false
+    },
+    {
+      "course_code": "COME0311",
+      "course_name": "확률 및 통계",
+      "official_name_variants": [
+        "확률 및 통계",
+        "확률및통계"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "심화컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "2",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_2_b.php"
+        },
+        {
+          "major": "첨단컴퓨팅연구전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "2",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_3_b.php"
+        },
+        {
+          "major": "인공지능컴퓨팅전공",
+          "curriculum_year": "2026",
+          "recommended_grade": "2",
+          "category": "전공",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_4_b.php"
+        },
+        {
+          "major": "플랫폼SW데이터과학전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "2",
+          "category": "전공기반",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_5_b.php"
+        },
+        {
+          "major": "글로벌SW융합전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "2",
+          "category": "전공",
+          "recommended_semester": 1,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_6_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "확률 및 통계",
+        "확률및통계"
+      ],
+      "is_major_course": true
+    },
+    {
+      "course_code": "CLTR0089",
+      "course_name": "회계와 사회생활",
+      "official_name_variants": [
+        "회계와 사회생활"
+      ],
+      "curriculum_entries": [
+        {
+          "major": "글로벌SW융합전공",
+          "curriculum_year": "2025",
+          "recommended_grade": "3학년",
+          "category": "교양",
+          "recommended_semester": 2,
+          "credit_structure": "3-3-0",
+          "required": false,
+          "source_url": "https://computer.knu.ac.kr/sub3_6_b.php"
+        }
+      ],
+      "professors": [],
+      "everytime_lecture_ids": [],
+      "match_status": "not_searched",
+      "search_queries": [
+        "회계와 사회생활",
+        "회계와사회생활"
+      ],
+      "is_major_course": false
+    }
+  ]
+}

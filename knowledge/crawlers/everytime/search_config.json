@@ -1,0 +1,9 @@
+{
+  "mode": "direct_url",
+  "search_url": "https://everytime.kr/lecture",
+  "input_selector": "input[placeholder='과목명, 교수명으로 검색']",
+  "results_selector": "",
+  "empty_selector": "",
+  "submit_selector": null,
+  "loading_selector": null
+}
