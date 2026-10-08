@@ -9,6 +9,7 @@ from langchain_anthropic import ChatAnthropic
 from langchain_core.output_parsers import JsonOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
+from rouge_score import rouge_scorer
 
 load_dotenv()
 
@@ -19,6 +20,20 @@ logger = logging.getLogger(__name__)
 class EvalResult(BaseModel):
     score: int = Field(description="1점부터 5점까지의 평가 점수")
     reason: str = Field(description="점수를 부여한 구체적인 이유")
+
+
+_rouge_scorer = rouge_scorer.RougeScorer(["rougeL"], use_stemmer=False)
+
+
+def calculate_rouge_l(ground_truth: str, generated_answer: str) -> float:
+    """
+    모범 답안(Ground Truth)과 생성된 답변(Generated Answer) 간의 ROUGE-L F1 점수를 계산합니다.
+    """
+    if not ground_truth or not generated_answer or not ground_truth.strip() or not generated_answer.strip():
+        return 0.0
+
+    scores = _rouge_scorer.score(target=ground_truth, prediction=generated_answer)
+    return round(scores["rougeL"].fmeasure, 4)
 
 
 async def evaluate_single_item(
@@ -64,11 +79,11 @@ async def evaluate_responses_batch(
     max_retries: int = 3,
 ) -> list[dict]:
     """
-    LLM-as-a-Judge 기법: Claude(Anthropic)를 심판으로 사용하여
+    LLM-as-a-Judge 기법: Claude 3 Opus(Anthropic)를 심판으로 사용하여
     파인튜닝된 모델의 응답 품질을 자동 평가합니다.
     (asyncio.Semaphore 기반 동시 요청 수 제어 및 지수 백오프 재시도 적용)
     """
-    claude_model = os.getenv("ANTHROPIC_MODEL", "claude-3-5-sonnet-20241022")
+    claude_model = os.getenv("ANTHROPIC_MODEL", "claude-3-opus-20240229")
     evaluator_llm = ChatAnthropic(model=claude_model, temperature=0.0)
     parser = JsonOutputParser(pydantic_object=EvalResult)
 
@@ -169,6 +184,7 @@ async def async_main():
 
     # 평가 결과 출력 및 평균 계산용 변수
     model_scores = {}
+    model_rouge_scores = {}
 
     # CSV 저장을 위한 데이터 구성
     csv_data = []
@@ -178,12 +194,20 @@ async def async_main():
         m_name = meta["model_name"]
         score = res.get("score", 0)
         reason = res.get("reason", "")
+        rouge_l_score = calculate_rouge_l(
+            ground_truth=item["ground_truth"],
+            generated_answer=item["generated_answer"],
+        )
 
-        logger.info(f"[질문 {q_idx} | {m_name}] 점수: {score} - {reason}")
+        logger.info(
+            f"[질문 {q_idx} | {m_name}] 점수: {score} | ROUGE-L: {rouge_l_score:.4f} - {reason}"
+        )
 
         if m_name not in model_scores:
             model_scores[m_name] = []
+            model_rouge_scores[m_name] = []
         model_scores[m_name].append(score)
+        model_rouge_scores[m_name].append(rouge_l_score)
 
         # CSV 행 추가
         csv_data.append(
@@ -193,7 +217,8 @@ async def async_main():
                 "Ground_Truth": item["ground_truth"],
                 "Model": m_name,
                 "Generated_Answer": item["generated_answer"],
-                "Score": score,
+                "Opus Score": score,
+                "ROUGE-L Score": rouge_l_score,
                 "Reason": reason,
             }
         )
@@ -202,9 +227,14 @@ async def async_main():
     logger.info("=" * 40)
     logger.info("📊 모델별 최종 평균 점수")
     logger.info("=" * 40)
-    for m_name, scores in model_scores.items():
-        avg = sum(scores) / len(scores) if scores else 0
-        logger.info(f" - {m_name}: {avg:.2f}점 (총 {len(scores)}개)")
+    for m_name in model_scores:
+        scores = model_scores[m_name]
+        rouge_scores = model_rouge_scores[m_name]
+        avg_llm = sum(scores) / len(scores) if scores else 0
+        avg_rouge = sum(rouge_scores) / len(rouge_scores) if rouge_scores else 0
+        logger.info(
+            f" - {m_name}: Opus {avg_llm:.2f}점 | ROUGE-L {avg_rouge:.4f} (총 {len(scores)}개)"
+        )
 
     # 결과를 CSV로 저장
     import csv
