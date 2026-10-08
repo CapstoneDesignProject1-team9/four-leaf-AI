@@ -376,3 +376,24 @@ Ruff는 별도 설치한 개발 환경에서 사용합니다.
 테스트 통과 여부와 전체 RAG 품질은 별개입니다. 수집 기준일·문서 수·청크 수·검색 근거·답변 정확성·소요 시간·최대 메모리를 기록해 검증합니다.
 
 > 하위 문서 일부에는 과거 ChromaDB 0.5.x 분리 환경이나 KR-ELECTRA 연결 안내가 남아 있습니다. 현재 실행은 실제 코드·의존성 파일과 이 루트 README를 기준으로 확인하세요.
+
+1. 데이터 크롤링
+
+# ---------- 1. 전처리 ----------
+
+python3 knowledge/preprocessing/chunk_everytime_reviews.py \
+    --input  knowledge/raw/everytime_lectures/reviews_clean.jsonl \
+    --output knowledge/processed/everytime_lectures/review_chunks.jsonl \
+    --report knowledge/processed/everytime_lectures/review_chunks.report.json
+
+# ---------- 2. 임베딩 ----------
+
+python3 knowledge/embeddings/embed_everytime_reviews.py index
+
+# ---------- 3. 검증 ----------
+
+python3 knowledge/embeddings/embed_everytime_reviews.py check
+
+# ---------- 4. FastAPI 서버 ----------
+
+uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
