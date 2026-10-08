@@ -2,6 +2,7 @@ import asyncio
 import json
 import logging
 import os
+import random
 
 from dotenv import load_dotenv
 from langchain_core.output_parsers import JsonOutputParser
@@ -20,10 +21,52 @@ class EvalResult(BaseModel):
     reason: str = Field(description="점수를 부여한 구체적인 이유")
 
 
-async def evaluate_responses_batch(eval_items: list[dict]) -> list[dict]:
+async def evaluate_single_item(
+    chain,
+    item: dict,
+    semaphore: asyncio.Semaphore,
+    item_index: int,
+    total_count: int,
+    max_retries: int = 3,
+    initial_delay: float = 2.0,
+) -> dict:
+    """
+    단일 평가 항목을 수행하며, Semaphore로 동시 실행 수를 제한하고
+    에러 발생 시 지수 백오프(Exponential Backoff)로 재시도합니다.
+    """
+    async with semaphore:
+        for attempt in range(max_retries):
+            try:
+                result = await chain.ainvoke(item)
+                logger.info(
+                    f"[{item_index}/{total_count}] 평가 완료 - 점수: {result.get('score')}점"
+                )
+                return result
+            except Exception as e:
+                if attempt < max_retries - 1:
+                    delay = initial_delay * (2**attempt) + random.uniform(0.1, 1.0)
+                    logger.warning(
+                        f"[{item_index}/{total_count}] 요청 실패 (시도 {attempt + 1}/{max_retries}): {e}. "
+                        f"{delay:.1f}초 후 재시도..."
+                    )
+                    await asyncio.sleep(delay)
+                else:
+                    logger.error(
+                        f"[{item_index}/{total_count}] 최대 재시도 횟수({max_retries}) 초과 실패: {e}"
+                    )
+                    return {"score": 0, "reason": f"Error after {max_retries} retries: {e}"}
+        return {"score": 0, "reason": "Unknown evaluation failure"}
+
+
+async def evaluate_responses_batch(
+    eval_items: list[dict],
+    max_concurrency: int = 5,
+    max_retries: int = 3,
+) -> list[dict]:
     """
     LLM-as-a-Judge 기법: GPT-4o를 심판으로 사용하여
-    파인튜닝된 모델의 응답 품질을 자동 평가합니다. (비동기 병렬 처리)
+    파인튜닝된 모델의 응답 품질을 자동 평가합니다.
+    (asyncio.Semaphore 기반 동시 요청 수 제어 및 지수 백오프 재시도 적용)
     """
     evaluator_llm = ChatOpenAI(model="gpt-4o", temperature=0.0)
     parser = JsonOutputParser(pydantic_object=EvalResult)
@@ -67,13 +110,23 @@ async def evaluate_responses_batch(eval_items: list[dict]) -> list[dict]:
 
     chain = prompt | evaluator_llm | parser
 
-    # eval_items의 형태: [{"question": "...", "ground_truth": "...", "generated_answer": "...", "format_instructions": ...}, ...]
-    try:
-        results = await chain.abatch(eval_items)
-        return results
-    except Exception as e:
-        logger.error(f"평가 중 오류 발생: {e}")
-        return [{"score": 0, "reason": f"Error: {e}"} for _ in eval_items]
+    semaphore = asyncio.Semaphore(max_concurrency)
+    total_count = len(eval_items)
+
+    tasks = [
+        evaluate_single_item(
+            chain=chain,
+            item=item,
+            semaphore=semaphore,
+            item_index=idx + 1,
+            total_count=total_count,
+            max_retries=max_retries,
+        )
+        for idx, item in enumerate(eval_items)
+    ]
+
+    results = await asyncio.gather(*tasks)
+    return results
 
 
 async def async_main():
@@ -107,10 +160,11 @@ async def async_main():
             )
             metadata.append({"item_idx": item_idx, "model_name": model_name})
 
+    max_concurrency = int(os.getenv("EVAL_MAX_CONCURRENCY", "5"))
     logger.info(
-        f"총 {len(dataset)}개의 질문, {len(eval_items)}개의 응답에 대한 비동기 평가 시작..."
+        f"총 {len(dataset)}개의 질문, {len(eval_items)}개의 응답에 대한 비동기 평가 시작... (동시 실행 제한: {max_concurrency})"
     )
-    results = await evaluate_responses_batch(eval_items)
+    results = await evaluate_responses_batch(eval_items, max_concurrency=max_concurrency)
 
     # 평가 결과 출력 및 평균 계산용 변수
     model_scores = {}
