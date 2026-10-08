@@ -5,9 +5,9 @@ import os
 import random
 
 from dotenv import load_dotenv
+from langchain_anthropic import ChatAnthropic
 from langchain_core.output_parsers import JsonOutputParser
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_openai import ChatOpenAI
 from pydantic import BaseModel, Field
 
 load_dotenv()
@@ -64,11 +64,12 @@ async def evaluate_responses_batch(
     max_retries: int = 3,
 ) -> list[dict]:
     """
-    LLM-as-a-Judge 기법: GPT-4o를 심판으로 사용하여
+    LLM-as-a-Judge 기법: Claude(Anthropic)를 심판으로 사용하여
     파인튜닝된 모델의 응답 품질을 자동 평가합니다.
     (asyncio.Semaphore 기반 동시 요청 수 제어 및 지수 백오프 재시도 적용)
     """
-    evaluator_llm = ChatOpenAI(model="gpt-4o", temperature=0.0)
+    claude_model = os.getenv("ANTHROPIC_MODEL", "claude-3-5-sonnet-20241022")
+    evaluator_llm = ChatAnthropic(model=claude_model, temperature=0.0)
     parser = JsonOutputParser(pydantic_object=EvalResult)
 
     prompt_template = """당신은 인공지능 모델의 답변 품질을 평가하는 공정한 심판입니다.
