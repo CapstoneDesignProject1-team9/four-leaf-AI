@@ -1,7 +1,10 @@
+import asyncio
+import hashlib
 import json
 import logging
 import os
 import sys
+from pathlib import Path
 
 from dotenv import load_dotenv
 from langchain_core.output_parsers import JsonOutputParser
@@ -9,185 +12,186 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_google_genai import ChatGoogleGenerativeAI
 from pydantic import BaseModel, Field
 
+# 1. 환경 변수 로드 (API 키 인식)
 load_dotenv()
 
-# 프로젝트 루트 폴더(four-leaf-AI)를 파이썬 경로에 추가하여 모듈을 찾을 수 있도록 함
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-# 로깅 설정
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+DATA_DIR = PROJECT_ROOT / "knowledge" / "raw"
+OUTPUT_DIR = PROJECT_ROOT / "output"
+OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
-# --- 1. Pydantic 스키마 정의 ---
+VALIDATED_PATH = OUTPUT_DIR / "synthetic_qa_dataset.jsonl"
+REJECTED_PATH = OUTPUT_DIR / "rejected_qa_dataset.jsonl"
+PROGRESS_PATH = OUTPUT_DIR / "progress.txt"
+
+semaphore = asyncio.Semaphore(2)
+
+# --- Pydantic 모델 ---
 class QAPair(BaseModel):
-    instruction: str = Field(description="학생이 대학 생활, 학사, 진로 등에 대해 질문하는 프롬프트")
-    output: str = Field(description="AI 튜터의 상세하고 친절한 답변")
-
+    question: str = Field(description="대학생이 질문할 법한 질문")
+    answer: str = Field(description="참고 문서에 기반한 정확한 답변")
 
 class QADataset(BaseModel):
-    pairs: list[QAPair] = Field(description="생성된 Q&A 쌍의 리스트")
+    pairs: list[QAPair]
 
+class ValidationResult(BaseModel):
+    is_pass: bool = Field(description="통과 여부")
+    reason: str = Field(description="판단 사유")
 
-class JudgeResult(BaseModel):
-    is_pass: bool = Field(alias="pass", description="품질 검증 통과 여부 (true/false)")
-    reason: str = Field(description="판단 이유 한 줄")
+class ValidationBatchResult(BaseModel):
+    results: list[ValidationResult]
 
+# --- 재시도 및 한도 체크 헬퍼 ---
+async def call_with_retry(chain, payload, max_retries=5):
+    for attempt in range(max_retries):
+        try:
+            return await chain.ainvoke(payload)
+        except Exception as e:
+            msg = str(e)
+            # 3. 일일 한도(PerDay) 초과 시 무의미한 대기 없이 즉시 종료
+            if "PerDay" in msg or "GenerateRequestsPerDay" in msg:
+                logger.error("일일 API 한도 초과! 데이터를 보존하고 스크립트를 즉시 종료합니다.")
+                sys.exit(0)
+                
+            if any(k in msg for k in ["429", "Quota", "RESOURCE_EXHAUSTED", "503"]):
+                wait = min(5 * (2**attempt), 60)
+                logger.warning(f"분당 API 한도 초과. {wait}초 대기 후 재시도 ({attempt+1}/{max_retries})")
+                await asyncio.sleep(wait)
+            else:
+                raise e
+    raise RuntimeError("API 재시도 횟수 초과")
 
-# --- 2. 합성 데이터 생성 함수 ---
-def generate_synthetic_data(context_text: str, num_pairs: int = 5) -> list[dict]:
-    """주어진 텍스트 컨텍스트를 바탕으로 sLLM 파인튜닝용 Instruction-Output 쌍을 생성합니다."""
-    llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.7)
-    parser = JsonOutputParser(pydantic_object=QADataset)
+# --- 청킹(Chunking) 유틸리티 ---
+def chunk_text(text: str, chunk_size: int = 3000) -> list[str]:
+    """긴 문서를 적절한 길이로 잘라서 리스트로 반환"""
+    return [text[i:i+chunk_size] for i in range(0, len(text), chunk_size)]
 
-    system_prompt = """당신은 대학교 학사 규정, 공지사항, 진로 가이드 등을 기반으로
-인공지능 모델 파인튜닝을 위한 고품질 Instruction 데이터셋을 생성하는 전문가입니다.
+# --- 데이터 생성 (15쌍 배치) ---
+async def generate_synthetic_data_async(context_text: str, num_pairs: int = 15) -> list[dict]:
+    async with semaphore:
+        await asyncio.sleep(1.0)
+        llm = ChatGoogleGenerativeAI(model="gemini-3.8-flash", temperature=0.7)
+        parser = JsonOutputParser(pydantic_object=QADataset)
 
-제공된 [참고 문서]를 읽고, 실제 대학생이 할 법한 질문({num_pairs}개)과
-그에 대한 친절하고 정확한 AI 튜터의 답변을 생성해주세요.
-답변은 반드시 [참고 문서]의 내용만을 기반으로 해야 하며, 친절한 해요체를 사용하세요.
+        system_prompt = """당신은 인공지능 모델 파인튜닝용 데이터를 만드는 전문가입니다.
+[참고 문서]에서 학생들이 자주 물어볼 핵심 질문-답변 쌍 {num_pairs}개를 생성하세요.
+{format_instructions}"""
+        
+        prompt = ChatPromptTemplate.from_messages([("system", system_prompt), ("human", "[참고 문서]:\n{context}")])
+        chain = prompt | llm | parser
 
-형식 지침에 맞게 정확한 JSON을 출력해주세요.
-{format_instructions}
-"""
+        try:
+            res = await call_with_retry(
+                chain, 
+                {"context": context_text, "num_pairs": num_pairs, "format_instructions": parser.get_format_instructions()}
+            )
+            return res.get("pairs", [])
+        except Exception as e:
+            logger.error(f"데이터 생성 실패: {e}")
+            return []
 
-    prompt = ChatPromptTemplate.from_messages(
-        [("system", system_prompt), ("human", "[참고 문서]:\n{context}")]
-    )
+# --- 2. 데이터 검증 (일괄 배치 처리) ---
+async def validate_qa_batch_async(context_text: str, qa_pairs: list[dict]) -> list[ValidationResult]:
+    async with semaphore:
+        await asyncio.sleep(1.0)
+        # 검증 모델을 분리할 경우 여기서 모델명을 변경할 수 있습니다.
+        llm = ChatGoogleGenerativeAI(model="gemini-3.8-flash", temperature=0.1)
+        parser = JsonOutputParser(pydantic_object=ValidationBatchResult)
 
-    chain = prompt | llm | parser
+        # 5. 엄격한 평가 기준 복구
+        system_prompt = """당신은 Q&A 품질 검증관입니다. 제공된 문서에 기반하여 다음 Q&A 쌍 리스트를 일괄 평가하세요.
+다음 3가지 기준을 엄격히 적용하세요:
+1. 사실 부합성: 답변이 문서 내용과 일치하는가?
+2. 완결성: 질문에 대해 충분한 정보를 제공하는가?
+3. 유용성: 실제 사용자가 유용하게 여길 만한 질문인가?
 
-    try:
-        logger.info(f"합성 QA 데이터 생성 요청 중... (목표: {num_pairs}개)")
-        result = chain.invoke(
-            {
-                "context": context_text,
-                "num_pairs": num_pairs,
-                "format_instructions": parser.get_format_instructions(),
-            }
-        )
+입력된 Q&A 쌍의 순서와 개수에 맞춰 정확히 동일한 길이의 평가 결과를 반환하세요.
+{format_instructions}"""
 
-        pairs = result.get("pairs", [])
-        return pairs
+        pairs_text = json.dumps(qa_pairs, ensure_ascii=False, indent=2)
+        human_prompt = f"[참고 문서]:\n{context_text}\n\n[평가할 Q&A 쌍 리스트]:\n{pairs_text}"
 
-    except Exception as e:
-        logger.error(f"데이터 생성 중 오류 발생: {e}")
-        return []
+        prompt = ChatPromptTemplate.from_messages([("system", system_prompt), ("human", human_prompt)])
+        chain = prompt | llm | parser
 
+        try:
+            res = await call_with_retry(
+                chain,
+                {"format_instructions": parser.get_format_instructions()}
+            )
+            return res.get("results", [])
+        except Exception as e:
+            logger.warning(f"일괄 검증 중 API 오류 (건너뜀): {e}")
+            return [None] * len(qa_pairs)  # API 에러 시 None 반환
 
-# --- 3. LLM-as-a-Judge 품질 검증 함수 ---
-def validate_qa_pair(pair: dict, context_text: str) -> tuple[bool, str]:
-    """LLM-as-a-Judge: 원본 문서를 근거로 생성된 Q&A의 환각(Hallucination) 및 품질을 검증합니다."""
-    llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.0)
-    parser = JsonOutputParser(pydantic_object=JudgeResult)
+# --- 메인 실행 ---
+async def main():
+    done_keys = set()
+    if os.path.exists(PROGRESS_PATH):
+        with open(PROGRESS_PATH, "r", encoding="utf-8") as f:
+            done_keys = set(f.read().splitlines())
 
-    judge_system_prompt = """당신은 AI가 생성한 Q&A 데이터의 품질을 검증하는 엄격한 평가자입니다.
-아래 [참고 문서]의 내용만을 근거로 [질문]에 대해 [답변]이 정확하고 충실하게 작성되었는지 평가하세요.
+    # 4. jsonl 확장자 추가 
+    input_files = list(DATA_DIR.glob("**/*.json")) + list(DATA_DIR.glob("**/*.jsonl")) + list(DATA_DIR.glob("**/*.txt"))
+    
+    for file_path in input_files:
+        try:
+            with open(file_path, "r", encoding="utf-8") as f:
+                content = f.read()
 
-평가 기준:
-1. 답변 내용이 참고 문서에 실제로 있는 사실에 기반하는가? (문서에 없는 내용을 지어냈다면 실패)
-2. 질문과 답변이 논리적으로 상응하는가?
-3. 답변에 왜곡되거나 오해의 소지가 있는 정보가 없는가?
+            # 긴 문서는 3000자 단위로 분할하여 처리
+            chunks = chunk_text(content)
+            
+            for i, chunk in enumerate(chunks):
+                doc_hash = hashlib.md5(chunk.encode("utf-8")).hexdigest()
+                doc_key = f"{file_path.name}_chunk_{i}::{doc_hash}"
 
-형식 지침에 맞게 정확한 JSON을 출력해주세요.
-{format_instructions}
-"""
+                if doc_key in done_keys:
+                    continue
 
-    human_prompt = """[참고 문서]:
-{context}
+                logger.info(f"처리 중: {file_path.name} (청크 {i+1}/{len(chunks)})")
+                
+                qa_pairs = await generate_synthetic_data_async(chunk, num_pairs=15)
+                if not qa_pairs:
+                    continue
 
-[질문]:
-{instruction}
+                # 15개의 Q&A 쌍을 한 번의 API 호출로 통째로 검증
+                validation_results = await validate_qa_batch_async(chunk, qa_pairs)
 
-[답변]:
-{output}
-"""
+                for pair, val_res in zip(qa_pairs, validation_results):
+                    # API 에러로 None 반환된 경우 버리지 않고 스킵
+                    if val_res is None:
+                        continue
 
-    prompt = ChatPromptTemplate.from_messages(
-        [("system", judge_system_prompt), ("human", human_prompt)]
-    )
+                    record = {
+                        "source": file_path.name,
+                        "question": pair.get("question"),
+                        "answer": pair.get("answer")
+                    }
 
-    chain = prompt | llm | parser
+                    # val_res는 dict 형태로 반환될 수 있으므로 처리
+                    is_pass = val_res.get("is_pass") if isinstance(val_res, dict) else getattr(val_res, "is_pass", False)
+                    reason = val_res.get("reason") if isinstance(val_res, dict) else getattr(val_res, "reason", "알 수 없음")
 
-    try:
-        res = chain.invoke(
-            {
-                "context": context_text,
-                "instruction": pair.get("instruction", ""),
-                "output": pair.get("output", ""),
-                "format_instructions": parser.get_format_instructions(),
-            }
-        )
-        return res.get("is_pass", False), res.get("reason", "판단 사유 미제공")
-    except Exception as e:
-        logger.warning(f"품질 검증 과정 중 예외 발생: {e}")
-        return False, f"검증 프로세스 에러: {e}"
+                    if is_pass:
+                        with open(VALIDATED_PATH, "a", encoding="utf-8") as f_val:
+                            f_val.write(json.dumps(record, ensure_ascii=False) + "\n")
+                        logger.info(f"통과: {record['question'][:20]}...")
+                    else:
+                        record["reject_reason"] = reason
+                        with open(REJECTED_PATH, "a", encoding="utf-8") as f_rej:
+                            f_rej.write(json.dumps(record, ensure_ascii=False) + "\n")
+                        logger.info(f"탈락 ({reason}): {record['question'][:20]}...")
 
+                with open(PROGRESS_PATH, "a", encoding="utf-8") as f_prog:
+                    f_prog.write(doc_key + "\n")
+                done_keys.add(doc_key)
 
-# --- 4. 메인 실행 함수 ---
-def main():
-    input_txt_path = os.path.join("data", "knu_schedule.txt")
-    validated_output_path = os.path.join("data", "validated_qa_dataset.jsonl")
-    rejected_output_path = os.path.join("data", "rejected_qa_dataset.jsonl")
-
-    try:
-        with open(input_txt_path, encoding="utf-8") as f:
-            context_text = f.read()
-    except FileNotFoundError:
-        logger.error(f"입력 파일 {input_txt_path}을 찾을 수 없습니다.")
-        return
-
-    # 1) 데이터 생성 (10쌍)
-    generated_pairs = generate_synthetic_data(context_text, num_pairs=10)
-    if not generated_pairs:
-        logger.warning("생성된 데이터가 없습니다.")
-        return
-
-    logger.info(
-        f"생성 완료된 {len(generated_pairs)}개 데이터에 대해 LLM-as-a-Judge 품질 검증을 시작합니다..."
-    )
-
-    passed_count = 0
-    rejected_count = 0
-
-    # 2) 생성된 데이터 품질 검수 및 통과/탈락 분리 저장
-    for idx, pair in enumerate(generated_pairs):
-        instruction = pair.get("instruction", "").strip()
-        output = pair.get("output", "").strip()
-
-        # 기본 형식 검증
-        if not instruction or not output:
-            logger.warning(f"[{idx + 1}/{len(generated_pairs)}] 형식 오류 (빈 값 포함) - 탈락")
-            rejected_count += 1
-            continue
-
-        # LLM-as-a-Judge 품질 평가
-        is_pass, reason = validate_qa_pair(pair, context_text)
-
-        if is_pass:
-            passed_count += 1
-            logger.info(f"[{idx + 1}/{len(generated_pairs)}] 통과 ✅ - 사유: {reason}")
-            with open(validated_output_path, "a", encoding="utf-8") as f:
-                json_line = json.dumps(
-                    {"instruction": instruction, "output": output}, ensure_ascii=False
-                )
-                f.write(json_line + "\n")
-        else:
-            rejected_count += 1
-            logger.info(f"[{idx + 1}/{len(generated_pairs)}] 탈락 ❌ - 사유: {reason}")
-            with open(rejected_output_path, "a", encoding="utf-8") as f:
-                json_line = json.dumps(
-                    {"instruction": instruction, "output": output, "reject_reason": reason},
-                    ensure_ascii=False,
-                )
-                f.write(json_line + "\n")
-
-    logger.info(
-        f"\n[최종 결과 Summary] 총 {len(generated_pairs)}개 중 통과: {passed_count}개 / 탈락: {rejected_count}개"
-    )
-
+        except Exception as e:
+            logger.error(f"파일 처리 중 에러 발생 ({file_path.name}): {e}")
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())

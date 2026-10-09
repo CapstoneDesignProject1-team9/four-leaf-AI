@@ -5,6 +5,9 @@
 검사: python knowledge/embeddings/embed_notices.py check
 저장: python knowledge/embeddings/embed_notices.py index
 검색: python knowledge/embeddings/embed_notices.py search "수강정정 신청 방법"
+강의계획서 확인: python knowledge/embeddings/embed_notices.py check --corpus syllabi
+강의계획서 저장: python knowledge/embeddings/embed_notices.py index --corpus syllabi
+강의계획서 검색: python knowledge/embeddings/embed_notices.py search "자연어처리개론 강의 내용" --corpus syllabi
 
 첫 index 실행 시 BGE-M3 가중치(약 2.3GB)를 다운로드한다.
 CPU/FP32, 배치 8, 정규화한 1024차원 dense 벡터와 cosine 거리 사용.
@@ -26,10 +29,25 @@ from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_INPUT = PROJECT_ROOT / "knowledge/processed/notices/knu_notice_chunks.jsonl"
-DEFAULT_DB = PROJECT_ROOT / "knowledge/vectorstores/knu_bge_m3"
+DEFAULT_DB = PROJECT_ROOT / "knowledge/vectorstores/knu_notice_bge_m3"
 MODEL_NAME = "BAAI/bge-m3"
 MODEL_REVISION = "5617a9f61b028005a4858fdac845db406aefb181"
 COLLECTION_NAME = "knu_notices_bge_m3_v1"
+DEFAULT_SYLLABI_INPUT = PROJECT_ROOT / "knowledge/processed/syllabi/knu_syllabus_chunks.jsonl"
+DEFAULT_SYLLABI_DB = PROJECT_ROOT / "knowledge/vectorstores/knu_syllabi_bge_m3"
+SYLLABI_COLLECTION_NAME = "knu_syllabi_bge_m3_v1"
+CORPUS_DEFAULTS = {
+    "notices": {
+        "input": DEFAULT_INPUT,
+        "db": DEFAULT_DB,
+        "collection": COLLECTION_NAME,
+    },
+    "syllabi": {
+        "input": DEFAULT_SYLLABI_INPUT,
+        "db": DEFAULT_SYLLABI_DB,
+        "collection": SYLLABI_COLLECTION_NAME,
+    },
+}
 SPEC = {
     "schema_version": 1,
     "embedding_model": MODEL_NAME,
@@ -195,7 +213,7 @@ class Embedder:
         return vectors.tolist()
 
 
-def open_collection(db_path, create=False):
+def open_collection(db_path, create=False, collection_name=COLLECTION_NAME):
     import chromadb
     from chromadb.config import Settings
 
@@ -207,13 +225,13 @@ def open_collection(db_path, create=False):
     )
     if create:
         collection = client.get_or_create_collection(
-            name=COLLECTION_NAME,
+            name=collection_name,
             metadata={**SPEC, "index_state": "empty"},
             configuration={"hnsw": {"space": "cosine"}},
             embedding_function=None,
         )
     else:
-        collection = client.get_collection(name=COLLECTION_NAME, embedding_function=None)
+        collection = client.get_collection(name=collection_name, embedding_function=None)
     for key, expected in SPEC.items():
         if (collection.metadata or {}).get(key) != expected:
             raise ValueError(f"컬렉션 설정 불일치: {key}. 다른 DB 경로를 사용하세요")
@@ -270,7 +288,9 @@ def index(args):
     fingerprint = input_digest(args.input)
     active_ids, report = inspect_input(args.input)
     print(json.dumps(report, ensure_ascii=False), flush=True)
-    client, collection = open_collection(args.db, create=True)
+    client, collection = open_collection(
+        args.db, create=True, collection_name=args.collection
+    )
     meta = dict(collection.metadata or {})
     revision = meta.get("model_revision")
     if collection.count() and not revision:
@@ -301,6 +321,8 @@ def index(args):
         seconds=round(time.perf_counter() - started, 2),
         model_revision=meta["model_revision"],
         db=str(args.db.resolve()),
+        collection=args.collection,
+        corpus=args.corpus,
     )
     meta.update(index_state="ready", active_chunks=len(active_ids))
     collection.modify(metadata=meta)
@@ -309,7 +331,7 @@ def index(args):
 
 
 def search(args):
-    client, collection = open_collection(args.db)
+    client, collection = open_collection(args.db, collection_name=args.collection)
     meta = collection.metadata or {}
     if meta.get("index_state") != "ready":
         raise ValueError("색인이 완료되지 않았습니다. index를 다시 실행하세요")
@@ -333,7 +355,8 @@ def search(args):
         1,
     ):
         print(f"\n[{rank}] {metadata.get('title', '')}")
-        print(f"출처: {metadata.get('source_type', '')} / {metadata.get('attachment_name', '')}")
+        detail = metadata.get("attachment_name") or metadata.get("course_code", "")
+        print(f"출처: {metadata.get('source_type', '')} / {detail}")
         print(f"URL: {metadata.get('url', '')}")
         print(f"cosine 거리: {distance:.4f} (낮을수록 유사, 정답 확률 아님)")
         print(f"chunk_id: {chunk_id}\n{document}")
@@ -344,14 +367,20 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("command", choices=["check", "index", "search"])
     parser.add_argument("question", nargs="?")
-    parser.add_argument("--input", type=Path, default=DEFAULT_INPUT)
-    parser.add_argument("--db", type=Path, default=DEFAULT_DB)
+    parser.add_argument("--corpus", choices=tuple(CORPUS_DEFAULTS), default="notices")
+    parser.add_argument("--input", type=Path, help="입력 청크 JSONL (선택한 코퍼스 기본값 사용)")
+    parser.add_argument("--db", type=Path, help="ChromaDB 경로 (선택한 코퍼스 기본값 사용)")
+    parser.add_argument("--collection", help="ChromaDB 컬렉션 이름 (선택한 코퍼스 기본값 사용)")
     parser.add_argument("--cache-dir", type=Path, default=PROJECT_ROOT / ".cache/embedding_models")
     parser.add_argument("--device", choices=["cpu", "cuda"], default="cpu")
     parser.add_argument("--batch-size", type=int, default=8)
     parser.add_argument("--top-k", type=int, default=5)
     parser.add_argument("--offline", action="store_true", help="캐시된 모델만 사용")
     args = parser.parse_args()
+    defaults = CORPUS_DEFAULTS[args.corpus]
+    args.input = args.input or defaults["input"]
+    args.db = args.db or defaults["db"]
+    args.collection = args.collection or defaults["collection"]
     if not 1 <= args.batch_size <= 128 or args.top_k < 1:
         parser.error("batch-size: 1~128, top-k: 1 이상")
     if args.command == "search" and not (args.question or "").strip():

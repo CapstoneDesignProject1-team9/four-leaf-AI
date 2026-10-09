@@ -6,7 +6,9 @@ __pycache__/
 .env
 .venv
 env/
-venv/
+.venv/
+.venv312/
+.venv-test/
 
 # 로컬 개발 데이터 (git에 올리지 않음)
 # 로컬 개발 데이터 (git에 올리지 않음)
@@ -63,3 +65,6 @@ knowledge/raw/notices/attachments/
 
 # 로컬 데이터 처리 보고서
 knowledge/processed/**/*.report.json
+
+# Everytime authenticated browser profile (never commit)
+.cache/everytime-browser-profile/
