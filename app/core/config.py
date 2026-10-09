@@ -43,6 +43,8 @@ class Settings(BaseSettings):
     CHROMA_COLLECTION_NAME: str = "knu_notices_bge_m3_v1"
     CHROMA_SYLLABI_PERSIST_DIR: str = "./knowledge/vectorstores/knu_syllabi_bge_m3"
     CHROMA_SYLLABI_COLLECTION_NAME: str = "knu_syllabi_bge_m3_v1"
+    CHROMA_EVERYTIME_PERSIST_DIR: str = "./knowledge/vectorstores/everytime_bge_m3"
+    CHROMA_EVERYTIME_COLLECTION_NAME: str = "everytime_reviews_bge_m3_v1"
     EMBEDDING_MODEL_NAME: str = "BAAI/bge-m3"
     EMBEDDING_MODEL_REVISION: str = "5617a9f61b028005a4858fdac845db406aefb181"
     EMBEDDING_MODEL_CACHE_DIR: str = "./.cache/embedding_models"
