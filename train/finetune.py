@@ -1,32 +1,45 @@
 import sys
 import types
+import importlib.machinery
+import importlib.abc
 
-# 1. 가짜 모듈 생성용 안전한 클래스 (inspect 충돌 방지용 __file__ 추가)
+# 1. 완벽한 가짜 모듈 클래스
 class SafeDummyModule(types.ModuleType):
     def __init__(self, name):
         super().__init__(name)
         self.__file__ = f"<dummy_{name}>"
+        self.__spec__ = importlib.machinery.ModuleSpec(name, None)
+        self.__version__ = "0.18.0"
     def __getattr__(self, name):
+        if name == "__version__":
+            return "0.18.0"
         return SafeDummyModule(f"{self.__name__}.{name}")
     def __call__(self, *args, **kwargs):
         return self
+    def __iter__(self):
+        return iter([])
 
-# 2. torchao 및 torchvision이 없을 때 안전하게 가짜 모듈 주입
-for mod_name in [
-    "torchao", "torchao.quantization", "torchao.prototype", 
-    "torchao.prototype.safetensors", "torchao.prototype.safetensors.safetensors_support",
-    "torchvision", "torchvision.io"
-]:
-    if mod_name not in sys.modules:
-        sys.modules[mod_name] = SafeDummyModule(mod_name)
+# 2. torchvision 및 torchao 하위 모듈 요청을 가로채서 무조건 가짜 모듈을 반환하는 커스텀 Loader
+class DummyFinder(importlib.abc.MetaPathFinder, importlib.abc.Loader):
+    def find_spec(self, fullname, path, target=None):
+        if fullname.startswith("torchvision") or fullname.startswith("torchao"):
+            return importlib.machinery.ModuleSpec(fullname, self)
+        return None
+    def create_module(self, spec):
+        if spec.name not in sys.modules:
+            sys.modules[spec.name] = SafeDummyModule(spec.name)
+        return sys.modules[spec.name]
+    def exec_module(self, module):
+        pass
+
+# 메타 패스에 가로채기 등록
+sys.meta_path.insert(0, DummyFinder())
 
 # 3. PyTorch 저비트 정수 타입 누락 방어 패치
 import torch
 for attr in ["int1", "int2", "int3", "int4", "int5", "int6", "int7", "uint1", "uint2", "uint4"]:
     if not hasattr(torch, attr):
         setattr(torch, attr, torch.qint8)
-
-
 # ==========================================
 # 1. 기존 파인튜닝 코드 시작
 # ==========================================
