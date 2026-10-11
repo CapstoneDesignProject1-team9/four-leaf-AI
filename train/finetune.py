@@ -1,27 +1,26 @@
 import sys
-from types import ModuleType
+import types
 
-# ==========================================
-# 0. 오프라인(내부망) 환경 의존성 충돌 방어 패치
-# ==========================================
-class DummyModule(ModuleType):
+# 1. 가짜 모듈 생성용 안전한 클래스 (inspect 충돌 방지용 __file__ 추가)
+class SafeDummyModule(types.ModuleType):
+    def __init__(self, name):
+        super().__init__(name)
+        self.__file__ = f"<dummy_{name}>"
     def __getattr__(self, name):
-        return DummyModule(name)
+        return SafeDummyModule(f"{self.__name__}.{name}")
     def __call__(self, *args, **kwargs):
         return self
 
-# torchao 및 관련 모듈 가짜 처리
-sys.modules["torchao"] = DummyModule("torchao")
-sys.modules["torchao.quantization"] = DummyModule("torchao.quantization")
-sys.modules["torchao.prototype"] = DummyModule("torchao.prototype")
-sys.modules["torchao.prototype.safetensors"] = DummyModule("torchao.prototype.safetensors")
-sys.modules["torchao.prototype.safetensors.safetensors_support"] = DummyModule("torchao.prototype.safetensors.safetensors_support")
+# 2. torchao 및 torchvision이 없을 때 안전하게 가짜 모듈 주입
+for mod_name in [
+    "torchao", "torchao.quantization", "torchao.prototype", 
+    "torchao.prototype.safetensors", "torchao.prototype.safetensors.safetensors_support",
+    "torchvision", "torchvision.io"
+]:
+    if mod_name not in sys.modules:
+        sys.modules[mod_name] = SafeDummyModule(mod_name)
 
-# torchvision 관련 모듈 가짜 처리
-sys.modules["torchvision"] = DummyModule("torchvision")
-sys.modules["torchvision.io"] = DummyModule("torchvision.io")
-
-# PyTorch 저비트 정수 타입 누락 방어 패치
+# 3. PyTorch 저비트 정수 타입 누락 방어 패치
 import torch
 for attr in ["int1", "int2", "int3", "int4", "int5", "int6", "int7", "uint1", "uint2", "uint4"]:
     if not hasattr(torch, attr):
