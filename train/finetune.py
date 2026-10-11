@@ -3,7 +3,9 @@ import types
 import importlib.machinery
 import importlib.abc
 
-# 1. 완벽한 가짜 모듈 클래스
+# ==========================================
+# 0. 오프라인(내부망) 환경 의존성 충돌 방어 패치
+# ==========================================
 class SafeDummyModule(types.ModuleType):
     def __init__(self, name):
         super().__init__(name)
@@ -19,7 +21,6 @@ class SafeDummyModule(types.ModuleType):
     def __iter__(self):
         return iter([])
 
-# 2. torchvision 및 torchao 하위 모듈 요청을 가로채서 무조건 가짜 모듈을 반환하는 커스텀 Loader
 class DummyFinder(importlib.abc.MetaPathFinder, importlib.abc.Loader):
     def find_spec(self, fullname, path, target=None):
         if fullname.startswith("torchvision") or fullname.startswith("torchao"):
@@ -32,64 +33,91 @@ class DummyFinder(importlib.abc.MetaPathFinder, importlib.abc.Loader):
     def exec_module(self, module):
         pass
 
-# 메타 패스에 가로채기 등록
 sys.meta_path.insert(0, DummyFinder())
 
-# 3. PyTorch 저비트 정수 타입 누락 방어 패치
+# PyTorch 저비트 정수 타입 누락 방어 패치
 import torch
 for attr in ["int1", "int2", "int3", "int4", "int5", "int6", "int7", "uint1", "uint2", "uint4"]:
     if not hasattr(torch, attr):
         setattr(torch, attr, torch.qint8)
+
+
 # ==========================================
-# 1. 기존 파인튜닝 코드 시작
+# 1. 파인튜닝 메인 로직
 # ==========================================
 from datasets import load_dataset
-from transformers import TrainingArguments, Trainer
+from transformers import AutoConfig, AutoModelForCausalLM, AutoTokenizer, TrainingArguments
+from peft import LoraConfig, get_peft_model, TaskType
 from trl import SFTTrainer
 
-# Unsloth 안전 로드
-try:
-    from unsloth import FastLanguageModel
-    UNSLOTH_AVAILABLE = True
-except ImportError:
-    UNSLOTH_AVAILABLE = False
-
 def main():
-    # 설정값
+    model_id = "microsoft/Phi-3-mini-4k-instruct"
     max_seq_length = 2048
-    dtype = None # None으로 설정 시 자동 감지 (A100 등은 float16 또는 bfloat16)
-    load_in_4bit = True # 4비트 양자화 사용 여부
-
-    model_id = "your-base-model-id" # 필요에 따라 모델 경로 수정
-    dataset_id = "your-dataset-id"   # 필요에 따라 데이터셋 경로 수정
-
-    print("=== 파인튜닝 스크립트 초기화 완료 ===")
     
-    # 모델 및 토크나이저 로드 (Unsloth가 가능한 경우)
-    if UNSLOTH_AVAILABLE:
-        model, tokenizer = FastLanguageModel.from_pretrained(
-            model_name=model_id,
-            max_seq_length=max_seq_length,
-            dtype=dtype,
-            load_in_4bit=load_in_4bit,
-        )
+    print("=== 1. 모델 설정 및 토크나이저 로드 중 ===")
+    tokenizer = AutoTokenizer.from_pretrained(model_id, trust_remote_code=True)
+    if tokenizer.pad_token is None:
+        tokenizer.pad_token = tokenizer.eos_token
 
-        # LoRA 모델 설정
-        model = FastLanguageModel.get_peft_model(
-            model,
-            r=16,
-            target_modules=["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"],
-            lora_alpha=16,
-            lora_dropout=0,
-            bias="none",
-            use_gradient_checkpointing="unsloth",
-            random_state=3407,
-        )
-    else:
-        print("Unsloth를 사용할 수 없어 기본 Transformers/PEFT 방식으로 진행합니다.")
-        # 일반적인 Hugging Face Transformers 로드 로직 위치
+    # config에서 문제가 되는 rope_scaling 속성 제거 패치
+    config = AutoConfig.from_pretrained(model_id, trust_remote_code=True)
+    if hasattr(config, "rope_scaling"):
+        delattr(config, "rope_scaling")
 
-    print("모델 및 환경 설정이 성공적으로 완료되었습니다!")
+    model = AutoModelForCausalLM.from_pretrained(
+        model_id,
+        config=config,
+        torch_dtype=torch.float16,
+        device_map="auto",
+        trust_remote_code=True
+    )
+
+    print("=== 2. LoRA 어댑터 설정 중 ===")
+    peft_config = LoraConfig(
+        task_type=TaskType.CAUSAL_LM,
+        r=16,
+        lora_alpha=32,
+        lora_dropout=0.05,
+        target_modules=["qkv_proj", "o_proj", "gate_up_proj", "down_proj"],
+        bias="none",
+    )
+    
+    model = get_peft_model(model, peft_config)
+    model.print_trainable_parameters()
+
+    print("=== 3. 데이터셋 준비 중 ===")
+    dataset = load_dataset("json", data_files="eval/eval_dataset.json") 
+
+    print("=== 4. TrainingArguments 및 SFTTrainer 설정 중 ===")
+    training_args = TrainingArguments(
+        output_dir="./results",
+        num_train_epochs=3,
+        per_device_train_batch_size=4,
+        gradient_accumulation_steps=4,
+        learning_rate=2e-4,
+        fp16=True,
+        logging_steps=10,
+        save_strategy="epoch",
+        optim="adamw_torch",
+        report_to="none",
+    )
+
+    trainer = SFTTrainer(
+        model=model,
+        train_dataset=dataset["train"],
+        dataset_text_field="text",
+        max_seq_length=max_seq_length,
+        args=training_args,
+        packing=False,
+    )
+
+    print("=== 5. 파인튜닝 학습 시작! ===")
+    trainer.train()
+    
+    print("=== 학습 완료! 모델 저장 중 ===")
+    trainer.model.save_pretrained("./final_adapter")
+    tokenizer.save_pretrained("./final_adapter")
+    print("모든 작업이 성공적으로 완료되었습니다.")
 
 if __name__ == "__main__":
     main()
