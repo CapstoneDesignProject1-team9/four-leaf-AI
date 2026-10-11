@@ -266,22 +266,31 @@ def evaluate_with_ragas(
         return empty
 
     try:
-        has_contexts = all("contexts" in item for item in eval_items)
+        # contexts가 하나라도 있으면 retrieval 메트릭 포함
+        # (없는 아이템은 빈 리스트로 패딩 → NaN으로 기록됨)
+        any_contexts = any("contexts" in item and item["contexts"] for item in eval_items)
 
         ragas_data: Dict[str, List] = {
             "question": [item["question"] for item in eval_items],
             "answer": [item["generated_answer"] for item in eval_items],
             "ground_truth": [item["ground_truth"] for item in eval_items],
         }
-        if has_contexts:
-            ragas_data["contexts"] = [item["contexts"] for item in eval_items]
+        if any_contexts:
+            # contexts 없는 아이템(Non-RAG 모델)은 빈 리스트로 패딩
+            ragas_data["contexts"] = [
+                item.get("contexts") or [] for item in eval_items
+            ]
+            ctx_count = sum(1 for i in eval_items if i.get("contexts"))
+            logger.info(
+                f"RAGAS: contexts 있는 아이템 {ctx_count}개 / 전체 {len(eval_items)}개 "
+                "– faithfulness, context_precision 포함"
+            )
 
         hf_dataset = HFDataset.from_dict(ragas_data)
 
         metrics = [answer_similarity, answer_correctness]
-        if has_contexts and _RAGAS_RETRIEVAL_METRICS:
+        if any_contexts and _RAGAS_RETRIEVAL_METRICS:
             metrics += _RAGAS_RETRIEVAL_METRICS
-            logger.info("RAGAS: contexts 필드 감지 – faithfulness, context_precision 포함")
 
         logger.info(f"RAGAS 평가 시작 (메트릭: {[m.name for m in metrics]})...")
         result = ragas_evaluate(dataset=hf_dataset, metrics=metrics)
@@ -291,7 +300,11 @@ def evaluate_with_ragas(
         per_item: List[Dict[str, float]] = []
         for _, row in result_df.iterrows():
             per_item.append(
-                {name: round(float(row[name]), 4) for name in metric_names if name in row}
+                {
+                    name: round(float(row[name]), 4)
+                    for name in metric_names
+                    if name in row and row[name] == row[name]  # NaN 필터링 (NaN != NaN)
+                }
             )
         logger.info("RAGAS 평가 완료")
         return per_item
@@ -323,16 +336,25 @@ async def async_main() -> None:
     for item_idx, item in enumerate(dataset):
         question = item["question"]
         ground_truth = item["ground_truth"]
+        # contexts는 모델별 dict 구조: {"Base Model + RAG": ["chunk1", ...], ...}
+        item_contexts: Dict[str, List[str]] = item.get("contexts", {})
         for model_name, answer in item["models"].items():
-            eval_items.append(
-                {
-                    "question": question,
-                    "ground_truth": ground_truth,
-                    "generated_answer": answer,
-                    "format_instructions": format_instructions,
-                }
-            )
-            metadata.append({"item_idx": item_idx, "model_name": model_name})
+            eval_item: Dict[str, Any] = {
+                "question": question,
+                "ground_truth": ground_truth,
+                "generated_answer": answer,
+                "format_instructions": format_instructions,
+            }
+            # 해당 모델에 저장된 contexts가 있으면 포함 (RAGAS retrieval 메트릭 활성화)
+            model_contexts = item_contexts.get(model_name, [])
+            if model_contexts:
+                eval_item["contexts"] = model_contexts
+            eval_items.append(eval_item)
+            metadata.append({
+                "item_idx": item_idx,
+                "model_name": model_name,
+                "has_contexts": bool(model_contexts),
+            })
 
     max_concurrency = int(os.getenv("EVAL_MAX_CONCURRENCY", "5"))
     if max_concurrency < 1:

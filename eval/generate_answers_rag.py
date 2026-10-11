@@ -2,6 +2,19 @@
 """
 RAG 백엔드 (uvicorn) 로 질문을 보내고, 결과를 eval_dataset.json 의
 "Base Model + RAG" 필드에 채워 저장하는 스크립트.
+
+RAGAS faithfulness / context_precision 평가를 위해,
+검색된 source_documents 의 page_content 도 함께 ``contexts`` 필드에 저장합니다.
+
+  eval_dataset.json 구조 (저장 후):
+  {
+    "question": "...",
+    "ground_truth": "...",
+    "models": { "Base Model + RAG": "...", ... },
+    "contexts": {
+      "Base Model + RAG": ["<chunk1>", "<chunk2>", ...]
+    }
+  }
 """
 
 import json
@@ -15,19 +28,26 @@ logging.basicConfig(level=logging.INFO,
                     format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
-API_URL = "http://localhost:8000/qa"   # FastAPI 엔드포인트
+API_URL = "http://localhost:8000/chat"  # FastAPI 엔드포인트
 
-def query_rag(question: str) -> str:
-    payload = {"question": question}
+def query_rag(question: str) -> tuple[str, list[str]]:
+    """RAG 엔드포인트에 질문을 보내고 (answer, contexts) 튜플을 반환합니다.
+
+    contexts 는 RAGAS faithfulness / context_precision 계산에 사용됩니다.
+    """
+    payload = {"message": question}
     try:
         resp = requests.post(API_URL, json=payload, timeout=120)
         resp.raise_for_status()
         data = resp.json()
-        # API가 반환하는 키가 "answer" 라는 가정
-        return data.get("answer", "").strip()
+        answer = data.get("answer", "").strip()
+        # sources 리스트에서 content 필드만 추출해 contexts 구성
+        sources = data.get("sources", [])
+        contexts = [s.get("content", "") for s in sources if s.get("content")]
+        return answer, contexts
     except Exception as e:
         logger.error(f"RAG 요청 실패: {e}")
-        return f"[ERROR] {e}"
+        return f"[ERROR] {e}", []
 
 def main():
     parser = argparse.ArgumentParser(
@@ -64,8 +84,14 @@ def main():
         question = item["question"]
         logger.info(f"[{idx+1}/{total}] 질문: {question[:50]}...")
 
-        answer = query_rag(question)
+        answer, contexts = query_rag(question)
         item["models"][args.model_name] = answer
+
+        # contexts 저장 (모델별 dict 구조로 관리)
+        if "contexts" not in item:
+            item["contexts"] = {}
+        item["contexts"][args.model_name] = contexts
+        logger.info(f"  → 검색된 청크 수: {len(contexts)}개")
 
         # 매 iteration 마다 파일에 중간 저장 (예기치 않은 중단 대비)
         with open(dataset_path, "w", encoding="utf-8") as f:
@@ -80,7 +106,7 @@ def main():
             f"예상 남은 시간: {remaining:.0f}s"
         )
 
-    logger.info("✅ RAG 답변 채우기 완료")
+    logger.info("✅ RAG 답변 및 contexts 저장 완료")
     logger.info(f"파일 저장 위치: {dataset_path}")
 
 if __name__ == "__main__":
