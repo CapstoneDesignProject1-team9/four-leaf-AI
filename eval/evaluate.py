@@ -1,21 +1,29 @@
 '''evaluate.py
 
-Utility module for asynchronous evaluation of LLM responses using Claude as a judge.
-It loads a dataset, invokes a LangChain chain for each item, applies exponential back‑off on failures,
-calculates ROUGE‑L scores, aggregates results per model, and writes a CSV report.
+Utility module for asynchronous evaluation of LLM responses using Claude as a judge,
+ROUGE‑L overlap scoring, and RAGAS reference-based metrics.
 
-The module expects the following environment variables:
-- ANTHROPIC_MODEL (default: ``claude-3-opus-20240229``)
-- ANTHROPIC_API_KEY (required for Claude API access)
-- EVAL_MAX_CONCURRENCY (optional, default ``5``)
-'''\n
+Evaluation pipeline:
+  1. LLM-as-a-Judge  – Claude scores each answer 1-5 with a rubric.
+  2. ROUGE-L          – Token-overlap F1 between ground_truth and generated answer.
+  3. RAGAS            – AnswerSimilarity & AnswerCorrectness (no retrieval context needed).
+                        When a ``contexts`` field is present in the dataset item,
+                        Faithfulness and ContextPrecision are also computed.
+
+Required environment variables:
+- ANTHROPIC_MODEL        (default: ``claude-3-opus-20240229``)
+- ANTHROPIC_API_KEY      (required for Claude API access)
+- OPENAI_API_KEY         (required for RAGAS embeddings/LLM; or set RAGAS_LLM/RAGAS_EMBEDDINGS)
+- EVAL_MAX_CONCURRENCY   (optional, default ``5``)
+'''
+
 import asyncio
 import csv
 import json
 import logging
 import os
 import random
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 
 from dotenv import load_dotenv
 from langchain_anthropic import ChatAnthropic
@@ -23,6 +31,29 @@ from langchain_core.output_parsers import JsonOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field, conint
 from rouge_score import rouge_scorer
+
+# RAGAS -----------------------------------------------------------------------
+try:
+    from datasets import Dataset as HFDataset
+    from ragas import evaluate as ragas_evaluate
+    from ragas.metrics import (
+        answer_similarity,
+        answer_correctness,
+    )
+    # Optional retrieval-aware metrics (require ``contexts`` in dataset)
+    try:
+        from ragas.metrics import faithfulness, context_precision
+        _RAGAS_RETRIEVAL_METRICS = [faithfulness, context_precision]
+    except ImportError:
+        _RAGAS_RETRIEVAL_METRICS = []
+    _RAGAS_AVAILABLE = True
+except ImportError:
+    _RAGAS_AVAILABLE = False
+    logger_bootstrap = logging.getLogger(__name__)
+    logger_bootstrap.warning(
+        "ragas 패키지가 설치되지 않았습니다. RAGAS 평가를 건너뜁니다. "
+        "(pip install ragas datasets 로 설치하세요)"
+    )
 
 # ---------------------------------------------------------------------------
 # Load environment variables and configure logging
@@ -205,6 +236,71 @@ async def evaluate_responses_batch(
     return results
 
 # ---------------------------------------------------------------------------
+# RAGAS evaluation helper
+# ---------------------------------------------------------------------------
+def evaluate_with_ragas(
+    eval_items: List[Dict[str, Any]],
+) -> List[Dict[str, float]]:
+    """Run RAGAS evaluation on *eval_items* and return per-item metric dicts.
+
+    Each item in ``eval_items`` must have:
+    - ``question``         (str)
+    - ``ground_truth``     (str)
+    - ``generated_answer`` (str)
+    - ``contexts``         (List[str], optional) – if present, retrieval metrics are added.
+
+    Returns a list of dicts (same length as ``eval_items``) with RAGAS metric
+    values. Falls back to an empty dict per item when RAGAS is unavailable or
+    the evaluation fails.
+    """
+    empty = [{} for _ in eval_items]
+
+    if not _RAGAS_AVAILABLE:
+        return empty
+
+    if not os.getenv("OPENAI_API_KEY"):
+        logger.warning(
+            "OPENAI_API_KEY 가 설정되지 않아 RAGAS 평가를 건너뜁니다. "
+            "(RAGAS 기본 LLM/임베딩은 OpenAI를 사용합니다)"
+        )
+        return empty
+
+    try:
+        has_contexts = all("contexts" in item for item in eval_items)
+
+        ragas_data: Dict[str, List] = {
+            "question": [item["question"] for item in eval_items],
+            "answer": [item["generated_answer"] for item in eval_items],
+            "ground_truth": [item["ground_truth"] for item in eval_items],
+        }
+        if has_contexts:
+            ragas_data["contexts"] = [item["contexts"] for item in eval_items]
+
+        hf_dataset = HFDataset.from_dict(ragas_data)
+
+        metrics = [answer_similarity, answer_correctness]
+        if has_contexts and _RAGAS_RETRIEVAL_METRICS:
+            metrics += _RAGAS_RETRIEVAL_METRICS
+            logger.info("RAGAS: contexts 필드 감지 – faithfulness, context_precision 포함")
+
+        logger.info(f"RAGAS 평가 시작 (메트릭: {[m.name for m in metrics]})...")
+        result = ragas_evaluate(dataset=hf_dataset, metrics=metrics)
+        result_df = result.to_pandas()
+
+        metric_names = [m.name for m in metrics]
+        per_item: List[Dict[str, float]] = []
+        for _, row in result_df.iterrows():
+            per_item.append(
+                {name: round(float(row[name]), 4) for name in metric_names if name in row}
+            )
+        logger.info("RAGAS 평가 완료")
+        return per_item
+    except Exception as exc:
+        logger.error(f"RAGAS 평가 중 오류 발생: {exc}")
+        return empty
+
+
+# ---------------------------------------------------------------------------
 # Main entry point for asynchronous execution
 # ---------------------------------------------------------------------------
 async def async_main() -> None:
@@ -248,6 +344,9 @@ async def async_main() -> None:
         eval_items, max_concurrency=max_concurrency, format_instructions=format_instructions
     )
 
+    # RAGAS evaluation runs synchronously (ragas_evaluate is blocking)
+    ragas_results = evaluate_with_ragas(eval_items)
+
     # -------------------------------------------------------------------
     # Aggregate scores and write CSV report
     # -------------------------------------------------------------------
@@ -255,7 +354,9 @@ async def async_main() -> None:
     model_rouge_scores: Dict[str, List[float]] = {}
     csv_data: List[Dict[str, Any]] = []
 
-    for meta, item, res in zip(metadata, eval_items, results):
+    model_ragas_scores: Dict[str, Dict[str, List[float]]] = {}
+
+    for idx, (meta, item, res) in enumerate(zip(metadata, eval_items, results)):
         q_idx = meta["item_idx"] + 1
         m_name = meta["model_name"]
         score = res.get("score", 0)
@@ -264,23 +365,43 @@ async def async_main() -> None:
             ground_truth=item["ground_truth"],
             generated_answer=item["generated_answer"],
         )
+
+        # RAGAS per-item scores
+        ragas_item = ragas_results[idx] if idx < len(ragas_results) else {}
+        ragas_similarity = ragas_item.get("answer_similarity", None)
+        ragas_correctness = ragas_item.get("answer_correctness", None)
+        ragas_faithfulness = ragas_item.get("faithfulness", None)
+        ragas_ctx_precision = ragas_item.get("context_precision", None)
+
         logger.info(
-            f"[질문 {q_idx} | {m_name}] 점수: {score} | ROUGE-L: {rouge_l_score:.4f} - {reason}"
+            f"[질문 {q_idx} | {m_name}] 점수: {score} | ROUGE-L: {rouge_l_score:.4f}"
+            + (f" | RAGAS sim: {ragas_similarity:.4f}" if ragas_similarity is not None else "")
+            + (f" | RAGAS corr: {ragas_correctness:.4f}" if ragas_correctness is not None else "")
+            + f" - {reason}"
         )
         model_scores.setdefault(m_name, []).append(score)
         model_rouge_scores.setdefault(m_name, []).append(rouge_l_score)
-        csv_data.append(
-            {
-                "Question_ID": q_idx,
-                "Question": item["question"],
-                "Ground_Truth": item["ground_truth"],
-                "Model": m_name,
-                "Generated_Answer": item["generated_answer"],
-                "Opus Score": score,
-                "ROUGE-L Score": rouge_l_score,
-                "Reason": reason,
-            }
-        )
+
+        # Accumulate RAGAS per-model
+        m_ragas = model_ragas_scores.setdefault(m_name, {})
+        for key, val in ragas_item.items():
+            m_ragas.setdefault(key, []).append(val)
+
+        row: Dict[str, Any] = {
+            "Question_ID": q_idx,
+            "Question": item["question"],
+            "Ground_Truth": item["ground_truth"],
+            "Model": m_name,
+            "Generated_Answer": item["generated_answer"],
+            "Opus Score": score,
+            "ROUGE-L Score": rouge_l_score,
+            "RAGAS Answer Similarity": ragas_similarity if ragas_similarity is not None else "",
+            "RAGAS Answer Correctness": ragas_correctness if ragas_correctness is not None else "",
+            "RAGAS Faithfulness": ragas_faithfulness if ragas_faithfulness is not None else "",
+            "RAGAS Context Precision": ragas_ctx_precision if ragas_ctx_precision is not None else "",
+            "Reason": reason,
+        }
+        csv_data.append(row)
 
     logger.info("=" * 40)
     logger.info("📊 모델별 최종 평균 점수")
@@ -289,8 +410,13 @@ async def async_main() -> None:
         rouge_scores = model_rouge_scores[m_name]
         avg_llm = sum(scores) / len(scores) if scores else 0
         avg_rouge = sum(rouge_scores) / len(rouge_scores) if rouge_scores else 0
+        ragas_summary_parts = []
+        for metric_key, vals in model_ragas_scores.get(m_name, {}).items():
+            avg_val = sum(vals) / len(vals) if vals else 0
+            ragas_summary_parts.append(f"{metric_key}: {avg_val:.4f}")
+        ragas_summary = " | ".join(ragas_summary_parts) if ragas_summary_parts else "N/A"
         logger.info(
-            f" - {m_name}: Opus {avg_llm:.2f}점 | ROUGE-L {avg_rouge:.4f} (총 {len(scores)}개)"
+            f" - {m_name}: Opus {avg_llm:.2f}점 | ROUGE-L {avg_rouge:.4f} | RAGAS [{ragas_summary}] (총 {len(scores)}개)"
         )
 
     output_path = os.path.join(os.path.dirname(__file__), "eval_results.csv")
