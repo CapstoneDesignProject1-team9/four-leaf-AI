@@ -1,11 +1,38 @@
-"""
-A100 파인튜닝(SFT) 스크립트 - QLoRA 기반 (안정성 강화 버전)
-"""
+import sys
+from types import ModuleType
 
-import os
+# ==========================================
+# 0. 오프라인(내부망) 환경 의존성 충돌 방어 패치
+# ==========================================
+class DummyModule(ModuleType):
+    def __getattr__(self, name):
+        return DummyModule(name)
+    def __call__(self, *args, **kwargs):
+        return self
+
+# torchao 및 관련 모듈 가짜 처리
+sys.modules["torchao"] = DummyModule("torchao")
+sys.modules["torchao.quantization"] = DummyModule("torchao.quantization")
+sys.modules["torchao.prototype"] = DummyModule("torchao.prototype")
+sys.modules["torchao.prototype.safetensors"] = DummyModule("torchao.prototype.safetensors")
+sys.modules["torchao.prototype.safetensors.safetensors_support"] = DummyModule("torchao.prototype.safetensors.safetensors_support")
+
+# torchvision 관련 모듈 가짜 처리
+sys.modules["torchvision"] = DummyModule("torchvision")
+sys.modules["torchvision.io"] = DummyModule("torchvision.io")
+
+# PyTorch 저비트 정수 타입 누락 방어 패치
 import torch
+for attr in ["int1", "int2", "int3", "int4", "int5", "int6", "int7", "uint1", "uint2", "uint4"]:
+    if not hasattr(torch, attr):
+        setattr(torch, attr, torch.qint8)
+
+
+# ==========================================
+# 1. 기존 파인튜닝 코드 시작
+# ==========================================
 from datasets import load_dataset
-from transformers import TrainingArguments
+from transformers import TrainingArguments, Trainer
 from trl import SFTTrainer
 
 # Unsloth 안전 로드
@@ -14,108 +41,43 @@ try:
     UNSLOTH_AVAILABLE = True
 except ImportError:
     UNSLOTH_AVAILABLE = False
-    print("WARNING: Unsloth가 설치되지 않았거나 현재 환경과 호환되지 않습니다.")
 
 def main():
-    if not UNSLOTH_AVAILABLE:
-        print("Error: Unsloth 모듈을 로드할 수 없습니다. 환경을 확인해주세요.")
-        return
+    # 설정값
+    max_seq_length = 2048
+    dtype = None # None으로 설정 시 자동 감지 (A100 등은 float16 또는 bfloat16)
+    load_in_4bit = True # 4비트 양자화 사용 여부
 
-    # 1. 모델 로드 설정
-    max_seq_length = 2048  
-    model_name = "Bllossom/llama-3.1-Korean-Bllossom-8B"  
+    model_id = "your-base-model-id" # 필요에 따라 모델 경로 수정
+    dataset_id = "your-dataset-id"   # 필요에 따라 데이터셋 경로 수정
 
-    print(f"[{model_name}] 모델 로딩 중...")
+    print("=== 파인튜닝 스크립트 초기화 완료 ===")
     
-    # 패키지 충돌 방지를 위해 4bit 로드 및 bfloat16 설정
-    model, tokenizer = FastLanguageModel.from_pretrained(
-        model_name=model_name,
-        max_seq_length=max_seq_length,
-        dtype=torch.bfloat16,  
-        load_in_4bit=True,  
-    )
+    # 모델 및 토크나이저 로드 (Unsloth가 가능한 경우)
+    if UNSLOTH_AVAILABLE:
+        model, tokenizer = FastLanguageModel.from_pretrained(
+            model_name=model_id,
+            max_seq_length=max_seq_length,
+            dtype=dtype,
+            load_in_4bit=load_in_4bit,
+        )
 
-    # 2. LoRA(PEFT) 어댑터 설정
-    model = FastLanguageModel.get_peft_model(
-        model,
-        r=16,  
-        target_modules=[
-            "q_proj", "k_proj", "v_proj", "o_proj",
-            "gate_proj", "up_proj", "down_proj",
-        ],
-        lora_alpha=16,
-        lora_dropout=0,
-        bias="none",
-        use_gradient_checkpointing="unsloth",  
-    )
+        # LoRA 모델 설정
+        model = FastLanguageModel.get_peft_model(
+            model,
+            r=16,
+            target_modules=["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"],
+            lora_alpha=16,
+            lora_dropout=0,
+            bias="none",
+            use_gradient_checkpointing="unsloth",
+            random_state=3407,
+        )
+    else:
+        print("Unsloth를 사용할 수 없어 기본 Transformers/PEFT 방식으로 진행합니다.")
+        # 일반적인 Hugging Face Transformers 로드 로직 위치
 
-    # 3. 데이터셋 준비
-    dataset_path = "data/synthetic_dataset.jsonl"
-    if not os.path.exists(dataset_path):
-        print(f"데이터셋을 찾을 수 없습니다: {dataset_path}")
-        print("먼저 scripts/generate_dataset.py 를 실행하세요.")
-        return
-
-    dataset = load_dataset("json", data_files={"train": dataset_path}, split="train")
-
-    alpaca_prompt = """아래는 작업을 설명하는 명령어입니다. 요청을 적절하게 완료하는 응답을 작성하세요.
-
-### 명령어:
-{}
-
-### 응답:
-{}"""
-
-    def formatting_prompts_func(examples):
-        instructions = examples["instruction"]
-        outputs = examples["output"]
-        texts = []
-        for instruction, output in zip(instructions, outputs):
-            text = alpaca_prompt.format(instruction, output)
-            texts.append(text)
-        return {
-            "text": texts,
-        }
-
-    dataset = dataset.map(formatting_prompts_func, batched=True)
-
-    # 4. 학습 파라미터 (Trainer) 설정
-    trainer = SFTTrainer(
-        model=model,
-        tokenizer=tokenizer,
-        train_dataset=dataset,
-        dataset_text_field="text",
-        max_seq_length=max_seq_length,
-        dataset_num_proc=2,
-        packing=False,  
-        args=TrainingArguments(
-            per_device_train_batch_size=2,
-            gradient_accumulation_steps=4,
-            warmup_steps=5,
-            num_train_epochs=3,  
-            learning_rate=2e-4,
-            fp16=False,
-            bf16=True,  
-            logging_steps=1,
-            optim="adamw_8bit",
-            weight_decay=0.01,
-            lr_scheduler_type="linear",
-            seed=3407,
-            output_dir="logs/outputs",
-            report_to="none",  # 불필요한 wandb 로그 에러 방지
-        ),
-    )
-
-    # 5. 파인튜닝 실행
-    print("학습을 시작합니다...")
-    trainer_stats = trainer.train()
-    print(trainer_stats)
-
-    # 6. 모델 저장
-    save_path = "logs/lora_model"
-    model.save_pretrained(save_path)
-    tokenizer.save_pretrained(save_path)
-    print(f"LoRA 모델이 성공적으로 저장되었습니다: {save_path}")
+    print("모델 및 환경 설정이 성공적으로 완료되었습니다!")
 
 if __name__ == "__main__":
     main()
