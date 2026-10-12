@@ -1,4 +1,4 @@
-# 공지 임베딩 및 검색
+# 공지·강의계획서 임베딩 및 검색
 
 아래 파일 두 개를 기존 프로젝트에 넣으세요.
 
@@ -9,6 +9,8 @@ knowledge/
     requirements-embedding.txt
   processed/notices/
     knu_notice_chunks.jsonl
+  processed/syllabi/
+    knu_syllabus_chunks.jsonl
 ```
 
 ## 설치 및 실행
@@ -26,8 +28,27 @@ python -m venv .venv-embedding
 ```
 
 처음에는 약 2.3GB의 모델 가중치와 관련 파일을 다운로드합니다. 다운로드 시간과 최초 로딩 시간은 검색 시간과 구분하세요.
-DB는 `knowledge/vectorstores/knu_bge_m3`, 모델 캐시는 `.cache/embedding_models`에 생성됩니다.
+DB는 `knowledge/vectorstores/knu_notice_bge_m3`, 모델 캐시는 `.cache/embedding_models`에 생성됩니다.
 해당 폴더 및 가상환경은 Git에 올리지 않도록 프로젝트의 `.gitignore`에 제외하세요.
+
+## 강의계획서 색인
+
+공지와 같은 BGE-M3 모델을 사용하되 입력 파일, ChromaDB 경로, 컬렉션은 별도로 유지합니다.
+저장소 루트에서 전처리 → 기존 청커 → 임베딩 순서로 실행하세요.
+
+```powershell
+python knowledge/preprocessing/preprocess_syllabi.py
+python knowledge/preprocessing/chunk_notices.py `
+  --input knowledge/processed/syllabi/knu_syllabus_documents.jsonl `
+  --output knowledge/processed/syllabi/knu_syllabus_chunks.jsonl
+python knowledge/embeddings/embed_notices.py check --corpus syllabi
+python knowledge/embeddings/embed_notices.py index --corpus syllabi
+python knowledge/embeddings/embed_notices.py search "자연어처리개론 강의 내용" --corpus syllabi
+```
+
+기존 출력 파일을 다시 만들 때는 전처리기와 청커에 `--overwrite`를 추가하세요.
+강의계획서 DB는 `knowledge/vectorstores/knu_syllabi_bge_m3`, 컬렉션은
+`knu_syllabi_bge_m3_v1`입니다. 공지 DB인 `knu_notice_bge_m3`와 분리되어 있습니다.
 
 ## 동작
 
@@ -57,10 +78,9 @@ python knowledge/embeddings/embed_notices.py search "연구실 안전교육 이�
 
 이 질문들은 테스트 예시이며 정량적 정확도 평가 세트는 아닙니다.
 
-## 기존 앱 연결은 다음 단계
+## 앱 검색
 
-현재 `app/chains/rag_chain.py`는 KR-ELECTRA와 PDF/TXT 직접 로딩을 사용하므로 이 DB를 자동으로 사용하지 않습니다.
-검색 검증 후 앱도 BGE-M3(동일 revision/정규화 설정), 위 DB 경로와 `knu_notices_bge_m3_v1` 컬렉션으로 맞춰야 합니다.
-앱 검색에도 `active == True` 필터가 필요합니다. 기존 KR-ELECTRA DB에 새 벡터를 섞지 마세요.
-앱 연결 시 ChromaDB 및 LangChain 연동 패키지의 버전도 함께 맞춰야 합니다.
-이 DB를 구버전 ChromaDB 0.5.11로 열지 마세요. 루트 requirements.txt는 수정하지 않았습니다.
+앱은 공지와 강의계획서 컬렉션을 각각 검색한 뒤 cosine 거리 기준 통합 상위 5개를 답변에 사용합니다.
+강의계획서 DB가 아직 생성되지 않았으면 공지 검색으로 동작하고, DB가 준비되면 자동으로 함께 검색합니다.
+임베딩 모델과 revision은 두 코퍼스에서 같게 유지하세요. 이 DB를 구버전 ChromaDB 0.5.11로 열지 마세요.
+루트 `requirements.txt`는 수정하지 않았습니다.

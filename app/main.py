@@ -5,11 +5,13 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.v1 import advisor, chat, health
 from app.core.config import settings
+from app.storage.student_questions import initialize_question_store
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """앱 시작/종료 시 실행되는 lifecycle 훅"""
+    initialize_question_store()
     # 시작: 벡터스토어 초기화
     from app.chains.rag_chain import init_vectorstore
 

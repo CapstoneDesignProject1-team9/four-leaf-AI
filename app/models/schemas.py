@@ -6,6 +6,7 @@ class ChatRequest(BaseModel):
 
     message: str = Field(..., description="사용자 메시지", min_length=1, max_length=2000)
     session_id: str | None = Field(None, description="대화 세션 ID (멀티턴 대화용)")
+    course_name: str | None = Field(None, description="관련 강의명 (선택)", max_length=200)
 
 
 class SourceDocument(BaseModel):
@@ -34,7 +35,10 @@ class AdvisorReportRequest(BaseModel):
     """교수자용 통계/요약 요청 스키마"""
 
     course_name: str = Field(..., description="강의명")
-    student_questions: list[str] = Field(..., description="수집된 학생들의 질문 목록")
+    student_questions: list[str] = Field(
+        default_factory=list,
+        description="분석할 학생 질문 목록. 비우면 저장된 질문을 강의명 기준으로 조회",
+    )
 
 
 class AdvisorReportResponse(BaseModel):

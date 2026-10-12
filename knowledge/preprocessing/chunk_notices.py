@@ -2,19 +2,21 @@
 
 권장 위치: knowledge/preprocessing/chunk_notices.py
 
-기본 실행 (프로젝트 루트 또는 어느 경로에서든 가능):
+기본 실행 (프로젝트 루트에서):
     python knowledge/preprocessing/chunk_notices.py
 
-기존 결과를 교체해 다시 생성:
-    python knowledge/preprocessing/chunk_notices.py --overwrite
+기본 입출력 경로는 이 파일의 프로젝트 위치를 기준으로 하므로,
+다른 폴더에서 디버깅해도 동일한 파일을 사용한다.
+직접 지정한 상대 경로는 현재 실행 폴더를 기준으로 한다.
 
 직접 지정:
     python knowledge/preprocessing/chunk_notices.py \
         --input knowledge/processed/notices/knu_documents.jsonl \
         --output knowledge/processed/notices/knu_notice_chunks.jsonl \
-        --chunk-size 700 --chunk-overlap 100 --overwrite
+        --chunk-size 700 --chunk-overlap 100
 
 추가 패키지는 필요 없다. 입력 파일은 수정하지 않으며 출력은 원자적으로 저장한다.
+기존 청킹 결과와 보고서는 실행 시 자동으로 교체한다.
 문단·문장·단어 경계를 우선해 나누고, 각 청크에 제목·게시일·첨부파일명을
 반복해서 넣어 청크 하나만 검색되어도 출처 문맥을 이해할 수 있게 한다.
 """
@@ -235,10 +237,8 @@ def chunk_documents(
     return chunks, report
 
 
-def atomic_write(path: Path, content: str, overwrite: bool) -> None:
+def atomic_write(path: Path, content: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    if path.exists() and not overwrite:
-        raise FileExistsError(f"출력이 이미 있습니다: {path} (--overwrite로 교체)")
 
     temporary_name: str | None = None
     try:
@@ -265,7 +265,6 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument("--chunk-size", type=int, default=DEFAULT_CHUNK_SIZE)
     parser.add_argument("--chunk-overlap", type=int, default=DEFAULT_CHUNK_OVERLAP)
-    parser.add_argument("--overwrite", action="store_true")
     return parser.parse_args()
 
 
@@ -277,8 +276,6 @@ def main() -> None:
         raise SystemExit("입력·출력·보고서 경로는 서로 달라야 합니다")
     if not args.input.is_file():
         raise SystemExit(f"입력 파일을 찾을 수 없습니다: {args.input}")
-    if not args.overwrite and (args.output.exists() or report_path.exists()):
-        raise SystemExit("출력 또는 보고서가 이미 있습니다. --overwrite를 사용하세요.")
 
     try:
         documents = load_documents(args.input)
@@ -289,10 +286,8 @@ def main() -> None:
     report["input"] = str(args.input.resolve())
     report["output"] = str(args.output.resolve())
     jsonl = "".join(json.dumps(chunk, ensure_ascii=False) + "\n" for chunk in chunks)
-    atomic_write(args.output, jsonl, args.overwrite)
-    atomic_write(
-        report_path, json.dumps(report, ensure_ascii=False, indent=2) + "\n", args.overwrite
-    )
+    atomic_write(args.output, jsonl)
+    atomic_write(report_path, json.dumps(report, ensure_ascii=False, indent=2) + "\n")
     print(json.dumps(report, ensure_ascii=False, indent=2))
 
 
