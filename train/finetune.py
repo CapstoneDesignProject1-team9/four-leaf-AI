@@ -59,10 +59,10 @@ def main():
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
 
-    # config에서 문제가 되는 rope_scaling 속성 제거 패치
+    # config에서 문제가 되는 rope_scaling을 None으로 안전하게 설정 (delattr 대신 값 변경)
     config = AutoConfig.from_pretrained(model_id, trust_remote_code=True)
     if hasattr(config, "rope_scaling"):
-        delattr(config, "rope_scaling")
+        config.rope_scaling = None
 
     model = AutoModelForCausalLM.from_pretrained(
         model_id,
