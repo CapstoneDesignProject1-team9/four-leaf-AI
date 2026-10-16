@@ -82,7 +82,7 @@ def main():
         learning_rate=2e-4,
         logging_steps=10,
         save_strategy="epoch",
-        max_length=1024,              # 구버전 trl이면 max_seq_length
+        max_length=1024,  # 구버전 trl이면 max_seq_length
         bf16=use_bf16,
         fp16=not use_bf16,
         report_to="none",
@@ -93,7 +93,7 @@ def main():
         train_dataset=train_dataset,
         args=training_args,
         peft_config=peft_config,
-        processing_class=tokenizer,   # 구버전 trl이면 tokenizer=tokenizer
+        processing_class=tokenizer,  # 구버전 trl이면 tokenizer=tokenizer
     )
     trainer.model.print_trainable_parameters()
 
