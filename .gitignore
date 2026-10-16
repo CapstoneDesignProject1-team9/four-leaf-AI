@@ -65,3 +65,7 @@ knowledge/raw/notices/attachments/
 knowledge/processed/**/*.report.json
 knowledge/raw/
 knowledge/processed/
+
+results/
+final_adapter/
+slurm-*.out
