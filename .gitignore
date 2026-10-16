@@ -69,3 +69,9 @@ knowledge/processed/
 results/
 final_adapter/
 slurm-*.out
+
+results/
+final_adapter/
+slurm-*.out
+
+final_adapter*/

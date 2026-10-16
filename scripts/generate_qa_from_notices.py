@@ -107,9 +107,68 @@ def load_progress(output_path, sources_path):
     return seen_questions, done_docs
 
 
-def load_generator():
+SYSTEM_PROMPT = """당신은 대학교 학사 규정, 공지사항, 진로 가이드 등을 기반으로
+인공지능 모델 파인튜닝을 위한 고품질 Instruction 데이터셋을 생성하는 전문가입니다.
+
+제공된 [참고 문서]를 읽고, 실제 대학생이 할 법한 질문({num_pairs}개)과
+그에 대한 친절하고 정확한 AI 튜터의 답변을 생성해주세요.
+답변은 반드시 [참고 문서]의 내용만을 기반으로 해야 하며, 친절한 해요체를 사용하세요.
+문서에 없는 내용은 추측하지 말고, 날짜와 숫자는 문서에 적힌 그대로 사용하세요.
+
+형식 지침에 맞게 정확한 JSON만 출력해주세요.
+{format_instructions}
+"""
+
+
+def make_anthropic_generator(model_name):
+    """generate_qa.py 와 같은 프롬프트/스키마로 Claude 모델을 호출하는 생성 함수."""
+    import logging
+
+    from langchain_anthropic import ChatAnthropic
+    from langchain_core.output_parsers import JsonOutputParser
+    from langchain_core.prompts import ChatPromptTemplate
+
+    from generate_qa import QADataset
+
+    logger = logging.getLogger("generate_qa_from_notices")
+    llm = ChatAnthropic(model=model_name, max_tokens=2048)
+    parser = JsonOutputParser(pydantic_object=QADataset)
+    prompt = ChatPromptTemplate.from_messages(
+        [("system", SYSTEM_PROMPT), ("human", "[참고 문서]:\n{context}")]
+    )
+    chain = prompt | llm | parser
+
+    def generate(context_text, num_pairs=2):
+        try:
+            result = chain.invoke(
+                {
+                    "num_pairs": num_pairs,
+                    "context": context_text,
+                    "format_instructions": parser.get_format_instructions(),
+                }
+            )
+        except Exception as e:
+            logger.error(f"데이터 생성 중 오류 발생: {e}")
+            return []
+        if isinstance(result, list):
+            return result
+        if isinstance(result, dict):
+            for value in result.values():
+                if isinstance(value, list):
+                    return value
+        return []
+
+    return generate
+
+
+def load_generator(provider, model_name):
     # scripts/ 폴더가 sys.path[0]이므로 같은 폴더의 generate_qa를 바로 import 할 수 있습니다.
     sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    if provider == "anthropic":
+        if not os.environ.get("ANTHROPIC_API_KEY"):
+            sys.exit("ANTHROPIC_API_KEY 환경변수가 없습니다. export 후 다시 실행하세요.")
+        return make_anthropic_generator(model_name)
+
     from generate_qa import generate_synthetic_data
 
     return generate_synthetic_data
@@ -125,6 +184,13 @@ def main():
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--sleep", type=float, default=1.0, help="API 호출 간 대기(초)")
     parser.add_argument("--dry-run", action="store_true", help="API 호출 없이 선별만 확인")
+    parser.add_argument(
+        "--provider",
+        choices=["gemini", "anthropic"],
+        default="gemini",
+        help="gemini: 기존 generate_qa.py 사용 / anthropic: Claude 사용 (ANTHROPIC_API_KEY 필요)",
+    )
+    parser.add_argument("--model", default="claude-haiku-5-5", help="anthropic 모델 이름")
     args = parser.parse_args()
 
     sources_path = args.output.replace(".jsonl", ".sources.jsonl")
@@ -144,18 +210,35 @@ def main():
             print(body_of(row["chunk_text"])[:200].replace("\n", " "))
         return
 
-    generate = load_generator()
+    generate = load_generator(args.provider, args.model)
     os.makedirs(os.path.dirname(args.output) or ".", exist_ok=True)
 
     saved = 0
+    empty_streak = 0
     for i, row in enumerate(rows, 1):
         meta = row["metadata"]
         try:
             pairs = generate(row["chunk_text"], num_pairs=args.pairs_per_doc)
         except Exception as e:  # API 오류가 나도 다음 문서로 계속
+            empty_streak += 1
             print(f"[{i}/{len(rows)}] 생성 실패: {e}")
+            if empty_streak >= 3:
+                print("3회 연속 실패하여 중단합니다. 위 오류 메시지를 확인하세요.")
+                return
             time.sleep(args.sleep * 3)
             continue
+
+        # generate_synthetic_data()는 내부 오류(API 키 없음, 한도 초과 등)를 삼키고
+        # 빈 리스트를 돌려줄 수 있습니다. 이 경우 '처리 완료'로 기록하면 안 됩니다.
+        if not pairs:
+            empty_streak += 1
+            print(f"[{i}/{len(rows)}] 생성 결과 없음 (API 키/한도/로그 확인) - 기록하지 않음")
+            if empty_streak >= 3:
+                print("3회 연속 결과가 없어 중단합니다. 위 로그의 오류 메시지를 확인하세요.")
+                return
+            time.sleep(args.sleep * 3)
+            continue
+        empty_streak = 0
 
         kept = []
         for pair in pairs or []:
