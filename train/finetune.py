@@ -1,46 +1,85 @@
+"""Phi-3-mini LoRA 파인튜닝.
+
+학습 데이터: scripts/generate_qa_from_notices.py 가 만든 {"instruction", "output"} JSONL
+
+실행 (GPU 노드에서, 프로젝트 루트):
+    python train/finetune.py
+    python train/finetune.py --epochs 5
+    python train/finetune.py --data data/notice_qa_dataset.jsonl data/validated_qa_dataset.jsonl
+"""
+
+import argparse
+import json
 import os
+import random
+import re
 
 import torch
-from datasets import load_dataset
+from datasets import Dataset
 from peft import LoraConfig
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from trl import SFTConfig, SFTTrainer
 
-# scripts/generate_qa.py, scripts/generate_dataset.py 가 만드는 파일 (우선순위 순)
-DATA_CANDIDATES = [
-    "data/validated_qa_dataset.jsonl",
-    "data/synthetic_dataset.jsonl",
-]
+DEFAULT_DATA = ["data/notice_qa_dataset.jsonl"]
+MODEL_ID = "microsoft/Phi-3-mini-4k-instruct"
 
 
-def find_data_path():
-    for path in DATA_CANDIDATES:
-        if os.path.exists(path) and os.path.getsize(path) > 0:
-            return path
-    raise FileNotFoundError(
-        "학습 데이터가 없습니다. 아래 파일 중 하나가 필요합니다: "
-        + ", ".join(DATA_CANDIDATES)
-        + "\n(scripts/generate_qa.py 실행 또는 팀원에게 데이터 파일 요청)"
-    )
+def normalize(text):
+    return re.sub(r"[\s\W_]+", "", text.lower())
 
 
-def to_messages(example):
-    # {"instruction": ..., "output": ...} -> 채팅 형식
+def load_pairs(paths):
+    """JSONL 파일들을 읽어 중복 질문을 제거한 (instruction, output) 목록을 돌려줍니다."""
+    pairs = []
+    seen = set()
+    for path in paths:
+        if not os.path.exists(path):
+            raise FileNotFoundError(f"학습 데이터가 없습니다: {path}")
+        count = 0
+        with open(path, encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+                row = json.loads(line)
+                question = (row.get("instruction") or "").strip()
+                answer = (row.get("output") or "").strip()
+                key = normalize(question)
+                if not question or not answer or key in seen:
+                    continue
+                seen.add(key)
+                pairs.append((question, answer))
+                count += 1
+        print(f"  {path}: {count}쌍")
+    return pairs
+
+
+def to_messages(pair):
     # SFTTrainer가 모델의 chat template(Phi-3)을 자동 적용합니다.
+    question, answer = pair
     return {
         "messages": [
-            {"role": "user", "content": example["instruction"]},
-            {"role": "assistant", "content": example["output"]},
+            {"role": "user", "content": question},
+            {"role": "assistant", "content": answer},
         ]
     }
 
 
 def main():
-    print("=== 1. 모델 설정 및 토크나이저 로드 중 ===")
-    # 에어갭 환경이면 로컬 경로로 바꾸세요
-    model_id = "microsoft/Phi-3-mini-4k-instruct"
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--data", nargs="+", default=DEFAULT_DATA)
+    parser.add_argument("--epochs", type=float, default=3)
+    parser.add_argument("--lr", type=float, default=2e-4)
+    parser.add_argument("--batch-size", type=int, default=2)
+    parser.add_argument("--grad-accum", type=int, default=8)
+    parser.add_argument("--max-length", type=int, default=2048)
+    parser.add_argument("--output-dir", default="./results")
+    parser.add_argument("--adapter-dir", default="./final_adapter")
+    parser.add_argument("--seed", type=int, default=42)
+    args = parser.parse_args()
 
-    tokenizer = AutoTokenizer.from_pretrained(model_id)
+    print("=== 1. 모델 설정 및 토크나이저 로드 중 ===")
+    tokenizer = AutoTokenizer.from_pretrained(MODEL_ID)
     tokenizer.pad_token = tokenizer.eos_token
     tokenizer.padding_side = "right"
 
@@ -49,7 +88,7 @@ def main():
     print(f"bf16 사용: {use_bf16}")
 
     model = AutoModelForCausalLM.from_pretrained(
-        model_id,
+        MODEL_ID,
         dtype=torch.bfloat16 if use_bf16 else torch.float32,
         device_map="auto",
     )
@@ -66,25 +105,33 @@ def main():
     )
 
     print("=== 3. 데이터셋 준비 중 ===")
-    data_path = find_data_path()
-    print(f"학습 데이터: {data_path}")
-    raw = load_dataset("json", data_files=data_path)["train"]
-    train_dataset = raw.map(to_messages, remove_columns=raw.column_names)
-    print(f"데이터 개수: {len(train_dataset)}")
+    pairs = load_pairs(args.data)
+    if not pairs:
+        raise SystemExit("학습할 데이터가 0쌍입니다.")
+    random.Random(args.seed).shuffle(pairs)
+    train_dataset = Dataset.from_list([to_messages(p) for p in pairs])
+    print(f"총 학습 데이터: {len(train_dataset)}쌍")
     print("샘플:", train_dataset[0]["messages"])
+
+    steps_per_epoch = max(1, len(train_dataset) // (args.batch_size * args.grad_accum))
+    print(f"예상 스텝: 에폭당 약 {steps_per_epoch}, 전체 약 {int(steps_per_epoch * args.epochs)}")
 
     print("=== 4. SFTConfig 및 SFTTrainer 설정 중 ===")
     training_args = SFTConfig(
-        output_dir="./results",
-        num_train_epochs=3,
-        per_device_train_batch_size=4,
-        gradient_accumulation_steps=4,
-        learning_rate=2e-4,
-        logging_steps=10,
+        output_dir=args.output_dir,
+        num_train_epochs=args.epochs,
+        per_device_train_batch_size=args.batch_size,
+        gradient_accumulation_steps=args.grad_accum,
+        learning_rate=args.lr,
+        lr_scheduler_type="cosine",
+        warmup_ratio=0.05,
+        logging_steps=5,
         save_strategy="epoch",
-        max_length=1024,  # 구버전 trl이면 max_seq_length
+        save_total_limit=2,
+        max_length=args.max_length,  # 구버전 trl이면 max_seq_length
         bf16=use_bf16,
         fp16=not use_bf16,
+        seed=args.seed,
         report_to="none",
     )
 
@@ -100,9 +147,9 @@ def main():
     print("=== 5. 파인튜닝 학습 시작 ===")
     trainer.train()
 
-    trainer.model.save_pretrained("./final_adapter")
-    tokenizer.save_pretrained("./final_adapter")
-    print("=== 학습 완료 및 어댑터 저장 성공! ===")
+    trainer.model.save_pretrained(args.adapter_dir)
+    tokenizer.save_pretrained(args.adapter_dir)
+    print(f"=== 학습 완료 및 어댑터 저장 성공! ({args.adapter_dir}) ===")
 
 
 if __name__ == "__main__":
