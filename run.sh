@@ -1,4 +1,3 @@
-cat > run.sh << 'EOF'
 #!/bin/bash
 #SBATCH -J finetune
 #SBATCH -p p02
@@ -19,5 +18,4 @@ cd /abr/coss36/four-leaf-AI
 
 nvidia-smi
 python train/finetune.py "$@"
-EOF
 ls -l run.sh
