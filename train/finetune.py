@@ -1,142 +1,108 @@
-"""
-A100 파인튜닝(SFT) 스크립트 - QLoRA 기반
-
-Hugging Face `TRL`의 `SFTTrainer`와 `peft`를 이용해 대학 특화 데이터셋을 파인튜닝합니다.
-빠른 속도와 메모리 최적화를 위해 Unsloth 사용을 권장합니다.
-(Unsloth가 설치되어 있지 않은 환경에서는 일반 transformers 방식으로 우회 가능하도록 구조화할 수 있으나,
-여기서는 Unsloth 기반의 최신 템플릿을 제공합니다.)
-"""
-
 import os
 
 import torch
 from datasets import load_dataset
-from transformers import TrainingArguments
-from trl import SFTTrainer
+from peft import LoraConfig
+from transformers import AutoModelForCausalLM, AutoTokenizer
+from trl import SFTConfig, SFTTrainer
 
-# Unsloth 라이브러리가 A100 등 Ampere 아키텍처 이상에서 가장 효율적입니다.
-try:
-    from unsloth import FastLanguageModel
+# scripts/generate_qa.py, scripts/generate_dataset.py 가 만드는 파일 (우선순위 순)
+DATA_CANDIDATES = [
+    "data/validated_qa_dataset.jsonl",
+    "data/synthetic_dataset.jsonl",
+]
 
-    UNSLOTH_AVAILABLE = True
-except ImportError:
-    UNSLOTH_AVAILABLE = False
-    print(
-        "WARNING: Unsloth가 설치되지 않았습니다. 일반 Hugging Face 프레임워크로 구동하려면 추가 설정이 필요합니다."
+
+def find_data_path():
+    for path in DATA_CANDIDATES:
+        if os.path.exists(path) and os.path.getsize(path) > 0:
+            return path
+    raise FileNotFoundError(
+        "학습 데이터가 없습니다. 아래 파일 중 하나가 필요합니다: "
+        + ", ".join(DATA_CANDIDATES)
+        + "\n(scripts/generate_qa.py 실행 또는 팀원에게 데이터 파일 요청)"
     )
+
+
+def to_messages(example):
+    # {"instruction": ..., "output": ...} -> 채팅 형식
+    # SFTTrainer가 모델의 chat template(Phi-3)을 자동 적용합니다.
+    return {
+        "messages": [
+            {"role": "user", "content": example["instruction"]},
+            {"role": "assistant", "content": example["output"]},
+        ]
+    }
 
 
 def main():
-    if not UNSLOTH_AVAILABLE:
-        print("Unsloth 환경에서 실행해 주세요. (pip install unsloth)")
-        return
+    print("=== 1. 모델 설정 및 토크나이저 로드 중 ===")
+    # 에어갭 환경이면 로컬 경로로 바꾸세요
+    model_id = "microsoft/Phi-3-mini-4k-instruct"
 
-    # 1. 모델 로드 설정
-    max_seq_length = 2048  # 데이터 길이에 맞게 조절
-    model_name = (
-        "Bllossom/llama-3.1-Korean-Bllossom-8B"  # 한국어가 잘 지원되는 오픈소스 Llama 3 기반
+    tokenizer = AutoTokenizer.from_pretrained(model_id)
+    tokenizer.pad_token = tokenizer.eos_token
+    tokenizer.padding_side = "right"
+
+    # bf16 지원 GPU(A6000 등)면 bf16, 아니면 fp32 로드 + fp16 학습
+    use_bf16 = torch.cuda.is_available() and torch.cuda.is_bf16_supported()
+    print(f"bf16 사용: {use_bf16}")
+
+    model = AutoModelForCausalLM.from_pretrained(
+        model_id,
+        dtype=torch.bfloat16 if use_bf16 else torch.float32,
+        device_map="auto",
     )
 
-    print(f"[{model_name}] 모델 로딩 중...")
-    model, tokenizer = FastLanguageModel.from_pretrained(
-        model_name=model_name,
-        max_seq_length=max_seq_length,
-        dtype=torch.bfloat16,  # A100 지원 (bf16)
-        load_in_4bit=True,  # QLoRA (4bit 양자화 로드)
-    )
-
-    # 2. LoRA(PEFT) 어댑터 설정
-    # 모델의 전체 가중치를 학습하는 대신, 일부 추가 가중치(LoRA)만 학습하여 VRAM 최적화
-    model = FastLanguageModel.get_peft_model(
-        model,
-        r=16,  # LoRA Rank
-        target_modules=[
-            "q_proj",
-            "k_proj",
-            "v_proj",
-            "o_proj",
-            "gate_proj",
-            "up_proj",
-            "down_proj",
-        ],
-        lora_alpha=16,
-        lora_dropout=0,
+    print("=== 2. LoRA 어댑터 설정 중 ===")
+    # Phi-3는 q/k/v가 qkv_proj로, gate/up이 gate_up_proj로 합쳐져 있음
+    peft_config = LoraConfig(
+        r=16,
+        lora_alpha=32,
+        target_modules=["qkv_proj", "o_proj", "gate_up_proj", "down_proj"],
+        lora_dropout=0.05,
         bias="none",
-        use_gradient_checkpointing="unsloth",  # 최적화된 체크포인팅
+        task_type="CAUSAL_LM",
     )
 
-    # 3. 데이터셋 준비
-    # scripts/generate_dataset.py 에서 만든 JSONL 사용
-    dataset_path = "data/synthetic_dataset.jsonl"
-    if not os.path.exists(dataset_path):
-        print(f"데이터셋을 찾을 수 없습니다: {dataset_path}")
-        print("먼저 scripts/generate_dataset.py 를 실행하세요.")
-        return
+    print("=== 3. 데이터셋 준비 중 ===")
+    data_path = find_data_path()
+    print(f"학습 데이터: {data_path}")
+    raw = load_dataset("json", data_files=data_path)["train"]
+    train_dataset = raw.map(to_messages, remove_columns=raw.column_names)
+    print(f"데이터 개수: {len(train_dataset)}")
+    print("샘플:", train_dataset[0]["messages"])
 
-    dataset = load_dataset("json", data_files={"train": dataset_path}, split="train")
+    print("=== 4. SFTConfig 및 SFTTrainer 설정 중 ===")
+    training_args = SFTConfig(
+        output_dir="./results",
+        num_train_epochs=3,
+        per_device_train_batch_size=4,
+        gradient_accumulation_steps=4,
+        learning_rate=2e-4,
+        logging_steps=10,
+        save_strategy="epoch",
+        max_length=1024,  # 구버전 trl이면 max_seq_length
+        bf16=use_bf16,
+        fp16=not use_bf16,
+        report_to="none",
+    )
 
-    # 채팅 템플릿 포맷 함수 (Llama-3 인스트럭션 형식 등 모델에 맞게 수정 가능)
-    alpaca_prompt = """아래는 작업을 설명하는 명령어입니다. 요청을 적절하게 완료하는 응답을 작성하세요.
-
-### 명령어:
-{}
-
-### 응답:
-{}"""
-
-    def formatting_prompts_func(examples):
-        instructions = examples["instruction"]
-        outputs = examples["output"]
-        texts = []
-        for instruction, output in zip(instructions, outputs):
-            text = alpaca_prompt.format(instruction, output)
-            texts.append(text)
-        return {
-            "text": texts,
-        }
-
-    # 맵핑 수행
-    dataset = dataset.map(formatting_prompts_func, batched=True)
-
-    # 4. 학습 파라미터 (Trainer) 설정
     trainer = SFTTrainer(
         model=model,
-        tokenizer=tokenizer,
-        train_dataset=dataset,
-        dataset_text_field="text",
-        max_seq_length=max_seq_length,
-        dataset_num_proc=2,
-        packing=False,  # 긴 문맥 여러개 합치기 옵션
-        args=TrainingArguments(
-            per_device_train_batch_size=2,
-            gradient_accumulation_steps=4,
-            warmup_steps=5,
-            num_train_epochs=3,  # 학습 횟수
-            learning_rate=2e-4,
-            fp16=False,
-            bf16=True,  # A100용
-            logging_steps=1,
-            optim="adamw_8bit",
-            weight_decay=0.01,
-            lr_scheduler_type="linear",
-            seed=3407,
-            output_dir="logs/outputs",
-        ),
+        train_dataset=train_dataset,
+        args=training_args,
+        peft_config=peft_config,
+        processing_class=tokenizer,  # 구버전 trl이면 tokenizer=tokenizer
     )
+    trainer.model.print_trainable_parameters()
 
-    # 5. 파인튜닝 실행
-    print("학습을 시작합니다...")
-    trainer_stats = trainer.train()
-    print(trainer_stats)
+    print("=== 5. 파인튜닝 학습 시작 ===")
+    trainer.train()
 
-    # 6. 모델 저장 (LoRA 가중치만 저장됨)
-    save_path = "logs/lora_model"
-    model.save_pretrained(save_path)
-    tokenizer.save_pretrained(save_path)
-    print(f"LoRA 모델이 성공적으로 저장되었습니다: {save_path}")
-
-    # (옵션) 나중에 vLLM 서빙을 원한다면 16bit 모델 병합(Merge) 저장도 가능합니다.
-    # model.save_pretrained_merged("logs/merged_model", tokenizer, save_method = "merged_16bit")
+    trainer.model.save_pretrained("./final_adapter")
+    tokenizer.save_pretrained("./final_adapter")
+    print("=== 학습 완료 및 어댑터 저장 성공! ===")
 
 
 if __name__ == "__main__":
