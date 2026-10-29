@@ -6,7 +6,9 @@ __pycache__/
 .env
 .venv
 env/
-venv/
+.venv/
+.venv312/
+.venv-test/
 
 # 로컬 개발 데이터 (git에 올리지 않음)
 # 로컬 개발 데이터 (git에 올리지 않음)

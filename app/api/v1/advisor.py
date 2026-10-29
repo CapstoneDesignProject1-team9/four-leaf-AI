@@ -6,7 +6,9 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_google_genai import ChatGoogleGenerativeAI
 from pydantic import BaseModel, Field
 
+from app.core.config import settings
 from app.models.schemas import AdvisorReportRequest, AdvisorReportResponse
+from app.storage.student_questions import get_student_questions
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -24,13 +26,19 @@ async def generate_advisor_report(request: AdvisorReportRequest):
     """
     [교수자용 AI 어드바이저]
     학생들이 남긴 질문 목록을 분석하여 요약, 키워드, 추천 액션을 생성합니다.
-    (HyperCLOVA X 활용)
+    (설정된 Gemini 모델 활용)
     """
-    if not request.student_questions:
-        raise HTTPException(status_code=400, detail="학생 질문 목록이 비어있습니다.")
+    student_questions = request.student_questions
+    if not student_questions:
+        student_questions = get_student_questions(request.course_name)
+    if not student_questions:
+        raise HTTPException(
+            status_code=404,
+            detail=f"'{request.course_name}'에 저장된 학생 질문이 없습니다.",
+        )
 
     try:
-        llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash")
+        llm = ChatGoogleGenerativeAI(model=settings.GEMINI_MODEL)
         parser = JsonOutputParser(pydantic_object=ReportFormat)
 
         system_prompt = """당신은 대학교 교수자를 돕는 'AI 어드바이저'입니다.
@@ -47,7 +55,7 @@ async def generate_advisor_report(request: AdvisorReportRequest):
 
         chain = prompt | llm | parser
 
-        questions_text = "\n".join([f"- {q}" for q in request.student_questions])
+        questions_text = "\n".join([f"- {q}" for q in student_questions])
 
         result = chain.invoke(
             {
