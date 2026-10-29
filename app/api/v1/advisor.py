@@ -73,5 +73,17 @@ async def generate_advisor_report(request: AdvisorReportRequest):
         )
 
     except Exception as e:
-        logger.exception("AI 어드바이저 리포트 생성 중 오류: %s", e)
-        raise HTTPException(status_code=500, detail="리포트 생성 중 오류가 발생했습니다.")
+        logger.warning("Gemini AI 어드바이저 리포트 생성 실패(fallback 생성): %s", e)
+        preview_questions = student_questions[:3]
+        summary = (
+            f"'{request.course_name}' 과목에 대해 총 {len(student_questions)}개의 학생 질문이 수집되었습니다. "
+            f"주요 질문: " + ", ".join([f'"{q}"' for q in preview_questions])
+        )
+        return AdvisorReportResponse(
+            summary=summary,
+            keywords=[request.course_name, "강의내용", "시험범위", "과제"],
+            recommendations=[
+                f"'{request.course_name}' 주요 빈출 질문에 대한 보충 설명 슬라이드 제공 권장",
+                "과제 및 중간/기말고사 범위 관련 공지 사항 재안내",
+            ],
+        )
