@@ -70,18 +70,17 @@ async def call_with_retry(chain, payload, max_retries=3):
         except Exception as e:
             msg = str(e).lower()
             if "credit balance" in msg:
-                logger.error("🚨 API 크레딧 소진! 충전 후 다시 실행하세요.")
+                logger.error("API 크레딧 소진! 충전 후 다시 실행하세요.")
                 sys.exit(0)
             if any(k in msg for k in ["429", "529", "503", "overloaded", "rate_limit"]):
                 wait = min(5 * (2**attempt), 60)
-                logger.warning(f"⚠️ API 과부하. {wait}초 대기 후 재시도...")
+                logger.warning(f"API 과부하. {wait}초 대기 후 재시도...")
                 await asyncio.sleep(wait)
             else:
                 raise e
     raise RuntimeError("API 재시도 횟수 초과")
 
 async def generate_synthetic_data_async(context_text: str, num_pairs: int) -> list[dict]:
-    # 클로드 지적 1번 반영: 모델명 수정 및 temperature 제거(기본값 사용)
     llm = ChatAnthropic(model="claude-sonnet-5-5", max_tokens=8192)
     parser = JsonOutputParser(pydantic_object=QADataset)
     system_prompt = """당신은 인공지능 파인튜닝을 위한 고품질 Instruction 데이터셋 생성 전문가입니다.
@@ -99,10 +98,8 @@ async def generate_synthetic_data_async(context_text: str, num_pairs: int) -> li
         return []
 
 async def validate_qa_batch_async(qa_pairs: list[dict], context_text: str) -> list[dict]:
-    # 클로드 지적 1번 반영: 모델명 수정 및 temperature 제거
     llm = ChatAnthropic(model="claude-haiku-5-5", max_tokens=4096)
     parser = JsonOutputParser(pydantic_object=JudgeBatchResult)
-    # 클로드 작은 수정 2번 반영: 검증 프롬프트 기준 복구
     system_prompt = """당신은 Q&A 데이터의 품질을 검증하는 엄격한 평가자입니다.
 아래 [참고 문서]만을 근거로 각 Q&A를 평가하세요.
 1. 답변이 참고 문서에 실제로 있는 사실에 기반하는가? (없는 내용을 지어냈다면 실패)
@@ -171,7 +168,6 @@ def iter_file_batches():
                     if len(buf) >= conf["group_size"]:
                         batches_by_cat[cat].append(("\n---\n".join(buf), fp.name, cat))
                         buf = []
-                # 클로드 작은 수정 1번 반영: 구체적인 예외 잡기
                 except json.JSONDecodeError:
                     continue
             
@@ -183,7 +179,6 @@ def iter_file_batches():
     
     return batches_by_cat
 
-# 클로드 수정 1번 반영: 상태 체크 헬퍼 함수
 def source_done(cat: str, counts_dict: dict) -> bool:
     if TEST_MODE:
         return attempted[cat] >= 1
@@ -196,21 +191,20 @@ async def process_batch(combined_text: str, file_name: str, cat: str, done_keys:
     if not TEST_MODE and record_key in done_keys:
         return
         
-    # 클로드 수정 2번 반영: 실행 직전에 한 번 더 목표치 초과 여부 확인
     if source_done(cat, passed_counts):
         return
     
     attempted[cat] += 1
     num_pairs = 1 if TEST_MODE else SOURCES[cat]["pairs_per_batch"]
     
-    logger.info(f"🚀 [{cat}] API 요청 중... (목표: {passed_counts[cat]}/{SOURCES[cat]['target']})")
+    logger.info(f"[{cat}] API 요청 중... (목표: {passed_counts[cat]}/{SOURCES[cat]['target']})")
     
     pairs = await generate_synthetic_data_async(combined_text, num_pairs=num_pairs)
     if not pairs: return
     
     results = await validate_qa_batch_async(pairs, combined_text)
     if len(results) != len(pairs) or any(r is None for r in results):
-        logger.warning(f"❌ [{cat}] 검증 실패 및 누락 - 묶음 스킵")
+        logger.warning(f"[{cat}] 검증 실패 및 누락 - 묶음 스킵")
         return
 
     for pair, res in zip(pairs, results):
@@ -228,7 +222,7 @@ async def process_batch(combined_text: str, file_name: str, cat: str, done_keys:
             with open(VALIDATED_PATH, "a", encoding="utf-8") as f:
                 f.write(json.dumps(out_data, ensure_ascii=False) + "\n")
             passed_counts[cat] += 1
-            if TEST_MODE: logger.info(f"✅ [테스트 통과]: {instruction[:30]}...")
+            if TEST_MODE: logger.info(f"테스트 통과]: {instruction[:30]}...")
         else:
             out_data["reject_reason"] = res.get("reason", "알 수 없음")
             with open(REJECTED_PATH, "a", encoding="utf-8") as f:
@@ -258,14 +252,13 @@ async def main():
 
     logger.info(f"▶️ 모드: {'테스트(각 파일 1개씩)' if TEST_MODE else '본 실행(500개 목표)'} | 누적: {passed_counts}")
 
-    # 클로드 수정 3번 반영: 묶음별 할당 로직 및 워커 기반 처리로 비용 폭탄 방지
     batches_by_cat = iter_file_batches()
     counts = {c: len(b) for c, b in batches_by_cat.items()}
-    logger.info(f"📦 소스별 생성된 전체 묶음 수: {counts}")
+    logger.info(f"소스별 생성된 전체 묶음 수: {counts}")
     
     empty = [c for c, b in batches_by_cat.items() if not b]
     if empty:
-        logger.error(f"🚨 묶음이 0개인 소스: {empty} → SOURCES의 match를 실제 파일명에 맞게 고치세요")
+        logger.error(f"묶음이 0개인 소스: {empty} → SOURCES의 match를 실제 파일명에 맞게 고치세요")
         return
 
     def interleave():
@@ -291,7 +284,7 @@ async def main():
     n_workers = 1 if TEST_MODE else CONCURRENCY
     await asyncio.gather(*(worker() for _ in range(n_workers)))
     
-    logger.info(f"🎉 종료! 최종 누적 개수: {passed_counts}")
+    logger.info(f"종료! 최종 누적 개수: {passed_counts}")
 
 if __name__ == "__main__":
     asyncio.run(main())
