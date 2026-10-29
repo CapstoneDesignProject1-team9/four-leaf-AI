@@ -23,6 +23,7 @@ class ChatResponse(BaseModel):
     answer: str = Field(..., description="AI 튜터 답변")
     sources: list[SourceDocument] = Field(default=[], description="참고한 문서 목록")
     session_id: str | None = None
+    course_name: str | None = Field(default=None, description="자동 분류 또는 지정된 과목명")
 
 
 class HealthResponse(BaseModel):

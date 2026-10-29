@@ -38,7 +38,8 @@ async def generate_advisor_report(request: AdvisorReportRequest):
         )
 
     try:
-        llm = ChatGoogleGenerativeAI(model=settings.GEMINI_MODEL)
+        api_key = settings.GOOGLE_API_KEY or None
+        llm = ChatGoogleGenerativeAI(model=settings.GEMINI_MODEL, google_api_key=api_key)
         parser = JsonOutputParser(pydantic_object=ReportFormat)
 
         system_prompt = """당신은 대학교 교수자를 돕는 'AI 어드바이저'입니다.
