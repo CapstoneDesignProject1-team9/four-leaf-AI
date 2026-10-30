@@ -15,7 +15,7 @@ import json
 import logging
 import os
 import random
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 
 from dotenv import load_dotenv
 from langchain_anthropic import ChatAnthropic
@@ -23,6 +23,14 @@ from langchain_core.output_parsers import JsonOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field, conint
 from rouge_score import rouge_scorer
+import numpy as np
+import pandas as pd
+from pathlib import Path
+from collections import defaultdict
+from scipy.stats import pearsonr, spearmanr, bootstrap
+from statsmodels.stats.inter_rater import fleiss_kappa
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 # ---------------------------------------------------------------------------
 # Load environment variables and configure logging
