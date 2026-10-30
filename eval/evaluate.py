@@ -31,6 +31,10 @@ from langchain_core.output_parsers import JsonOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field, conint
 from rouge_score import rouge_scorer
++from scipy.stats import pearsonr, spearmanr
++from statsmodels.stats.inter_rater import fleiss_kappa
+
+
 
 # RAGAS -----------------------------------------------------------------------
 try:
@@ -74,10 +78,16 @@ class EvalResult(BaseModel):
         Integer score from 1 (worst) to 5 (best).
     reason: str
         Explanation for the assigned score.
+    faithfulness: float
+        Float between 0.0 and 1.0 indicating factual faithfulness of the answer.
+    hallucination_detected: bool
+        True if the answer contains hallucinated content, else False.
     """
 
     score: conint(ge=1, le=5) = Field(description="1점부터 5점까지의 평가 점수")
     reason: str = Field(description="점수를 부여한 구체적인 이유")
+    faithfulness: float = Field(description="0.0~1.0 사이의 사실 일치도")
+    hallucination_detected: bool = Field(description="환각 여부")
 
 # ---------------------------------------------------------------------------
 # ROUGE‑L helper
@@ -210,7 +220,10 @@ async def evaluate_responses_batch(
  - 모범 답안과 완전히 상반된 정보를 제공하여 치명적인 오안내를 함
  - 대학 정보와 무관한 심각한 환각(Hallucination)이 포함됨
 
-위 기준을 바탕으로 1점에서 5점 사이의 점수를 매기고 그 이유를 설명해주세요.
+위 기준을 바탕으로 1점에서 5점 사이의 점수를 매기고, 다음 추가 항목을 포함해 주세요:
+- "faithfulness": 0.0과 1.0 사이의 실수, 답변이 사실과 얼마나 일치하는지 나타냅니다.
+- "hallucination_detected": true/false, 답변에 환각 내용이 존재하는지 여부를 표시합니다.
+그 이유를 설명하고, 위 필드들을 JSON 형식으로 출력해주세요.
 {format_instructions}\n\n[질문]: {question}\n[모범 답안]: {ground_truth}\n[모델의 답변]: {generated_answer}\n"""
 
     prompt = ChatPromptTemplate.from_messages(
@@ -421,6 +434,8 @@ async def async_main() -> None:
             "RAGAS Answer Correctness": ragas_correctness if ragas_correctness is not None else "",
             "RAGAS Faithfulness": ragas_faithfulness if ragas_faithfulness is not None else "",
             "RAGAS Context Precision": ragas_ctx_precision if ragas_ctx_precision is not None else "",
+            "Faithfulness": res.get("faithfulness", ""),
+            "Hallucination_Detected": res.get("hallucination_detected", ""),
             "Reason": reason,
         }
         csv_data.append(row)
@@ -449,12 +464,85 @@ async def async_main() -> None:
             writer.writeheader()
             writer.writerows(csv_data)
         logger.info(f"✅ 평가 결과가 '{output_path}'에 저장되었습니다.")
+        # Compute human agreement and correlation if human evaluation data is available
+        compute_human_agreement_and_correlation(csv_data)
     else:
         logger.warning("CSV 데이터가 비어 있어 저장을 건너뛰었습니다.")
 
 def main() -> None:
     """Entry‑point for synchronous execution via ``python -m eval.evaluate``."""
     asyncio.run(async_main())
+
+def compute_human_agreement_and_correlation(csv_data: List[Dict[str, Any]]) -> None:
+    """Compute inter‑rater agreement (Fleiss' Kappa) and correlation with Claude Opus scores.
+
+    Expects a CSV file ``human_evaluation.csv`` in the same directory with columns
+    ``question_id``, ``rater_id`` and ``score`` (1‑15).  The function reads the file,
+    aggregates the human scores per question, and then compares the average human
+    score with the ``Opus Score`` produced by Claude.
+
+    The results are logged:
+    * Pearson correlation coefficient
+    * Spearman rank correlation coefficient
+    * Fleiss' Kappa for the categorical ratings
+    """
+    import csv
+    from collections import defaultdict
+    from pathlib import Path
+
+    human_path = Path(__file__).with_name("human_evaluation.csv")
+    if not human_path.exists():
+        logger.info("Human evaluation file not found – skipping correlation analysis.")
+        return
+
+    # Load human scores
+    per_question: Dict[int, List[int]] = defaultdict(list)
+    with open(human_path, newline="", encoding="utf-8-sig") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            qid = int(row["question_id"])
+            score = int(row["score"])
+            per_question[qid].append(score)
+
+    # Build parallel lists for correlation
+    opus_scores: List[float] = []
+    human_means: List[float] = []
+    for entry in csv_data:
+        qid = entry["Question_ID"]
+        opus = entry.get("Opus Score")
+        if qid in per_question:
+            human_avg = sum(per_question[qid]) / len(per_question[qid])
+            opus_scores.append(float(opus))
+            human_means.append(human_avg)
+
+    if len(opus_scores) < 2:
+        logger.warning("Not enough overlapping items for correlation calculation.")
+        return
+
+    # Correlations
+    pearson, _ = pearsonr(opus_scores, human_means)
+    spearman, _ = spearmanr(opus_scores, human_means)
+    logger.info(f"Pearson correlation Opus ↔ Human: {pearson:.4f}")
+    logger.info(f"Spearman correlation Opus ↔ Human: {spearman:.4f}")
+
+    # Fleiss' Kappa – build rating matrix
+    categories = list(range(1, 16))
+    rating_matrix: List[List[int]] = []
+    for qid in sorted(per_question.keys()):
+        counts = [per_question[qid].count(cat) for cat in categories]
+        rating_matrix.append(counts)
+
+    try:
+        kappa = fleiss_kappa(rating_matrix)
+        logger.info(f"Fleiss' Kappa (inter‑rater agreement): {kappa:.4f}")
+    except Exception as exc:
+        logger.error(f"Failed to compute Fleiss' Kappa: {exc}")
+
+    # Summary
+    logger.info("=== Human vs. Claude Opus correlation summary ===")
+    logger.info(f"Questions compared: {len(opus_scores)}")
+    logger.info(f"Average human score: {sum(human_means)/len(human_means):.2f}")
+    logger.info(f"Average Opus score : {sum(opus_scores)/len(opus_scores):.2f}")
 
 if __name__ == "__main__":
     main()
