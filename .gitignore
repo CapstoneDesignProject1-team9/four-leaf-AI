@@ -65,6 +65,15 @@ knowledge/raw/notices/attachments/
 
 # 로컬 데이터 처리 보고서
 knowledge/processed/**/*.report.json
+knowledge/raw/
+knowledge/processed/
 
-# Everytime authenticated browser profile (never commit)
-.cache/everytime-browser-profile/
+results/
+final_adapter/
+slurm-*.out
+
+results/
+final_adapter/
+slurm-*.out
+
+final_adapter*/
