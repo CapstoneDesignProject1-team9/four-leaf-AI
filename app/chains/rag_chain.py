@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import logging
+import json
 import re
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
@@ -11,6 +13,7 @@ import chromadb
 from chromadb.config import Settings
 from langchain_core.documents import Document
 from langchain_ollama import ChatOllama
+from langchain_openai import ChatOpenAI
 from sentence_transformers import SentenceTransformer
 
 from app.core.config import settings
@@ -21,6 +24,17 @@ _syllabi_collection: Any | None = None
 _everytime_collection: Any | None = None
 _review_names: dict[str, set[str]] = {"course_name": set(), "professor": set()}
 _embedder: BgeM3Embedder | None = None
+
+# Chroma remains the durable vector store. Cache query embeddings only: retrieved
+# documents continue to reflect the active collection and metadata filters.
+@lru_cache(maxsize=2048)
+def _cached_embedding(question: str) -> tuple[float, ...]:
+    _, _, embedder = _ready()
+    return tuple(embedder.embed_query(question))
+
+
+def clear_search_cache() -> None:
+    _cached_embedding.cache_clear()
 
 
 class BgeM3Embedder:
@@ -199,9 +213,9 @@ def _search_collection(
 
 
 def search_notices(question: str) -> list[Document]:
-    notice_collection, _, embedder = _ready()
+    notice_collection, _, _ = _ready()
     return _search_collection(
-        notice_collection, embedder.embed_query(question), settings.RAG_TOP_K
+        notice_collection, list(_cached_embedding(question)), settings.RAG_TOP_K
     )
 
 
@@ -223,16 +237,14 @@ def _is_syllabus_question(question: str) -> bool:
 
 
 def search_syllabi(question: str, grade: str | None = None) -> list[Document]:
-    _, syllabi_collection, embedder = _ready()
+    _, syllabi_collection, _ = _ready()
     if syllabi_collection is None:
         return []
     # Several chunks belong to each syllabus. Retrieve a wider pool, then keep
     # the best matching chunk per course so one course cannot fill the results.
     candidates = _search_collection(
-        syllabi_collection,
-        embedder.embed_query(question),
-        max(settings.RAG_TOP_K * 20, 100),
-        {"grade": grade} if grade else None,
+        syllabi_collection, list(_cached_embedding(question)),
+        max(settings.RAG_TOP_K * 20, 100), {"grade": grade} if grade else None,
     )
     best_by_course: dict[str, Document] = {}
     for document in candidates:
@@ -384,18 +396,37 @@ class NoticeRagChain:
 
 [질문]
 {question}"""
-        response = self.llm.invoke(prompt)
+        model_name = str(inputs.get("model_name") or "").strip()
+        llm = _llm_for_model(model_name) if model_name else self.llm
+        response = llm.invoke(prompt)
         return {"result": str(response.content), "source_documents": documents}
 
 
 def build_rag_chain() -> NoticeRagChain:
     _ready()
-    return NoticeRagChain(
-        ChatOllama(
+    return NoticeRagChain(_llm_for_model())
+
+
+def _llm_for_model(model_name: str = "") -> Any:
+    if settings.VLLM_BASE_URL:
+        try:
+            adapters = json.loads(settings.VLLM_LORA_ADAPTERS or "{}")
+        except json.JSONDecodeError as exc:
+            raise RuntimeError("VLLM_LORA_ADAPTERS는 JSON 객체여야 합니다.") from exc
+        served_model = model_name if model_name in adapters else settings.VLLM_BASE_MODEL
+        return ChatOpenAI(
+            model=served_model or settings.VLLM_BASE_MODEL or "base",
+            base_url=settings.VLLM_BASE_URL.rstrip("/") + "/v1",
+            api_key="EMPTY",
+            temperature=0.2,
+            max_tokens=settings.OLLAMA_NUM_PREDICT,
+        )
+    if model_name:
+        logger.warning("vLLM이 설정되지 않아 model_name=%s 요청을 Ollama 기본 모델로 처리합니다.", model_name)
+    return ChatOllama(
             model=settings.OLLAMA_MODEL,
             base_url=settings.OLLAMA_BASE_URL,
             temperature=0.2,
             num_ctx=settings.OLLAMA_NUM_CTX,
             num_predict=settings.OLLAMA_NUM_PREDICT,
         )
-    )

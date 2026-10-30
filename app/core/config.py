@@ -19,6 +19,9 @@ class Settings(BaseSettings):
     OLLAMA_MODEL: str = "llama3.1:8b"
     OLLAMA_NUM_CTX: int = 4096
     OLLAMA_NUM_PREDICT: int = 768
+    VLLM_BASE_URL: str = ""
+    VLLM_BASE_MODEL: str = ""
+    VLLM_LORA_ADAPTERS: str = "{}"
 
     # Clova Studio API 엔드포인트
 

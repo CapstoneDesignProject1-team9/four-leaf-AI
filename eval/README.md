@@ -5,9 +5,17 @@
 1️⃣ 네 가지 어댑터 구성(Base, Base + RAG, Base + LoRA, Base + RAG + LoRA)의 답변을 생성합니다 – `generate_answers.py`(이전 `generate_answers_final.py`)를 참고하십시오.
 2️⃣ 각 답변을 Claude(Anthropic API)에게 보내 **1~5점**의 품질 점수와 이유 텍스트를 얻습니다.
 3️⃣ `rouge_score` 라이브러리를 사용해 **ROUGE‑L** 유사도를 계산합니다.
-4️⃣ 구성별 점수를 평균내고 CSV(`eval_results.csv`)로 저장합니다.
+4️⃣ RAGAS Faithfulness·Context Precision, human 점수 상관, 통계 검정을 계산하고 결과를 CSV로 저장합니다.
 
 비동기 처리, 동시 실행 제한, 진행 로그 출력 등 실용적인 기능을 갖추었습니다.
+
+### Human 점수 수집과 분석
+`human_evaluation.csv`에 한 행마다 한 평가자의 점수를 기록합니다. 열은
+`question_id,rater_id,model,score`이며 점수 범위는 1~5입니다. 파일은 현재 질문과 모델 조합별 빈 행으로 준비되어 있습니다. 평가자는 `rater_id`와 `score`를 채워 제출하면 됩니다. 사람 점수는 자동으로 만들지 않습니다.
+
+RAGAS 평가를 사용하려면 답변 생성 시 수집한 `contexts`가 필요합니다. 데이터셋에 문맥이 없으면 RAGAS 지표는 계산하지 않습니다. Claude 평가에는 `ANTHROPIC_API_KEY` 하나를 사용하며, RAGAS용 Claude 모델은 선택적으로 `RAGAS_ANTHROPIC_MODEL`로 지정할 수 있습니다. 미지정 시 `ANTHROPIC_MODEL` 값을 사용합니다.
+
+통계 출력은 일원 ANOVA 및 질문별 paired t-test를 포함합니다. ANOVA는 질문 간 반복측정을 독립 표본처럼 취급할 수 있으므로 논문에서는 paired 비교 결과와 효과크기를 함께 해석하고 분석 설계를 명시하세요.
 
 ---
 ## 🛠️ 핵심 파일
@@ -24,6 +32,9 @@
 |------|----------|------|
 | **Opus Score** (Claude) | `evaluate.py`가 LangChain 프롬프트(164‑191줄)를 구성하고 JSON 파서를 통해 `EvalResult` 객체로 파싱합니다. 점수는 1‑5 정수. | **전체 답변 품질**을 LLM(Claude) 관점에서 평가(정확성, 완전성, 어조, 환각 포함). |
 | **ROUGE‑L** | `calculate_rouge_l`(62‑74줄)에서 `rouge_score` 라이브러리 사용. | **표면적인 어휘 겹침**을 측정하여 정답과의 내용 일치 정도를 반영. |
+| **RAGAS Faithfulness / Context Precision** | `eval_dataset.json`의 `contexts`에 답변에 사용된 검색 문맥을 저장하고 `ragas.evaluate`로 계산합니다. | 문맥이 없는 기존 답변은 공란으로 둡니다. |
+| **Human correlation** | `human_evaluation.csv`의 평가자 점수 평균과 Opus Score 간 Pearson·Spearman을 계산합니다. | 최초 실행 때 빈 템플릿이 생성되며, 실제 평가 점수 입력 후 계산됩니다. |
+| **통계 검정** | One-way ANOVA, 질문별 paired t-test, Bonferroni 보정 p값, paired Cohen's d. | 결과는 로그와 `statistical_tests.csv`에 저장됩니다. |
 
 두 지표는 각각 질문‑답변마다(266‑291줄) 로그로 출력되고, 구성별 평균으로 요약됩니다(296‑302줄).
 

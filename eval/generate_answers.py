@@ -1,173 +1,76 @@
-"""Generate answers for eval_dataset.json.
-
-Usage:
-    # Generate *all* four variants (default)
-    python -m four_leaf_AI.eval.generate_answers --start-from 0
-
-    # Generate only a specific variant
-    python -m four_leaf_AI.eval.generate_answers --mode base
-    python -m four_leaf_AI.eval.generate_answers --mode rag
-    python -m four_leaf_AI.eval.generate_answers --mode lora
-    python -m four_leaf_AI.eval.generate_answers --mode rag_lora
-"""
+"""Asynchronously generate evaluation answers through vLLM and the AI API."""
 
 import argparse
+import asyncio
 import json
 import logging
 import os
 import time
-from typing import Callable, Dict
+from pathlib import Path
 
-import requests
+import aiohttp
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s",
-)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
-
-# --------------------------- #
-#   Model‑specific query APIs #
-# --------------------------- #
-OLLAMA_API_URL = "http://localhost:11434/api/generate"
-SYSTEM_PROMPT = """당신은 경북대학교 컴퓨터학부 학생을 돕는 AI 튜터입니다.
-학생의 질문에 대해 한국어로 친절하고 정확하게 답변해주세요.
-모르는 내용은 추측하지 말고, 알고 있는 범위 내에서만 답변하세요."""
-
-def query_ollama(question: str, model: str = "llama3.1:8b") -> str:
-    """Call Ollama (plain or LoRA‑fine‑tuned) and return the answer."""
-    payload = {
-        "model": model,
-        "prompt": question,
-        "system": SYSTEM_PROMPT,
-        "stream": False,
-        "options": {"temperature": 0.3, "top_p": 0.9, "num_predict": 512},
-    }
-    try:
-        resp = requests.post(OLLAMA_API_URL, json=payload, timeout=120)
-        resp.raise_for_status()
-        return resp.json().get("response", "").strip()
-    except Exception as e:
-        logger.error(f"Ollama request failed ({model}): {e}")
-        return f"[ERROR] {e}"
+VLLM_API_URL = os.getenv("VLLM_GENERATE_URL", "http://localhost:8001/generate")
+RAG_API_URL = os.getenv("RAG_API_URL", "http://localhost:8000/api/v1/tutor/chat")
+MODE_KEYS = {"base": "Base Model", "rag": "Base Model + RAG", "lora": "Fine-tuned Model (LoRA)", "rag_lora": "Fine-tuned Model (LoRA) + RAG"}
 
 
-RAG_API_URL = "http://localhost:8000/qa"   # FastAPI 엔드포인트
-
-def query_rag(question: str) -> str:
-    """Send the question to the RAG service and return the answer."""
-    try:
-        resp = requests.post(RAG_API_URL, json={"question": question}, timeout=120)
-        resp.raise_for_status()
-        return resp.json().get("answer", "").strip()
-    except Exception as e:
-        logger.error(f"RAG request failed: {e}")
-        return f"[ERROR] {e}"
+async def _post(session: aiohttp.ClientSession, url: str, payload: dict) -> dict:
+    async with session.post(url, json=payload) as response:
+        response.raise_for_status()
+        return await response.json()
 
 
-# --------------------- #
-#   Generation runner   #
-# --------------------- #
-def generate_one(
-    question: str,
-    mode: str,
-) -> str:
-    """Dispatch to the correct backend based on `mode`."""
-    if mode == "base":
-        return query_ollama(question, model="llama3.1:8b")
-    if mode == "rag":
-        return query_rag(question)
-    if mode == "lora":
-        # LoRA‑fine‑tuned model tag – adjust if your tag differs
-        return query_ollama(question, model="llama3.1:8b‑lora")
-    if mode == "rag_lora":
-        # Simple approach: use RAG answer as is.
-        # If you need a two‑step pipeline (RAG → LoRA), replace the line below.
-        return query_rag(question)
-    raise ValueError(f"Unsupported mode: {mode}")
+async def generate_one(session: aiohttp.ClientSession, question: str, mode: str) -> dict:
+    if mode in {"base", "lora"}:
+        model_name = os.getenv("VLLM_BASE_MODEL", "base") if mode == "base" else os.getenv("VLLM_LORA_MODEL_NAME", "lora")
+        data = await _post(session, VLLM_API_URL, {"question": question, "model_name": model_name})
+        return {"answer": data.get("response", "").strip(), "contexts": data.get("contexts", [])}
+    model_name = os.getenv("VLLM_BASE_MODEL", "base") if mode == "rag" else os.getenv("VLLM_LORA_MODEL_NAME", "lora")
+    data = await _post(session, RAG_API_URL, {"message": question, "model_name": model_name})
+    return {"answer": data.get("answer", "").strip(), "contexts": [s.get("content", "") for s in data.get("sources", [])]}
+
+
+async def main_async(args: argparse.Namespace) -> None:
+    dataset_path = Path(__file__).with_name("eval_dataset.json")
+    dataset = json.loads(dataset_path.read_text(encoding="utf-8"))
+    modes = list(MODE_KEYS) if args.mode == "all" else [args.mode]
+    timeout = aiohttp.ClientTimeout(total=180)
+    semaphore = asyncio.Semaphore(args.concurrency)
+    start = time.monotonic()
+
+    async with aiohttp.ClientSession(timeout=timeout) as session:
+        for idx in range(args.start_from, len(dataset)):
+            item = dataset[idx]
+            item.setdefault("models", {})
+            item.setdefault("contexts", {})
+
+            async def run(mode: str):
+                async with semaphore:
+                    try:
+                        return mode, await generate_one(session, item["question"], mode)
+                    except Exception as exc:
+                        logger.exception("%s generation failed for question %s", mode, idx + 1)
+                        return mode, {"answer": f"[ERROR] {exc}", "contexts": []}
+
+            for mode, result in await asyncio.gather(*(run(mode) for mode in modes)):
+                item["models"][MODE_KEYS[mode]] = result["answer"]
+                item["contexts"][MODE_KEYS[mode]] = result["contexts"]
+            dataset_path.write_text(json.dumps(dataset, ensure_ascii=False, indent=2), encoding="utf-8")
+            logger.info("[%d/%d] saved (elapsed %.1fs)", idx + 1, len(dataset), time.monotonic() - start)
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(
-        description="Generate answers for eval_dataset.json (four configs)."
-    )
-    parser.add_argument(
-        "--start-from",
-        type=int,
-        default=0,
-        help="Resume index (0‑based).",
-    )
-    parser.add_argument(
-        "--mode",
-        type=str,
-        choices=["all", "base", "rag", "lora", "rag_lora"],
-        default="all",
-        help="Which configuration(s) to generate. 'all' runs the four variants.",
-    )
+    parser = argparse.ArgumentParser(description="Generate answers asynchronously.")
+    parser.add_argument("--start-from", type=int, default=0)
+    parser.add_argument("--mode", choices=["all", *MODE_KEYS], default="all")
+    parser.add_argument("--concurrency", type=int, default=int(os.getenv("GENERATION_CONCURRENCY", "4")))
     args = parser.parse_args()
-
-    # -----------------------------------------------------------------
-    # Load dataset
-    # -----------------------------------------------------------------
-    dataset_path = os.path.join(os.path.dirname(__file__), "eval_dataset.json")
-    if not os.path.exists(dataset_path):
-        logger.error(f"Dataset not found: {dataset_path}")
-        return
-
-    with open(dataset_path, encoding="utf-8") as f:
-        dataset = json.load(f)
-
-    total = len(dataset)
-    logger.info(f"🧮 {total} questions – mode={args.mode}")
-
-    # -----------------------------------------------------------------
-    # Iterate
-    # -----------------------------------------------------------------
-    start_time = time.time()
-    for idx in range(args.start_from, total):
-        item = dataset[idx]
-        question = item["question"]
-        logger.info(f"[{idx+1}/{total}] 질문: {question[:50]}…")
-
-        # Ensure the `models` dict exists
-        if "models" not in item or not isinstance(item["models"], dict):
-            item["models"] = {}
-
-        modes_to_run = (
-            ["base", "rag", "lora", "rag_lora"]
-            if args.mode == "all"
-            else [args.mode]
-        )
-
-        for mode in modes_to_run:
-            answer = generate_one(question, mode)
-            # Human‑readable key that matches `evaluate.py` expectations
-            key_name = {
-                "base": "Base",
-                "rag": "Base + RAG",
-                "lora": "Base + LoRA",
-                "rag_lora": "Base + RAG + LoRA",
-            }[mode]
-            item["models"][key_name] = answer
-
-        # ---------------------------------------------------------
-        # Periodic checkpoint (protect against crashes)
-        # ---------------------------------------------------------
-        with open(dataset_path, "w", encoding="utf-8") as f:
-            json.dump(dataset, f, ensure_ascii=False, indent=2)
-
-        # Simple ETA logging
-        elapsed = time.time() - start_time
-        avg = elapsed / (idx - args.start_from + 1)
-        remaining = avg * (total - idx - 1)
-        logger.info(
-            f"  → elapsed {elapsed:.0f}s, ETA {remaining:.0f}s"
-        )
-
-    logger.info(
-        f"\n✅ Finished! Generated answers for {total} items (mode={args.mode})"
-    )
-    logger.info(f"Dataset saved to {dataset_path}")
+    if args.start_from < 0 or args.concurrency < 1:
+        parser.error("--start-from must be >= 0 and --concurrency must be >= 1")
+    asyncio.run(main_async(args))
 
 
 if __name__ == "__main__":

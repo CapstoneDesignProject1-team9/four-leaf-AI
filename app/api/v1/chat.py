@@ -29,7 +29,7 @@ async def chat(request: ChatRequest):
         )
 
         chain = build_rag_chain()
-        result = chain.invoke({"query": request.message})
+        result = chain.invoke({"query": request.message, "model_name": request.model_name})
 
         # 참고 문서 파싱
         sources = []

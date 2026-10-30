@@ -7,6 +7,7 @@ class ChatRequest(BaseModel):
     message: str = Field(..., description="사용자 메시지", min_length=1, max_length=2000)
     session_id: str | None = Field(None, description="대화 세션 ID (멀티턴 대화용)")
     course_name: str | None = Field(None, description="관련 강의명 (선택)", max_length=200)
+    model_name: str | None = Field(None, description="vLLM 모델 또는 등록된 LoRA 어댑터 이름", max_length=200)
 
 
 class SourceDocument(BaseModel):
