@@ -4,6 +4,7 @@ from fastapi import APIRouter, HTTPException
 
 from app.chains.rag_chain import build_rag_chain
 from app.models.schemas import ChatRequest, ChatResponse, SourceDocument
+from app.services.course_classifier import classify_course
 from app.storage.student_questions import save_student_question
 
 logger = logging.getLogger(__name__)
@@ -21,10 +22,15 @@ async def chat(request: ChatRequest):
     3. 로컬 Ollama Llama 3.1 8B가 검색된 공지와 강의계획서를 근거로 답변 생성
     """
     try:
+        # Determine course name: use client-provided name or auto-classify from message
+        course_name = (request.course_name or "").strip()
+        if not course_name or course_name in ("일반", "미지정"):
+            course_name = classify_course(request.message)
+
         # Save the student's question even if response generation later fails.
         save_student_question(
             message=request.message,
-            course_name=request.course_name,
+            course_name=course_name,
             session_id=request.session_id,
         )
 
@@ -46,6 +52,7 @@ async def chat(request: ChatRequest):
             answer=result["result"],
             sources=sources,
             session_id=request.session_id,
+            course_name=course_name,
         )
 
     except Exception as e:
