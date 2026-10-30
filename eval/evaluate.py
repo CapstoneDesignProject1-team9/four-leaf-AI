@@ -1,21 +1,29 @@
 '''evaluate.py
 
-Utility module for asynchronous evaluation of LLM responses using Claude as a judge.
-It loads a dataset, invokes a LangChain chain for each item, applies exponential back‑off on failures,
-calculates ROUGE‑L scores, aggregates results per model, and writes a CSV report.
+Utility module for asynchronous evaluation of LLM responses using Claude as a judge,
+ROUGE‑L overlap scoring, and RAGAS reference-based metrics.
 
-The module expects the following environment variables:
-- ANTHROPIC_MODEL (default: ``claude-3-opus-20240229``)
-- ANTHROPIC_API_KEY (required for Claude API access)
-- EVAL_MAX_CONCURRENCY (optional, default ``5``)
-'''\n
+Evaluation pipeline:
+  1. LLM-as-a-Judge  – Claude scores each answer 1-5 with a rubric.
+  2. ROUGE-L          – Token-overlap F1 between ground_truth and generated answer.
+  3. RAGAS            – AnswerSimilarity & AnswerCorrectness (no retrieval context needed).
+                        When a ``contexts`` field is present in the dataset item,
+                        Faithfulness and ContextPrecision are also computed.
+
+Required environment variables:
+- ANTHROPIC_MODEL        (default: ``claude-3-opus-20240229``)
+- ANTHROPIC_API_KEY      (required for Claude API access)
+- OPENAI_API_KEY         (required for RAGAS embeddings/LLM; or set RAGAS_LLM/RAGAS_EMBEDDINGS)
+- EVAL_MAX_CONCURRENCY   (optional, default ``5``)
+'''
+
 import asyncio
 import csv
 import json
 import logging
 import os
 import random
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 
 from dotenv import load_dotenv
 from langchain_anthropic import ChatAnthropic
@@ -23,6 +31,33 @@ from langchain_core.output_parsers import JsonOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field, conint
 from rouge_score import rouge_scorer
++from scipy.stats import pearsonr, spearmanr
++from statsmodels.stats.inter_rater import fleiss_kappa
+
+
+
+# RAGAS -----------------------------------------------------------------------
+try:
+    from datasets import Dataset as HFDataset
+    from ragas import evaluate as ragas_evaluate
+    from ragas.metrics import (
+        answer_similarity,
+        answer_correctness,
+    )
+    # Optional retrieval-aware metrics (require ``contexts`` in dataset)
+    try:
+        from ragas.metrics import faithfulness, context_precision
+        _RAGAS_RETRIEVAL_METRICS = [faithfulness, context_precision]
+    except ImportError:
+        _RAGAS_RETRIEVAL_METRICS = []
+    _RAGAS_AVAILABLE = True
+except ImportError:
+    _RAGAS_AVAILABLE = False
+    logger_bootstrap = logging.getLogger(__name__)
+    logger_bootstrap.warning(
+        "ragas 패키지가 설치되지 않았습니다. RAGAS 평가를 건너뜁니다. "
+        "(pip install ragas datasets 로 설치하세요)"
+    )
 
 # ---------------------------------------------------------------------------
 # Load environment variables and configure logging
@@ -43,10 +78,16 @@ class EvalResult(BaseModel):
         Integer score from 1 (worst) to 5 (best).
     reason: str
         Explanation for the assigned score.
+    faithfulness: float
+        Float between 0.0 and 1.0 indicating factual faithfulness of the answer.
+    hallucination_detected: bool
+        True if the answer contains hallucinated content, else False.
     """
 
     score: conint(ge=1, le=5) = Field(description="1점부터 5점까지의 평가 점수")
     reason: str = Field(description="점수를 부여한 구체적인 이유")
+    faithfulness: float = Field(description="0.0~1.0 사이의 사실 일치도")
+    hallucination_detected: bool = Field(description="환각 여부")
 
 # ---------------------------------------------------------------------------
 # ROUGE‑L helper
@@ -179,7 +220,10 @@ async def evaluate_responses_batch(
  - 모범 답안과 완전히 상반된 정보를 제공하여 치명적인 오안내를 함
  - 대학 정보와 무관한 심각한 환각(Hallucination)이 포함됨
 
-위 기준을 바탕으로 1점에서 5점 사이의 점수를 매기고 그 이유를 설명해주세요.
+위 기준을 바탕으로 1점에서 5점 사이의 점수를 매기고, 다음 추가 항목을 포함해 주세요:
+- "faithfulness": 0.0과 1.0 사이의 실수, 답변이 사실과 얼마나 일치하는지 나타냅니다.
+- "hallucination_detected": true/false, 답변에 환각 내용이 존재하는지 여부를 표시합니다.
+그 이유를 설명하고, 위 필드들을 JSON 형식으로 출력해주세요.
 {format_instructions}\n\n[질문]: {question}\n[모범 답안]: {ground_truth}\n[모델의 답변]: {generated_answer}\n"""
 
     prompt = ChatPromptTemplate.from_messages(
@@ -205,6 +249,84 @@ async def evaluate_responses_batch(
     return results
 
 # ---------------------------------------------------------------------------
+# RAGAS evaluation helper
+# ---------------------------------------------------------------------------
+def evaluate_with_ragas(
+    eval_items: List[Dict[str, Any]],
+) -> List[Dict[str, float]]:
+    """Run RAGAS evaluation on *eval_items* and return per-item metric dicts.
+
+    Each item in ``eval_items`` must have:
+    - ``question``         (str)
+    - ``ground_truth``     (str)
+    - ``generated_answer`` (str)
+    - ``contexts``         (List[str], optional) – if present, retrieval metrics are added.
+
+    Returns a list of dicts (same length as ``eval_items``) with RAGAS metric
+    values. Falls back to an empty dict per item when RAGAS is unavailable or
+    the evaluation fails.
+    """
+    empty = [{} for _ in eval_items]
+
+    if not _RAGAS_AVAILABLE:
+        return empty
+
+    if not os.getenv("OPENAI_API_KEY"):
+        logger.warning(
+            "OPENAI_API_KEY 가 설정되지 않아 RAGAS 평가를 건너뜁니다. "
+            "(RAGAS 기본 LLM/임베딩은 OpenAI를 사용합니다)"
+        )
+        return empty
+
+    try:
+        # contexts가 하나라도 있으면 retrieval 메트릭 포함
+        # (없는 아이템은 빈 리스트로 패딩 → NaN으로 기록됨)
+        any_contexts = any("contexts" in item and item["contexts"] for item in eval_items)
+
+        ragas_data: Dict[str, List] = {
+            "question": [item["question"] for item in eval_items],
+            "answer": [item["generated_answer"] for item in eval_items],
+            "ground_truth": [item["ground_truth"] for item in eval_items],
+        }
+        if any_contexts:
+            # contexts 없는 아이템(Non-RAG 모델)은 빈 리스트로 패딩
+            ragas_data["contexts"] = [
+                item.get("contexts") or [] for item in eval_items
+            ]
+            ctx_count = sum(1 for i in eval_items if i.get("contexts"))
+            logger.info(
+                f"RAGAS: contexts 있는 아이템 {ctx_count}개 / 전체 {len(eval_items)}개 "
+                "– faithfulness, context_precision 포함"
+            )
+
+        hf_dataset = HFDataset.from_dict(ragas_data)
+
+        metrics = [answer_similarity, answer_correctness]
+        if any_contexts and _RAGAS_RETRIEVAL_METRICS:
+            metrics += _RAGAS_RETRIEVAL_METRICS
+
+        logger.info(f"RAGAS 평가 시작 (메트릭: {[m.name for m in metrics]})...")
+        result = ragas_evaluate(dataset=hf_dataset, metrics=metrics)
+        result_df = result.to_pandas()
+
+        metric_names = [m.name for m in metrics]
+        per_item: List[Dict[str, float]] = []
+        for _, row in result_df.iterrows():
+            per_item.append(
+                {
+                    name: round(float(row[name]), 4)
+                    for name in metric_names
+                    if name in row and row[name] == row[name]  # NaN 필터링 (NaN != NaN)
+                }
+            )
+        logger.info("RAGAS 평가 완료")
+        return per_item
+    except Exception as exc:
+        logger.error(f"RAGAS 평가 중 오류 발생: {exc}")
+        return empty
+
+
+# ---------------------------------------------------------------------------
 # Main entry point for asynchronous execution
 # ---------------------------------------------------------------------------
 async def async_main() -> None:
@@ -227,16 +349,25 @@ async def async_main() -> None:
     for item_idx, item in enumerate(dataset):
         question = item["question"]
         ground_truth = item["ground_truth"]
+        # contexts는 모델별 dict 구조: {"Base Model + RAG": ["chunk1", ...], ...}
+        item_contexts: Dict[str, List[str]] = item.get("contexts", {})
         for model_name, answer in item["models"].items():
-            eval_items.append(
-                {
-                    "question": question,
-                    "ground_truth": ground_truth,
-                    "generated_answer": answer,
-                    "format_instructions": format_instructions,
-                }
-            )
-            metadata.append({"item_idx": item_idx, "model_name": model_name})
+            eval_item: Dict[str, Any] = {
+                "question": question,
+                "ground_truth": ground_truth,
+                "generated_answer": answer,
+                "format_instructions": format_instructions,
+            }
+            # 해당 모델에 저장된 contexts가 있으면 포함 (RAGAS retrieval 메트릭 활성화)
+            model_contexts = item_contexts.get(model_name, [])
+            if model_contexts:
+                eval_item["contexts"] = model_contexts
+            eval_items.append(eval_item)
+            metadata.append({
+                "item_idx": item_idx,
+                "model_name": model_name,
+                "has_contexts": bool(model_contexts),
+            })
 
     max_concurrency = int(os.getenv("EVAL_MAX_CONCURRENCY", "5"))
     if max_concurrency < 1:
@@ -248,6 +379,9 @@ async def async_main() -> None:
         eval_items, max_concurrency=max_concurrency, format_instructions=format_instructions
     )
 
+    # RAGAS evaluation runs synchronously (ragas_evaluate is blocking)
+    ragas_results = evaluate_with_ragas(eval_items)
+
     # -------------------------------------------------------------------
     # Aggregate scores and write CSV report
     # -------------------------------------------------------------------
@@ -255,7 +389,9 @@ async def async_main() -> None:
     model_rouge_scores: Dict[str, List[float]] = {}
     csv_data: List[Dict[str, Any]] = []
 
-    for meta, item, res in zip(metadata, eval_items, results):
+    model_ragas_scores: Dict[str, Dict[str, List[float]]] = {}
+
+    for idx, (meta, item, res) in enumerate(zip(metadata, eval_items, results)):
         q_idx = meta["item_idx"] + 1
         m_name = meta["model_name"]
         score = res.get("score", 0)
@@ -264,23 +400,45 @@ async def async_main() -> None:
             ground_truth=item["ground_truth"],
             generated_answer=item["generated_answer"],
         )
+
+        # RAGAS per-item scores
+        ragas_item = ragas_results[idx] if idx < len(ragas_results) else {}
+        ragas_similarity = ragas_item.get("answer_similarity", None)
+        ragas_correctness = ragas_item.get("answer_correctness", None)
+        ragas_faithfulness = ragas_item.get("faithfulness", None)
+        ragas_ctx_precision = ragas_item.get("context_precision", None)
+
         logger.info(
-            f"[질문 {q_idx} | {m_name}] 점수: {score} | ROUGE-L: {rouge_l_score:.4f} - {reason}"
+            f"[질문 {q_idx} | {m_name}] 점수: {score} | ROUGE-L: {rouge_l_score:.4f}"
+            + (f" | RAGAS sim: {ragas_similarity:.4f}" if ragas_similarity is not None else "")
+            + (f" | RAGAS corr: {ragas_correctness:.4f}" if ragas_correctness is not None else "")
+            + f" - {reason}"
         )
         model_scores.setdefault(m_name, []).append(score)
         model_rouge_scores.setdefault(m_name, []).append(rouge_l_score)
-        csv_data.append(
-            {
-                "Question_ID": q_idx,
-                "Question": item["question"],
-                "Ground_Truth": item["ground_truth"],
-                "Model": m_name,
-                "Generated_Answer": item["generated_answer"],
-                "Opus Score": score,
-                "ROUGE-L Score": rouge_l_score,
-                "Reason": reason,
-            }
-        )
+
+        # Accumulate RAGAS per-model
+        m_ragas = model_ragas_scores.setdefault(m_name, {})
+        for key, val in ragas_item.items():
+            m_ragas.setdefault(key, []).append(val)
+
+        row: Dict[str, Any] = {
+            "Question_ID": q_idx,
+            "Question": item["question"],
+            "Ground_Truth": item["ground_truth"],
+            "Model": m_name,
+            "Generated_Answer": item["generated_answer"],
+            "Opus Score": score,
+            "ROUGE-L Score": rouge_l_score,
+            "RAGAS Answer Similarity": ragas_similarity if ragas_similarity is not None else "",
+            "RAGAS Answer Correctness": ragas_correctness if ragas_correctness is not None else "",
+            "RAGAS Faithfulness": ragas_faithfulness if ragas_faithfulness is not None else "",
+            "RAGAS Context Precision": ragas_ctx_precision if ragas_ctx_precision is not None else "",
+            "Faithfulness": res.get("faithfulness", ""),
+            "Hallucination_Detected": res.get("hallucination_detected", ""),
+            "Reason": reason,
+        }
+        csv_data.append(row)
 
     logger.info("=" * 40)
     logger.info("📊 모델별 최종 평균 점수")
@@ -289,8 +447,13 @@ async def async_main() -> None:
         rouge_scores = model_rouge_scores[m_name]
         avg_llm = sum(scores) / len(scores) if scores else 0
         avg_rouge = sum(rouge_scores) / len(rouge_scores) if rouge_scores else 0
+        ragas_summary_parts = []
+        for metric_key, vals in model_ragas_scores.get(m_name, {}).items():
+            avg_val = sum(vals) / len(vals) if vals else 0
+            ragas_summary_parts.append(f"{metric_key}: {avg_val:.4f}")
+        ragas_summary = " | ".join(ragas_summary_parts) if ragas_summary_parts else "N/A"
         logger.info(
-            f" - {m_name}: Opus {avg_llm:.2f}점 | ROUGE-L {avg_rouge:.4f} (총 {len(scores)}개)"
+            f" - {m_name}: Opus {avg_llm:.2f}점 | ROUGE-L {avg_rouge:.4f} | RAGAS [{ragas_summary}] (총 {len(scores)}개)"
         )
 
     output_path = os.path.join(os.path.dirname(__file__), "eval_results.csv")
@@ -301,12 +464,85 @@ async def async_main() -> None:
             writer.writeheader()
             writer.writerows(csv_data)
         logger.info(f"✅ 평가 결과가 '{output_path}'에 저장되었습니다.")
+        # Compute human agreement and correlation if human evaluation data is available
+        compute_human_agreement_and_correlation(csv_data)
     else:
         logger.warning("CSV 데이터가 비어 있어 저장을 건너뛰었습니다.")
 
 def main() -> None:
     """Entry‑point for synchronous execution via ``python -m eval.evaluate``."""
     asyncio.run(async_main())
+
+def compute_human_agreement_and_correlation(csv_data: List[Dict[str, Any]]) -> None:
+    """Compute inter‑rater agreement (Fleiss' Kappa) and correlation with Claude Opus scores.
+
+    Expects a CSV file ``human_evaluation.csv`` in the same directory with columns
+    ``question_id``, ``rater_id`` and ``score`` (1‑15).  The function reads the file,
+    aggregates the human scores per question, and then compares the average human
+    score with the ``Opus Score`` produced by Claude.
+
+    The results are logged:
+    * Pearson correlation coefficient
+    * Spearman rank correlation coefficient
+    * Fleiss' Kappa for the categorical ratings
+    """
+    import csv
+    from collections import defaultdict
+    from pathlib import Path
+
+    human_path = Path(__file__).with_name("human_evaluation.csv")
+    if not human_path.exists():
+        logger.info("Human evaluation file not found – skipping correlation analysis.")
+        return
+
+    # Load human scores
+    per_question: Dict[int, List[int]] = defaultdict(list)
+    with open(human_path, newline="", encoding="utf-8-sig") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            qid = int(row["question_id"])
+            score = int(row["score"])
+            per_question[qid].append(score)
+
+    # Build parallel lists for correlation
+    opus_scores: List[float] = []
+    human_means: List[float] = []
+    for entry in csv_data:
+        qid = entry["Question_ID"]
+        opus = entry.get("Opus Score")
+        if qid in per_question:
+            human_avg = sum(per_question[qid]) / len(per_question[qid])
+            opus_scores.append(float(opus))
+            human_means.append(human_avg)
+
+    if len(opus_scores) < 2:
+        logger.warning("Not enough overlapping items for correlation calculation.")
+        return
+
+    # Correlations
+    pearson, _ = pearsonr(opus_scores, human_means)
+    spearman, _ = spearmanr(opus_scores, human_means)
+    logger.info(f"Pearson correlation Opus ↔ Human: {pearson:.4f}")
+    logger.info(f"Spearman correlation Opus ↔ Human: {spearman:.4f}")
+
+    # Fleiss' Kappa – build rating matrix
+    categories = list(range(1, 16))
+    rating_matrix: List[List[int]] = []
+    for qid in sorted(per_question.keys()):
+        counts = [per_question[qid].count(cat) for cat in categories]
+        rating_matrix.append(counts)
+
+    try:
+        kappa = fleiss_kappa(rating_matrix)
+        logger.info(f"Fleiss' Kappa (inter‑rater agreement): {kappa:.4f}")
+    except Exception as exc:
+        logger.error(f"Failed to compute Fleiss' Kappa: {exc}")
+
+    # Summary
+    logger.info("=== Human vs. Claude Opus correlation summary ===")
+    logger.info(f"Questions compared: {len(opus_scores)}")
+    logger.info(f"Average human score: {sum(human_means)/len(human_means):.2f}")
+    logger.info(f"Average Opus score : {sum(opus_scores)/len(opus_scores):.2f}")
 
 if __name__ == "__main__":
     main()
