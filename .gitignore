@@ -75,3 +75,5 @@ final_adapter/
 slurm-*.out
 
 final_adapter*/
+
+adapter_*/
