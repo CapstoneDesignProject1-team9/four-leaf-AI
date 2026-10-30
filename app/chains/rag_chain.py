@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import logging
 import re
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
@@ -175,6 +176,13 @@ def _ready() -> tuple[Any, Any | None, BgeM3Embedder]:
     return _notice_collection, _syllabi_collection, _embedder
 
 
+@lru_cache(maxsize=2048)
+def _cached_embedding(question: str) -> tuple[float, ...]:
+    """Cache repeated query embeddings while always querying current Chroma data."""
+    _, _, embedder = _ready()
+    return tuple(embedder.embed_query(question))
+
+
 def _search_collection(
     collection: Any,
     vector: list[float],
@@ -222,18 +230,50 @@ def _is_syllabus_question(question: str) -> bool:
     )
 
 
+def _requested_category(question: str) -> str | None:
+    normalized = re.sub(r"\s+", "", question)
+    for category in ("전공필수", "전공기반", "공학전공", "기본소양", "교양"):
+        if category in normalized:
+            return category
+    return None
+
+
+def _requested_department(question: str) -> str | None:
+    normalized = re.sub(r"\s+", "", question)
+    departments = (
+        "인공지능컴퓨팅전공", "플랫폼소프트웨어전공", "글로벌소프트웨어융합전공",
+        "심화컴퓨팅전공", "컴퓨터학부",
+    )
+    return next((department for department in departments if department in normalized), None)
+
+
 def search_syllabi(question: str, grade: str | None = None) -> list[Document]:
-    _, syllabi_collection, embedder = _ready()
+    _, syllabi_collection, _ = _ready()
     if syllabi_collection is None:
         return []
-    # Several chunks belong to each syllabus. Retrieve a wider pool, then keep
-    # the best matching chunk per course so one course cannot fill the results.
-    candidates = _search_collection(
-        syllabi_collection,
-        embedder.embed_query(question),
-        max(settings.RAG_TOP_K * 20, 100),
-        {"grade": grade} if grade else None,
+    # Enforce explicit constraints before vector ranking.
+    conditions: list[dict[str, Any]] = [{"active": True}]
+    if grade:
+        conditions.append({"grade": grade})
+    category = _requested_category(question)
+    if category:
+        conditions.append({"category": category})
+    department = _requested_department(question)
+    if department:
+        conditions.append({"department_filter": department})
+    where = conditions[0] if len(conditions) == 1 else {"$and": conditions}
+    result = syllabi_collection.query(
+        query_embeddings=[list(_cached_embedding(question))],
+        n_results=min(max(settings.RAG_TOP_K * 20, 100), int(syllabi_collection.metadata["active_chunks"])),
+        where=where,
+        include=["documents", "metadatas", "distances"],
     )
+    candidates = [
+        Document(page_content=text, metadata={**metadata, "distance": float(distance)})
+        for text, metadata, distance in zip(
+            result["documents"][0], result["metadatas"][0], result["distances"][0]
+        )
+    ]
     best_by_course: dict[str, Document] = {}
     for document in candidates:
         course_id = str(
@@ -242,7 +282,10 @@ def search_syllabi(question: str, grade: str | None = None) -> list[Document]:
             or document.metadata.get("title")
         )
         best_by_course.setdefault(course_id, document)
-    return list(best_by_course.values())[: settings.RAG_TOP_K]
+    # A category question returns a broader candidate set; this is still not
+    # claimed to be a complete official curriculum list.
+    limit = max(settings.RAG_TOP_K, 20) if category else settings.RAG_TOP_K
+    return list(best_by_course.values())[:limit]
 
 
 def _is_review_question(question: str) -> bool:
@@ -328,9 +371,11 @@ def _context(documents: list[Document]) -> str:
             contexts.append(
                 f"[강의계획서 {index}]\n과목: {metadata.get('title', '')}\n"
                 f"개설: {term}\n학과: {department}\n수강학년: {metadata.get('grade', '')}\n"
+                f"교과목구분: {metadata.get('category', '')}\n"
                 f"학점: {metadata.get('credits', '')}\n담당교수: {metadata.get('instructor', '')}\n"
                 f"강좌번호: {metadata.get('course_code', '')}\n"
-                f"URL: {metadata.get('url', '')}\n내용:\n{document.page_content}"
+                f"URL: {metadata.get('url', '')}\n"
+                f"근거 요약: {document.page_content[:1200]}"
             )
         else:
             contexts.append(
@@ -368,7 +413,8 @@ class NoticeRagChain:
             instructions = """강의계획서 질의입니다. 공지사항은 참고하지 말고, 검색된 강의계획서만 답변 근거로 사용하세요.
 질문이 학년별 수강 과목을 묻는다면 강의계획서의 수강학년 값이 해당 학년인 과목만 최대 5개 제안하세요. 과목명, 강좌번호, 학점, 개설학기와 강의계획서 내용에 근거한 짧은 설명을 간결하게 제시하세요. 검색된 자료를 그대로 나열하거나 자신의 역할을 소개하지 마세요.
 강의계획서의 수강학년은 표시된 대상 학년이지 실제 수강 자격의 보증이 아닙니다. 선수과목이나 수강 제한이 자료에 없으면 임의로 단정하지 말고, 최종 수강 가능 여부는 수강편람에서 확인해야 한다고 짧게 덧붙이세요.
-근거 자료가 없으면 그 사실과 확인할 수 없는 점을 간단히 설명하세요."""
+근거 자료가 없으면 그 사실과 확인할 수 없는 점을 간단히 설명하세요.
+{'답변은 짧은 도입 한 문장 뒤에 과목 목록으로 작성하세요.' if is_course_list else '질문에 직접 답하고 필요한 설명만 덧붙이세요.'}"""
         else:
             instructions = """공지와 강의계획서 중 질문에 가장 직접 관련된 내용으로 먼저 답하세요. 자료에 없는 내용은 추측하지 마세요. 자료 내용을 통째로 나열하지 말고, 질문에 맞춰 핵심만 설명하세요. 사용한 자료의 제목과 URL을 확인할 수 있게 하세요."""
         prompt = f"""당신은 경북대학교 학생을 돕는 AI 튜터입니다. 한국어로 자연스럽고 직접적으로 답변하세요.
