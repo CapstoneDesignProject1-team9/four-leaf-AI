@@ -1,0 +1,1211 @@
+[
+  {
+    "question_id": "P001",
+    "role": "professor",
+    "task_type": "instructor_question_analytics",
+    "data_origin": "synthetic_scenario",
+    "review_status": "needs_domain_review",
+    "course_name": "자료구조",
+    "scenario_theme": "강의 개념 이해",
+    "student_questions": [
+      "스택이랑 큐 차이를 예시로 설명해 주세요.",
+      "재귀 함수가 아직 잘 이해되지 않는데 반복문이랑 비교해서 설명해 주세요.",
+      "트리 순회 전위 중위 후위 순서가 헷갈립니다.",
+      "이진 탐색 트리는 어떤 경우에 성능이 나빠지나요?",
+      "수업에서 배운 그래프 탐색을 실제 문제에 어떻게 적용하나요?",
+      "지난 강의의 포인터와 노드 연결 부분 보충 자료가 있나요?"
+    ],
+    "question": "아래 학생 질문 묶음을 근거로 반복되는 어려움과 요구를 요약하고, 핵심 키워드와 수업 개선 제안을 작성하세요. 질문에 없는 사실이나 원인을 추측하지 마세요.",
+    "ground_truth": "{\"summary\": \"학생 질문은 스택·큐, 재귀, 트리 순회, 탐색 알고리즘 등 핵심 자료구조 개념의 이해와 적용에 집중되어 있습니다. 특히 개념 간 차이를 예시로 설명하거나 실제 문제에 연결해 달라는 요구가 반복됩니다.\", \"keywords\": [\"자료구조 개념\", \"재귀\", \"트리 순회\", \"알고리즘 적용\"], \"recommendations\": [\"스택·큐와 트리 순회 과정을 단계별 예제로 복습하는 보충 자료를 제공하세요.\", \"재귀와 반복 구현을 비교하는 짧은 실습 문제를 추가하세요.\"], \"limitations\": [\"합성 질문 사례이므로 실제 수강생의 빈도나 대표성을 추정하지 않음\", \"질문만으로 원인·성취도·교수자 책임을 단정하지 않음\"]}",
+    "evaluation_criteria": [
+      "요약이 제공된 학생 질문에서 반복되는 주제를 빠짐없이 반영하는가",
+      "키워드가 질문 내용을 대표하고 중복되지 않는가",
+      "제안이 구체적이고 질문 근거에 연결되는가",
+      "질문 수만으로 학생 전체의 의견이나 인과관계를 단정하지 않는가",
+      "질문 수를 실제 학생 전체의 빈도나 비율로 일반화하지 않는가",
+      "질문에 없는 정책·원인·책임을 추측하지 않는가",
+      "확인 불가능한 점을 분명히 표시하는가"
+    ],
+    "models": {
+      "Base Model": "",
+      "Student LoRA": "",
+      "Professor LoRA": ""
+    },
+    "scenario_category": "concept_and_prerequisites",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "knowledge_scope": "제시된 학생 질문만 근거로 분석; 외부 사실은 추정하지 않음",
+    "dataset_version": "professor_eval_v2_pilot",
+    "train_eval_overlap_status": "semantic_review_required"
+  },
+  {
+    "question_id": "P002",
+    "role": "professor",
+    "task_type": "instructor_question_analytics",
+    "data_origin": "synthetic_scenario",
+    "review_status": "needs_domain_review",
+    "course_name": "프로그래밍기초",
+    "scenario_theme": "과제 요구사항과 제출",
+    "student_questions": [
+      "과제에서 입력 형식은 공백으로 구분하면 되나요?",
+      "제출 파일 이름 규칙을 다시 알려주세요.",
+      "마감 전에 업로드했는데 수정본을 다시 내도 되나요?",
+      "예제 출력과 공백 한 칸 차이도 오답 처리되나요?",
+      "팀 과제인지 개인 과제인지 과제 공지에서 확인이 어렵습니다.",
+      "코드와 보고서를 둘 다 제출해야 하나요?",
+      "마감 시간 이후 제출은 감점 기준이 어떻게 되나요?"
+    ],
+    "question": "아래 학생 질문 묶음을 근거로 반복되는 어려움과 요구를 요약하고, 핵심 키워드와 수업 개선 제안을 작성하세요. 질문에 없는 사실이나 원인을 추측하지 마세요.",
+    "ground_truth": "{\"summary\": \"학생 질문은 과제의 입력·출력 형식, 파일명, 제출물 구성, 재제출 및 마감 후 감점 기준처럼 수행·제출 절차에 집중되어 있습니다. 과제 자체의 개념보다 지시사항을 명확히 확인하려는 요구가 두드러집니다.\", \"keywords\": [\"과제 요구사항\", \"입출력 형식\", \"제출 파일\", \"마감·재제출\"], \"recommendations\": [\"과제 공지에 제출 파일, 파일명, 마감, 재제출 및 지각 제출 기준을 한 표로 정리하세요.\", \"대표 입력·출력 예시와 공백 처리 규칙을 공지에 추가하세요.\"], \"limitations\": [\"합성 질문 사례이므로 실제 수강생의 빈도나 대표성을 추정하지 않음\", \"질문만으로 원인·성취도·교수자 책임을 단정하지 않음\"]}",
+    "evaluation_criteria": [
+      "요약이 제공된 학생 질문에서 반복되는 주제를 빠짐없이 반영하는가",
+      "키워드가 질문 내용을 대표하고 중복되지 않는가",
+      "제안이 구체적이고 질문 근거에 연결되는가",
+      "질문 수만으로 학생 전체의 의견이나 인과관계를 단정하지 않는가",
+      "질문 수를 실제 학생 전체의 빈도나 비율로 일반화하지 않는가",
+      "질문에 없는 정책·원인·책임을 추측하지 않는가",
+      "확인 불가능한 점을 분명히 표시하는가"
+    ],
+    "models": {
+      "Base Model": "",
+      "Student LoRA": "",
+      "Professor LoRA": ""
+    },
+    "scenario_category": "assignment_and_project_operations",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "knowledge_scope": "제시된 학생 질문만 근거로 분석; 외부 사실은 추정하지 않음",
+    "dataset_version": "professor_eval_v2_pilot",
+    "train_eval_overlap_status": "semantic_review_required"
+  },
+  {
+    "question_id": "P003",
+    "role": "professor",
+    "task_type": "instructor_question_analytics",
+    "data_origin": "synthetic_scenario",
+    "review_status": "needs_domain_review",
+    "course_name": "컴퓨터구조",
+    "scenario_theme": "시험 범위와 평가 기준",
+    "student_questions": [
+      "중간고사 범위가 몇 주차까지인가요?",
+      "강의자료에 있는 연습문제도 시험에 나오나요?",
+      "계산 문제와 서술형 비율이 궁금합니다.",
+      "공식 암기보다 원리 이해를 평가하나요?",
+      "시험에서 계산기 사용이 가능한가요?",
+      "지난 시험과 비슷한 유형의 연습문제를 받을 수 있을까요?",
+      "시험 범위에서 제외되는 내용이 있나요?"
+    ],
+    "question": "아래 학생 질문 묶음을 근거로 반복되는 어려움과 요구를 요약하고, 핵심 키워드와 수업 개선 제안을 작성하세요. 질문에 없는 사실이나 원인을 추측하지 마세요.",
+    "ground_truth": "{\"summary\": \"학생 질문은 시험 범위, 문제 유형, 연습문제의 출제 여부, 계산기 사용 및 평가 기준에 집중되어 있습니다. 시험 준비에 필요한 정보가 한곳에서 명확히 확인되지 않는 것으로 보입니다.\", \"keywords\": [\"시험 범위\", \"문제 유형\", \"평가 기준\", \"시험 준비\"], \"recommendations\": [\"시험 전에 범위·문제 유형·허용 도구를 포함한 평가 안내를 게시하세요.\", \"강의에서 다룬 개념을 점검할 수 있는 대표 연습문제와 해설을 제공하세요.\"], \"limitations\": [\"합성 질문 사례이므로 실제 수강생의 빈도나 대표성을 추정하지 않음\", \"질문만으로 원인·성취도·교수자 책임을 단정하지 않음\"]}",
+    "evaluation_criteria": [
+      "요약이 제공된 학생 질문에서 반복되는 주제를 빠짐없이 반영하는가",
+      "키워드가 질문 내용을 대표하고 중복되지 않는가",
+      "제안이 구체적이고 질문 근거에 연결되는가",
+      "질문 수만으로 학생 전체의 의견이나 인과관계를 단정하지 않는가",
+      "질문 수를 실제 학생 전체의 빈도나 비율로 일반화하지 않는가",
+      "질문에 없는 정책·원인·책임을 추측하지 않는가",
+      "확인 불가능한 점을 분명히 표시하는가"
+    ],
+    "models": {
+      "Base Model": "",
+      "Student LoRA": "",
+      "Professor LoRA": ""
+    },
+    "scenario_category": "assessment_and_feedback",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "knowledge_scope": "제시된 학생 질문만 근거로 분석; 외부 사실은 추정하지 않음",
+    "dataset_version": "professor_eval_v2_pilot",
+    "train_eval_overlap_status": "semantic_review_required"
+  },
+  {
+    "question_id": "P004",
+    "role": "professor",
+    "task_type": "instructor_question_analytics",
+    "data_origin": "synthetic_scenario",
+    "review_status": "needs_domain_review",
+    "course_name": "인공지능개론",
+    "scenario_theme": "선수지식과 강의 속도",
+    "student_questions": [
+      "선형대수 지식이 어느 정도 필요하나요?",
+      "확률과 통계를 먼저 공부해야 수업을 따라갈 수 있나요?",
+      "미분을 거의 잊었는데 강의에서 다시 설명해 주나요?",
+      "수업 진도가 빨라서 노트를 정리하기 어렵습니다.",
+      "매주 복습해야 할 핵심 개념 목록이 있을까요?",
+      "파이썬을 잘 못해도 실습을 할 수 있나요?"
+    ],
+    "question": "아래 학생 질문 묶음을 근거로 반복되는 어려움과 요구를 요약하고, 핵심 키워드와 수업 개선 제안을 작성하세요. 질문에 없는 사실이나 원인을 추측하지 마세요.",
+    "ground_truth": "{\"summary\": \"질문은 인공지능 과목의 선수 수학·프로그래밍 지식과 강의 진도 부담에 집중되어 있습니다. 일부 학생은 선행학습 범위와 주차별 핵심 내용을 알고 싶어 합니다.\", \"keywords\": [\"선수지식\", \"선형대수·확률\", \"파이썬 실습\", \"강의 진도\"], \"recommendations\": [\"필요 선수지식과 권장 복습 자료를 수강 초기에 안내하세요.\", \"주차별 핵심 개념과 보충 설명 자료를 제공하고 이해 확인 시간을 마련하세요.\"], \"limitations\": [\"합성 질문 사례이므로 실제 수강생의 빈도나 대표성을 추정하지 않음\", \"질문만으로 원인·성취도·교수자 책임을 단정하지 않음\"]}",
+    "evaluation_criteria": [
+      "요약이 제공된 학생 질문에서 반복되는 주제를 빠짐없이 반영하는가",
+      "키워드가 질문 내용을 대표하고 중복되지 않는가",
+      "제안이 구체적이고 질문 근거에 연결되는가",
+      "질문 수만으로 학생 전체의 의견이나 인과관계를 단정하지 않는가",
+      "질문 수를 실제 학생 전체의 빈도나 비율로 일반화하지 않는가",
+      "질문에 없는 정책·원인·책임을 추측하지 않는가",
+      "확인 불가능한 점을 분명히 표시하는가"
+    ],
+    "models": {
+      "Base Model": "",
+      "Student LoRA": "",
+      "Professor LoRA": ""
+    },
+    "scenario_category": "concept_and_prerequisites",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "knowledge_scope": "제시된 학생 질문만 근거로 분석; 외부 사실은 추정하지 않음",
+    "dataset_version": "professor_eval_v2_pilot",
+    "train_eval_overlap_status": "semantic_review_required"
+  },
+  {
+    "question_id": "P005",
+    "role": "professor",
+    "task_type": "instructor_question_analytics",
+    "data_origin": "synthetic_scenario",
+    "review_status": "needs_domain_review",
+    "course_name": "캡스톤디자인",
+    "scenario_theme": "팀 프로젝트 운영",
+    "student_questions": [
+      "팀원 역할은 보고서에 어떻게 기록하나요?",
+      "팀원이 중간에 참여하지 않으면 평가에 반영되나요?",
+      "주제 변경은 언제까지 신청할 수 있나요?",
+      "중간 발표와 최종 발표 평가 기준을 미리 볼 수 있나요?",
+      "깃허브 사용이 필수인가요?",
+      "외부 데이터셋을 사용해도 되나요?",
+      "프로젝트 예산으로 구매 가능한 품목을 알려주세요."
+    ],
+    "question": "아래 학생 질문 묶음을 근거로 반복되는 어려움과 요구를 요약하고, 핵심 키워드와 수업 개선 제안을 작성하세요. 질문에 없는 사실이나 원인을 추측하지 마세요.",
+    "ground_truth": "{\"summary\": \"학생 질문은 팀 역할과 참여도 평가, 주제 변경, 발표 기준, 협업 도구, 데이터 사용 및 예산 집행 등 프로젝트 운영 전반에 걸쳐 있습니다. 운영 규정과 평가 기준을 프로젝트 초기에 명확히 안내할 필요가 있습니다.\", \"keywords\": [\"팀 역할\", \"평가 기준\", \"주제 변경\", \"도구·예산\"], \"recommendations\": [\"팀 구성, 역할 기록, 참여도 반영 및 주제 변경 절차를 프로젝트 안내서로 제공하세요.\", \"발표 루브릭, 사용 가능 도구·데이터·예산 기준을 사전에 공개하세요.\"], \"limitations\": [\"합성 질문 사례이므로 실제 수강생의 빈도나 대표성을 추정하지 않음\", \"질문만으로 원인·성취도·교수자 책임을 단정하지 않음\"]}",
+    "evaluation_criteria": [
+      "요약이 제공된 학생 질문에서 반복되는 주제를 빠짐없이 반영하는가",
+      "키워드가 질문 내용을 대표하고 중복되지 않는가",
+      "제안이 구체적이고 질문 근거에 연결되는가",
+      "질문 수만으로 학생 전체의 의견이나 인과관계를 단정하지 않는가",
+      "질문 수를 실제 학생 전체의 빈도나 비율로 일반화하지 않는가",
+      "질문에 없는 정책·원인·책임을 추측하지 않는가",
+      "확인 불가능한 점을 분명히 표시하는가"
+    ],
+    "models": {
+      "Base Model": "",
+      "Student LoRA": "",
+      "Professor LoRA": ""
+    },
+    "scenario_category": "assignment_and_project_operations",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "knowledge_scope": "제시된 학생 질문만 근거로 분석; 외부 사실은 추정하지 않음",
+    "dataset_version": "professor_eval_v2_pilot",
+    "train_eval_overlap_status": "semantic_review_required"
+  },
+  {
+    "question_id": "P006",
+    "role": "professor",
+    "task_type": "instructor_question_analytics",
+    "data_origin": "synthetic_scenario",
+    "review_status": "needs_domain_review",
+    "course_name": "운영체제",
+    "scenario_theme": "실습 환경과 설치 문제",
+    "student_questions": [
+      "실습은 맥에서도 가능한가요?",
+      "가상머신 설치 오류가 나는데 대체 환경이 있나요?",
+      "과제 테스트에 사용할 운영체제 버전이 정해져 있나요?",
+      "윈도우에서 리눅스 명령을 실행하려면 어떤 도구를 설치해야 하나요?",
+      "실습실 컴퓨터에서 개인 파일을 저장할 수 있나요?",
+      "컴파일러 버전이 다르면 채점 결과도 달라지나요?"
+    ],
+    "question": "아래 학생 질문 묶음을 근거로 반복되는 어려움과 요구를 요약하고, 핵심 키워드와 수업 개선 제안을 작성하세요. 질문에 없는 사실이나 원인을 추측하지 마세요.",
+    "ground_truth": "{\"summary\": \"질문은 개인 기기별 개발 환경, 가상머신 설치, 운영체제·컴파일러 버전 및 대체 실습 환경에 집중되어 있습니다. 환경 차이가 실습 참여와 과제 재현성에 영향을 줄 수 있다는 우려가 있습니다.\", \"keywords\": [\"실습 환경\", \"가상머신\", \"운영체제 버전\", \"컴파일러\"], \"recommendations\": [\"지원 운영체제와 검증된 버전, 설치 절차를 안내하고 문제가 잦은 단계의 해결책을 제공하세요.\", \"기기별 대체 실습 환경이나 실습실 사용 방법을 공지하세요.\"], \"limitations\": [\"합성 질문 사례이므로 실제 수강생의 빈도나 대표성을 추정하지 않음\", \"질문만으로 원인·성취도·교수자 책임을 단정하지 않음\"]}",
+    "evaluation_criteria": [
+      "요약이 제공된 학생 질문에서 반복되는 주제를 빠짐없이 반영하는가",
+      "키워드가 질문 내용을 대표하고 중복되지 않는가",
+      "제안이 구체적이고 질문 근거에 연결되는가",
+      "질문 수만으로 학생 전체의 의견이나 인과관계를 단정하지 않는가",
+      "질문 수를 실제 학생 전체의 빈도나 비율로 일반화하지 않는가",
+      "질문에 없는 정책·원인·책임을 추측하지 않는가",
+      "확인 불가능한 점을 분명히 표시하는가"
+    ],
+    "models": {
+      "Base Model": "",
+      "Student LoRA": "",
+      "Professor LoRA": ""
+    },
+    "scenario_category": "learning_environment_and_accessibility",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "knowledge_scope": "제시된 학생 질문만 근거로 분석; 외부 사실은 추정하지 않음",
+    "dataset_version": "professor_eval_v2_pilot",
+    "train_eval_overlap_status": "semantic_review_required"
+  },
+  {
+    "question_id": "P007",
+    "role": "professor",
+    "task_type": "instructor_question_analytics",
+    "data_origin": "synthetic_scenario",
+    "review_status": "needs_domain_review",
+    "course_name": "데이터베이스",
+    "scenario_theme": "성적과 피드백",
+    "student_questions": [
+      "과제 점수에서 감점된 이유를 확인할 수 있나요?",
+      "시험 답안 열람은 언제 가능한가요?",
+      "프로젝트 평가에서 문서화 점수 기준이 궁금합니다.",
+      "채점 오류가 의심되면 어디로 문의해야 하나요?",
+      "루브릭의 완성도와 정확성은 각각 무엇을 평가하나요?",
+      "재채점 신청 기한이 있나요?"
+    ],
+    "question": "아래 학생 질문 묶음을 근거로 반복되는 어려움과 요구를 요약하고, 핵심 키워드와 수업 개선 제안을 작성하세요. 질문에 없는 사실이나 원인을 추측하지 마세요.",
+    "ground_truth": "{\"summary\": \"학생들은 과제·시험·프로젝트 점수의 감점 사유와 채점 기준, 답안 열람 및 재채점 절차를 알고 싶어 합니다. 성적 결과뿐 아니라 평가 근거와 이의 제기 절차에 대한 설명이 필요합니다.\", \"keywords\": [\"채점 기준\", \"감점 사유\", \"답안 열람\", \"재채점\"], \"recommendations\": [\"과제와 프로젝트의 평가 루브릭 및 감점 예시를 과제 전에 공개하세요.\", \"시험 답안 열람 일정과 재채점 문의 절차·기한을 명시하세요.\"], \"limitations\": [\"합성 질문 사례이므로 실제 수강생의 빈도나 대표성을 추정하지 않음\", \"질문만으로 원인·성취도·교수자 책임을 단정하지 않음\"]}",
+    "evaluation_criteria": [
+      "요약이 제공된 학생 질문에서 반복되는 주제를 빠짐없이 반영하는가",
+      "키워드가 질문 내용을 대표하고 중복되지 않는가",
+      "제안이 구체적이고 질문 근거에 연결되는가",
+      "질문 수만으로 학생 전체의 의견이나 인과관계를 단정하지 않는가",
+      "질문 수를 실제 학생 전체의 빈도나 비율로 일반화하지 않는가",
+      "질문에 없는 정책·원인·책임을 추측하지 않는가",
+      "확인 불가능한 점을 분명히 표시하는가"
+    ],
+    "models": {
+      "Base Model": "",
+      "Student LoRA": "",
+      "Professor LoRA": ""
+    },
+    "scenario_category": "assessment_and_feedback",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "knowledge_scope": "제시된 학생 질문만 근거로 분석; 외부 사실은 추정하지 않음",
+    "dataset_version": "professor_eval_v2_pilot",
+    "train_eval_overlap_status": "semantic_review_required"
+  },
+  {
+    "question_id": "P008",
+    "role": "professor",
+    "task_type": "instructor_question_analytics",
+    "data_origin": "synthetic_scenario",
+    "review_status": "needs_domain_review",
+    "course_name": "컴퓨터네트워크",
+    "scenario_theme": "수업 참여와 출석",
+    "student_questions": [
+      "질병으로 빠진 수업 자료를 어디서 볼 수 있나요?",
+      "출석 인정 신청에 필요한 서류가 무엇인가요?",
+      "온라인 보충 강의도 출석으로 인정되나요?",
+      "지각과 조퇴는 출석 점수에 어떻게 반영되나요?",
+      "수업 녹화본이 제공되나요?",
+      "실습 결석 시 대체 과제가 있나요?"
+    ],
+    "question": "아래 학생 질문 묶음을 근거로 반복되는 어려움과 요구를 요약하고, 핵심 키워드와 수업 개선 제안을 작성하세요. 질문에 없는 사실이나 원인을 추측하지 마세요.",
+    "ground_truth": "{\"summary\": \"학생 질문은 결석 시 자료 접근, 출석 인정 서류, 지각·조퇴 기준, 녹화본 및 실습 대체 방안에 모여 있습니다. 출석 규정과 결석 후 학습 방법을 함께 안내하면 도움이 될 것으로 보입니다.\", \"keywords\": [\"출석 인정\", \"결석 자료\", \"지각·조퇴\", \"실습 대체\"], \"recommendations\": [\"출석 인정 기준과 신청 서류·기한을 강의계획서와 수업 공지에 일관되게 안내하세요.\", \"결석 학생이 확인할 수 있는 강의자료 및 실습 보충 방법을 정리하세요.\"], \"limitations\": [\"합성 질문 사례이므로 실제 수강생의 빈도나 대표성을 추정하지 않음\", \"질문만으로 원인·성취도·교수자 책임을 단정하지 않음\"]}",
+    "evaluation_criteria": [
+      "요약이 제공된 학생 질문에서 반복되는 주제를 빠짐없이 반영하는가",
+      "키워드가 질문 내용을 대표하고 중복되지 않는가",
+      "제안이 구체적이고 질문 근거에 연결되는가",
+      "질문 수만으로 학생 전체의 의견이나 인과관계를 단정하지 않는가",
+      "질문 수를 실제 학생 전체의 빈도나 비율로 일반화하지 않는가",
+      "질문에 없는 정책·원인·책임을 추측하지 않는가",
+      "확인 불가능한 점을 분명히 표시하는가"
+    ],
+    "models": {
+      "Base Model": "",
+      "Student LoRA": "",
+      "Professor LoRA": ""
+    },
+    "scenario_category": "participation_and_communication",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "knowledge_scope": "제시된 학생 질문만 근거로 분석; 외부 사실은 추정하지 않음",
+    "dataset_version": "professor_eval_v2_pilot",
+    "train_eval_overlap_status": "semantic_review_required"
+  },
+  {
+    "question_id": "P009",
+    "role": "professor",
+    "task_type": "instructor_question_analytics",
+    "data_origin": "synthetic_scenario",
+    "review_status": "needs_domain_review",
+    "course_name": "알고리즘",
+    "scenario_theme": "학습 자료와 연습 기회",
+    "student_questions": [
+      "알고리즘 문제를 더 풀어볼 사이트를 추천해 주세요.",
+      "동적 계획법을 연습할 쉬운 문제부터 풀고 싶어요.",
+      "정답 코드만 보는 것보다 풀이 과정을 확인할 자료가 있나요?",
+      "주차별로 복습할 문제를 받을 수 있나요?",
+      "시간복잡도 계산 연습 문제와 해설이 필요합니다.",
+      "수업 교재 연습문제 해답을 제공하나요?"
+    ],
+    "question": "아래 학생 질문 묶음을 근거로 반복되는 어려움과 요구를 요약하고, 핵심 키워드와 수업 개선 제안을 작성하세요. 질문에 없는 사실이나 원인을 추측하지 마세요.",
+    "ground_truth": "{\"summary\": \"학생들은 알고리즘 개념을 실제 문제에 적용할 추가 연습과 풀이 과정·해설을 요청하고 있습니다. 특히 동적 계획법과 시간복잡도처럼 반복 연습이 필요한 주제의 학습 경로가 필요합니다.\", \"keywords\": [\"알고리즘 연습\", \"동적 계획법\", \"시간복잡도\", \"풀이 해설\"], \"recommendations\": [\"난이도별 추가 문제와 풀이 핵심을 제공해 자기주도 복습을 지원하세요.\", \"수업에서 다룬 알고리즘별 연습 문제 목록과 권장 풀이 순서를 안내하세요.\"], \"limitations\": [\"합성 질문 사례이므로 실제 수강생의 빈도나 대표성을 추정하지 않음\", \"질문만으로 원인·성취도·교수자 책임을 단정하지 않음\"]}",
+    "evaluation_criteria": [
+      "요약이 제공된 학생 질문에서 반복되는 주제를 빠짐없이 반영하는가",
+      "키워드가 질문 내용을 대표하고 중복되지 않는가",
+      "제안이 구체적이고 질문 근거에 연결되는가",
+      "질문 수만으로 학생 전체의 의견이나 인과관계를 단정하지 않는가",
+      "질문 수를 실제 학생 전체의 빈도나 비율로 일반화하지 않는가",
+      "질문에 없는 정책·원인·책임을 추측하지 않는가",
+      "확인 불가능한 점을 분명히 표시하는가"
+    ],
+    "models": {
+      "Base Model": "",
+      "Student LoRA": "",
+      "Professor LoRA": ""
+    },
+    "scenario_category": "concept_and_prerequisites",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "knowledge_scope": "제시된 학생 질문만 근거로 분석; 외부 사실은 추정하지 않음",
+    "dataset_version": "professor_eval_v2_pilot",
+    "train_eval_overlap_status": "semantic_review_required"
+  },
+  {
+    "question_id": "P010",
+    "role": "professor",
+    "task_type": "instructor_question_analytics",
+    "data_origin": "synthetic_scenario",
+    "review_status": "needs_domain_review",
+    "course_name": "소프트웨어공학",
+    "scenario_theme": "팀 과제 일정과 소통",
+    "student_questions": [
+      "팀 회의에 참석하지 못한 경우 어떻게 공유받나요?",
+      "팀 프로젝트 중간 점검 일정이 언제인가요?",
+      "팀원 간 의견이 다를 때 교수님께 중재를 요청해도 되나요?",
+      "요구사항 변경은 보고서에 어떤 방식으로 기록하나요?",
+      "발표 순서와 발표 시간은 언제 공지되나요?",
+      "팀 과제 기여도 평가는 어떤 방식으로 하나요?"
+    ],
+    "question": "아래 학생 질문 묶음을 근거로 반복되는 어려움과 요구를 요약하고, 핵심 키워드와 수업 개선 제안을 작성하세요. 질문에 없는 사실이나 원인을 추측하지 마세요.",
+    "ground_truth": "{\"summary\": \"질문은 팀 내 정보 공유, 중간 점검 일정, 의견 조정, 요구사항 변경 기록, 발표 운영 및 기여도 평가에 집중되어 있습니다. 팀 프로젝트의 소통 규칙과 일정·평가 절차를 명시할 필요가 있습니다.\", \"keywords\": [\"팀 소통\", \"중간 점검\", \"요구사항 변경\", \"기여도 평가\"], \"recommendations\": [\"팀 회의 기록과 의사결정·요구사항 변경 기록 양식을 제공하세요.\", \"중간 점검 및 발표 일정, 기여도 평가 방식을 학기 초 공개하세요.\"], \"limitations\": [\"합성 질문 사례이므로 실제 수강생의 빈도나 대표성을 추정하지 않음\", \"질문만으로 원인·성취도·교수자 책임을 단정하지 않음\"]}",
+    "evaluation_criteria": [
+      "요약이 제공된 학생 질문에서 반복되는 주제를 빠짐없이 반영하는가",
+      "키워드가 질문 내용을 대표하고 중복되지 않는가",
+      "제안이 구체적이고 질문 근거에 연결되는가",
+      "질문 수만으로 학생 전체의 의견이나 인과관계를 단정하지 않는가",
+      "질문 수를 실제 학생 전체의 빈도나 비율로 일반화하지 않는가",
+      "질문에 없는 정책·원인·책임을 추측하지 않는가",
+      "확인 불가능한 점을 분명히 표시하는가"
+    ],
+    "models": {
+      "Base Model": "",
+      "Student LoRA": "",
+      "Professor LoRA": ""
+    },
+    "scenario_category": "assignment_and_project_operations",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "knowledge_scope": "제시된 학생 질문만 근거로 분석; 외부 사실은 추정하지 않음",
+    "dataset_version": "professor_eval_v2_pilot",
+    "train_eval_overlap_status": "semantic_review_required"
+  },
+  {
+    "question_id": "P011",
+    "role": "professor",
+    "task_type": "instructor_question_analytics",
+    "data_origin": "synthetic_scenario",
+    "review_status": "needs_domain_review",
+    "course_name": "인공지능개론",
+    "scenario_theme": "수업 자료 접근성",
+    "student_questions": [
+      "강의 슬라이드 글자가 작아 읽기 어렵습니다.",
+      "코드 실습 자료에 설명 자막이나 대체 텍스트가 있나요?",
+      "강의자료를 수업 전에 받을 수 있을까요?",
+      "영상 자료의 자막을 제공해 주실 수 있나요?",
+      "색상만으로 구분된 그래프를 설명해 주세요.",
+      "보충 자료의 파일 형식을 바꿔 받을 수 있나요?"
+    ],
+    "question": "아래 학생 질문 묶음을 근거로 반복되는 어려움과 요구를 요약하고, 핵심 키워드와 수업 개선 제안을 작성하세요. 질문에 없는 사실이나 원인을 추측하지 마세요.",
+    "ground_truth": "{\"summary\": \"질문은 슬라이드 가독성, 코드·그래프 설명, 자료 사전 제공, 영상 자막 및 파일 접근성에 집중되어 있습니다. 다양한 학습 환경과 접근성 요구를 고려한 자료 제공이 필요합니다.\", \"keywords\": [\"자료 가독성\", \"자막\", \"그래프 설명\", \"자료 접근성\"], \"recommendations\": [\"슬라이드의 글자 크기와 색상 대비를 점검하고 그래프에 텍스트 설명을 추가하세요.\", \"가능한 범위에서 자막과 접근 가능한 파일 형식의 자료를 제공하세요.\"], \"limitations\": [\"합성 질문 사례이므로 실제 수강생의 빈도나 대표성을 추정하지 않음\", \"질문만으로 원인·성취도·교수자 책임을 단정하지 않음\"]}",
+    "evaluation_criteria": [
+      "요약이 제공된 학생 질문에서 반복되는 주제를 빠짐없이 반영하는가",
+      "키워드가 질문 내용을 대표하고 중복되지 않는가",
+      "제안이 구체적이고 질문 근거에 연결되는가",
+      "질문 수만으로 학생 전체의 의견이나 인과관계를 단정하지 않는가",
+      "질문 수를 실제 학생 전체의 빈도나 비율로 일반화하지 않는가",
+      "질문에 없는 정책·원인·책임을 추측하지 않는가",
+      "확인 불가능한 점을 분명히 표시하는가"
+    ],
+    "models": {
+      "Base Model": "",
+      "Student LoRA": "",
+      "Professor LoRA": ""
+    },
+    "scenario_category": "learning_environment_and_accessibility",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "knowledge_scope": "제시된 학생 질문만 근거로 분석; 외부 사실은 추정하지 않음",
+    "dataset_version": "professor_eval_v2_pilot",
+    "train_eval_overlap_status": "semantic_review_required"
+  },
+  {
+    "question_id": "P012",
+    "role": "professor",
+    "task_type": "instructor_question_analytics",
+    "data_origin": "synthetic_scenario",
+    "review_status": "needs_domain_review",
+    "course_name": "자료구조",
+    "scenario_theme": "상담 및 질문 응답 경로",
+    "student_questions": [
+      "수업 중 질문하지 못한 내용은 어디에 남기면 되나요?",
+      "교수님 면담은 예약이 필요한가요?",
+      "조교 질문 시간은 언제인가요?",
+      "과제 관련 질문은 공개 게시판에 올려도 되나요?",
+      "질문 답변을 다른 학생도 볼 수 있는 공간이 있나요?",
+      "답변을 받기까지 보통 얼마나 걸리나요?"
+    ],
+    "question": "아래 학생 질문 묶음을 근거로 반복되는 어려움과 요구를 요약하고, 핵심 키워드와 수업 개선 제안을 작성하세요. 질문에 없는 사실이나 원인을 추측하지 마세요.",
+    "ground_truth": "{\"summary\": \"학생들은 수업 후 질문 채널, 교수 면담 예약, 조교 질의 시간, 공개 게시판 사용 및 응답 예상 시간을 알고 싶어 합니다. 질문을 제출하고 답변을 확인할 공식 경로가 명확해야 합니다.\", \"keywords\": [\"질문 채널\", \"면담 예약\", \"조교 시간\", \"응답 시간\"], \"recommendations\": [\"교수·조교별 질문 채널과 면담 예약 방법, 질의 가능 시간을 한 곳에 안내하세요.\", \"개인정보가 포함되지 않는 질문은 공용 FAQ로 정리하고 응답 목표 시간을 공지하세요.\"], \"limitations\": [\"합성 질문 사례이므로 실제 수강생의 빈도나 대표성을 추정하지 않음\", \"질문만으로 원인·성취도·교수자 책임을 단정하지 않음\"]}",
+    "evaluation_criteria": [
+      "요약이 제공된 학생 질문에서 반복되는 주제를 빠짐없이 반영하는가",
+      "키워드가 질문 내용을 대표하고 중복되지 않는가",
+      "제안이 구체적이고 질문 근거에 연결되는가",
+      "질문 수만으로 학생 전체의 의견이나 인과관계를 단정하지 않는가",
+      "질문 수를 실제 학생 전체의 빈도나 비율로 일반화하지 않는가",
+      "질문에 없는 정책·원인·책임을 추측하지 않는가",
+      "확인 불가능한 점을 분명히 표시하는가"
+    ],
+    "models": {
+      "Base Model": "",
+      "Student LoRA": "",
+      "Professor LoRA": ""
+    },
+    "scenario_category": "participation_and_communication",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "knowledge_scope": "제시된 학생 질문만 근거로 분석; 외부 사실은 추정하지 않음",
+    "dataset_version": "professor_eval_v2_pilot",
+    "train_eval_overlap_status": "semantic_review_required"
+  },
+  {
+    "question_id": "P013",
+    "role": "professor",
+    "task_type": "instructor_question_analytics",
+    "data_origin": "synthetic_scenario",
+    "review_status": "needs_domain_review",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "course_name": "이산수학",
+    "scenario_theme": "증명 과정 이해",
+    "scenario_category": "concept_and_prerequisites",
+    "knowledge_scope": "시나리오에 제시된 학생 질문만 근거로 분석; 공식 강의 사실을 추정하지 않음",
+    "student_questions": [
+      "귀납법에서 기초 단계와 귀납 가정을 각각 왜 쓰는지 모르겠습니다.",
+      "귀납 가정에 n이 성립한다고 두면 n+1 증명에서 어디에 대입하나요?",
+      "명제의 대우를 증명하는 것과 원래 명제를 직접 증명하는 것은 언제 다르나요?",
+      "수식 변형 중 어떤 등호가 성립하는지 단계별로 보고 싶습니다.",
+      "증명 문제에서 결론을 먼저 쓰고 시작해도 되나요?",
+      "비슷한 난이도의 짧은 증명 연습과 풀이 기준이 있나요?"
+    ],
+    "question": "아래 학생 질문 묶음만 근거로 (1) 반복 주제 요약, (2) 핵심 키워드 3~5개, (3) 수업 운영 개선 제안 2개, (4) 자료로 판단할 수 없는 점을 작성하세요. 질문 빈도를 실제 수강생 전체의 비율로 해석하거나 원인·책임을 추측하지 마세요.",
+    "ground_truth": "{\"summary\": \"질문은 수학적 증명의 구성 요소와 논리 전개, 증명 작성 관행에 집중되어 있습니다.\", \"keywords\": [\"수학적 귀납법\", \"귀납 가정\", \"대우 증명\", \"논리 전개\"], \"recommendations\": [\"기초 단계·귀납 단계의 역할을 나눈 풀이 예시를 제공하세요.\", \"증명 과정에서 각 변형의 근거를 표시하는 연습과 피드백을 마련하세요.\"], \"limitations\": [\"합성 질문 사례이므로 실제 수강생의 빈도나 대표성을 추정하지 않음\", \"질문만으로 원인·성취도·교수자 책임을 단정하지 않음\"]}",
+    "evaluation_criteria": [
+      "반복 주제를 학생 질문의 내용에 근거해 요약하는가",
+      "핵심 키워드가 질문 묶음을 대표하고 중복되지 않는가",
+      "제안이 구체적이며 관찰된 질문과 연결되는가",
+      "질문 사례 수가 합성으로 정해졌음을 고려해 전체 학생의 비율·대표성으로 일반화하지 않는가",
+      "질문에 없는 정책·사건·원인을 만들어내지 않는가",
+      "판단 불가능하거나 정책 확인이 필요한 내용을 명시하는가",
+      "질문 수를 실제 학생 전체의 빈도나 비율로 일반화하지 않는가",
+      "질문에 없는 정책·원인·책임을 추측하지 않는가",
+      "확인 불가능한 점을 분명히 표시하는가"
+    ],
+    "models": {
+      "Base Model": "",
+      "Student LoRA": "",
+      "Professor LoRA": ""
+    },
+    "dataset_version": "professor_eval_v2_pilot",
+    "train_eval_overlap_status": "semantic_review_required"
+  },
+  {
+    "question_id": "P014",
+    "role": "professor",
+    "task_type": "instructor_question_analytics",
+    "data_origin": "synthetic_scenario",
+    "review_status": "needs_domain_review",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "course_name": "데이터베이스",
+    "scenario_theme": "정규화와 스키마 설계",
+    "scenario_category": "concept_and_prerequisites",
+    "knowledge_scope": "시나리오에 제시된 학생 질문만 근거로 분석; 공식 강의 사실을 추정하지 않음",
+    "student_questions": [
+      "함수 종속이 테이블을 나누는 기준이 되는 이유를 예시로 설명해 주세요.",
+      "제3정규형까지 분해하면 항상 조인이 늘어나나요?",
+      "기본키와 후보키를 찾는 연습을 더 하고 싶습니다.",
+      "정규화 전후에 어떤 이상 현상이 사라졌는지 잘 모르겠습니다.",
+      "ER 다이어그램에서 관계의 카디널리티를 릴레이션으로 옮기는 규칙이 헷갈립니다.",
+      "정규화와 성능을 함께 고려하는 설계 사례가 있나요?"
+    ],
+    "question": "아래 학생 질문 묶음만 근거로 (1) 반복 주제 요약, (2) 핵심 키워드 3~5개, (3) 수업 운영 개선 제안 2개, (4) 자료로 판단할 수 없는 점을 작성하세요. 질문 빈도를 실제 수강생 전체의 비율로 해석하거나 원인·책임을 추측하지 마세요.",
+    "ground_truth": "{\"summary\": \"질문은 함수 종속, 키 식별, 정규화의 목적과 ER 모델을 관계형 스키마로 변환하는 과정에 집중되어 있습니다.\", \"keywords\": [\"함수 종속\", \"키 식별\", \"정규화\", \"ER 모델 변환\"], \"recommendations\": [\"하나의 예시 데이터에 이상 현상, 분해, 변환 결과를 연결해 설명하세요.\", \"정규화의 논리적 목적과 성능상 고려사항을 구분한 사례를 제공하세요.\"], \"limitations\": [\"합성 질문 사례이므로 실제 수강생의 빈도나 대표성을 추정하지 않음\", \"질문만으로 원인·성취도·교수자 책임을 단정하지 않음\"]}",
+    "evaluation_criteria": [
+      "반복 주제를 학생 질문의 내용에 근거해 요약하는가",
+      "핵심 키워드가 질문 묶음을 대표하고 중복되지 않는가",
+      "제안이 구체적이며 관찰된 질문과 연결되는가",
+      "질문 사례 수가 합성으로 정해졌음을 고려해 전체 학생의 비율·대표성으로 일반화하지 않는가",
+      "질문에 없는 정책·사건·원인을 만들어내지 않는가",
+      "판단 불가능하거나 정책 확인이 필요한 내용을 명시하는가",
+      "질문 수를 실제 학생 전체의 빈도나 비율로 일반화하지 않는가",
+      "질문에 없는 정책·원인·책임을 추측하지 않는가",
+      "확인 불가능한 점을 분명히 표시하는가"
+    ],
+    "models": {
+      "Base Model": "",
+      "Student LoRA": "",
+      "Professor LoRA": ""
+    },
+    "dataset_version": "professor_eval_v2_pilot",
+    "train_eval_overlap_status": "semantic_review_required"
+  },
+  {
+    "question_id": "P015",
+    "role": "professor",
+    "task_type": "instructor_question_analytics",
+    "data_origin": "synthetic_scenario",
+    "review_status": "needs_domain_review",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "course_name": "컴퓨터네트워크",
+    "scenario_theme": "IP 주소와 서브넷",
+    "scenario_category": "concept_and_prerequisites",
+    "knowledge_scope": "시나리오에 제시된 학생 질문만 근거로 분석; 공식 강의 사실을 추정하지 않음",
+    "student_questions": [
+      "CIDR 표기에서 /24가 의미하는 바를 직관적으로 설명해 주세요.",
+      "서브넷 마스크를 보고 사용 가능한 호스트 수를 계산하는 과정이 어렵습니다.",
+      "네트워크 주소와 브로드캐스트 주소를 구분하는 연습이 필요합니다.",
+      "라우팅 표에서 목적지 주소에 맞는 경로를 고르는 규칙이 헷갈립니다.",
+      "십진수와 이진수 변환을 매번 해야 하나요?",
+      "서브넷 계산에서 자주 하는 실수를 정리해 주세요."
+    ],
+    "question": "아래 학생 질문 묶음만 근거로 (1) 반복 주제 요약, (2) 핵심 키워드 3~5개, (3) 수업 운영 개선 제안 2개, (4) 자료로 판단할 수 없는 점을 작성하세요. 질문 빈도를 실제 수강생 전체의 비율로 해석하거나 원인·책임을 추측하지 마세요.",
+    "ground_truth": "{\"summary\": \"질문은 CIDR·서브넷 마스크 해석, 주소 범위 계산, 라우팅 규칙의 적용에 집중되어 있습니다.\", \"keywords\": [\"CIDR\", \"서브넷 마스크\", \"주소 범위\", \"라우팅\"], \"recommendations\": [\"이진수 변환부터 주소 범위 판정까지 단계별 예제를 제공하세요.\", \"계산 결과보다 각 단계의 판단 근거를 점검하는 연습 문제를 마련하세요.\"], \"limitations\": [\"합성 질문 사례이므로 실제 수강생의 빈도나 대표성을 추정하지 않음\", \"질문만으로 원인·성취도·교수자 책임을 단정하지 않음\"]}",
+    "evaluation_criteria": [
+      "반복 주제를 학생 질문의 내용에 근거해 요약하는가",
+      "핵심 키워드가 질문 묶음을 대표하고 중복되지 않는가",
+      "제안이 구체적이며 관찰된 질문과 연결되는가",
+      "질문 사례 수가 합성으로 정해졌음을 고려해 전체 학생의 비율·대표성으로 일반화하지 않는가",
+      "질문에 없는 정책·사건·원인을 만들어내지 않는가",
+      "판단 불가능하거나 정책 확인이 필요한 내용을 명시하는가",
+      "질문 수를 실제 학생 전체의 빈도나 비율로 일반화하지 않는가",
+      "질문에 없는 정책·원인·책임을 추측하지 않는가",
+      "확인 불가능한 점을 분명히 표시하는가"
+    ],
+    "models": {
+      "Base Model": "",
+      "Student LoRA": "",
+      "Professor LoRA": ""
+    },
+    "dataset_version": "professor_eval_v2_pilot",
+    "train_eval_overlap_status": "semantic_review_required"
+  },
+  {
+    "question_id": "P016",
+    "role": "professor",
+    "task_type": "instructor_question_analytics",
+    "data_origin": "synthetic_scenario",
+    "review_status": "needs_domain_review",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "course_name": "프로그래밍기초",
+    "scenario_theme": "자동 채점과 테스트 케이스",
+    "scenario_category": "assignment_and_project_operations",
+    "knowledge_scope": "시나리오에 제시된 학생 질문만 근거로 분석; 공식 강의 사실을 추정하지 않음",
+    "student_questions": [
+      "제출했는데 일부 테스트만 실패합니다. 어떤 입력을 더 확인해야 하나요?",
+      "채점 결과에서 실패한 테스트의 입력값을 볼 수 있나요?",
+      "빈 입력이나 한 개만 입력되는 경우도 처리해야 하나요?",
+      "출력 마지막에 줄바꿈이 없으면 오답 처리되나요?",
+      "예제 테스트를 통과했는데 숨겨진 테스트에서 실패하는 이유를 알고 싶습니다.",
+      "오류 메시지를 읽고 원인을 찾는 방법을 연습하고 싶습니다."
+    ],
+    "question": "아래 학생 질문 묶음만 근거로 (1) 반복 주제 요약, (2) 핵심 키워드 3~5개, (3) 수업 운영 개선 제안 2개, (4) 자료로 판단할 수 없는 점을 작성하세요. 질문 빈도를 실제 수강생 전체의 비율로 해석하거나 원인·책임을 추측하지 마세요.",
+    "ground_truth": "{\"summary\": \"질문은 자동 채점 실패 원인, 경계 입력, 출력 형식과 디버깅 절차에 집중되어 있습니다.\", \"keywords\": [\"자동 채점\", \"경계 입력\", \"출력 형식\", \"디버깅\"], \"recommendations\": [\"공개 테스트와 경계 사례를 활용한 자체 점검 절차를 안내하세요.\", \"오류 메시지와 실패 사례를 바탕으로 원인을 좁히는 디버깅 예시를 제공하세요.\"], \"limitations\": [\"합성 질문 사례이므로 실제 수강생의 빈도나 대표성을 추정하지 않음\", \"질문만으로 원인·성취도·교수자 책임을 단정하지 않음\"]}",
+    "evaluation_criteria": [
+      "반복 주제를 학생 질문의 내용에 근거해 요약하는가",
+      "핵심 키워드가 질문 묶음을 대표하고 중복되지 않는가",
+      "제안이 구체적이며 관찰된 질문과 연결되는가",
+      "질문 사례 수가 합성으로 정해졌음을 고려해 전체 학생의 비율·대표성으로 일반화하지 않는가",
+      "질문에 없는 정책·사건·원인을 만들어내지 않는가",
+      "판단 불가능하거나 정책 확인이 필요한 내용을 명시하는가",
+      "질문 수를 실제 학생 전체의 빈도나 비율로 일반화하지 않는가",
+      "질문에 없는 정책·원인·책임을 추측하지 않는가",
+      "확인 불가능한 점을 분명히 표시하는가"
+    ],
+    "models": {
+      "Base Model": "",
+      "Student LoRA": "",
+      "Professor LoRA": ""
+    },
+    "dataset_version": "professor_eval_v2_pilot",
+    "train_eval_overlap_status": "semantic_review_required"
+  },
+  {
+    "question_id": "P017",
+    "role": "professor",
+    "task_type": "instructor_question_analytics",
+    "data_origin": "synthetic_scenario",
+    "review_status": "needs_domain_review",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "course_name": "소프트웨어공학",
+    "scenario_theme": "요구사항 변경과 산출물",
+    "scenario_category": "assignment_and_project_operations",
+    "knowledge_scope": "시나리오에 제시된 학생 질문만 근거로 분석; 공식 강의 사실을 추정하지 않음",
+    "student_questions": [
+      "프로젝트 중간에 요구사항이 바뀌면 기존 문서를 어디까지 수정해야 하나요?",
+      "요구사항 변경 이력은 어떤 형식으로 남겨야 하나요?",
+      "사용자 스토리와 기능 목록이 서로 다르면 무엇을 기준으로 구현하나요?",
+      "중간 제출 후 피드백을 받으면 최종 보고서에 반영 내역도 써야 하나요?",
+      "팀원이 작성한 문서와 코드의 버전을 어떻게 맞추나요?",
+      "요구사항 우선순위를 정하는 기준을 알려주세요."
+    ],
+    "question": "아래 학생 질문 묶음만 근거로 (1) 반복 주제 요약, (2) 핵심 키워드 3~5개, (3) 수업 운영 개선 제안 2개, (4) 자료로 판단할 수 없는 점을 작성하세요. 질문 빈도를 실제 수강생 전체의 비율로 해석하거나 원인·책임을 추측하지 마세요.",
+    "ground_truth": "{\"summary\": \"질문은 요구사항 변경 관리, 산출물 일관성, 피드백 반영과 팀 버전 관리에 집중되어 있습니다.\", \"keywords\": [\"요구사항 변경\", \"추적성\", \"피드백 반영\", \"버전 관리\"], \"recommendations\": [\"변경 요청·승인·영향 문서·구현 상태를 연결하는 기록 양식을 제공하세요.\", \"중간 피드백을 최종 산출물에 반영하고 추적하는 예시를 보여 주세요.\"], \"limitations\": [\"합성 질문 사례이므로 실제 수강생의 빈도나 대표성을 추정하지 않음\", \"질문만으로 원인·성취도·교수자 책임을 단정하지 않음\"]}",
+    "evaluation_criteria": [
+      "반복 주제를 학생 질문의 내용에 근거해 요약하는가",
+      "핵심 키워드가 질문 묶음을 대표하고 중복되지 않는가",
+      "제안이 구체적이며 관찰된 질문과 연결되는가",
+      "질문 사례 수가 합성으로 정해졌음을 고려해 전체 학생의 비율·대표성으로 일반화하지 않는가",
+      "질문에 없는 정책·사건·원인을 만들어내지 않는가",
+      "판단 불가능하거나 정책 확인이 필요한 내용을 명시하는가",
+      "질문 수를 실제 학생 전체의 빈도나 비율로 일반화하지 않는가",
+      "질문에 없는 정책·원인·책임을 추측하지 않는가",
+      "확인 불가능한 점을 분명히 표시하는가"
+    ],
+    "models": {
+      "Base Model": "",
+      "Student LoRA": "",
+      "Professor LoRA": ""
+    },
+    "dataset_version": "professor_eval_v2_pilot",
+    "train_eval_overlap_status": "semantic_review_required"
+  },
+  {
+    "question_id": "P018",
+    "role": "professor",
+    "task_type": "instructor_question_analytics",
+    "data_origin": "synthetic_scenario",
+    "review_status": "needs_domain_review",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "course_name": "프로그래밍기초",
+    "scenario_theme": "코드 스타일과 제출 점검",
+    "scenario_category": "assignment_and_project_operations",
+    "knowledge_scope": "시나리오에 제시된 학생 질문만 근거로 분석; 공식 강의 사실을 추정하지 않음",
+    "student_questions": [
+      "변수 이름 규칙을 지키지 않으면 감점되나요?",
+      "함수를 나누는 기준을 과제에서 어디까지 적용해야 하나요?",
+      "주석은 모든 줄에 작성해야 하나요?",
+      "코드가 동작해도 가독성 항목에서 감점될 수 있나요?",
+      "제출 전에 확인할 코드 스타일 체크리스트가 있나요?",
+      "다른 사람 코드와 비슷해 보이지 않게 하려면 어떻게 해야 하나요?"
+    ],
+    "question": "아래 학생 질문 묶음만 근거로 (1) 반복 주제 요약, (2) 핵심 키워드 3~5개, (3) 수업 운영 개선 제안 2개, (4) 자료로 판단할 수 없는 점을 작성하세요. 질문 빈도를 실제 수강생 전체의 비율로 해석하거나 원인·책임을 추측하지 마세요.",
+    "ground_truth": "{\"summary\": \"질문은 코드 스타일의 평가 기준, 함수 분리·주석의 기대 수준, 제출 전 자기 점검에 집중되어 있습니다.\", \"keywords\": [\"코드 스타일\", \"가독성\", \"함수 분리\", \"자기 점검\"], \"recommendations\": [\"필수 규칙과 권장 사항을 구분한 코드 예시·체크리스트를 제공하세요.\", \"코드 유사성 질문에는 추측성 판단 대신 수업의 출처 표시·협업 규칙을 안내하도록 하세요.\"], \"limitations\": [\"합성 질문 사례이므로 실제 수강생의 빈도나 대표성을 추정하지 않음\", \"질문만으로 원인·성취도·교수자 책임을 단정하지 않음\"]}",
+    "evaluation_criteria": [
+      "반복 주제를 학생 질문의 내용에 근거해 요약하는가",
+      "핵심 키워드가 질문 묶음을 대표하고 중복되지 않는가",
+      "제안이 구체적이며 관찰된 질문과 연결되는가",
+      "질문 사례 수가 합성으로 정해졌음을 고려해 전체 학생의 비율·대표성으로 일반화하지 않는가",
+      "질문에 없는 정책·사건·원인을 만들어내지 않는가",
+      "판단 불가능하거나 정책 확인이 필요한 내용을 명시하는가",
+      "질문 수를 실제 학생 전체의 빈도나 비율로 일반화하지 않는가",
+      "질문에 없는 정책·원인·책임을 추측하지 않는가",
+      "확인 불가능한 점을 분명히 표시하는가"
+    ],
+    "models": {
+      "Base Model": "",
+      "Student LoRA": "",
+      "Professor LoRA": ""
+    },
+    "dataset_version": "professor_eval_v2_pilot",
+    "train_eval_overlap_status": "semantic_review_required"
+  },
+  {
+    "question_id": "P019",
+    "role": "professor",
+    "task_type": "instructor_question_analytics",
+    "data_origin": "synthetic_scenario",
+    "review_status": "needs_domain_review",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "course_name": "자료구조",
+    "scenario_theme": "부분 점수와 풀이 과정",
+    "scenario_category": "assessment_and_feedback",
+    "knowledge_scope": "시나리오에 제시된 학생 질문만 근거로 분석; 공식 강의 사실을 추정하지 않음",
+    "student_questions": [
+      "정답은 틀렸지만 풀이 방향이 맞으면 부분 점수를 받을 수 있나요?",
+      "시간복잡도를 쓰지 않으면 풀이가 맞아도 감점되나요?",
+      "시험에서 의사코드와 실제 코드 중 어느 형식으로 답해야 하나요?",
+      "자료구조 상태 변화를 그림으로 그리면 채점에 도움이 되나요?",
+      "부분 점수 기준을 문제마다 확인할 수 있나요?",
+      "채점 후 자주 틀린 풀이 유형에 대한 설명을 받을 수 있나요?"
+    ],
+    "question": "아래 학생 질문 묶음만 근거로 (1) 반복 주제 요약, (2) 핵심 키워드 3~5개, (3) 수업 운영 개선 제안 2개, (4) 자료로 판단할 수 없는 점을 작성하세요. 질문 빈도를 실제 수강생 전체의 비율로 해석하거나 원인·책임을 추측하지 마세요.",
+    "ground_truth": "{\"summary\": \"질문은 부분 점수, 풀이 근거, 답안 형식과 채점 기준의 명확성에 집중되어 있습니다.\", \"keywords\": [\"부분 점수\", \"풀이 과정\", \"답안 형식\", \"채점 기준\"], \"recommendations\": [\"정답뿐 아니라 풀이 과정에서 인정되는 요소를 루브릭으로 공개하세요.\", \"대표 오답과 부분 점수 사례를 익명 예시로 설명하세요.\"], \"limitations\": [\"합성 질문 사례이므로 실제 수강생의 빈도나 대표성을 추정하지 않음\", \"질문만으로 원인·성취도·교수자 책임을 단정하지 않음\"]}",
+    "evaluation_criteria": [
+      "반복 주제를 학생 질문의 내용에 근거해 요약하는가",
+      "핵심 키워드가 질문 묶음을 대표하고 중복되지 않는가",
+      "제안이 구체적이며 관찰된 질문과 연결되는가",
+      "질문 사례 수가 합성으로 정해졌음을 고려해 전체 학생의 비율·대표성으로 일반화하지 않는가",
+      "질문에 없는 정책·사건·원인을 만들어내지 않는가",
+      "판단 불가능하거나 정책 확인이 필요한 내용을 명시하는가",
+      "질문 수를 실제 학생 전체의 빈도나 비율로 일반화하지 않는가",
+      "질문에 없는 정책·원인·책임을 추측하지 않는가",
+      "확인 불가능한 점을 분명히 표시하는가"
+    ],
+    "models": {
+      "Base Model": "",
+      "Student LoRA": "",
+      "Professor LoRA": ""
+    },
+    "dataset_version": "professor_eval_v2_pilot",
+    "train_eval_overlap_status": "semantic_review_required"
+  },
+  {
+    "question_id": "P020",
+    "role": "professor",
+    "task_type": "instructor_question_analytics",
+    "data_origin": "synthetic_scenario",
+    "review_status": "needs_domain_review",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "course_name": "캡스톤디자인",
+    "scenario_theme": "발표 평가와 시연",
+    "scenario_category": "assessment_and_feedback",
+    "knowledge_scope": "시나리오에 제시된 학생 질문만 근거로 분석; 공식 강의 사실을 추정하지 않음",
+    "student_questions": [
+      "시연 중 네트워크가 끊기면 평가에서 어떻게 처리되나요?",
+      "발표 시간 초과와 질의응답은 각각 점수에 반영되나요?",
+      "팀 발표에서 모든 팀원이 발표해야 하나요?",
+      "기술적 완성도와 문제 해결 과정 중 어느 부분을 더 평가하나요?",
+      "발표 자료의 인용 표기는 어떤 형식으로 해야 하나요?",
+      "최종 발표 전에 예비 시연이나 피드백을 받을 수 있나요?"
+    ],
+    "question": "아래 학생 질문 묶음만 근거로 (1) 반복 주제 요약, (2) 핵심 키워드 3~5개, (3) 수업 운영 개선 제안 2개, (4) 자료로 판단할 수 없는 점을 작성하세요. 질문 빈도를 실제 수강생 전체의 비율로 해석하거나 원인·책임을 추측하지 마세요.",
+    "ground_truth": "{\"summary\": \"질문은 시연 위험 대응, 발표 구성·시간, 팀원 참여와 평가 요소의 가시성에 집중되어 있습니다.\", \"keywords\": [\"시연 대응\", \"발표 루브릭\", \"팀원 참여\", \"피드백\"], \"recommendations\": [\"기술 시연 실패 시 대체 자료와 평가 절차를 사전에 공지하세요.\", \"평가 요소별 루브릭과 예비 점검 기회를 제공하세요.\"], \"limitations\": [\"합성 질문 사례이므로 실제 수강생의 빈도나 대표성을 추정하지 않음\", \"질문만으로 원인·성취도·교수자 책임을 단정하지 않음\"]}",
+    "evaluation_criteria": [
+      "반복 주제를 학생 질문의 내용에 근거해 요약하는가",
+      "핵심 키워드가 질문 묶음을 대표하고 중복되지 않는가",
+      "제안이 구체적이며 관찰된 질문과 연결되는가",
+      "질문 사례 수가 합성으로 정해졌음을 고려해 전체 학생의 비율·대표성으로 일반화하지 않는가",
+      "질문에 없는 정책·사건·원인을 만들어내지 않는가",
+      "판단 불가능하거나 정책 확인이 필요한 내용을 명시하는가",
+      "질문 수를 실제 학생 전체의 빈도나 비율로 일반화하지 않는가",
+      "질문에 없는 정책·원인·책임을 추측하지 않는가",
+      "확인 불가능한 점을 분명히 표시하는가"
+    ],
+    "models": {
+      "Base Model": "",
+      "Student LoRA": "",
+      "Professor LoRA": ""
+    },
+    "dataset_version": "professor_eval_v2_pilot",
+    "train_eval_overlap_status": "semantic_review_required"
+  },
+  {
+    "question_id": "P021",
+    "role": "professor",
+    "task_type": "instructor_question_analytics",
+    "data_origin": "synthetic_scenario",
+    "review_status": "needs_domain_review",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "course_name": "컴퓨터구조",
+    "scenario_theme": "퀴즈 운영과 피드백",
+    "scenario_category": "assessment_and_feedback",
+    "knowledge_scope": "시나리오에 제시된 학생 질문만 근거로 분석; 공식 강의 사실을 추정하지 않음",
+    "student_questions": [
+      "퀴즈는 수업 중 예고 없이 진행되나요?",
+      "퀴즈에서 틀린 문제의 해설을 확인할 수 있나요?",
+      "결석한 날의 퀴즈는 대체 응시가 가능한가요?",
+      "퀴즈 점수가 최종 성적에 어떻게 반영되는지 알고 싶습니다.",
+      "계산 문제에서 단위나 풀이 과정을 쓰지 않으면 감점되나요?",
+      "퀴즈 결과를 다음 시험 공부에 활용하는 방법이 궁금합니다."
+    ],
+    "question": "아래 학생 질문 묶음만 근거로 (1) 반복 주제 요약, (2) 핵심 키워드 3~5개, (3) 수업 운영 개선 제안 2개, (4) 자료로 판단할 수 없는 점을 작성하세요. 질문 빈도를 실제 수강생 전체의 비율로 해석하거나 원인·책임을 추측하지 마세요.",
+    "ground_truth": "{\"summary\": \"질문은 퀴즈의 예고 여부, 성적 반영, 결석 처리와 오답 피드백에 집중되어 있습니다.\", \"keywords\": [\"퀴즈 운영\", \"성적 반영\", \"결석 처리\", \"오답 피드백\"], \"recommendations\": [\"퀴즈 일정·반영 비율·대체 기준을 한 곳에 명시하세요.\", \"오답 해설을 제공하고 다음 학습으로 연결하는 복습 안내를 마련하세요.\"], \"limitations\": [\"합성 질문 사례이므로 실제 수강생의 빈도나 대표성을 추정하지 않음\", \"질문만으로 원인·성취도·교수자 책임을 단정하지 않음\"]}",
+    "evaluation_criteria": [
+      "반복 주제를 학생 질문의 내용에 근거해 요약하는가",
+      "핵심 키워드가 질문 묶음을 대표하고 중복되지 않는가",
+      "제안이 구체적이며 관찰된 질문과 연결되는가",
+      "질문 사례 수가 합성으로 정해졌음을 고려해 전체 학생의 비율·대표성으로 일반화하지 않는가",
+      "질문에 없는 정책·사건·원인을 만들어내지 않는가",
+      "판단 불가능하거나 정책 확인이 필요한 내용을 명시하는가",
+      "질문 수를 실제 학생 전체의 빈도나 비율로 일반화하지 않는가",
+      "질문에 없는 정책·원인·책임을 추측하지 않는가",
+      "확인 불가능한 점을 분명히 표시하는가"
+    ],
+    "models": {
+      "Base Model": "",
+      "Student LoRA": "",
+      "Professor LoRA": ""
+    },
+    "dataset_version": "professor_eval_v2_pilot",
+    "train_eval_overlap_status": "semantic_review_required"
+  },
+  {
+    "question_id": "P022",
+    "role": "professor",
+    "task_type": "instructor_question_analytics",
+    "data_origin": "synthetic_scenario",
+    "review_status": "needs_domain_review",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "course_name": "알고리즘",
+    "scenario_theme": "시험 문제와 수업 목표의 연결",
+    "scenario_category": "assessment_and_feedback",
+    "knowledge_scope": "시나리오에 제시된 학생 질문만 근거로 분석; 공식 강의 사실을 추정하지 않음",
+    "student_questions": [
+      "시험 문제는 수업 예제와 어느 정도 다른 형태로 나오나요?",
+      "알고리즘을 외우는 것과 직접 증명하는 것 중 무엇을 평가하나요?",
+      "코드 작성 문제에서 실행 시간 제한도 고려해야 하나요?",
+      "문제의 입력 크기 제한을 보고 알고리즘을 선택하는 연습이 필요합니다.",
+      "시험 범위의 학습 목표와 문제 유형을 미리 알 수 있나요?",
+      "시험 후 풀이 해설이나 대표 답안을 볼 수 있나요?"
+    ],
+    "question": "아래 학생 질문 묶음만 근거로 (1) 반복 주제 요약, (2) 핵심 키워드 3~5개, (3) 수업 운영 개선 제안 2개, (4) 자료로 판단할 수 없는 점을 작성하세요. 질문 빈도를 실제 수강생 전체의 비율로 해석하거나 원인·책임을 추측하지 마세요.",
+    "ground_truth": "{\"summary\": \"질문은 평가 문항과 학습 목표의 연결, 알고리즘 선택 근거 및 시험 후 해설에 집중되어 있습니다.\", \"keywords\": [\"학습 목표\", \"알고리즘 선택\", \"입력 크기\", \"시험 해설\"], \"recommendations\": [\"목표별 대표 문제 유형과 풀이에서 평가하는 근거를 안내하세요.\", \"시험 후 정답 공개 여부와 해설 제공 방식을 일관되게 공지하세요.\"], \"limitations\": [\"합성 질문 사례이므로 실제 수강생의 빈도나 대표성을 추정하지 않음\", \"질문만으로 원인·성취도·교수자 책임을 단정하지 않음\"]}",
+    "evaluation_criteria": [
+      "반복 주제를 학생 질문의 내용에 근거해 요약하는가",
+      "핵심 키워드가 질문 묶음을 대표하고 중복되지 않는가",
+      "제안이 구체적이며 관찰된 질문과 연결되는가",
+      "질문 사례 수가 합성으로 정해졌음을 고려해 전체 학생의 비율·대표성으로 일반화하지 않는가",
+      "질문에 없는 정책·사건·원인을 만들어내지 않는가",
+      "판단 불가능하거나 정책 확인이 필요한 내용을 명시하는가",
+      "질문 수를 실제 학생 전체의 빈도나 비율로 일반화하지 않는가",
+      "질문에 없는 정책·원인·책임을 추측하지 않는가",
+      "확인 불가능한 점을 분명히 표시하는가"
+    ],
+    "models": {
+      "Base Model": "",
+      "Student LoRA": "",
+      "Professor LoRA": ""
+    },
+    "dataset_version": "professor_eval_v2_pilot",
+    "train_eval_overlap_status": "semantic_review_required"
+  },
+  {
+    "question_id": "P023",
+    "role": "professor",
+    "task_type": "instructor_question_analytics",
+    "data_origin": "synthetic_scenario",
+    "review_status": "needs_domain_review",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "course_name": "운영체제",
+    "scenario_theme": "계정과 실습 서버 접근",
+    "scenario_category": "learning_environment_and_accessibility",
+    "knowledge_scope": "시나리오에 제시된 학생 질문만 근거로 분석; 공식 강의 사실을 추정하지 않음",
+    "student_questions": [
+      "실습 서버 계정은 언제 발급되나요?",
+      "학교 밖에서도 실습 서버에 접속할 수 있나요?",
+      "비밀번호를 잊었을 때 초기화 경로가 궁금합니다.",
+      "서버에서 파일을 지우거나 덮어쓰지 않도록 백업하는 방법이 있나요?",
+      "권한 오류가 나면 어떤 정보를 첨부해 문의해야 하나요?",
+      "실습 서버 사용량이나 저장 공간 제한을 미리 알 수 있나요?"
+    ],
+    "question": "아래 학생 질문 묶음만 근거로 (1) 반복 주제 요약, (2) 핵심 키워드 3~5개, (3) 수업 운영 개선 제안 2개, (4) 자료로 판단할 수 없는 점을 작성하세요. 질문 빈도를 실제 수강생 전체의 비율로 해석하거나 원인·책임을 추측하지 마세요.",
+    "ground_truth": "{\"summary\": \"질문은 실습 서버 계정 발급, 원격 접속, 권한 오류와 파일 관리 안내에 집중되어 있습니다.\", \"keywords\": [\"실습 서버\", \"계정 발급\", \"접속·권한\", \"파일 백업\"], \"recommendations\": [\"접속·계정·권한 오류별 점검 경로와 문의 시 필요한 정보를 안내하세요.\", \"저장 공간과 백업에 관한 안전한 사용 지침을 제공하세요.\"], \"limitations\": [\"합성 질문 사례이므로 실제 수강생의 빈도나 대표성을 추정하지 않음\", \"질문만으로 원인·성취도·교수자 책임을 단정하지 않음\"]}",
+    "evaluation_criteria": [
+      "반복 주제를 학생 질문의 내용에 근거해 요약하는가",
+      "핵심 키워드가 질문 묶음을 대표하고 중복되지 않는가",
+      "제안이 구체적이며 관찰된 질문과 연결되는가",
+      "질문 사례 수가 합성으로 정해졌음을 고려해 전체 학생의 비율·대표성으로 일반화하지 않는가",
+      "질문에 없는 정책·사건·원인을 만들어내지 않는가",
+      "판단 불가능하거나 정책 확인이 필요한 내용을 명시하는가",
+      "질문 수를 실제 학생 전체의 빈도나 비율로 일반화하지 않는가",
+      "질문에 없는 정책·원인·책임을 추측하지 않는가",
+      "확인 불가능한 점을 분명히 표시하는가"
+    ],
+    "models": {
+      "Base Model": "",
+      "Student LoRA": "",
+      "Professor LoRA": ""
+    },
+    "dataset_version": "professor_eval_v2_pilot",
+    "train_eval_overlap_status": "semantic_review_required"
+  },
+  {
+    "question_id": "P024",
+    "role": "professor",
+    "task_type": "instructor_question_analytics",
+    "data_origin": "synthetic_scenario",
+    "review_status": "needs_domain_review",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "course_name": "인공지능개론",
+    "scenario_theme": "강의자료 접근 형식",
+    "scenario_category": "learning_environment_and_accessibility",
+    "knowledge_scope": "시나리오에 제시된 학생 질문만 근거로 분석; 공식 강의 사실을 추정하지 않음",
+    "student_questions": [
+      "슬라이드 PDF에서 수식이 이미지라 복사하거나 읽기 어렵습니다.",
+      "색으로만 구분된 그래프에 범례나 텍스트 설명을 추가해 주실 수 있나요?",
+      "강의자료를 수업 전에 받을 수 있나요?",
+      "화면 낭독기로 표와 그림 내용을 확인할 방법이 있나요?",
+      "영상 강의에 자막이나 대본이 제공되나요?",
+      "자료 파일이 열리지 않을 때 대체 형식이 있나요?"
+    ],
+    "question": "아래 학생 질문 묶음만 근거로 (1) 반복 주제 요약, (2) 핵심 키워드 3~5개, (3) 수업 운영 개선 제안 2개, (4) 자료로 판단할 수 없는 점을 작성하세요. 질문 빈도를 실제 수강생 전체의 비율로 해석하거나 원인·책임을 추측하지 마세요.",
+    "ground_truth": "{\"summary\": \"질문은 자료의 접근 가능한 형식, 그래프·수식 설명, 사전 제공과 대체 파일에 집중되어 있습니다.\", \"keywords\": [\"접근성\", \"수식·그래프 설명\", \"자료 사전 제공\", \"대체 형식\"], \"recommendations\": [\"가능한 범위에서 텍스트 대체 설명과 접근 가능한 파일 형식을 제공하세요.\", \"자료 공개 시점과 파일 오류 신고 경로를 안내하세요.\"], \"limitations\": [\"합성 질문 사례이므로 실제 수강생의 빈도나 대표성을 추정하지 않음\", \"질문만으로 원인·성취도·교수자 책임을 단정하지 않음\"]}",
+    "evaluation_criteria": [
+      "반복 주제를 학생 질문의 내용에 근거해 요약하는가",
+      "핵심 키워드가 질문 묶음을 대표하고 중복되지 않는가",
+      "제안이 구체적이며 관찰된 질문과 연결되는가",
+      "질문 사례 수가 합성으로 정해졌음을 고려해 전체 학생의 비율·대표성으로 일반화하지 않는가",
+      "질문에 없는 정책·사건·원인을 만들어내지 않는가",
+      "판단 불가능하거나 정책 확인이 필요한 내용을 명시하는가",
+      "질문 수를 실제 학생 전체의 빈도나 비율로 일반화하지 않는가",
+      "질문에 없는 정책·원인·책임을 추측하지 않는가",
+      "확인 불가능한 점을 분명히 표시하는가"
+    ],
+    "models": {
+      "Base Model": "",
+      "Student LoRA": "",
+      "Professor LoRA": ""
+    },
+    "dataset_version": "professor_eval_v2_pilot",
+    "train_eval_overlap_status": "semantic_review_required"
+  },
+  {
+    "question_id": "P025",
+    "role": "professor",
+    "task_type": "instructor_question_analytics",
+    "data_origin": "synthetic_scenario",
+    "review_status": "needs_domain_review",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "course_name": "데이터베이스",
+    "scenario_theme": "실습실 장비와 소프트웨어",
+    "scenario_category": "learning_environment_and_accessibility",
+    "knowledge_scope": "시나리오에 제시된 학생 질문만 근거로 분석; 공식 강의 사실을 추정하지 않음",
+    "student_questions": [
+      "개인 노트북 사양이 낮아도 실습에 참여할 수 있나요?",
+      "실습실에 설치된 DB 버전과 개인 PC 버전이 달라도 되나요?",
+      "학교 컴퓨터에서 만든 파일을 다음 시간에도 사용할 수 있나요?",
+      "필요한 프로그램 설치 권한이 없을 때 대체 방법이 있나요?",
+      "실습실을 수업 외 시간에 사용할 수 있나요?",
+      "실습 데이터베이스가 초기화되기 전에 백업해야 하나요?"
+    ],
+    "question": "아래 학생 질문 묶음만 근거로 (1) 반복 주제 요약, (2) 핵심 키워드 3~5개, (3) 수업 운영 개선 제안 2개, (4) 자료로 판단할 수 없는 점을 작성하세요. 질문 빈도를 실제 수강생 전체의 비율로 해석하거나 원인·책임을 추측하지 마세요.",
+    "ground_truth": "{\"summary\": \"질문은 기기·소프트웨어 버전 차이, 실습실 이용과 데이터 보존에 집중되어 있습니다.\", \"keywords\": [\"기기 접근성\", \"소프트웨어 버전\", \"실습실 이용\", \"데이터 보존\"], \"recommendations\": [\"검증된 버전과 저사양 기기 대체 경로를 명시하세요.\", \"실습실 이용 가능 시간과 데이터 백업·초기화 규칙을 안내하세요.\"], \"limitations\": [\"합성 질문 사례이므로 실제 수강생의 빈도나 대표성을 추정하지 않음\", \"질문만으로 원인·성취도·교수자 책임을 단정하지 않음\"]}",
+    "evaluation_criteria": [
+      "반복 주제를 학생 질문의 내용에 근거해 요약하는가",
+      "핵심 키워드가 질문 묶음을 대표하고 중복되지 않는가",
+      "제안이 구체적이며 관찰된 질문과 연결되는가",
+      "질문 사례 수가 합성으로 정해졌음을 고려해 전체 학생의 비율·대표성으로 일반화하지 않는가",
+      "질문에 없는 정책·사건·원인을 만들어내지 않는가",
+      "판단 불가능하거나 정책 확인이 필요한 내용을 명시하는가",
+      "질문 수를 실제 학생 전체의 빈도나 비율로 일반화하지 않는가",
+      "질문에 없는 정책·원인·책임을 추측하지 않는가",
+      "확인 불가능한 점을 분명히 표시하는가"
+    ],
+    "models": {
+      "Base Model": "",
+      "Student LoRA": "",
+      "Professor LoRA": ""
+    },
+    "dataset_version": "professor_eval_v2_pilot",
+    "train_eval_overlap_status": "semantic_review_required"
+  },
+  {
+    "question_id": "P026",
+    "role": "professor",
+    "task_type": "instructor_question_analytics",
+    "data_origin": "synthetic_scenario",
+    "review_status": "needs_domain_review",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "course_name": "프로그래밍기초",
+    "scenario_theme": "실습 중 오류 지원",
+    "scenario_category": "learning_environment_and_accessibility",
+    "knowledge_scope": "시나리오에 제시된 학생 질문만 근거로 분석; 공식 강의 사실을 추정하지 않음",
+    "student_questions": [
+      "컴파일 오류가 나면 조교에게 어떤 자료를 보내야 하나요?",
+      "실습 시간에 질문이 몰릴 때 순서를 어떻게 기다리면 되나요?",
+      "오류가 재현되지 않으면 화면 녹화를 보내도 되나요?",
+      "수업 자료의 예제 코드와 제 코드 차이를 찾는 방법을 알려주세요.",
+      "실습 시간에 해결하지 못한 문제를 이후에도 질문할 수 있나요?",
+      "초보자용 디버깅 안내 자료가 있나요?"
+    ],
+    "question": "아래 학생 질문 묶음만 근거로 (1) 반복 주제 요약, (2) 핵심 키워드 3~5개, (3) 수업 운영 개선 제안 2개, (4) 자료로 판단할 수 없는 점을 작성하세요. 질문 빈도를 실제 수강생 전체의 비율로 해석하거나 원인·책임을 추측하지 마세요.",
+    "ground_truth": "{\"summary\": \"질문은 실습 오류를 설명하고 도움을 요청하는 절차, 수업 중 지원 대기와 후속 지원에 집중되어 있습니다.\", \"keywords\": [\"오류 재현\", \"질문에 필요한 정보\", \"실습 지원\", \"디버깅\"], \"recommendations\": [\"오류 메시지·재현 단계·환경 정보를 포함한 질문 양식을 제공하세요.\", \"수업 중 지원과 수업 후 질문 채널을 구분해 안내하세요.\"], \"limitations\": [\"합성 질문 사례이므로 실제 수강생의 빈도나 대표성을 추정하지 않음\", \"질문만으로 원인·성취도·교수자 책임을 단정하지 않음\"]}",
+    "evaluation_criteria": [
+      "반복 주제를 학생 질문의 내용에 근거해 요약하는가",
+      "핵심 키워드가 질문 묶음을 대표하고 중복되지 않는가",
+      "제안이 구체적이며 관찰된 질문과 연결되는가",
+      "질문 사례 수가 합성으로 정해졌음을 고려해 전체 학생의 비율·대표성으로 일반화하지 않는가",
+      "질문에 없는 정책·사건·원인을 만들어내지 않는가",
+      "판단 불가능하거나 정책 확인이 필요한 내용을 명시하는가",
+      "질문 수를 실제 학생 전체의 빈도나 비율로 일반화하지 않는가",
+      "질문에 없는 정책·원인·책임을 추측하지 않는가",
+      "확인 불가능한 점을 분명히 표시하는가"
+    ],
+    "models": {
+      "Base Model": "",
+      "Student LoRA": "",
+      "Professor LoRA": ""
+    },
+    "dataset_version": "professor_eval_v2_pilot",
+    "train_eval_overlap_status": "semantic_review_required"
+  },
+  {
+    "question_id": "P027",
+    "role": "professor",
+    "task_type": "instructor_question_analytics",
+    "data_origin": "synthetic_scenario",
+    "review_status": "needs_domain_review",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "course_name": "소프트웨어공학",
+    "scenario_theme": "팀 내 의견 충돌과 조정",
+    "scenario_category": "participation_and_communication",
+    "knowledge_scope": "시나리오에 제시된 학생 질문만 근거로 분석; 공식 강의 사실을 추정하지 않음",
+    "student_questions": [
+      "팀원 간 설계 의견이 다를 때 결정 과정을 어떻게 기록하나요?",
+      "회의에 참석하지 못한 팀원에게 결정 사항을 어떻게 공유해야 하나요?",
+      "역할 분담이 불균형하다고 느끼면 누구에게 상담할 수 있나요?",
+      "팀원이 맡은 일을 하지 않을 때 개인적으로 먼저 이야기해야 하나요?",
+      "팀 갈등이 평가에 반영되는 방식이 있나요?",
+      "중재를 요청할 때 회의 기록이나 작업 내역을 제출해야 하나요?"
+    ],
+    "question": "아래 학생 질문 묶음만 근거로 (1) 반복 주제 요약, (2) 핵심 키워드 3~5개, (3) 수업 운영 개선 제안 2개, (4) 자료로 판단할 수 없는 점을 작성하세요. 질문 빈도를 실제 수강생 전체의 비율로 해석하거나 원인·책임을 추측하지 마세요.",
+    "ground_truth": "{\"summary\": \"질문은 팀 의사결정 기록, 정보 공유, 역할 불균형과 갈등 상담 경로에 집중되어 있습니다.\", \"keywords\": [\"팀 의사결정\", \"정보 공유\", \"역할 분담\", \"상담 경로\"], \"recommendations\": [\"회의 결정·업무 분담을 기록하고 공유하는 간단한 방식을 안내하세요.\", \"갈등 상담 경로와 필요한 자료를 알리되 개인 책임이나 사실관계를 질문만으로 단정하지 마세요.\"], \"limitations\": [\"합성 질문 사례이므로 실제 수강생의 빈도나 대표성을 추정하지 않음\", \"질문만으로 원인·성취도·교수자 책임을 단정하지 않음\"]}",
+    "evaluation_criteria": [
+      "반복 주제를 학생 질문의 내용에 근거해 요약하는가",
+      "핵심 키워드가 질문 묶음을 대표하고 중복되지 않는가",
+      "제안이 구체적이며 관찰된 질문과 연결되는가",
+      "질문 사례 수가 합성으로 정해졌음을 고려해 전체 학생의 비율·대표성으로 일반화하지 않는가",
+      "질문에 없는 정책·사건·원인을 만들어내지 않는가",
+      "판단 불가능하거나 정책 확인이 필요한 내용을 명시하는가",
+      "질문 수를 실제 학생 전체의 빈도나 비율로 일반화하지 않는가",
+      "질문에 없는 정책·원인·책임을 추측하지 않는가",
+      "확인 불가능한 점을 분명히 표시하는가"
+    ],
+    "models": {
+      "Base Model": "",
+      "Student LoRA": "",
+      "Professor LoRA": ""
+    },
+    "dataset_version": "professor_eval_v2_pilot",
+    "train_eval_overlap_status": "semantic_review_required"
+  },
+  {
+    "question_id": "P028",
+    "role": "professor",
+    "task_type": "instructor_question_analytics",
+    "data_origin": "synthetic_scenario",
+    "review_status": "needs_domain_review",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "course_name": "인공지능개론",
+    "scenario_theme": "질문 채널과 응답 기대",
+    "scenario_category": "participation_and_communication",
+    "knowledge_scope": "시나리오에 제시된 학생 질문만 근거로 분석; 공식 강의 사실을 추정하지 않음",
+    "student_questions": [
+      "강의 게시판과 이메일 중 어느 곳에 질문해야 하나요?",
+      "개인 성적 관련 질문은 공개 게시판에 올려도 되나요?",
+      "질문 제목에 과목명이나 주차를 적어야 하나요?",
+      "답변을 받기까지 보통 어느 정도 기다려야 하나요?",
+      "이미 답변된 질문을 찾을 수 있는 FAQ가 있나요?",
+      "조교가 답하기 어려운 질문은 교수님께 전달되나요?"
+    ],
+    "question": "아래 학생 질문 묶음만 근거로 (1) 반복 주제 요약, (2) 핵심 키워드 3~5개, (3) 수업 운영 개선 제안 2개, (4) 자료로 판단할 수 없는 점을 작성하세요. 질문 빈도를 실제 수강생 전체의 비율로 해석하거나 원인·책임을 추측하지 마세요.",
+    "ground_truth": "{\"summary\": \"질문은 적절한 문의 채널 선택, 개인정보 보호, 질문 형식과 응답 기대에 집중되어 있습니다.\", \"keywords\": [\"문의 채널\", \"개인정보 보호\", \"질문 형식\", \"응답 기대\"], \"recommendations\": [\"일반 질문과 개인정보 포함 질문의 채널을 구분해 안내하세요.\", \"질문 제목 예시, FAQ 위치와 응답 목표 시간을 명시하세요.\"], \"limitations\": [\"합성 질문 사례이므로 실제 수강생의 빈도나 대표성을 추정하지 않음\", \"질문만으로 원인·성취도·교수자 책임을 단정하지 않음\"]}",
+    "evaluation_criteria": [
+      "반복 주제를 학생 질문의 내용에 근거해 요약하는가",
+      "핵심 키워드가 질문 묶음을 대표하고 중복되지 않는가",
+      "제안이 구체적이며 관찰된 질문과 연결되는가",
+      "질문 사례 수가 합성으로 정해졌음을 고려해 전체 학생의 비율·대표성으로 일반화하지 않는가",
+      "질문에 없는 정책·사건·원인을 만들어내지 않는가",
+      "판단 불가능하거나 정책 확인이 필요한 내용을 명시하는가",
+      "질문 수를 실제 학생 전체의 빈도나 비율로 일반화하지 않는가",
+      "질문에 없는 정책·원인·책임을 추측하지 않는가",
+      "확인 불가능한 점을 분명히 표시하는가"
+    ],
+    "models": {
+      "Base Model": "",
+      "Student LoRA": "",
+      "Professor LoRA": ""
+    },
+    "dataset_version": "professor_eval_v2_pilot",
+    "train_eval_overlap_status": "semantic_review_required"
+  },
+  {
+    "question_id": "P029",
+    "role": "professor",
+    "task_type": "instructor_question_analytics",
+    "data_origin": "synthetic_scenario",
+    "review_status": "needs_domain_review",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "course_name": "자료구조",
+    "scenario_theme": "수업 중 질문 참여",
+    "scenario_category": "participation_and_communication",
+    "knowledge_scope": "시나리오에 제시된 학생 질문만 근거로 분석; 공식 강의 사실을 추정하지 않음",
+    "student_questions": [
+      "질문을 수업 중 바로 해도 진도를 방해하지 않을까요?",
+      "질문을 익명으로 남길 수 있는 방법이 있나요?",
+      "다른 학생의 질문과 답변을 다시 볼 수 있나요?",
+      "질문이 기본적인 내용이어도 괜찮은지 걱정됩니다.",
+      "수업 마지막에 질문 시간을 따로 둘 수 있나요?",
+      "질문을 올렸는데 답을 이해하지 못하면 추가 질문을 해도 되나요?"
+    ],
+    "question": "아래 학생 질문 묶음만 근거로 (1) 반복 주제 요약, (2) 핵심 키워드 3~5개, (3) 수업 운영 개선 제안 2개, (4) 자료로 판단할 수 없는 점을 작성하세요. 질문 빈도를 실제 수강생 전체의 비율로 해석하거나 원인·책임을 추측하지 마세요.",
+    "ground_truth": "{\"summary\": \"질문은 수업 중 발언 부담, 익명 질문 방식, 답변 재확인과 후속 질문 기회에 집중되어 있습니다.\", \"keywords\": [\"질문 참여\", \"익명 질문\", \"응답 기록\", \"후속 질문\"], \"recommendations\": [\"실시간·익명 등 복수의 질문 참여 경로를 안내하세요.\", \"질문과 답변을 다시 확인하고 후속 질문할 수 있는 절차를 마련하세요.\"], \"limitations\": [\"합성 질문 사례이므로 실제 수강생의 빈도나 대표성을 추정하지 않음\", \"질문만으로 원인·성취도·교수자 책임을 단정하지 않음\"]}",
+    "evaluation_criteria": [
+      "반복 주제를 학생 질문의 내용에 근거해 요약하는가",
+      "핵심 키워드가 질문 묶음을 대표하고 중복되지 않는가",
+      "제안이 구체적이며 관찰된 질문과 연결되는가",
+      "질문 사례 수가 합성으로 정해졌음을 고려해 전체 학생의 비율·대표성으로 일반화하지 않는가",
+      "질문에 없는 정책·사건·원인을 만들어내지 않는가",
+      "판단 불가능하거나 정책 확인이 필요한 내용을 명시하는가",
+      "질문 수를 실제 학생 전체의 빈도나 비율로 일반화하지 않는가",
+      "질문에 없는 정책·원인·책임을 추측하지 않는가",
+      "확인 불가능한 점을 분명히 표시하는가"
+    ],
+    "models": {
+      "Base Model": "",
+      "Student LoRA": "",
+      "Professor LoRA": ""
+    },
+    "dataset_version": "professor_eval_v2_pilot",
+    "train_eval_overlap_status": "semantic_review_required"
+  },
+  {
+    "question_id": "P030",
+    "role": "professor",
+    "task_type": "instructor_question_analytics",
+    "data_origin": "synthetic_scenario",
+    "review_status": "needs_domain_review",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "course_name": "알고리즘",
+    "scenario_theme": "학습 상담과 보충 지원",
+    "scenario_category": "participation_and_communication",
+    "knowledge_scope": "시나리오에 제시된 학생 질문만 근거로 분석; 공식 강의 사실을 추정하지 않음",
+    "student_questions": [
+      "시험에서 같은 유형을 반복해서 틀리는데 어디서 도움을 받을 수 있나요?",
+      "조교 질문 시간에 예약이 필요한가요?",
+      "개별 면담에서 풀이를 가져가도 되나요?",
+      "보충 학습 모임이나 튜터링이 운영되나요?",
+      "상담 내용이 성적에 영향을 주지는 않나요?",
+      "질문할 내용을 정리하는 양식이 있나요?"
+    ],
+    "question": "아래 학생 질문 묶음만 근거로 (1) 반복 주제 요약, (2) 핵심 키워드 3~5개, (3) 수업 운영 개선 제안 2개, (4) 자료로 판단할 수 없는 점을 작성하세요. 질문 빈도를 실제 수강생 전체의 비율로 해석하거나 원인·책임을 추측하지 마세요.",
+    "ground_truth": "{\"summary\": \"질문은 학습 어려움에 대한 상담 경로, 예약 방식, 보충 지원과 상담의 성격에 집중되어 있습니다.\", \"keywords\": [\"학습 상담\", \"조교 시간\", \"보충 지원\", \"상담 절차\"], \"recommendations\": [\"조교·교수 상담 시간과 예약 방식을 명확히 안내하세요.\", \"보충 학습 자원과 상담이 평가와 구분되는 지원 절차임을 설명하세요.\"], \"limitations\": [\"합성 질문 사례이므로 실제 수강생의 빈도나 대표성을 추정하지 않음\", \"질문만으로 원인·성취도·교수자 책임을 단정하지 않음\"]}",
+    "evaluation_criteria": [
+      "반복 주제를 학생 질문의 내용에 근거해 요약하는가",
+      "핵심 키워드가 질문 묶음을 대표하고 중복되지 않는가",
+      "제안이 구체적이며 관찰된 질문과 연결되는가",
+      "질문 사례 수가 합성으로 정해졌음을 고려해 전체 학생의 비율·대표성으로 일반화하지 않는가",
+      "질문에 없는 정책·사건·원인을 만들어내지 않는가",
+      "판단 불가능하거나 정책 확인이 필요한 내용을 명시하는가",
+      "질문 수를 실제 학생 전체의 빈도나 비율로 일반화하지 않는가",
+      "질문에 없는 정책·원인·책임을 추측하지 않는가",
+      "확인 불가능한 점을 분명히 표시하는가"
+    ],
+    "models": {
+      "Base Model": "",
+      "Student LoRA": "",
+      "Professor LoRA": ""
+    },
+    "dataset_version": "professor_eval_v2_pilot",
+    "train_eval_overlap_status": "semantic_review_required"
+  }
+]
