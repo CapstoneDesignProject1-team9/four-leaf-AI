@@ -77,3 +77,9 @@ slurm-*.out
 final_adapter*/
 
 adapter_*/
+
+results_*/
+
+*.tar.gz
+*.bak
+test-*.out
