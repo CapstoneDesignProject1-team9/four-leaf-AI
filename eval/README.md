@@ -16,11 +16,25 @@
 
 ## 응답 생성과 평가
 
-`four-leaf-AI/` 디렉터리에서 실행합니다.
+먼저 두 어댑터를 다음 위치에 둡니다. 각 디렉터리에는 PEFT 형식의 `adapter_config.json`과 `adapter_model.safetensors`(또는 `adapter_model.bin`)가 있어야 합니다. `adapter_config.json`의 `base_model_name_or_path`는 두 어댑터 모두 `meta-llama/Llama-3.1-8B-Instruct`이며 `VLLM_BASE_MODEL`도 이 값으로 맞춥니다. 현재 rank는 16입니다.
+
+```text
+four-leaf-AI/models/student-lora/adapter_student_llama/
+four-leaf-AI/models/professor-lora/adapter_professor_llama/
+```
+
+vLLM은 두 폴더를 `student-lora`, `professor-lora`라는 모델명으로 등록합니다. NVIDIA GPU가 있는 Linux Docker host에서 저장소 루트 기준으로 서비스를 시작합니다.
 
 ```bash
-# 환경변수: ANTHROPIC_API_KEY, VLLM_BASE_MODEL,
-# VLLM_STUDENT_LORA_MODEL_NAME, VLLM_PROFESSOR_LORA_MODEL_NAME
+cd four-leaf-infra
+# 처음 한 번만: .env.dev.example을 복사하고 필요한 API 키를 채움
+cp .env.dev.example .env.dev
+docker compose -f docker-compose.dev.yml --profile gpu up -d --build
+```
+
+vLLM과 AI/RAG 서비스가 준비되면 `four-leaf-AI/`에서 생성·평가를 실행합니다. 생성기는 vLLM `/v1/models`에서 base와 두 어댑터가 등록됐는지 확인하고, 준비 전이면 최대 3분 대기합니다.
+
+```bash
 python eval/generate_answers.py --dataset student_eval_dataset.json
 python eval/evaluate.py
 ```
