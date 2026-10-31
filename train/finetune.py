@@ -22,6 +22,8 @@ from trl import SFTConfig, SFTTrainer
 
 DEFAULT_DATA = ["data/notice_qa_dataset.jsonl"]
 MODEL_ID = "microsoft/Phi-3-mini-4k-instruct"
+PHI_MODULES = ["qkv_proj", "o_proj", "gate_up_proj", "down_proj"]
+LLAMA_MODULES = ["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"]
 
 
 def normalize(text):
@@ -76,10 +78,11 @@ def main():
     parser.add_argument("--output-dir", default="./results")
     parser.add_argument("--adapter-dir", default="./final_adapter")
     parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--model-id", default=MODEL_ID)
     args = parser.parse_args()
 
     print("=== 1. 모델 설정 및 토크나이저 로드 중 ===")
-    tokenizer = AutoTokenizer.from_pretrained(MODEL_ID)
+    tokenizer = AutoTokenizer.from_pretrained(args.model_id)
     tokenizer.pad_token = tokenizer.eos_token
     tokenizer.padding_side = "right"
 
@@ -88,7 +91,7 @@ def main():
     print(f"bf16 사용: {use_bf16}")
 
     model = AutoModelForCausalLM.from_pretrained(
-        MODEL_ID,
+        args.model_id,
         dtype=torch.bfloat16 if use_bf16 else torch.float32,
         device_map="auto",
     )
@@ -98,7 +101,7 @@ def main():
     peft_config = LoraConfig(
         r=16,
         lora_alpha=32,
-        target_modules=["qkv_proj", "o_proj", "gate_up_proj", "down_proj"],
+        target_modules=PHI_MODULES if "phi" in args.model_id.lower() else LLAMA_MODULES,
         lora_dropout=0.05,
         bias="none",
         task_type="CAUSAL_LM",
