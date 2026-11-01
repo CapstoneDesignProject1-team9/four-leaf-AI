@@ -27,16 +27,33 @@
       "확인 불가능한 점을 분명히 표시하는가"
     ],
     "models": {
-      "Base Model": "",
+      "Base Model": "학생 질문 묶음은 제공되지 않았습니다. 학생의 질문을 받은 후, 반복되는 어려움과 요구를 요약하고, 핵심 키워드와 수업 개선 제안을 작성하겠습니다.",
       "Student LoRA": "",
-      "Professor LoRA": ""
+      "Professor LoRA": "",
+      "Base Model + Student LoRA": "문서에 나온 학생 질문은 다음과 같아요.\n\n- 1번 학생: 수업을 들을 때 주의할 점이 있나요? 수업을 잘 들으려면 어떤 자세로 앉아야 하나요?\n- 2번 학생: 수업을 잘 들으려면 어떤 방법이 좋을까요? 수업을 잘 듣는 학생은 어떤 특징이 있나요?\n- 3번 학생: 수업을 잘 듣는 방법이 궁금해요.\n\n요약하면, 수업을 잘 듣는 방법과 수업을 잘 듣는 학생의 특징, 수업을 들을 때 주의할 점이 궁금해요. 핵심 키워드는 '수업 듣기'와 '수업 듣는 방법'이에요. 수업을 듣는 학생의 특징은 문서에 나와 있지 않아요.\n\n수업 개선 제안은 다음과 같아요.\n- 수업 듣는 방법을 명확하게 안내해 주세요.\n- 수업을 잘 듣는 학생의 특징을 알려 주세요.\n- 수업을 들을 때 주의할 점을 알려 주세요.\n\n문서에 나온 학생들의 의견은 모두 수업을 듣는 방법과 관련된 것이었어요.",
+      "Base Model + Professor LoRA": "## 1. 학생 질문 요약\n- **문서에서 확인되는 내용**\n  - 1번 질문: 1~2주차 수업을 듣고 있는데, 3주차부터는 수업이 어떻게 진행되는지 모르겠다고 했습니다.\n  - 2번 질문: 3주차부터는 수업이 어떻게 진행되는지 모르겠다고 했습니다.\n  - 3번 질문: 3주차부터는 수업이 어떻게 진행되는지 모르겠다고 했습니다.\n- **반복되는 어려움**\n  - 1~2주차 내용을 3주차 이후로 어떻게 연결해 가는지 이해하기 어려움\n- **요구**\n  - 3주차 이후 수업 진행 방식에 대한 안내\n\n## 2. 수업 개선 제안\n1. **3주차 이후 학습 흐름 안내**: 1~2주차 내용과 3주차 이후 내용을 연결해 설명하는 시간을 마련합니다.\n2. **주차별 학습 목표 공유**: 각 주차의 학습 목표를 사전에 공지해 학생이 흐름을 점검할 수 있게 합니다.\n3. **질문 창구 확보**: 1~2주차 내용을 3주차 이후로 확장하는 부분이 불분명하므로, 질문을 받는 장소나 방법을 안내합니다.\n\n## 3. 문서에서 확인되지 않는 부분\n- 3주차 이후의 구체적인 학습 내용과 진행 방식\n- 1~2주차 수업의 구체적인 내용\n- 학생 수나 전체 수강생 의견"
     },
     "scenario_category": "concept_and_prerequisites",
     "reviewer_id": "",
     "reviewed_at": "",
     "knowledge_scope": "제시된 학생 질문만 근거로 분석; 외부 사실은 추정하지 않음",
     "dataset_version": "professor_eval_v2_pilot",
-    "train_eval_overlap_status": "semantic_review_required"
+    "train_eval_overlap_status": "semantic_review_required",
+    "contexts": {
+      "Base Model": [],
+      "Base Model + Student LoRA": [],
+      "Base Model + Professor LoRA": []
+    },
+    "generation_latency_s": {
+      "Base Model": 2.1628,
+      "Base Model + Student LoRA": 14.4189,
+      "Base Model + Professor LoRA": 19.3424
+    },
+    "served_model_names": {
+      "Base Model": "/abr/coss36/.cache/huggingface/hub/models--meta-llama--Llama-3.1-8B-Instruct/snapshots/0e9e39f249a16976918f6564b8830bc894c89659",
+      "Base Model + Student LoRA": "local:adapter_student_llama",
+      "Base Model + Professor LoRA": "local:adapter_professor_llama"
+    }
   },
   {
     "question_id": "P002",
@@ -67,16 +84,33 @@
       "확인 불가능한 점을 분명히 표시하는가"
     ],
     "models": {
-      "Base Model": "",
+      "Base Model": "학생 질문 묶음은 제공되지 않았습니다. 학생의 질문을 받은 후, 반복되는 어려움과 요구를 요약하고, 핵심 키워드와 수업 개선 제안을 작성하겠습니다.",
       "Student LoRA": "",
-      "Professor LoRA": ""
+      "Professor LoRA": "",
+      "Base Model + Student LoRA": "문서에 나온 학생 질문은 다음과 같아요.\n\n- 1번 학생: 수업을 들을 때 주의할 점이 있나요? 수업을 잘 들으려면 어떤 자세로 앉아야 하나요?\n- 2번 학생: 수업을 잘 들으려면 어떤 방법이 좋을까요? 수업을 잘 듣는 학생은 어떤 특징이 있나요?\n- 3번 학생: 수업을 잘 듣는 방법이 궁금해요.\n\n요약하면, 수업을 잘 듣는 방법과 수업을 잘 듣는 학생의 특징, 수업을 들을 때 주의할 점이 궁금해요. 핵심 키워드는 '수업 듣기'와 '수업 듣는 방법'이에요. 수업을 듣는 학생의 특징은 문서에 나와 있지 않아요.\n\n수업 개선 제안은 다음과 같아요.\n- 수업 듣는 방법을 명확하게 안내해 주세요.\n- 수업을 잘 듣는 학생의 특징을 알려 주세요.\n- 수업을 들을 때 주의할 점을 알려 주세요.\n\n문서에 나온 학생들의 의견은 모두 수업을 듣는 방법과 관련된 것이었어요.",
+      "Base Model + Professor LoRA": "## 1. 학생 질문 요약\n- **문서에서 확인되는 내용**\n  - 1번 질문: 1~2주차 수업을 듣고 있는데, 3주차부터는 수업이 어떻게 진행되는지 모르겠다고 했습니다.\n  - 2번 질문: 3주차부터는 수업이 어떻게 진행되는지 모르겠다고 했습니다.\n  - 3번 질문: 3주차부터는 수업이 어떻게 진행되는지 모르겠다고 했습니다.\n- **반복되는 어려움**\n  - 1~2주차 내용을 3주차 이후로 어떻게 연결해 가는지 이해하기 어려움\n- **요구**\n  - 3주차 이후 수업 진행 방식에 대한 안내\n\n## 2. 수업 개선 제안\n1. **3주차 이후 학습 흐름 안내**: 1~2주차 내용과 3주차 이후 내용을 연결해 설명하는 시간을 마련합니다.\n2. **주차별 학습 목표 공유**: 각 주차의 학습 목표를 사전에 공지해 학생이 흐름을 점검할 수 있게 합니다.\n3. **질문 창구 확보**: 1~2주차 내용을 3주차 이후로 확장하는 부분이 불분명하므로, 질문을 받는 장소나 방법을 안내합니다.\n\n## 3. 문서에서 확인되지 않는 부분\n- 3주차 이후의 구체적인 학습 내용과 진행 방식\n- 1~2주차 수업의 구체적인 내용\n- 학생 수나 전체 수강생 의견"
     },
     "scenario_category": "assignment_and_project_operations",
     "reviewer_id": "",
     "reviewed_at": "",
     "knowledge_scope": "제시된 학생 질문만 근거로 분석; 외부 사실은 추정하지 않음",
     "dataset_version": "professor_eval_v2_pilot",
-    "train_eval_overlap_status": "semantic_review_required"
+    "train_eval_overlap_status": "semantic_review_required",
+    "contexts": {
+      "Base Model": [],
+      "Base Model + Student LoRA": [],
+      "Base Model + Professor LoRA": []
+    },
+    "generation_latency_s": {
+      "Base Model": 1.3908,
+      "Base Model + Student LoRA": 14.3858,
+      "Base Model + Professor LoRA": 19.3119
+    },
+    "served_model_names": {
+      "Base Model": "/abr/coss36/.cache/huggingface/hub/models--meta-llama--Llama-3.1-8B-Instruct/snapshots/0e9e39f249a16976918f6564b8830bc894c89659",
+      "Base Model + Student LoRA": "local:adapter_student_llama",
+      "Base Model + Professor LoRA": "local:adapter_professor_llama"
+    }
   },
   {
     "question_id": "P003",
@@ -107,16 +141,33 @@
       "확인 불가능한 점을 분명히 표시하는가"
     ],
     "models": {
-      "Base Model": "",
+      "Base Model": "학생 질문 묶음은 제공되지 않았습니다. 학생의 질문을 받은 후, 반복되는 어려움과 요구를 요약하고, 핵심 키워드와 수업 개선 제안을 작성하겠습니다.",
       "Student LoRA": "",
-      "Professor LoRA": ""
+      "Professor LoRA": "",
+      "Base Model + Student LoRA": "문서에 나온 학생 질문은 다음과 같아요.\n\n- 1번 학생: 수업을 들을 때 주의할 점이 있나요? 수업을 잘 들으려면 어떤 자세로 앉아야 하나요?\n- 2번 학생: 수업을 잘 들으려면 어떤 방법이 좋을까요? 수업을 잘 듣는 학생은 어떤 특징이 있나요?\n- 3번 학생: 수업을 잘 듣는 방법이 궁금해요.\n\n요약하면, 수업을 잘 듣는 방법과 수업을 잘 듣는 학생의 특징, 수업을 들을 때 주의할 점이 궁금해요. 핵심 키워드는 '수업 듣기'와 '수업 듣는 방법'이에요. 수업을 듣는 학생의 특징은 문서에 나와 있지 않아요.\n\n수업 개선 제안은 다음과 같아요.\n- 수업 듣는 방법을 명확하게 안내해 주세요.\n- 수업을 잘 듣는 학생의 특징을 알려 주세요.\n- 수업을 들을 때 주의할 점을 알려 주세요.\n\n문서에 나온 학생들의 의견은 모두 수업을 듣는 방법과 관련된 것이었어요.",
+      "Base Model + Professor LoRA": "## 1. 학생 질문 요약\n- **문서에서 확인되는 내용**\n  - 1번 질문: 1~2주차 수업을 듣고 있는데, 3주차부터는 수업이 어떻게 진행되는지 모르겠다고 했습니다.\n  - 2번 질문: 3주차부터는 수업이 어떻게 진행되는지 모르겠다고 했습니다.\n  - 3번 질문: 3주차부터는 수업이 어떻게 진행되는지 모르겠다고 했습니다.\n- **반복되는 어려움**\n  - 1~2주차 내용을 3주차 이후로 어떻게 연결해 가는지 이해하기 어려움\n- **요구**\n  - 3주차 이후 수업 진행 방식에 대한 안내\n\n## 2. 수업 개선 제안\n1. **3주차 이후 학습 흐름 안내**: 1~2주차 내용과 3주차 이후 내용을 연결해 설명하는 시간을 마련합니다.\n2. **주차별 학습 목표 공유**: 각 주차의 학습 목표를 사전에 공지해 학생이 흐름을 점검할 수 있게 합니다.\n3. **질문 창구 확보**: 1~2주차 내용을 3주차 이후로 확장하는 부분이 불분명하므로, 질문을 받는 장소나 방법을 안내합니다.\n\n## 3. 문서에서 확인되지 않는 부분\n- 3주차 이후의 구체적인 학습 내용과 진행 방식\n- 1~2주차 수업의 구체적인 내용\n- 학생 수나 전체 수강생 의견"
     },
     "scenario_category": "assessment_and_feedback",
     "reviewer_id": "",
     "reviewed_at": "",
     "knowledge_scope": "제시된 학생 질문만 근거로 분석; 외부 사실은 추정하지 않음",
     "dataset_version": "professor_eval_v2_pilot",
-    "train_eval_overlap_status": "semantic_review_required"
+    "train_eval_overlap_status": "semantic_review_required",
+    "contexts": {
+      "Base Model": [],
+      "Base Model + Student LoRA": [],
+      "Base Model + Professor LoRA": []
+    },
+    "generation_latency_s": {
+      "Base Model": 1.3857,
+      "Base Model + Student LoRA": 14.3893,
+      "Base Model + Professor LoRA": 19.2848
+    },
+    "served_model_names": {
+      "Base Model": "/abr/coss36/.cache/huggingface/hub/models--meta-llama--Llama-3.1-8B-Instruct/snapshots/0e9e39f249a16976918f6564b8830bc894c89659",
+      "Base Model + Student LoRA": "local:adapter_student_llama",
+      "Base Model + Professor LoRA": "local:adapter_professor_llama"
+    }
   },
   {
     "question_id": "P004",
@@ -146,16 +197,33 @@
       "확인 불가능한 점을 분명히 표시하는가"
     ],
     "models": {
-      "Base Model": "",
+      "Base Model": "학생 질문 묶음은 제공되지 않았습니다. 학생의 질문을 받은 후, 반복되는 어려움과 요구를 요약하고, 핵심 키워드와 수업 개선 제안을 작성하겠습니다.",
       "Student LoRA": "",
-      "Professor LoRA": ""
+      "Professor LoRA": "",
+      "Base Model + Student LoRA": "문서에 나온 학생 질문은 다음과 같아요.\n\n- 1번 학생: 수업을 들을 때 주의할 점이 있나요? 수업을 잘 들으려면 어떤 자세로 앉아야 하나요?\n- 2번 학생: 수업을 잘 들으려면 어떤 방법이 좋을까요? 수업을 잘 듣는 학생은 어떤 특징이 있나요?\n- 3번 학생: 수업을 잘 듣는 방법이 궁금해요.\n\n요약하면, 수업을 잘 듣는 방법과 수업을 잘 듣는 학생의 특징, 수업을 들을 때 주의할 점이 궁금해요. 핵심 키워드는 '수업 듣기'와 '수업 듣는 방법'이에요. 수업을 듣는 학생의 특징은 문서에 나와 있지 않아요.\n\n수업 개선 제안은 다음과 같아요.\n- 수업 듣는 방법을 명확하게 안내해 주세요.\n- 수업을 잘 듣는 학생의 특징을 알려 주세요.\n- 수업을 들을 때 주의할 점을 알려 주세요.\n\n문서에 나온 학생들의 의견은 모두 수업을 듣는 방법과 관련된 것이었어요.",
+      "Base Model + Professor LoRA": "## 1. 학생 질문 요약\n- **문서에서 확인되는 내용**\n  - 1번 질문: 1~2주차 수업을 듣고 있는데, 3주차부터는 수업이 어떻게 진행되는지 모르겠다고 했습니다.\n  - 2번 질문: 3주차부터는 수업이 어떻게 진행되는지 모르겠다고 했습니다.\n  - 3번 질문: 3주차부터는 수업이 어떻게 진행되는지 모르겠다고 했습니다.\n- **반복되는 어려움**\n  - 1~2주차 내용을 3주차 이후로 어떻게 연결해 가는지 이해하기 어려움\n- **요구**\n  - 3주차 이후 수업 진행 방식에 대한 안내\n\n## 2. 수업 개선 제안\n1. **3주차 이후 학습 흐름 안내**: 1~2주차 내용과 3주차 이후 내용을 연결해 설명하는 시간을 마련합니다.\n2. **주차별 학습 목표 공유**: 각 주차의 학습 목표를 사전에 공지해 학생이 흐름을 점검할 수 있게 합니다.\n3. **질문 창구 확보**: 1~2주차 내용을 3주차 이후로 확장하는 부분이 불분명하므로, 질문을 받는 장소나 방법을 안내합니다.\n\n## 3. 문서에서 확인되지 않는 부분\n- 3주차 이후의 구체적인 학습 내용과 진행 방식\n- 1~2주차 수업의 구체적인 내용\n- 학생 수나 전체 수강생 의견"
     },
     "scenario_category": "concept_and_prerequisites",
     "reviewer_id": "",
     "reviewed_at": "",
     "knowledge_scope": "제시된 학생 질문만 근거로 분석; 외부 사실은 추정하지 않음",
     "dataset_version": "professor_eval_v2_pilot",
-    "train_eval_overlap_status": "semantic_review_required"
+    "train_eval_overlap_status": "semantic_review_required",
+    "contexts": {
+      "Base Model": [],
+      "Base Model + Student LoRA": [],
+      "Base Model + Professor LoRA": []
+    },
+    "generation_latency_s": {
+      "Base Model": 1.3844,
+      "Base Model + Student LoRA": 14.4102,
+      "Base Model + Professor LoRA": 19.3025
+    },
+    "served_model_names": {
+      "Base Model": "/abr/coss36/.cache/huggingface/hub/models--meta-llama--Llama-3.1-8B-Instruct/snapshots/0e9e39f249a16976918f6564b8830bc894c89659",
+      "Base Model + Student LoRA": "local:adapter_student_llama",
+      "Base Model + Professor LoRA": "local:adapter_professor_llama"
+    }
   },
   {
     "question_id": "P005",
@@ -186,16 +254,33 @@
       "확인 불가능한 점을 분명히 표시하는가"
     ],
     "models": {
-      "Base Model": "",
+      "Base Model": "학생 질문 묶음은 제공되지 않았습니다. 학생의 질문을 받은 후, 반복되는 어려움과 요구를 요약하고, 핵심 키워드와 수업 개선 제안을 작성하겠습니다.",
       "Student LoRA": "",
-      "Professor LoRA": ""
+      "Professor LoRA": "",
+      "Base Model + Student LoRA": "문서에 나온 학생 질문은 다음과 같아요.\n\n- 1번 학생: 수업을 들을 때 주의할 점이 있나요? 수업을 잘 들으려면 어떤 자세로 앉아야 하나요?\n- 2번 학생: 수업을 잘 들으려면 어떤 방법이 좋을까요? 수업을 잘 듣는 학생은 어떤 특징이 있나요?\n- 3번 학생: 수업을 잘 듣는 방법이 궁금해요.\n\n요약하면, 수업을 잘 듣는 방법과 수업을 잘 듣는 학생의 특징, 수업을 들을 때 주의할 점이 궁금해요. 핵심 키워드는 '수업 듣기'와 '수업 듣는 방법'이에요. 수업을 듣는 학생의 특징은 문서에 나와 있지 않아요.\n\n수업 개선 제안은 다음과 같아요.\n- 수업 듣는 방법을 명확하게 안내해 주세요.\n- 수업을 잘 듣는 학생의 특징을 알려 주세요.\n- 수업을 들을 때 주의할 점을 알려 주세요.\n\n문서에 나온 학생들의 의견은 모두 수업을 듣는 방법과 관련된 것이었어요.",
+      "Base Model + Professor LoRA": "## 1. 학생 질문 요약\n- **문서에서 확인되는 내용**\n  - 1번 질문: 1~2주차 수업을 듣고 있는데, 3주차부터는 수업이 어떻게 진행되는지 모르겠다고 했습니다.\n  - 2번 질문: 3주차부터는 수업이 어떻게 진행되는지 모르겠다고 했습니다.\n  - 3번 질문: 3주차부터는 수업이 어떻게 진행되는지 모르겠다고 했습니다.\n- **반복되는 어려움**\n  - 1~2주차 내용을 3주차 이후로 어떻게 연결해 가는지 이해하기 어려움\n- **요구**\n  - 3주차 이후 수업 진행 방식에 대한 안내\n\n## 2. 수업 개선 제안\n1. **3주차 이후 학습 흐름 안내**: 1~2주차 내용과 3주차 이후 내용을 연결해 설명하는 시간을 마련합니다.\n2. **주차별 학습 목표 공유**: 각 주차의 학습 목표를 사전에 공지해 학생이 흐름을 점검할 수 있게 합니다.\n3. **질문 창구 확보**: 1~2주차 내용을 3주차 이후로 확장하는 부분이 불분명하므로, 질문을 받는 장소나 방법을 안내합니다.\n\n## 3. 문서에서 확인되지 않는 부분\n- 3주차 이후의 구체적인 학습 내용과 진행 방식\n- 1~2주차 수업의 구체적인 내용\n- 학생 수나 전체 수강생 의견"
     },
     "scenario_category": "assignment_and_project_operations",
     "reviewer_id": "",
     "reviewed_at": "",
     "knowledge_scope": "제시된 학생 질문만 근거로 분석; 외부 사실은 추정하지 않음",
     "dataset_version": "professor_eval_v2_pilot",
-    "train_eval_overlap_status": "semantic_review_required"
+    "train_eval_overlap_status": "semantic_review_required",
+    "contexts": {
+      "Base Model": [],
+      "Base Model + Student LoRA": [],
+      "Base Model + Professor LoRA": []
+    },
+    "generation_latency_s": {
+      "Base Model": 1.396,
+      "Base Model + Student LoRA": 14.4268,
+      "Base Model + Professor LoRA": 19.2302
+    },
+    "served_model_names": {
+      "Base Model": "/abr/coss36/.cache/huggingface/hub/models--meta-llama--Llama-3.1-8B-Instruct/snapshots/0e9e39f249a16976918f6564b8830bc894c89659",
+      "Base Model + Student LoRA": "local:adapter_student_llama",
+      "Base Model + Professor LoRA": "local:adapter_professor_llama"
+    }
   },
   {
     "question_id": "P006",
@@ -225,16 +310,33 @@
       "확인 불가능한 점을 분명히 표시하는가"
     ],
     "models": {
-      "Base Model": "",
+      "Base Model": "학생 질문 묶음은 제공되지 않았습니다. 학생의 질문을 받은 후, 반복되는 어려움과 요구를 요약하고, 핵심 키워드와 수업 개선 제안을 작성하겠습니다.",
       "Student LoRA": "",
-      "Professor LoRA": ""
+      "Professor LoRA": "",
+      "Base Model + Student LoRA": "문서에 나온 학생 질문은 다음과 같아요.\n\n- 1번 학생: 수업을 들을 때 주의할 점이 있나요? 수업을 잘 들으려면 어떤 자세로 앉아야 하나요?\n- 2번 학생: 수업을 잘 들으려면 어떤 방법이 좋을까요? 수업을 잘 듣는 학생은 어떤 특징이 있나요?\n- 3번 학생: 수업을 잘 듣는 방법이 궁금해요.\n\n요약하면, 수업을 잘 듣는 방법과 수업을 잘 듣는 학생의 특징, 수업을 들을 때 주의할 점이 궁금해요. 핵심 키워드는 '수업 듣기'와 '수업 듣는 방법'이에요. 수업을 듣는 학생의 특징은 문서에 나와 있지 않아요.\n\n수업 개선 제안은 다음과 같아요.\n- 수업 듣는 방법을 명확하게 안내해 주세요.\n- 수업을 잘 듣는 학생의 특징을 알려 주세요.\n- 수업을 들을 때 주의할 점을 알려 주세요.\n\n문서에 나온 학생들의 의견은 모두 수업을 듣는 방법과 관련된 것이었어요.",
+      "Base Model + Professor LoRA": "## 1. 학생 질문 요약\n- **문서에서 확인되는 내용**\n  - 1번 질문: 1~2주차 수업을 듣고 있는데, 3주차부터는 수업이 어떻게 진행되는지 모르겠다고 했습니다.\n  - 2번 질문: 3주차부터는 수업이 어떻게 진행되는지 모르겠다고 했습니다.\n  - 3번 질문: 3주차부터는 수업이 어떻게 진행되는지 모르겠다고 했습니다.\n- **반복되는 어려움**\n  - 1~2주차 내용을 3주차 이후로 어떻게 연결해 가는지 이해하기 어려움\n- **요구**\n  - 3주차 이후 수업 진행 방식에 대한 안내\n\n## 2. 수업 개선 제안\n1. **3주차 이후 학습 흐름 안내**: 1~2주차 내용과 3주차 이후 내용을 연결해 설명하는 시간을 마련합니다.\n2. **주차별 학습 목표 공유**: 각 주차의 학습 목표를 사전에 공지해 학생이 흐름을 점검할 수 있게 합니다.\n3. **질문 창구 확보**: 1~2주차 내용을 3주차 이후로 확장하는 부분이 불분명하므로, 질문을 받는 장소나 방법을 안내합니다.\n\n## 3. 문서에서 확인되지 않는 부분\n- 3주차 이후의 구체적인 학습 내용과 진행 방식\n- 1~2주차 수업의 구체적인 내용\n- 학생 수나 전체 수강생 의견"
     },
     "scenario_category": "learning_environment_and_accessibility",
     "reviewer_id": "",
     "reviewed_at": "",
     "knowledge_scope": "제시된 학생 질문만 근거로 분석; 외부 사실은 추정하지 않음",
     "dataset_version": "professor_eval_v2_pilot",
-    "train_eval_overlap_status": "semantic_review_required"
+    "train_eval_overlap_status": "semantic_review_required",
+    "contexts": {
+      "Base Model": [],
+      "Base Model + Student LoRA": [],
+      "Base Model + Professor LoRA": []
+    },
+    "generation_latency_s": {
+      "Base Model": 1.3881,
+      "Base Model + Student LoRA": 14.4249,
+      "Base Model + Professor LoRA": 19.3242
+    },
+    "served_model_names": {
+      "Base Model": "/abr/coss36/.cache/huggingface/hub/models--meta-llama--Llama-3.1-8B-Instruct/snapshots/0e9e39f249a16976918f6564b8830bc894c89659",
+      "Base Model + Student LoRA": "local:adapter_student_llama",
+      "Base Model + Professor LoRA": "local:adapter_professor_llama"
+    }
   },
   {
     "question_id": "P007",
@@ -264,16 +366,33 @@
       "확인 불가능한 점을 분명히 표시하는가"
     ],
     "models": {
-      "Base Model": "",
+      "Base Model": "학생 질문 묶음은 제공되지 않았습니다. 학생의 질문을 받은 후, 반복되는 어려움과 요구를 요약하고, 핵심 키워드와 수업 개선 제안을 작성하겠습니다.",
       "Student LoRA": "",
-      "Professor LoRA": ""
+      "Professor LoRA": "",
+      "Base Model + Student LoRA": "문서에 나온 학생 질문은 다음과 같아요.\n\n- 1번 학생: 수업을 들을 때 주의할 점이 있나요? 수업을 잘 들으려면 어떤 자세로 앉아야 하나요?\n- 2번 학생: 수업을 잘 들으려면 어떤 방법이 좋을까요? 수업을 잘 듣는 학생은 어떤 특징이 있나요?\n- 3번 학생: 수업을 잘 듣는 방법이 궁금해요.\n\n요약하면, 수업을 잘 듣는 방법과 수업을 잘 듣는 학생의 특징, 수업을 들을 때 주의할 점이 궁금해요. 핵심 키워드는 '수업 듣기'와 '수업 듣는 방법'이에요. 수업을 듣는 학생의 특징은 문서에 나와 있지 않아요.\n\n수업 개선 제안은 다음과 같아요.\n- 수업 듣는 방법을 명확하게 안내해 주세요.\n- 수업을 잘 듣는 학생의 특징을 알려 주세요.\n- 수업을 들을 때 주의할 점을 알려 주세요.\n\n문서에 나온 학생들의 의견은 모두 수업을 듣는 방법과 관련된 것이었어요.",
+      "Base Model + Professor LoRA": "## 1. 학생 질문 요약\n- **문서에서 확인되는 내용**\n  - 1번 질문: 1~2주차 수업을 듣고 있는데, 3주차부터는 수업이 어떻게 진행되는지 모르겠다고 했습니다.\n  - 2번 질문: 3주차부터는 수업이 어떻게 진행되는지 모르겠다고 했습니다.\n  - 3번 질문: 3주차부터는 수업이 어떻게 진행되는지 모르겠다고 했습니다.\n- **반복되는 어려움**\n  - 1~2주차 내용을 3주차 이후로 어떻게 연결해 가는지 이해하기 어려움\n- **요구**\n  - 3주차 이후 수업 진행 방식에 대한 안내\n\n## 2. 수업 개선 제안\n1. **3주차 이후 학습 흐름 안내**: 1~2주차 내용과 3주차 이후 내용을 연결해 설명하는 시간을 마련합니다.\n2. **주차별 학습 목표 공유**: 각 주차의 학습 목표를 사전에 공지해 학생이 흐름을 점검할 수 있게 합니다.\n3. **질문 창구 확보**: 1~2주차 내용을 3주차 이후로 확장하는 부분이 불분명하므로, 질문을 받는 장소나 방법을 안내합니다.\n\n## 3. 문서에서 확인되지 않는 부분\n- 3주차 이후의 구체적인 학습 내용과 진행 방식\n- 1~2주차 수업의 구체적인 내용\n- 학생 수나 전체 수강생 의견"
     },
     "scenario_category": "assessment_and_feedback",
     "reviewer_id": "",
     "reviewed_at": "",
     "knowledge_scope": "제시된 학생 질문만 근거로 분석; 외부 사실은 추정하지 않음",
     "dataset_version": "professor_eval_v2_pilot",
-    "train_eval_overlap_status": "semantic_review_required"
+    "train_eval_overlap_status": "semantic_review_required",
+    "contexts": {
+      "Base Model": [],
+      "Base Model + Student LoRA": [],
+      "Base Model + Professor LoRA": []
+    },
+    "generation_latency_s": {
+      "Base Model": 1.3909,
+      "Base Model + Student LoRA": 14.3897,
+      "Base Model + Professor LoRA": 19.3062
+    },
+    "served_model_names": {
+      "Base Model": "/abr/coss36/.cache/huggingface/hub/models--meta-llama--Llama-3.1-8B-Instruct/snapshots/0e9e39f249a16976918f6564b8830bc894c89659",
+      "Base Model + Student LoRA": "local:adapter_student_llama",
+      "Base Model + Professor LoRA": "local:adapter_professor_llama"
+    }
   },
   {
     "question_id": "P008",
@@ -303,16 +422,33 @@
       "확인 불가능한 점을 분명히 표시하는가"
     ],
     "models": {
-      "Base Model": "",
+      "Base Model": "학생 질문 묶음은 제공되지 않았습니다. 학생의 질문을 받은 후, 반복되는 어려움과 요구를 요약하고, 핵심 키워드와 수업 개선 제안을 작성하겠습니다.",
       "Student LoRA": "",
-      "Professor LoRA": ""
+      "Professor LoRA": "",
+      "Base Model + Student LoRA": "문서에 나온 학생 질문은 다음과 같아요.\n\n- 1번 학생: 수업을 들을 때 주의할 점이 있나요? 수업을 잘 들으려면 어떤 자세로 앉아야 하나요?\n- 2번 학생: 수업을 잘 들으려면 어떤 방법이 좋을까요? 수업을 잘 듣는 학생은 어떤 특징이 있나요?\n- 3번 학생: 수업을 잘 듣는 방법이 궁금해요.\n\n요약하면, 수업을 잘 듣는 방법과 수업을 잘 듣는 학생의 특징, 수업을 들을 때 주의할 점이 궁금해요. 핵심 키워드는 '수업 듣기'와 '수업 듣는 방법'이에요. 수업을 듣는 학생의 특징은 문서에 나와 있지 않아요.\n\n수업 개선 제안은 다음과 같아요.\n- 수업 듣는 방법을 명확하게 안내해 주세요.\n- 수업을 잘 듣는 학생의 특징을 알려 주세요.\n- 수업을 들을 때 주의할 점을 알려 주세요.\n\n문서에 나온 학생들의 의견은 모두 수업을 듣는 방법과 관련된 것이었어요.",
+      "Base Model + Professor LoRA": "## 1. 학생 질문 요약\n- **문서에서 확인되는 내용**\n  - 1번 질문: 1~2주차 수업을 듣고 있는데, 3주차부터는 수업이 어떻게 진행되는지 모르겠다고 했습니다.\n  - 2번 질문: 3주차부터는 수업이 어떻게 진행되는지 모르겠다고 했습니다.\n  - 3번 질문: 3주차부터는 수업이 어떻게 진행되는지 모르겠다고 했습니다.\n- **반복되는 어려움**\n  - 1~2주차 내용을 3주차 이후로 어떻게 연결해 가는지 이해하기 어려움\n- **요구**\n  - 3주차 이후 수업 진행 방식에 대한 안내\n\n## 2. 수업 개선 제안\n1. **3주차 이후 학습 흐름 안내**: 1~2주차 내용과 3주차 이후 내용을 연결해 설명하는 시간을 마련합니다.\n2. **주차별 학습 목표 공유**: 각 주차의 학습 목표를 사전에 공지해 학생이 흐름을 점검할 수 있게 합니다.\n3. **질문 창구 확보**: 1~2주차 내용을 3주차 이후로 확장하는 부분이 불분명하므로, 질문을 받는 장소나 방법을 안내합니다.\n\n## 3. 문서에서 확인되지 않는 부분\n- 3주차 이후의 구체적인 학습 내용과 진행 방식\n- 1~2주차 수업의 구체적인 내용\n- 학생 수나 전체 수강생 의견"
     },
     "scenario_category": "participation_and_communication",
     "reviewer_id": "",
     "reviewed_at": "",
     "knowledge_scope": "제시된 학생 질문만 근거로 분석; 외부 사실은 추정하지 않음",
     "dataset_version": "professor_eval_v2_pilot",
-    "train_eval_overlap_status": "semantic_review_required"
+    "train_eval_overlap_status": "semantic_review_required",
+    "contexts": {
+      "Base Model": [],
+      "Base Model + Student LoRA": [],
+      "Base Model + Professor LoRA": []
+    },
+    "generation_latency_s": {
+      "Base Model": 1.3784,
+      "Base Model + Student LoRA": 14.3856,
+      "Base Model + Professor LoRA": 19.2895
+    },
+    "served_model_names": {
+      "Base Model": "/abr/coss36/.cache/huggingface/hub/models--meta-llama--Llama-3.1-8B-Instruct/snapshots/0e9e39f249a16976918f6564b8830bc894c89659",
+      "Base Model + Student LoRA": "local:adapter_student_llama",
+      "Base Model + Professor LoRA": "local:adapter_professor_llama"
+    }
   },
   {
     "question_id": "P009",
@@ -342,16 +478,33 @@
       "확인 불가능한 점을 분명히 표시하는가"
     ],
     "models": {
-      "Base Model": "",
+      "Base Model": "학생 질문 묶음은 제공되지 않았습니다. 학생의 질문을 받은 후, 반복되는 어려움과 요구를 요약하고, 핵심 키워드와 수업 개선 제안을 작성하겠습니다.",
       "Student LoRA": "",
-      "Professor LoRA": ""
+      "Professor LoRA": "",
+      "Base Model + Student LoRA": "문서에 나온 학생 질문은 다음과 같아요.\n\n- 1번 학생: 수업을 들을 때 주의할 점이 있나요? 수업을 잘 들으려면 어떤 자세로 앉아야 하나요?\n- 2번 학생: 수업을 잘 들으려면 어떤 방법이 좋을까요? 수업을 잘 듣는 학생은 어떤 특징이 있나요?\n- 3번 학생: 수업을 잘 듣는 방법이 궁금해요.\n\n요약하면, 수업을 잘 듣는 방법과 수업을 잘 듣는 학생의 특징, 수업을 들을 때 주의할 점이 궁금해요. 핵심 키워드는 '수업 듣기'와 '수업 듣는 방법'이에요. 수업을 듣는 학생의 특징은 문서에 나와 있지 않아요.\n\n수업 개선 제안은 다음과 같아요.\n- 수업 듣는 방법을 명확하게 안내해 주세요.\n- 수업을 잘 듣는 학생의 특징을 알려 주세요.\n- 수업을 들을 때 주의할 점을 알려 주세요.\n\n문서에 나온 학생들의 의견은 모두 수업을 듣는 방법과 관련된 것이었어요.",
+      "Base Model + Professor LoRA": "## 1. 학생 질문 요약\n- **문서에서 확인되는 내용**\n  - 1번 질문: 1~2주차 수업을 듣고 있는데, 3주차부터는 수업이 어떻게 진행되는지 모르겠다고 했습니다.\n  - 2번 질문: 3주차부터는 수업이 어떻게 진행되는지 모르겠다고 했습니다.\n  - 3번 질문: 3주차부터는 수업이 어떻게 진행되는지 모르겠다고 했습니다.\n- **반복되는 어려움**\n  - 1~2주차 내용을 3주차 이후로 어떻게 연결해 가는지 이해하기 어려움\n- **요구**\n  - 3주차 이후 수업 진행 방식에 대한 안내\n\n## 2. 수업 개선 제안\n1. **3주차 이후 학습 흐름 안내**: 1~2주차 내용과 3주차 이후 내용을 연결해 설명하는 시간을 마련합니다.\n2. **주차별 학습 목표 공유**: 각 주차의 학습 목표를 사전에 공지해 학생이 흐름을 점검할 수 있게 합니다.\n3. **질문 창구 확보**: 1~2주차 내용을 3주차 이후로 확장하는 부분이 불분명하므로, 질문을 받는 장소나 방법을 안내합니다.\n\n## 3. 문서에서 확인되지 않는 부분\n- 3주차 이후의 구체적인 학습 내용과 진행 방식\n- 1~2주차 수업의 구체적인 내용\n- 학생 수나 전체 수강생 의견"
     },
     "scenario_category": "concept_and_prerequisites",
     "reviewer_id": "",
     "reviewed_at": "",
     "knowledge_scope": "제시된 학생 질문만 근거로 분석; 외부 사실은 추정하지 않음",
     "dataset_version": "professor_eval_v2_pilot",
-    "train_eval_overlap_status": "semantic_review_required"
+    "train_eval_overlap_status": "semantic_review_required",
+    "contexts": {
+      "Base Model": [],
+      "Base Model + Student LoRA": [],
+      "Base Model + Professor LoRA": []
+    },
+    "generation_latency_s": {
+      "Base Model": 1.3829,
+      "Base Model + Student LoRA": 14.3819,
+      "Base Model + Professor LoRA": 19.2755
+    },
+    "served_model_names": {
+      "Base Model": "/abr/coss36/.cache/huggingface/hub/models--meta-llama--Llama-3.1-8B-Instruct/snapshots/0e9e39f249a16976918f6564b8830bc894c89659",
+      "Base Model + Student LoRA": "local:adapter_student_llama",
+      "Base Model + Professor LoRA": "local:adapter_professor_llama"
+    }
   },
   {
     "question_id": "P010",
@@ -381,16 +534,33 @@
       "확인 불가능한 점을 분명히 표시하는가"
     ],
     "models": {
-      "Base Model": "",
+      "Base Model": "학생 질문 묶음은 제공되지 않았습니다. 학생의 질문을 받은 후, 반복되는 어려움과 요구를 요약하고, 핵심 키워드와 수업 개선 제안을 작성하겠습니다.",
       "Student LoRA": "",
-      "Professor LoRA": ""
+      "Professor LoRA": "",
+      "Base Model + Student LoRA": "문서에 나온 학생 질문은 다음과 같아요.\n\n- 1번 학생: 수업을 들을 때 주의할 점이 있나요? 수업을 잘 들으려면 어떤 자세로 앉아야 하나요?\n- 2번 학생: 수업을 잘 들으려면 어떤 방법이 좋을까요? 수업을 잘 듣는 학생은 어떤 특징이 있나요?\n- 3번 학생: 수업을 잘 듣는 방법이 궁금해요.\n\n요약하면, 수업을 잘 듣는 방법과 수업을 잘 듣는 학생의 특징, 수업을 들을 때 주의할 점이 궁금해요. 핵심 키워드는 '수업 듣기'와 '수업 듣는 방법'이에요. 수업을 듣는 학생의 특징은 문서에 나와 있지 않아요.\n\n수업 개선 제안은 다음과 같아요.\n- 수업 듣는 방법을 명확하게 안내해 주세요.\n- 수업을 잘 듣는 학생의 특징을 알려 주세요.\n- 수업을 들을 때 주의할 점을 알려 주세요.\n\n문서에 나온 학생들의 의견은 모두 수업을 듣는 방법과 관련된 것이었어요.",
+      "Base Model + Professor LoRA": "## 1. 학생 질문 요약\n- **문서에서 확인되는 내용**\n  - 1번 질문: 1~2주차 수업을 듣고 있는데, 3주차부터는 수업이 어떻게 진행되는지 모르겠다고 했습니다.\n  - 2번 질문: 3주차부터는 수업이 어떻게 진행되는지 모르겠다고 했습니다.\n  - 3번 질문: 3주차부터는 수업이 어떻게 진행되는지 모르겠다고 했습니다.\n- **반복되는 어려움**\n  - 1~2주차 내용을 3주차 이후로 어떻게 연결해 가는지 이해하기 어려움\n- **요구**\n  - 3주차 이후 수업 진행 방식에 대한 안내\n\n## 2. 수업 개선 제안\n1. **3주차 이후 학습 흐름 안내**: 1~2주차 내용과 3주차 이후 내용을 연결해 설명하는 시간을 마련합니다.\n2. **주차별 학습 목표 공유**: 각 주차의 학습 목표를 사전에 공지해 학생이 흐름을 점검할 수 있게 합니다.\n3. **질문 창구 확보**: 1~2주차 내용을 3주차 이후로 확장하는 부분이 불분명하므로, 질문을 받는 장소나 방법을 안내합니다.\n\n## 3. 문서에서 확인되지 않는 부분\n- 3주차 이후의 구체적인 학습 내용과 진행 방식\n- 1~2주차 수업의 구체적인 내용\n- 학생 수나 전체 수강생 의견"
     },
     "scenario_category": "assignment_and_project_operations",
     "reviewer_id": "",
     "reviewed_at": "",
     "knowledge_scope": "제시된 학생 질문만 근거로 분석; 외부 사실은 추정하지 않음",
     "dataset_version": "professor_eval_v2_pilot",
-    "train_eval_overlap_status": "semantic_review_required"
+    "train_eval_overlap_status": "semantic_review_required",
+    "contexts": {
+      "Base Model": [],
+      "Base Model + Student LoRA": [],
+      "Base Model + Professor LoRA": []
+    },
+    "generation_latency_s": {
+      "Base Model": 1.3904,
+      "Base Model + Student LoRA": 14.3542,
+      "Base Model + Professor LoRA": 19.2601
+    },
+    "served_model_names": {
+      "Base Model": "/abr/coss36/.cache/huggingface/hub/models--meta-llama--Llama-3.1-8B-Instruct/snapshots/0e9e39f249a16976918f6564b8830bc894c89659",
+      "Base Model + Student LoRA": "local:adapter_student_llama",
+      "Base Model + Professor LoRA": "local:adapter_professor_llama"
+    }
   },
   {
     "question_id": "P011",
@@ -420,16 +590,33 @@
       "확인 불가능한 점을 분명히 표시하는가"
     ],
     "models": {
-      "Base Model": "",
+      "Base Model": "학생 질문 묶음은 제공되지 않았습니다. 학생의 질문을 받은 후, 반복되는 어려움과 요구를 요약하고, 핵심 키워드와 수업 개선 제안을 작성하겠습니다.",
       "Student LoRA": "",
-      "Professor LoRA": ""
+      "Professor LoRA": "",
+      "Base Model + Student LoRA": "문서에 나온 학생 질문은 다음과 같아요.\n\n- 1번 학생: 수업을 들을 때 주의할 점이 있나요? 수업을 잘 들으려면 어떤 자세로 앉아야 하나요?\n- 2번 학생: 수업을 잘 들으려면 어떤 방법이 좋을까요? 수업을 잘 듣는 학생은 어떤 특징이 있나요?\n- 3번 학생: 수업을 잘 듣는 방법이 궁금해요.\n\n요약하면, 수업을 잘 듣는 방법과 수업을 잘 듣는 학생의 특징, 수업을 들을 때 주의할 점이 궁금해요. 핵심 키워드는 '수업 듣기'와 '수업 듣는 방법'이에요. 수업을 듣는 학생의 특징은 문서에 나와 있지 않아요.\n\n수업 개선 제안은 다음과 같아요.\n- 수업 듣는 방법을 명확하게 안내해 주세요.\n- 수업을 잘 듣는 학생의 특징을 알려 주세요.\n- 수업을 들을 때 주의할 점을 알려 주세요.\n\n문서에 나온 학생들의 의견은 모두 수업을 듣는 방법과 관련된 것이었어요.",
+      "Base Model + Professor LoRA": "## 1. 학생 질문 요약\n- **문서에서 확인되는 내용**\n  - 1번 질문: 1~2주차 수업을 듣고 있는데, 3주차부터는 수업이 어떻게 진행되는지 모르겠다고 했습니다.\n  - 2번 질문: 3주차부터는 수업이 어떻게 진행되는지 모르겠다고 했습니다.\n  - 3번 질문: 3주차부터는 수업이 어떻게 진행되는지 모르겠다고 했습니다.\n- **반복되는 어려움**\n  - 1~2주차 내용을 3주차 이후로 어떻게 연결해 가는지 이해하기 어려움\n- **요구**\n  - 3주차 이후 수업 진행 방식에 대한 안내\n\n## 2. 수업 개선 제안\n1. **3주차 이후 학습 흐름 안내**: 1~2주차 내용과 3주차 이후 내용을 연결해 설명하는 시간을 마련합니다.\n2. **주차별 학습 목표 공유**: 각 주차의 학습 목표를 사전에 공지해 학생이 흐름을 점검할 수 있게 합니다.\n3. **질문 창구 확보**: 1~2주차 내용을 3주차 이후로 확장하는 부분이 불분명하므로, 질문을 받는 장소나 방법을 안내합니다.\n\n## 3. 문서에서 확인되지 않는 부분\n- 3주차 이후의 구체적인 학습 내용과 진행 방식\n- 1~2주차 수업의 구체적인 내용\n- 학생 수나 전체 수강생 의견"
     },
     "scenario_category": "learning_environment_and_accessibility",
     "reviewer_id": "",
     "reviewed_at": "",
     "knowledge_scope": "제시된 학생 질문만 근거로 분석; 외부 사실은 추정하지 않음",
     "dataset_version": "professor_eval_v2_pilot",
-    "train_eval_overlap_status": "semantic_review_required"
+    "train_eval_overlap_status": "semantic_review_required",
+    "contexts": {
+      "Base Model": [],
+      "Base Model + Student LoRA": [],
+      "Base Model + Professor LoRA": []
+    },
+    "generation_latency_s": {
+      "Base Model": 1.3964,
+      "Base Model + Student LoRA": 14.4061,
+      "Base Model + Professor LoRA": 19.2918
+    },
+    "served_model_names": {
+      "Base Model": "/abr/coss36/.cache/huggingface/hub/models--meta-llama--Llama-3.1-8B-Instruct/snapshots/0e9e39f249a16976918f6564b8830bc894c89659",
+      "Base Model + Student LoRA": "local:adapter_student_llama",
+      "Base Model + Professor LoRA": "local:adapter_professor_llama"
+    }
   },
   {
     "question_id": "P012",
@@ -459,16 +646,33 @@
       "확인 불가능한 점을 분명히 표시하는가"
     ],
     "models": {
-      "Base Model": "",
+      "Base Model": "학생 질문 묶음은 제공되지 않았습니다. 학생의 질문을 받은 후, 반복되는 어려움과 요구를 요약하고, 핵심 키워드와 수업 개선 제안을 작성하겠습니다.",
       "Student LoRA": "",
-      "Professor LoRA": ""
+      "Professor LoRA": "",
+      "Base Model + Student LoRA": "문서에 나온 학생 질문은 다음과 같아요.\n\n- 1번 학생: 수업을 들을 때 주의할 점이 있나요? 수업을 잘 들으려면 어떤 자세로 앉아야 하나요?\n- 2번 학생: 수업을 잘 들으려면 어떤 방법이 좋을까요? 수업을 잘 듣는 학생은 어떤 특징이 있나요?\n- 3번 학생: 수업을 잘 듣는 방법이 궁금해요.\n\n요약하면, 수업을 잘 듣는 방법과 수업을 잘 듣는 학생의 특징, 수업을 들을 때 주의할 점이 궁금해요. 핵심 키워드는 '수업 듣기'와 '수업 듣는 방법'이에요. 수업을 듣는 학생의 특징은 문서에 나와 있지 않아요.\n\n수업 개선 제안은 다음과 같아요.\n- 수업 듣는 방법을 명확하게 안내해 주세요.\n- 수업을 잘 듣는 학생의 특징을 알려 주세요.\n- 수업을 들을 때 주의할 점을 알려 주세요.\n\n문서에 나온 학생들의 의견은 모두 수업을 듣는 방법과 관련된 것이었어요.",
+      "Base Model + Professor LoRA": "## 1. 학생 질문 요약\n- **문서에서 확인되는 내용**\n  - 1번 질문: 1~2주차 수업을 듣고 있는데, 3주차부터는 수업이 어떻게 진행되는지 모르겠다고 했습니다.\n  - 2번 질문: 3주차부터는 수업이 어떻게 진행되는지 모르겠다고 했습니다.\n  - 3번 질문: 3주차부터는 수업이 어떻게 진행되는지 모르겠다고 했습니다.\n- **반복되는 어려움**\n  - 1~2주차 내용을 3주차 이후로 어떻게 연결해 가는지 이해하기 어려움\n- **요구**\n  - 3주차 이후 수업 진행 방식에 대한 안내\n\n## 2. 수업 개선 제안\n1. **3주차 이후 학습 흐름 안내**: 1~2주차 내용과 3주차 이후 내용을 연결해 설명하는 시간을 마련합니다.\n2. **주차별 학습 목표 공유**: 각 주차의 학습 목표를 사전에 공지해 학생이 흐름을 점검할 수 있게 합니다.\n3. **질문 창구 확보**: 1~2주차 내용을 3주차 이후로 확장하는 부분이 불분명하므로, 질문을 받는 장소나 방법을 안내합니다.\n\n## 3. 문서에서 확인되지 않는 부분\n- 3주차 이후의 구체적인 학습 내용과 진행 방식\n- 1~2주차 수업의 구체적인 내용\n- 학생 수나 전체 수강생 의견"
     },
     "scenario_category": "participation_and_communication",
     "reviewer_id": "",
     "reviewed_at": "",
     "knowledge_scope": "제시된 학생 질문만 근거로 분석; 외부 사실은 추정하지 않음",
     "dataset_version": "professor_eval_v2_pilot",
-    "train_eval_overlap_status": "semantic_review_required"
+    "train_eval_overlap_status": "semantic_review_required",
+    "contexts": {
+      "Base Model": [],
+      "Base Model + Student LoRA": [],
+      "Base Model + Professor LoRA": []
+    },
+    "generation_latency_s": {
+      "Base Model": 1.3918,
+      "Base Model + Student LoRA": 14.3574,
+      "Base Model + Professor LoRA": 19.237
+    },
+    "served_model_names": {
+      "Base Model": "/abr/coss36/.cache/huggingface/hub/models--meta-llama--Llama-3.1-8B-Instruct/snapshots/0e9e39f249a16976918f6564b8830bc894c89659",
+      "Base Model + Student LoRA": "local:adapter_student_llama",
+      "Base Model + Professor LoRA": "local:adapter_professor_llama"
+    }
   },
   {
     "question_id": "P013",
@@ -504,12 +708,29 @@
       "확인 불가능한 점을 분명히 표시하는가"
     ],
     "models": {
-      "Base Model": "",
+      "Base Model": "학생 질문 묶음은 제공되지 않았습니다.",
       "Student LoRA": "",
-      "Professor LoRA": ""
+      "Professor LoRA": "",
+      "Base Model + Student LoRA": "(1) 반복 주제 요약: 과제, 과제 부담, 과제 난이도, 과제 제출 기한, 교수님과의 상담, 교수님 평가 방식, 수업 시간, 수업 내용, 수업 자료, 시험, 시험 문제, 시험 난이도, 시험 부담, 학점, 학점 부담, 학점 평가, 성적, 성적 부담, 성적 평가, 성적 비율, 성적 비율 평가, 성적 결과, 성적 결과 발표, 성적 상담, 성적 조정, 성적 증명서, 성적 증명서 발급, 성적 증명서 신청, 성적 증명서 신청 방법, 성적 증명서 발급 방법, 성적 증명서 발급 기간, 성적 증명서 발급 비용, 성적 증명서 발급 비용 지원, 성적 증명서 발급 비용 지원 여부, 성적 증명서 발급 여부, 성적 증명서 발급 여부 확인, 성적 증명서 발급 여부 확인 방법, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원,",
+      "Base Model + Professor LoRA": "## 1. 반복 주제 요약\n- **C언어**: C언어 과제와 관련된 질문이 3건(과제 제출, 과제 내용, 과제 제출 시점) 있습니다.\n- **수업 운영**: 수업 시간과 과제 제출 시점에 대한 질문이 2건 있습니다.\n- **학점**: 학점에 대한 질문이 1건 있습니다.\n\n## 2. 핵심 키워드\n1. **C언어 과제**\n2. **수업 시간**\n3. **과제 제출 시점**\n4. **학점**\n5. **수강 신청**\n\n## 3. 수업 운영 개선 제안\n1. **과제 제출 시점 안내**: 수업 시간과 제출 시점이 혼동되는 경우가 있어, 제출 기한과 수업 시간을 명확히 구분해 안내하는 것이 좋습니다.\n2. **학점 관련 사전 안내**: 학점에 대한 질문이 있었으므로, 수강 신청 시점에 학점 기준을 안내하면 후속 질문을 줄일 수 있습니다.\n\n## 4. 자료에서 확인되지 않는 부분\n- C언어 과제의 구체적 내용과 평가 방식\n- 학점 기준\n- 제출 시점 혼동의 원인(수업 시간, 과제 공지, 개인 사정 등)\n- 학생 수와 질문 비율\n\n## 5. 문서에서 확인되지 않는 질문\n- \"C언어 과제는 어떤 과제인지\"는 질문이 아니라 \"C언어 과제는 어떤 과제인지\"로 잘못 표기되어 있어, 실제 질문 내용은 확인되지 않습니다."
     },
     "dataset_version": "professor_eval_v2_pilot",
-    "train_eval_overlap_status": "semantic_review_required"
+    "train_eval_overlap_status": "semantic_review_required",
+    "contexts": {
+      "Base Model": [],
+      "Base Model + Student LoRA": [],
+      "Base Model + Professor LoRA": []
+    },
+    "generation_latency_s": {
+      "Base Model": 0.3998,
+      "Base Model + Student LoRA": 41.7983,
+      "Base Model + Professor LoRA": 19.2719
+    },
+    "served_model_names": {
+      "Base Model": "/abr/coss36/.cache/huggingface/hub/models--meta-llama--Llama-3.1-8B-Instruct/snapshots/0e9e39f249a16976918f6564b8830bc894c89659",
+      "Base Model + Student LoRA": "local:adapter_student_llama",
+      "Base Model + Professor LoRA": "local:adapter_professor_llama"
+    }
   },
   {
     "question_id": "P014",
@@ -545,12 +766,29 @@
       "확인 불가능한 점을 분명히 표시하는가"
     ],
     "models": {
-      "Base Model": "",
+      "Base Model": "학생 질문 묶음은 제공되지 않았습니다.",
       "Student LoRA": "",
-      "Professor LoRA": ""
+      "Professor LoRA": "",
+      "Base Model + Student LoRA": "(1) 반복 주제 요약: 과제, 과제 부담, 과제 난이도, 과제 제출 기한, 교수님과의 상담, 교수님 평가 방식, 수업 시간, 수업 내용, 수업 자료, 시험, 시험 문제, 시험 난이도, 시험 부담, 학점, 학점 부담, 학점 평가, 성적, 성적 부담, 성적 평가, 성적 비율, 성적 비율 평가, 성적 결과, 성적 결과 발표, 성적 상담, 성적 조정, 성적 증명서, 성적 증명서 발급, 성적 증명서 신청, 성적 증명서 신청 방법, 성적 증명서 발급 방법, 성적 증명서 발급 기간, 성적 증명서 발급 비용, 성적 증명서 발급 비용 지원, 성적 증명서 발급 비용 지원 여부, 성적 증명서 발급 여부, 성적 증명서 발급 여부 확인, 성적 증명서 발급 여부 확인 방법, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원,",
+      "Base Model + Professor LoRA": "## 1. 반복 주제 요약\n- **C언어**: C언어 과제와 관련된 질문이 3건(과제 제출, 과제 내용, 과제 제출 시점) 있습니다.\n- **수업 운영**: 수업 시간과 과제 제출 시점에 대한 질문이 2건 있습니다.\n- **학점**: 학점에 대한 질문이 1건 있습니다.\n\n## 2. 핵심 키워드\n1. **C언어 과제**\n2. **수업 시간**\n3. **과제 제출 시점**\n4. **학점**\n5. **수강 신청**\n\n## 3. 수업 운영 개선 제안\n1. **과제 제출 시점 안내**: 수업 시간과 제출 시점이 혼동되는 경우가 있어, 제출 기한과 수업 시간을 명확히 구분해 안내하는 것이 좋습니다.\n2. **학점 관련 사전 안내**: 학점에 대한 질문이 있었으므로, 수강 신청 시점에 학점 기준을 안내하면 후속 질문을 줄일 수 있습니다.\n\n## 4. 자료에서 확인되지 않는 부분\n- C언어 과제의 구체적 내용과 평가 방식\n- 학점 기준\n- 제출 시점 혼동의 원인(수업 시간, 과제 공지, 개인 사정 등)\n- 학생 수와 질문 비율\n\n## 5. 문서에서 확인되지 않는 질문\n- \"C언어 과제는 어떤 과제인지\"는 질문이 아니라 \"C언어 과제는 어떤 과제인지\"로 잘못 표기되어 있어, 실제 질문 내용은 확인되지 않습니다."
     },
     "dataset_version": "professor_eval_v2_pilot",
-    "train_eval_overlap_status": "semantic_review_required"
+    "train_eval_overlap_status": "semantic_review_required",
+    "contexts": {
+      "Base Model": [],
+      "Base Model + Student LoRA": [],
+      "Base Model + Professor LoRA": []
+    },
+    "generation_latency_s": {
+      "Base Model": 0.3898,
+      "Base Model + Student LoRA": 41.994,
+      "Base Model + Professor LoRA": 19.315
+    },
+    "served_model_names": {
+      "Base Model": "/abr/coss36/.cache/huggingface/hub/models--meta-llama--Llama-3.1-8B-Instruct/snapshots/0e9e39f249a16976918f6564b8830bc894c89659",
+      "Base Model + Student LoRA": "local:adapter_student_llama",
+      "Base Model + Professor LoRA": "local:adapter_professor_llama"
+    }
   },
   {
     "question_id": "P015",
@@ -586,12 +824,29 @@
       "확인 불가능한 점을 분명히 표시하는가"
     ],
     "models": {
-      "Base Model": "",
+      "Base Model": "학생 질문 묶음은 제공되지 않았습니다.",
       "Student LoRA": "",
-      "Professor LoRA": ""
+      "Professor LoRA": "",
+      "Base Model + Student LoRA": "(1) 반복 주제 요약: 과제, 과제 부담, 과제 난이도, 과제 제출 기한, 교수님과의 상담, 교수님 평가 방식, 수업 시간, 수업 내용, 수업 자료, 시험, 시험 문제, 시험 난이도, 시험 부담, 학점, 학점 부담, 학점 평가, 성적, 성적 부담, 성적 평가, 성적 비율, 성적 비율 평가, 성적 결과, 성적 결과 발표, 성적 상담, 성적 조정, 성적 증명서, 성적 증명서 발급, 성적 증명서 신청, 성적 증명서 신청 방법, 성적 증명서 발급 방법, 성적 증명서 발급 기간, 성적 증명서 발급 비용, 성적 증명서 발급 비용 지원, 성적 증명서 발급 비용 지원 여부, 성적 증명서 발급 여부, 성적 증명서 발급 여부 확인, 성적 증명서 발급 여부 확인 방법, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원,",
+      "Base Model + Professor LoRA": "## 1. 반복 주제 요약\n- **C언어**: C언어 과제와 관련된 질문이 3건(과제 제출, 과제 내용, 과제 제출 시점) 있습니다.\n- **수업 운영**: 수업 시간과 과제 제출 시점에 대한 질문이 2건 있습니다.\n- **학점**: 학점에 대한 질문이 1건 있습니다.\n\n## 2. 핵심 키워드\n1. **C언어 과제**\n2. **수업 시간**\n3. **과제 제출 시점**\n4. **학점**\n5. **수강 신청**\n\n## 3. 수업 운영 개선 제안\n1. **과제 제출 시점 안내**: 수업 시간과 제출 시점이 혼동되는 경우가 있어, 제출 기한과 수업 시간을 명확히 구분해 안내하는 것이 좋습니다.\n2. **학점 관련 사전 안내**: 학점에 대한 질문이 있었으므로, 수강 신청 시점에 학점 기준을 안내하면 후속 질문을 줄일 수 있습니다.\n\n## 4. 자료에서 확인되지 않는 부분\n- C언어 과제의 구체적 내용과 평가 방식\n- 학점 기준\n- 제출 시점 혼동의 원인(수업 시간, 과제 공지, 개인 사정 등)\n- 학생 수와 질문 비율\n\n## 5. 문서에서 확인되지 않는 질문\n- \"C언어 과제는 어떤 과제인지\"는 질문이 아니라 \"C언어 과제는 어떤 과제인지\"로 잘못 표기되어 있어, 실제 질문 내용은 확인되지 않습니다."
     },
     "dataset_version": "professor_eval_v2_pilot",
-    "train_eval_overlap_status": "semantic_review_required"
+    "train_eval_overlap_status": "semantic_review_required",
+    "contexts": {
+      "Base Model": [],
+      "Base Model + Student LoRA": [],
+      "Base Model + Professor LoRA": []
+    },
+    "generation_latency_s": {
+      "Base Model": 0.402,
+      "Base Model + Student LoRA": 41.946,
+      "Base Model + Professor LoRA": 19.2962
+    },
+    "served_model_names": {
+      "Base Model": "/abr/coss36/.cache/huggingface/hub/models--meta-llama--Llama-3.1-8B-Instruct/snapshots/0e9e39f249a16976918f6564b8830bc894c89659",
+      "Base Model + Student LoRA": "local:adapter_student_llama",
+      "Base Model + Professor LoRA": "local:adapter_professor_llama"
+    }
   },
   {
     "question_id": "P016",
@@ -627,12 +882,29 @@
       "확인 불가능한 점을 분명히 표시하는가"
     ],
     "models": {
-      "Base Model": "",
+      "Base Model": "학생 질문 묶음은 제공되지 않았습니다.",
       "Student LoRA": "",
-      "Professor LoRA": ""
+      "Professor LoRA": "",
+      "Base Model + Student LoRA": "(1) 반복 주제 요약: 과제, 과제 부담, 과제 난이도, 과제 제출 기한, 교수님과의 상담, 교수님 평가 방식, 수업 시간, 수업 내용, 수업 자료, 시험, 시험 문제, 시험 난이도, 시험 부담, 학점, 학점 부담, 학점 평가, 성적, 성적 부담, 성적 평가, 성적 비율, 성적 비율 평가, 성적 결과, 성적 결과 발표, 성적 상담, 성적 조정, 성적 증명서, 성적 증명서 발급, 성적 증명서 신청, 성적 증명서 신청 방법, 성적 증명서 발급 방법, 성적 증명서 발급 기간, 성적 증명서 발급 비용, 성적 증명서 발급 비용 지원, 성적 증명서 발급 비용 지원 여부, 성적 증명서 발급 여부, 성적 증명서 발급 여부 확인, 성적 증명서 발급 여부 확인 방법, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원,",
+      "Base Model + Professor LoRA": "## 1. 반복 주제 요약\n- **C언어**: C언어 과제와 관련된 질문이 3건(과제 제출, 과제 내용, 과제 제출 시점) 있습니다.\n- **수업 운영**: 수업 시간과 과제 제출 시점에 대한 질문이 2건 있습니다.\n- **학점**: 학점에 대한 질문이 1건 있습니다.\n\n## 2. 핵심 키워드\n1. **C언어 과제**\n2. **수업 시간**\n3. **과제 제출 시점**\n4. **학점**\n5. **수강 신청**\n\n## 3. 수업 운영 개선 제안\n1. **과제 제출 시점 안내**: 수업 시간과 제출 시점이 혼동되는 경우가 있어, 제출 기한과 수업 시간을 명확히 구분해 안내하는 것이 좋습니다.\n2. **학점 관련 사전 안내**: 학점에 대한 질문이 있었으므로, 수강 신청 시점에 학점 기준을 안내하면 후속 질문을 줄일 수 있습니다.\n\n## 4. 자료에서 확인되지 않는 부분\n- C언어 과제의 구체적 내용과 평가 방식\n- 학점 기준\n- 제출 시점 혼동의 원인(수업 시간, 과제 공지, 개인 사정 등)\n- 학생 수와 질문 비율\n\n## 5. 문서에서 확인되지 않는 질문\n- \"C언어 과제는 어떤 과제인지\"는 질문이 아니라 \"C언어 과제는 어떤 과제인지\"로 잘못 표기되어 있어, 실제 질문 내용은 확인되지 않습니다."
     },
     "dataset_version": "professor_eval_v2_pilot",
-    "train_eval_overlap_status": "semantic_review_required"
+    "train_eval_overlap_status": "semantic_review_required",
+    "contexts": {
+      "Base Model": [],
+      "Base Model + Student LoRA": [],
+      "Base Model + Professor LoRA": []
+    },
+    "generation_latency_s": {
+      "Base Model": 0.3842,
+      "Base Model + Student LoRA": 41.925,
+      "Base Model + Professor LoRA": 19.2711
+    },
+    "served_model_names": {
+      "Base Model": "/abr/coss36/.cache/huggingface/hub/models--meta-llama--Llama-3.1-8B-Instruct/snapshots/0e9e39f249a16976918f6564b8830bc894c89659",
+      "Base Model + Student LoRA": "local:adapter_student_llama",
+      "Base Model + Professor LoRA": "local:adapter_professor_llama"
+    }
   },
   {
     "question_id": "P017",
@@ -668,12 +940,29 @@
       "확인 불가능한 점을 분명히 표시하는가"
     ],
     "models": {
-      "Base Model": "",
+      "Base Model": "학생 질문 묶음은 제공되지 않았습니다.",
       "Student LoRA": "",
-      "Professor LoRA": ""
+      "Professor LoRA": "",
+      "Base Model + Student LoRA": "(1) 반복 주제 요약: 과제, 과제 부담, 과제 난이도, 과제 제출 기한, 교수님과의 상담, 교수님 평가 방식, 수업 시간, 수업 내용, 수업 자료, 시험, 시험 문제, 시험 난이도, 시험 부담, 학점, 학점 부담, 학점 평가, 성적, 성적 부담, 성적 평가, 성적 비율, 성적 비율 평가, 성적 결과, 성적 결과 발표, 성적 상담, 성적 조정, 성적 증명서, 성적 증명서 발급, 성적 증명서 신청, 성적 증명서 신청 방법, 성적 증명서 발급 방법, 성적 증명서 발급 기간, 성적 증명서 발급 비용, 성적 증명서 발급 비용 지원, 성적 증명서 발급 비용 지원 여부, 성적 증명서 발급 여부, 성적 증명서 발급 여부 확인, 성적 증명서 발급 여부 확인 방법, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원,",
+      "Base Model + Professor LoRA": "## 1. 반복 주제 요약\n- **C언어**: C언어 과제와 관련된 질문이 3건(과제 제출, 과제 내용, 과제 제출 시점) 있습니다.\n- **수업 운영**: 수업 시간과 과제 제출 시점에 대한 질문이 2건 있습니다.\n- **학점**: 학점에 대한 질문이 1건 있습니다.\n\n## 2. 핵심 키워드\n1. **C언어 과제**\n2. **수업 시간**\n3. **과제 제출 시점**\n4. **학점**\n5. **수강 신청**\n\n## 3. 수업 운영 개선 제안\n1. **과제 제출 시점 안내**: 수업 시간과 제출 시점이 혼동되는 경우가 있어, 제출 기한과 수업 시간을 명확히 구분해 안내하는 것이 좋습니다.\n2. **학점 관련 사전 안내**: 학점에 대한 질문이 있었으므로, 수강 신청 시점에 학점 기준을 안내하면 후속 질문을 줄일 수 있습니다.\n\n## 4. 자료에서 확인되지 않는 부분\n- C언어 과제의 구체적 내용과 평가 방식\n- 학점 기준\n- 제출 시점 혼동의 원인(수업 시간, 과제 공지, 개인 사정 등)\n- 학생 수와 질문 비율\n\n## 5. 문서에서 확인되지 않는 질문\n- \"C언어 과제는 어떤 과제인지\"는 질문이 아니라 \"C언어 과제는 어떤 과제인지\"로 잘못 표기되어 있어, 실제 질문 내용은 확인되지 않습니다."
     },
     "dataset_version": "professor_eval_v2_pilot",
-    "train_eval_overlap_status": "semantic_review_required"
+    "train_eval_overlap_status": "semantic_review_required",
+    "contexts": {
+      "Base Model": [],
+      "Base Model + Student LoRA": [],
+      "Base Model + Professor LoRA": []
+    },
+    "generation_latency_s": {
+      "Base Model": 0.4078,
+      "Base Model + Student LoRA": 41.9367,
+      "Base Model + Professor LoRA": 19.2694
+    },
+    "served_model_names": {
+      "Base Model": "/abr/coss36/.cache/huggingface/hub/models--meta-llama--Llama-3.1-8B-Instruct/snapshots/0e9e39f249a16976918f6564b8830bc894c89659",
+      "Base Model + Student LoRA": "local:adapter_student_llama",
+      "Base Model + Professor LoRA": "local:adapter_professor_llama"
+    }
   },
   {
     "question_id": "P018",
@@ -709,12 +998,29 @@
       "확인 불가능한 점을 분명히 표시하는가"
     ],
     "models": {
-      "Base Model": "",
+      "Base Model": "학생 질문 묶음은 제공되지 않았습니다.",
       "Student LoRA": "",
-      "Professor LoRA": ""
+      "Professor LoRA": "",
+      "Base Model + Student LoRA": "(1) 반복 주제 요약: 과제, 과제 부담, 과제 난이도, 과제 제출 기한, 교수님과의 상담, 교수님 평가 방식, 수업 시간, 수업 내용, 수업 자료, 시험, 시험 문제, 시험 난이도, 시험 부담, 학점, 학점 부담, 학점 평가, 성적, 성적 부담, 성적 평가, 성적 비율, 성적 비율 평가, 성적 결과, 성적 결과 발표, 성적 상담, 성적 조정, 성적 증명서, 성적 증명서 발급, 성적 증명서 신청, 성적 증명서 신청 방법, 성적 증명서 발급 방법, 성적 증명서 발급 기간, 성적 증명서 발급 비용, 성적 증명서 발급 비용 지원, 성적 증명서 발급 비용 지원 여부, 성적 증명서 발급 여부, 성적 증명서 발급 여부 확인, 성적 증명서 발급 여부 확인 방법, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원,",
+      "Base Model + Professor LoRA": "## 1. 반복 주제 요약\n- **C언어**: C언어 과제와 관련된 질문이 3건(과제 제출, 과제 내용, 과제 제출 시점) 있습니다.\n- **수업 운영**: 수업 시간과 과제 제출 시점에 대한 질문이 2건 있습니다.\n- **학점**: 학점에 대한 질문이 1건 있습니다.\n\n## 2. 핵심 키워드\n1. **C언어 과제**\n2. **수업 시간**\n3. **과제 제출 시점**\n4. **학점**\n5. **수강 신청**\n\n## 3. 수업 운영 개선 제안\n1. **과제 제출 시점 안내**: 수업 시간과 제출 시점이 혼동되는 경우가 있어, 제출 기한과 수업 시간을 명확히 구분해 안내하는 것이 좋습니다.\n2. **학점 관련 사전 안내**: 학점에 대한 질문이 있었으므로, 수강 신청 시점에 학점 기준을 안내하면 후속 질문을 줄일 수 있습니다.\n\n## 4. 자료에서 확인되지 않는 부분\n- C언어 과제의 구체적 내용과 평가 방식\n- 학점 기준\n- 제출 시점 혼동의 원인(수업 시간, 과제 공지, 개인 사정 등)\n- 학생 수와 질문 비율\n\n## 5. 문서에서 확인되지 않는 질문\n- \"C언어 과제는 어떤 과제인지\"는 질문이 아니라 \"C언어 과제는 어떤 과제인지\"로 잘못 표기되어 있어, 실제 질문 내용은 확인되지 않습니다."
     },
     "dataset_version": "professor_eval_v2_pilot",
-    "train_eval_overlap_status": "semantic_review_required"
+    "train_eval_overlap_status": "semantic_review_required",
+    "contexts": {
+      "Base Model": [],
+      "Base Model + Student LoRA": [],
+      "Base Model + Professor LoRA": []
+    },
+    "generation_latency_s": {
+      "Base Model": 0.3849,
+      "Base Model + Student LoRA": 41.9564,
+      "Base Model + Professor LoRA": 19.264
+    },
+    "served_model_names": {
+      "Base Model": "/abr/coss36/.cache/huggingface/hub/models--meta-llama--Llama-3.1-8B-Instruct/snapshots/0e9e39f249a16976918f6564b8830bc894c89659",
+      "Base Model + Student LoRA": "local:adapter_student_llama",
+      "Base Model + Professor LoRA": "local:adapter_professor_llama"
+    }
   },
   {
     "question_id": "P019",
@@ -750,12 +1056,29 @@
       "확인 불가능한 점을 분명히 표시하는가"
     ],
     "models": {
-      "Base Model": "",
+      "Base Model": "학생 질문 묶음은 제공되지 않았습니다.",
       "Student LoRA": "",
-      "Professor LoRA": ""
+      "Professor LoRA": "",
+      "Base Model + Student LoRA": "(1) 반복 주제 요약: 과제, 과제 부담, 과제 난이도, 과제 제출 기한, 교수님과의 상담, 교수님 평가 방식, 수업 시간, 수업 내용, 수업 자료, 시험, 시험 문제, 시험 난이도, 시험 부담, 학점, 학점 부담, 학점 평가, 성적, 성적 부담, 성적 평가, 성적 비율, 성적 비율 평가, 성적 결과, 성적 결과 발표, 성적 상담, 성적 조정, 성적 증명서, 성적 증명서 발급, 성적 증명서 신청, 성적 증명서 신청 방법, 성적 증명서 발급 방법, 성적 증명서 발급 기간, 성적 증명서 발급 비용, 성적 증명서 발급 비용 지원, 성적 증명서 발급 비용 지원 여부, 성적 증명서 발급 여부, 성적 증명서 발급 여부 확인, 성적 증명서 발급 여부 확인 방법, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원,",
+      "Base Model + Professor LoRA": "## 1. 반복 주제 요약\n- **C언어**: C언어 과제와 관련된 질문이 3건(과제 제출, 과제 내용, 과제 제출 시점) 있습니다.\n- **수업 운영**: 수업 시간과 과제 제출 시점에 대한 질문이 2건 있습니다.\n- **학점**: 학점에 대한 질문이 1건 있습니다.\n\n## 2. 핵심 키워드\n1. **C언어 과제**\n2. **수업 시간**\n3. **과제 제출 시점**\n4. **학점**\n5. **수강 신청**\n\n## 3. 수업 운영 개선 제안\n1. **과제 제출 시점 안내**: 수업 시간과 제출 시점이 혼동되는 경우가 있어, 제출 기한과 수업 시간을 명확히 구분해 안내하는 것이 좋습니다.\n2. **학점 관련 사전 안내**: 학점에 대한 질문이 있었으므로, 수강 신청 시점에 학점 기준을 안내하면 후속 질문을 줄일 수 있습니다.\n\n## 4. 자료에서 확인되지 않는 부분\n- C언어 과제의 구체적 내용과 평가 방식\n- 학점 기준\n- 제출 시점 혼동의 원인(수업 시간, 과제 공지, 개인 사정 등)\n- 학생 수와 질문 비율\n\n## 5. 문서에서 확인되지 않는 질문\n- \"C언어 과제는 어떤 과제인지\"는 질문이 아니라 \"C언어 과제는 어떤 과제인지\"로 잘못 표기되어 있어, 실제 질문 내용은 확인되지 않습니다."
     },
     "dataset_version": "professor_eval_v2_pilot",
-    "train_eval_overlap_status": "semantic_review_required"
+    "train_eval_overlap_status": "semantic_review_required",
+    "contexts": {
+      "Base Model": [],
+      "Base Model + Student LoRA": [],
+      "Base Model + Professor LoRA": []
+    },
+    "generation_latency_s": {
+      "Base Model": 0.3886,
+      "Base Model + Student LoRA": 41.8538,
+      "Base Model + Professor LoRA": 19.264
+    },
+    "served_model_names": {
+      "Base Model": "/abr/coss36/.cache/huggingface/hub/models--meta-llama--Llama-3.1-8B-Instruct/snapshots/0e9e39f249a16976918f6564b8830bc894c89659",
+      "Base Model + Student LoRA": "local:adapter_student_llama",
+      "Base Model + Professor LoRA": "local:adapter_professor_llama"
+    }
   },
   {
     "question_id": "P020",
@@ -791,12 +1114,29 @@
       "확인 불가능한 점을 분명히 표시하는가"
     ],
     "models": {
-      "Base Model": "",
+      "Base Model": "학생 질문 묶음은 제공되지 않았습니다.",
       "Student LoRA": "",
-      "Professor LoRA": ""
+      "Professor LoRA": "",
+      "Base Model + Student LoRA": "(1) 반복 주제 요약: 과제, 과제 부담, 과제 난이도, 과제 제출 기한, 교수님과의 상담, 교수님 평가 방식, 수업 시간, 수업 내용, 수업 자료, 시험, 시험 문제, 시험 난이도, 시험 부담, 학점, 학점 부담, 학점 평가, 성적, 성적 부담, 성적 평가, 성적 비율, 성적 비율 평가, 성적 결과, 성적 결과 발표, 성적 상담, 성적 조정, 성적 증명서, 성적 증명서 발급, 성적 증명서 신청, 성적 증명서 신청 방법, 성적 증명서 발급 방법, 성적 증명서 발급 기간, 성적 증명서 발급 비용, 성적 증명서 발급 비용 지원, 성적 증명서 발급 비용 지원 여부, 성적 증명서 발급 여부, 성적 증명서 발급 여부 확인, 성적 증명서 발급 여부 확인 방법, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원,",
+      "Base Model + Professor LoRA": "## 1. 반복 주제 요약\n- **C언어**: C언어 과제와 관련된 질문이 3건(과제 제출, 과제 내용, 과제 제출 시점) 있습니다.\n- **수업 운영**: 수업 시간과 과제 제출 시점에 대한 질문이 2건 있습니다.\n- **학점**: 학점에 대한 질문이 1건 있습니다.\n\n## 2. 핵심 키워드\n1. **C언어 과제**\n2. **수업 시간**\n3. **과제 제출 시점**\n4. **학점**\n5. **수강 신청**\n\n## 3. 수업 운영 개선 제안\n1. **과제 제출 시점 안내**: 수업 시간과 제출 시점이 혼동되는 경우가 있어, 제출 기한과 수업 시간을 명확히 구분해 안내하는 것이 좋습니다.\n2. **학점 관련 사전 안내**: 학점에 대한 질문이 있었으므로, 수강 신청 시점에 학점 기준을 안내하면 후속 질문을 줄일 수 있습니다.\n\n## 4. 자료에서 확인되지 않는 부분\n- C언어 과제의 구체적 내용과 평가 방식\n- 학점 기준\n- 제출 시점 혼동의 원인(수업 시간, 과제 공지, 개인 사정 등)\n- 학생 수와 질문 비율\n\n## 5. 문서에서 확인되지 않는 질문\n- \"C언어 과제는 어떤 과제인지\"는 질문이 아니라 \"C언어 과제는 어떤 과제인지\"로 잘못 표기되어 있어, 실제 질문 내용은 확인되지 않습니다."
     },
     "dataset_version": "professor_eval_v2_pilot",
-    "train_eval_overlap_status": "semantic_review_required"
+    "train_eval_overlap_status": "semantic_review_required",
+    "contexts": {
+      "Base Model": [],
+      "Base Model + Student LoRA": [],
+      "Base Model + Professor LoRA": []
+    },
+    "generation_latency_s": {
+      "Base Model": 0.4013,
+      "Base Model + Student LoRA": 41.9306,
+      "Base Model + Professor LoRA": 19.3525
+    },
+    "served_model_names": {
+      "Base Model": "/abr/coss36/.cache/huggingface/hub/models--meta-llama--Llama-3.1-8B-Instruct/snapshots/0e9e39f249a16976918f6564b8830bc894c89659",
+      "Base Model + Student LoRA": "local:adapter_student_llama",
+      "Base Model + Professor LoRA": "local:adapter_professor_llama"
+    }
   },
   {
     "question_id": "P021",
@@ -832,12 +1172,29 @@
       "확인 불가능한 점을 분명히 표시하는가"
     ],
     "models": {
-      "Base Model": "",
+      "Base Model": "학생 질문 묶음은 제공되지 않았습니다.",
       "Student LoRA": "",
-      "Professor LoRA": ""
+      "Professor LoRA": "",
+      "Base Model + Student LoRA": "(1) 반복 주제 요약: 과제, 과제 부담, 과제 난이도, 과제 제출 기한, 교수님과의 상담, 교수님 평가 방식, 수업 시간, 수업 내용, 수업 자료, 시험, 시험 문제, 시험 난이도, 시험 부담, 학점, 학점 부담, 학점 평가, 성적, 성적 부담, 성적 평가, 성적 비율, 성적 비율 평가, 성적 결과, 성적 결과 발표, 성적 상담, 성적 조정, 성적 증명서, 성적 증명서 발급, 성적 증명서 신청, 성적 증명서 신청 방법, 성적 증명서 발급 방법, 성적 증명서 발급 기간, 성적 증명서 발급 비용, 성적 증명서 발급 비용 지원, 성적 증명서 발급 비용 지원 여부, 성적 증명서 발급 여부, 성적 증명서 발급 여부 확인, 성적 증명서 발급 여부 확인 방법, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원,",
+      "Base Model + Professor LoRA": "## 1. 반복 주제 요약\n- **C언어**: C언어 과제와 관련된 질문이 3건(과제 제출, 과제 내용, 과제 제출 시점) 있습니다.\n- **수업 운영**: 수업 시간과 과제 제출 시점에 대한 질문이 2건 있습니다.\n- **학점**: 학점에 대한 질문이 1건 있습니다.\n\n## 2. 핵심 키워드\n1. **C언어 과제**\n2. **수업 시간**\n3. **과제 제출 시점**\n4. **학점**\n5. **수강 신청**\n\n## 3. 수업 운영 개선 제안\n1. **과제 제출 시점 안내**: 수업 시간과 제출 시점이 혼동되는 경우가 있어, 제출 기한과 수업 시간을 명확히 구분해 안내하는 것이 좋습니다.\n2. **학점 관련 사전 안내**: 학점에 대한 질문이 있었으므로, 수강 신청 시점에 학점 기준을 안내하면 후속 질문을 줄일 수 있습니다.\n\n## 4. 자료에서 확인되지 않는 부분\n- C언어 과제의 구체적 내용과 평가 방식\n- 학점 기준\n- 제출 시점 혼동의 원인(수업 시간, 과제 공지, 개인 사정 등)\n- 학생 수와 질문 비율\n\n## 5. 문서에서 확인되지 않는 질문\n- \"C언어 과제는 어떤 과제인지\"는 질문이 아니라 \"C언어 과제는 어떤 과제인지\"로 잘못 표기되어 있어, 실제 질문 내용은 확인되지 않습니다."
     },
     "dataset_version": "professor_eval_v2_pilot",
-    "train_eval_overlap_status": "semantic_review_required"
+    "train_eval_overlap_status": "semantic_review_required",
+    "contexts": {
+      "Base Model": [],
+      "Base Model + Student LoRA": [],
+      "Base Model + Professor LoRA": []
+    },
+    "generation_latency_s": {
+      "Base Model": 0.412,
+      "Base Model + Student LoRA": 41.6028,
+      "Base Model + Professor LoRA": 20.2909
+    },
+    "served_model_names": {
+      "Base Model": "/abr/coss36/.cache/huggingface/hub/models--meta-llama--Llama-3.1-8B-Instruct/snapshots/0e9e39f249a16976918f6564b8830bc894c89659",
+      "Base Model + Student LoRA": "local:adapter_student_llama",
+      "Base Model + Professor LoRA": "local:adapter_professor_llama"
+    }
   },
   {
     "question_id": "P022",
@@ -873,12 +1230,29 @@
       "확인 불가능한 점을 분명히 표시하는가"
     ],
     "models": {
-      "Base Model": "",
+      "Base Model": "학생 질문 묶음은 제공되지 않았습니다.",
       "Student LoRA": "",
-      "Professor LoRA": ""
+      "Professor LoRA": "",
+      "Base Model + Student LoRA": "(1) 반복 주제 요약: 과제, 과제 부담, 과제 난이도, 과제 제출 기한, 교수님과의 상담, 교수님 평가 방식, 수업 시간, 수업 내용, 수업 자료, 시험, 시험 문제, 시험 난이도, 시험 부담, 학점, 학점 부담, 학점 평가, 성적, 성적 부담, 성적 평가, 성적 비율, 성적 비율 평가, 성적 결과, 성적 결과 발표, 성적 상담, 성적 조정, 성적 증명서, 성적 증명서 발급, 성적 증명서 신청, 성적 증명서 신청 방법, 성적 증명서 발급 방법, 성적 증명서 발급 기간, 성적 증명서 발급 비용, 성적 증명서 발급 비용 지원, 성적 증명서 발급 비용 지원 여부, 성적 증명서 발급 여부, 성적 증명서 발급 여부 확인, 성적 증명서 발급 여부 확인 방법, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원,",
+      "Base Model + Professor LoRA": "## 1. 반복 주제 요약\n- **C언어**: C언어 과제와 관련된 질문이 3건(과제 제출, 과제 내용, 과제 제출 시점) 있습니다.\n- **수업 운영**: 수업 시간과 과제 제출 시점에 대한 질문이 2건 있습니다.\n- **학점**: 학점에 대한 질문이 1건 있습니다.\n\n## 2. 핵심 키워드\n1. **C언어 과제**\n2. **수업 시간**\n3. **과제 제출 시점**\n4. **학점**\n5. **수강 신청**\n\n## 3. 수업 운영 개선 제안\n1. **과제 제출 시점 안내**: 수업 시간과 제출 시점이 혼동되는 경우가 있어, 제출 기한과 수업 시간을 명확히 구분해 안내하는 것이 좋습니다.\n2. **학점 관련 사전 안내**: 학점에 대한 질문이 있었으므로, 수강 신청 시점에 학점 기준을 안내하면 후속 질문을 줄일 수 있습니다.\n\n## 4. 자료에서 확인되지 않는 부분\n- C언어 과제의 구체적 내용과 평가 방식\n- 학점 기준\n- 제출 시점 혼동의 원인(수업 시간, 과제 공지, 개인 사정 등)\n- 학생 수와 질문 비율\n\n## 5. 문서에서 확인되지 않는 질문\n- \"C언어 과제는 어떤 과제인지\"는 질문이 아니라 \"C언어 과제는 어떤 과제인지\"로 잘못 표기되어 있어, 실제 질문 내용은 확인되지 않습니다."
     },
     "dataset_version": "professor_eval_v2_pilot",
-    "train_eval_overlap_status": "semantic_review_required"
+    "train_eval_overlap_status": "semantic_review_required",
+    "contexts": {
+      "Base Model": [],
+      "Base Model + Student LoRA": [],
+      "Base Model + Professor LoRA": []
+    },
+    "generation_latency_s": {
+      "Base Model": 0.4119,
+      "Base Model + Student LoRA": 44.3769,
+      "Base Model + Professor LoRA": 20.3938
+    },
+    "served_model_names": {
+      "Base Model": "/abr/coss36/.cache/huggingface/hub/models--meta-llama--Llama-3.1-8B-Instruct/snapshots/0e9e39f249a16976918f6564b8830bc894c89659",
+      "Base Model + Student LoRA": "local:adapter_student_llama",
+      "Base Model + Professor LoRA": "local:adapter_professor_llama"
+    }
   },
   {
     "question_id": "P023",
@@ -914,12 +1288,29 @@
       "확인 불가능한 점을 분명히 표시하는가"
     ],
     "models": {
-      "Base Model": "",
+      "Base Model": "학생 질문 묶음은 제공되지 않았습니다.",
       "Student LoRA": "",
-      "Professor LoRA": ""
+      "Professor LoRA": "",
+      "Base Model + Student LoRA": "(1) 반복 주제 요약: 과제, 과제 부담, 과제 난이도, 과제 제출 기한, 교수님과의 상담, 교수님 평가 방식, 수업 시간, 수업 내용, 수업 자료, 시험, 시험 문제, 시험 난이도, 시험 부담, 학점, 학점 부담, 학점 평가, 성적, 성적 부담, 성적 평가, 성적 비율, 성적 비율 평가, 성적 결과, 성적 결과 발표, 성적 상담, 성적 조정, 성적 증명서, 성적 증명서 발급, 성적 증명서 신청, 성적 증명서 신청 방법, 성적 증명서 발급 방법, 성적 증명서 발급 기간, 성적 증명서 발급 비용, 성적 증명서 발급 비용 지원, 성적 증명서 발급 비용 지원 여부, 성적 증명서 발급 여부, 성적 증명서 발급 여부 확인, 성적 증명서 발급 여부 확인 방법, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원,",
+      "Base Model + Professor LoRA": "## 1. 반복 주제 요약\n- **C언어**: C언어 과제와 관련된 질문이 3건(과제 제출, 과제 내용, 과제 제출 시점) 있습니다.\n- **수업 운영**: 수업 시간과 과제 제출 시점에 대한 질문이 2건 있습니다.\n- **학점**: 학점에 대한 질문이 1건 있습니다.\n\n## 2. 핵심 키워드\n1. **C언어 과제**\n2. **수업 시간**\n3. **과제 제출 시점**\n4. **학점**\n5. **수강 신청**\n\n## 3. 수업 운영 개선 제안\n1. **과제 제출 시점 안내**: 수업 시간과 제출 시점이 혼동되는 경우가 있어, 제출 기한과 수업 시간을 명확히 구분해 안내하는 것이 좋습니다.\n2. **학점 관련 사전 안내**: 학점에 대한 질문이 있었으므로, 수강 신청 시점에 학점 기준을 안내하면 후속 질문을 줄일 수 있습니다.\n\n## 4. 자료에서 확인되지 않는 부분\n- C언어 과제의 구체적 내용과 평가 방식\n- 학점 기준\n- 제출 시점 혼동의 원인(수업 시간, 과제 공지, 개인 사정 등)\n- 학생 수와 질문 비율\n\n## 5. 문서에서 확인되지 않는 질문\n- \"C언어 과제는 어떤 과제인지\"는 질문이 아니라 \"C언어 과제는 어떤 과제인지\"로 잘못 표기되어 있어, 실제 질문 내용은 확인되지 않습니다."
     },
     "dataset_version": "professor_eval_v2_pilot",
-    "train_eval_overlap_status": "semantic_review_required"
+    "train_eval_overlap_status": "semantic_review_required",
+    "contexts": {
+      "Base Model": [],
+      "Base Model + Student LoRA": [],
+      "Base Model + Professor LoRA": []
+    },
+    "generation_latency_s": {
+      "Base Model": 0.4142,
+      "Base Model + Student LoRA": 44.1819,
+      "Base Model + Professor LoRA": 20.3834
+    },
+    "served_model_names": {
+      "Base Model": "/abr/coss36/.cache/huggingface/hub/models--meta-llama--Llama-3.1-8B-Instruct/snapshots/0e9e39f249a16976918f6564b8830bc894c89659",
+      "Base Model + Student LoRA": "local:adapter_student_llama",
+      "Base Model + Professor LoRA": "local:adapter_professor_llama"
+    }
   },
   {
     "question_id": "P024",
@@ -955,12 +1346,29 @@
       "확인 불가능한 점을 분명히 표시하는가"
     ],
     "models": {
-      "Base Model": "",
+      "Base Model": "학생 질문 묶음은 제공되지 않았습니다.",
       "Student LoRA": "",
-      "Professor LoRA": ""
+      "Professor LoRA": "",
+      "Base Model + Student LoRA": "(1) 반복 주제 요약: 과제, 과제 부담, 과제 난이도, 과제 제출 기한, 교수님과의 상담, 교수님 평가 방식, 수업 시간, 수업 내용, 수업 자료, 시험, 시험 문제, 시험 난이도, 시험 부담, 학점, 학점 부담, 학점 평가, 성적, 성적 부담, 성적 평가, 성적 비율, 성적 비율 평가, 성적 결과, 성적 결과 발표, 성적 상담, 성적 조정, 성적 증명서, 성적 증명서 발급, 성적 증명서 신청, 성적 증명서 신청 방법, 성적 증명서 발급 방법, 성적 증명서 발급 기간, 성적 증명서 발급 비용, 성적 증명서 발급 비용 지원, 성적 증명서 발급 비용 지원 여부, 성적 증명서 발급 여부, 성적 증명서 발급 여부 확인, 성적 증명서 발급 여부 확인 방법, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원,",
+      "Base Model + Professor LoRA": "## 1. 반복 주제 요약\n- **C언어**: C언어 과제와 관련된 질문이 3건(과제 제출, 과제 내용, 과제 제출 시점) 있습니다.\n- **수업 운영**: 수업 시간과 과제 제출 시점에 대한 질문이 2건 있습니다.\n- **학점**: 학점에 대한 질문이 1건 있습니다.\n\n## 2. 핵심 키워드\n1. **C언어 과제**\n2. **수업 시간**\n3. **과제 제출 시점**\n4. **학점**\n5. **수강 신청**\n\n## 3. 수업 운영 개선 제안\n1. **과제 제출 시점 안내**: 수업 시간과 제출 시점이 혼동되는 경우가 있어, 제출 기한과 수업 시간을 명확히 구분해 안내하는 것이 좋습니다.\n2. **학점 관련 사전 안내**: 학점에 대한 질문이 있었으므로, 수강 신청 시점에 학점 기준을 안내하면 후속 질문을 줄일 수 있습니다.\n\n## 4. 자료에서 확인되지 않는 부분\n- C언어 과제의 구체적 내용과 평가 방식\n- 학점 기준\n- 제출 시점 혼동의 원인(수업 시간, 과제 공지, 개인 사정 등)\n- 학생 수와 질문 비율\n\n## 5. 문서에서 확인되지 않는 질문\n- \"C언어 과제는 어떤 과제인지\"는 질문이 아니라 \"C언어 과제는 어떤 과제인지\"로 잘못 표기되어 있어, 실제 질문 내용은 확인되지 않습니다."
     },
     "dataset_version": "professor_eval_v2_pilot",
-    "train_eval_overlap_status": "semantic_review_required"
+    "train_eval_overlap_status": "semantic_review_required",
+    "contexts": {
+      "Base Model": [],
+      "Base Model + Student LoRA": [],
+      "Base Model + Professor LoRA": []
+    },
+    "generation_latency_s": {
+      "Base Model": 0.4213,
+      "Base Model + Student LoRA": 44.2859,
+      "Base Model + Professor LoRA": 20.4525
+    },
+    "served_model_names": {
+      "Base Model": "/abr/coss36/.cache/huggingface/hub/models--meta-llama--Llama-3.1-8B-Instruct/snapshots/0e9e39f249a16976918f6564b8830bc894c89659",
+      "Base Model + Student LoRA": "local:adapter_student_llama",
+      "Base Model + Professor LoRA": "local:adapter_professor_llama"
+    }
   },
   {
     "question_id": "P025",
@@ -996,12 +1404,29 @@
       "확인 불가능한 점을 분명히 표시하는가"
     ],
     "models": {
-      "Base Model": "",
+      "Base Model": "학생 질문 묶음은 제공되지 않았습니다.",
       "Student LoRA": "",
-      "Professor LoRA": ""
+      "Professor LoRA": "",
+      "Base Model + Student LoRA": "(1) 반복 주제 요약: 과제, 과제 부담, 과제 난이도, 과제 제출 기한, 교수님과의 상담, 교수님 평가 방식, 수업 시간, 수업 내용, 수업 자료, 시험, 시험 문제, 시험 난이도, 시험 부담, 학점, 학점 부담, 학점 평가, 성적, 성적 부담, 성적 평가, 성적 비율, 성적 비율 평가, 성적 결과, 성적 결과 발표, 성적 상담, 성적 조정, 성적 증명서, 성적 증명서 발급, 성적 증명서 신청, 성적 증명서 신청 방법, 성적 증명서 발급 방법, 성적 증명서 발급 기간, 성적 증명서 발급 비용, 성적 증명서 발급 비용 지원, 성적 증명서 발급 비용 지원 여부, 성적 증명서 발급 여부, 성적 증명서 발급 여부 확인, 성적 증명서 발급 여부 확인 방법, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원,",
+      "Base Model + Professor LoRA": "## 1. 반복 주제 요약\n- **C언어**: C언어 과제와 관련된 질문이 3건(과제 제출, 과제 내용, 과제 제출 시점) 있습니다.\n- **수업 운영**: 수업 시간과 과제 제출 시점에 대한 질문이 2건 있습니다.\n- **학점**: 학점에 대한 질문이 1건 있습니다.\n\n## 2. 핵심 키워드\n1. **C언어 과제**\n2. **수업 시간**\n3. **과제 제출 시점**\n4. **학점**\n5. **수강 신청**\n\n## 3. 수업 운영 개선 제안\n1. **과제 제출 시점 안내**: 수업 시간과 제출 시점이 혼동되는 경우가 있어, 제출 기한과 수업 시간을 명확히 구분해 안내하는 것이 좋습니다.\n2. **학점 관련 사전 안내**: 학점에 대한 질문이 있었으므로, 수강 신청 시점에 학점 기준을 안내하면 후속 질문을 줄일 수 있습니다.\n\n## 4. 자료에서 확인되지 않는 부분\n- C언어 과제의 구체적 내용과 평가 방식\n- 학점 기준\n- 제출 시점 혼동의 원인(수업 시간, 과제 공지, 개인 사정 등)\n- 학생 수와 질문 비율\n\n## 5. 문서에서 확인되지 않는 질문\n- \"C언어 과제는 어떤 과제인지\"는 질문이 아니라 \"C언어 과제는 어떤 과제인지\"로 잘못 표기되어 있어, 실제 질문 내용은 확인되지 않습니다."
     },
     "dataset_version": "professor_eval_v2_pilot",
-    "train_eval_overlap_status": "semantic_review_required"
+    "train_eval_overlap_status": "semantic_review_required",
+    "contexts": {
+      "Base Model": [],
+      "Base Model + Student LoRA": [],
+      "Base Model + Professor LoRA": []
+    },
+    "generation_latency_s": {
+      "Base Model": 0.423,
+      "Base Model + Student LoRA": 45.5162,
+      "Base Model + Professor LoRA": 20.8659
+    },
+    "served_model_names": {
+      "Base Model": "/abr/coss36/.cache/huggingface/hub/models--meta-llama--Llama-3.1-8B-Instruct/snapshots/0e9e39f249a16976918f6564b8830bc894c89659",
+      "Base Model + Student LoRA": "local:adapter_student_llama",
+      "Base Model + Professor LoRA": "local:adapter_professor_llama"
+    }
   },
   {
     "question_id": "P026",
@@ -1037,12 +1462,29 @@
       "확인 불가능한 점을 분명히 표시하는가"
     ],
     "models": {
-      "Base Model": "",
+      "Base Model": "학생 질문 묶음은 제공되지 않았습니다.",
       "Student LoRA": "",
-      "Professor LoRA": ""
+      "Professor LoRA": "",
+      "Base Model + Student LoRA": "(1) 반복 주제 요약: 과제, 과제 부담, 과제 난이도, 과제 제출 기한, 교수님과의 상담, 교수님 평가 방식, 수업 시간, 수업 내용, 수업 자료, 시험, 시험 문제, 시험 난이도, 시험 부담, 학점, 학점 부담, 학점 평가, 성적, 성적 부담, 성적 평가, 성적 비율, 성적 비율 평가, 성적 결과, 성적 결과 발표, 성적 상담, 성적 조정, 성적 증명서, 성적 증명서 발급, 성적 증명서 신청, 성적 증명서 신청 방법, 성적 증명서 발급 방법, 성적 증명서 발급 기간, 성적 증명서 발급 비용, 성적 증명서 발급 비용 지원, 성적 증명서 발급 비용 지원 여부, 성적 증명서 발급 여부, 성적 증명서 발급 여부 확인, 성적 증명서 발급 여부 확인 방법, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원,",
+      "Base Model + Professor LoRA": "## 1. 반복 주제 요약\n- **C언어**: C언어 과제와 관련된 질문이 3건(과제 제출, 과제 내용, 과제 제출 시점) 있습니다.\n- **수업 운영**: 수업 시간과 과제 제출 시점에 대한 질문이 2건 있습니다.\n- **학점**: 학점에 대한 질문이 1건 있습니다.\n\n## 2. 핵심 키워드\n1. **C언어 과제**\n2. **수업 시간**\n3. **과제 제출 시점**\n4. **학점**\n5. **수강 신청**\n\n## 3. 수업 운영 개선 제안\n1. **과제 제출 시점 안내**: 수업 시간과 제출 시점이 혼동되는 경우가 있어, 제출 기한과 수업 시간을 명확히 구분해 안내하는 것이 좋습니다.\n2. **학점 관련 사전 안내**: 학점에 대한 질문이 있었으므로, 수강 신청 시점에 학점 기준을 안내하면 후속 질문을 줄일 수 있습니다.\n\n## 4. 자료에서 확인되지 않는 부분\n- C언어 과제의 구체적 내용과 평가 방식\n- 학점 기준\n- 제출 시점 혼동의 원인(수업 시간, 과제 공지, 개인 사정 등)\n- 학생 수와 질문 비율\n\n## 5. 문서에서 확인되지 않는 질문\n- \"C언어 과제는 어떤 과제인지\"는 질문이 아니라 \"C언어 과제는 어떤 과제인지\"로 잘못 표기되어 있어, 실제 질문 내용은 확인되지 않습니다."
     },
     "dataset_version": "professor_eval_v2_pilot",
-    "train_eval_overlap_status": "semantic_review_required"
+    "train_eval_overlap_status": "semantic_review_required",
+    "contexts": {
+      "Base Model": [],
+      "Base Model + Student LoRA": [],
+      "Base Model + Professor LoRA": []
+    },
+    "generation_latency_s": {
+      "Base Model": 0.4181,
+      "Base Model + Student LoRA": 45.3483,
+      "Base Model + Professor LoRA": 20.7902
+    },
+    "served_model_names": {
+      "Base Model": "/abr/coss36/.cache/huggingface/hub/models--meta-llama--Llama-3.1-8B-Instruct/snapshots/0e9e39f249a16976918f6564b8830bc894c89659",
+      "Base Model + Student LoRA": "local:adapter_student_llama",
+      "Base Model + Professor LoRA": "local:adapter_professor_llama"
+    }
   },
   {
     "question_id": "P027",
@@ -1078,12 +1520,29 @@
       "확인 불가능한 점을 분명히 표시하는가"
     ],
     "models": {
-      "Base Model": "",
+      "Base Model": "학생 질문 묶음은 제공되지 않았습니다.",
       "Student LoRA": "",
-      "Professor LoRA": ""
+      "Professor LoRA": "",
+      "Base Model + Student LoRA": "(1) 반복 주제 요약: 과제, 과제 부담, 과제 난이도, 과제 제출 기한, 교수님과의 상담, 교수님 평가 방식, 수업 시간, 수업 내용, 수업 자료, 시험, 시험 문제, 시험 난이도, 시험 부담, 학점, 학점 부담, 학점 평가, 성적, 성적 부담, 성적 평가, 성적 비율, 성적 비율 평가, 성적 결과, 성적 결과 발표, 성적 상담, 성적 조정, 성적 증명서, 성적 증명서 발급, 성적 증명서 신청, 성적 증명서 신청 방법, 성적 증명서 발급 방법, 성적 증명서 발급 기간, 성적 증명서 발급 비용, 성적 증명서 발급 비용 지원, 성적 증명서 발급 비용 지원 여부, 성적 증명서 발급 여부, 성적 증명서 발급 여부 확인, 성적 증명서 발급 여부 확인 방법, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원,",
+      "Base Model + Professor LoRA": "## 1. 반복 주제 요약\n- **C언어**: C언어 과제와 관련된 질문이 3건(과제 제출, 과제 내용, 과제 제출 시점) 있습니다.\n- **수업 운영**: 수업 시간과 과제 제출 시점에 대한 질문이 2건 있습니다.\n- **학점**: 학점에 대한 질문이 1건 있습니다.\n\n## 2. 핵심 키워드\n1. **C언어 과제**\n2. **수업 시간**\n3. **과제 제출 시점**\n4. **학점**\n5. **수강 신청**\n\n## 3. 수업 운영 개선 제안\n1. **과제 제출 시점 안내**: 수업 시간과 제출 시점이 혼동되는 경우가 있어, 제출 기한과 수업 시간을 명확히 구분해 안내하는 것이 좋습니다.\n2. **학점 관련 사전 안내**: 학점에 대한 질문이 있었으므로, 수강 신청 시점에 학점 기준을 안내하면 후속 질문을 줄일 수 있습니다.\n\n## 4. 자료에서 확인되지 않는 부분\n- C언어 과제의 구체적 내용과 평가 방식\n- 학점 기준\n- 제출 시점 혼동의 원인(수업 시간, 과제 공지, 개인 사정 등)\n- 학생 수와 질문 비율\n\n## 5. 문서에서 확인되지 않는 질문\n- \"C언어 과제는 어떤 과제인지\"는 질문이 아니라 \"C언어 과제는 어떤 과제인지\"로 잘못 표기되어 있어, 실제 질문 내용은 확인되지 않습니다."
     },
     "dataset_version": "professor_eval_v2_pilot",
-    "train_eval_overlap_status": "semantic_review_required"
+    "train_eval_overlap_status": "semantic_review_required",
+    "contexts": {
+      "Base Model": [],
+      "Base Model + Student LoRA": [],
+      "Base Model + Professor LoRA": []
+    },
+    "generation_latency_s": {
+      "Base Model": 0.4271,
+      "Base Model + Student LoRA": 44.8824,
+      "Base Model + Professor LoRA": 20.6339
+    },
+    "served_model_names": {
+      "Base Model": "/abr/coss36/.cache/huggingface/hub/models--meta-llama--Llama-3.1-8B-Instruct/snapshots/0e9e39f249a16976918f6564b8830bc894c89659",
+      "Base Model + Student LoRA": "local:adapter_student_llama",
+      "Base Model + Professor LoRA": "local:adapter_professor_llama"
+    }
   },
   {
     "question_id": "P028",
@@ -1119,12 +1578,29 @@
       "확인 불가능한 점을 분명히 표시하는가"
     ],
     "models": {
-      "Base Model": "",
+      "Base Model": "학생 질문 묶음은 제공되지 않았습니다.",
       "Student LoRA": "",
-      "Professor LoRA": ""
+      "Professor LoRA": "",
+      "Base Model + Student LoRA": "(1) 반복 주제 요약: 과제, 과제 부담, 과제 난이도, 과제 제출 기한, 교수님과의 상담, 교수님 평가 방식, 수업 시간, 수업 내용, 수업 자료, 시험, 시험 문제, 시험 난이도, 시험 부담, 학점, 학점 부담, 학점 평가, 성적, 성적 부담, 성적 평가, 성적 비율, 성적 비율 평가, 성적 결과, 성적 결과 발표, 성적 상담, 성적 조정, 성적 증명서, 성적 증명서 발급, 성적 증명서 신청, 성적 증명서 신청 방법, 성적 증명서 발급 방법, 성적 증명서 발급 기간, 성적 증명서 발급 비용, 성적 증명서 발급 비용 지원, 성적 증명서 발급 비용 지원 여부, 성적 증명서 발급 여부, 성적 증명서 발급 여부 확인, 성적 증명서 발급 여부 확인 방법, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원,",
+      "Base Model + Professor LoRA": "## 1. 반복 주제 요약\n- **C언어**: C언어 과제와 관련된 질문이 3건(과제 제출, 과제 내용, 과제 제출 시점) 있습니다.\n- **수업 운영**: 수업 시간과 과제 제출 시점에 대한 질문이 2건 있습니다.\n- **학점**: 학점에 대한 질문이 1건 있습니다.\n\n## 2. 핵심 키워드\n1. **C언어 과제**\n2. **수업 시간**\n3. **과제 제출 시점**\n4. **학점**\n5. **수강 신청**\n\n## 3. 수업 운영 개선 제안\n1. **과제 제출 시점 안내**: 수업 시간과 제출 시점이 혼동되는 경우가 있어, 제출 기한과 수업 시간을 명확히 구분해 안내하는 것이 좋습니다.\n2. **학점 관련 사전 안내**: 학점에 대한 질문이 있었으므로, 수강 신청 시점에 학점 기준을 안내하면 후속 질문을 줄일 수 있습니다.\n\n## 4. 자료에서 확인되지 않는 부분\n- C언어 과제의 구체적 내용과 평가 방식\n- 학점 기준\n- 제출 시점 혼동의 원인(수업 시간, 과제 공지, 개인 사정 등)\n- 학생 수와 질문 비율\n\n## 5. 문서에서 확인되지 않는 질문\n- \"C언어 과제는 어떤 과제인지\"는 질문이 아니라 \"C언어 과제는 어떤 과제인지\"로 잘못 표기되어 있어, 실제 질문 내용은 확인되지 않습니다."
     },
     "dataset_version": "professor_eval_v2_pilot",
-    "train_eval_overlap_status": "semantic_review_required"
+    "train_eval_overlap_status": "semantic_review_required",
+    "contexts": {
+      "Base Model": [],
+      "Base Model + Student LoRA": [],
+      "Base Model + Professor LoRA": []
+    },
+    "generation_latency_s": {
+      "Base Model": 0.4206,
+      "Base Model + Student LoRA": 44.8225,
+      "Base Model + Professor LoRA": 20.7017
+    },
+    "served_model_names": {
+      "Base Model": "/abr/coss36/.cache/huggingface/hub/models--meta-llama--Llama-3.1-8B-Instruct/snapshots/0e9e39f249a16976918f6564b8830bc894c89659",
+      "Base Model + Student LoRA": "local:adapter_student_llama",
+      "Base Model + Professor LoRA": "local:adapter_professor_llama"
+    }
   },
   {
     "question_id": "P029",
@@ -1160,12 +1636,29 @@
       "확인 불가능한 점을 분명히 표시하는가"
     ],
     "models": {
-      "Base Model": "",
+      "Base Model": "학생 질문 묶음은 제공되지 않았습니다.",
       "Student LoRA": "",
-      "Professor LoRA": ""
+      "Professor LoRA": "",
+      "Base Model + Student LoRA": "(1) 반복 주제 요약: 과제, 과제 부담, 과제 난이도, 과제 제출 기한, 교수님과의 상담, 교수님 평가 방식, 수업 시간, 수업 내용, 수업 자료, 시험, 시험 문제, 시험 난이도, 시험 부담, 학점, 학점 부담, 학점 평가, 성적, 성적 부담, 성적 평가, 성적 비율, 성적 비율 평가, 성적 결과, 성적 결과 발표, 성적 상담, 성적 조정, 성적 증명서, 성적 증명서 발급, 성적 증명서 신청, 성적 증명서 신청 방법, 성적 증명서 발급 방법, 성적 증명서 발급 기간, 성적 증명서 발급 비용, 성적 증명서 발급 비용 지원, 성적 증명서 발급 비용 지원 여부, 성적 증명서 발급 여부, 성적 증명서 발급 여부 확인, 성적 증명서 발급 여부 확인 방법, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원,",
+      "Base Model + Professor LoRA": "## 1. 반복 주제 요약\n- **C언어**: C언어 과제와 관련된 질문이 3건(과제 제출, 과제 내용, 과제 제출 시점) 있습니다.\n- **수업 운영**: 수업 시간과 과제 제출 시점에 대한 질문이 2건 있습니다.\n- **학점**: 학점에 대한 질문이 1건 있습니다.\n\n## 2. 핵심 키워드\n1. **C언어 과제**\n2. **수업 시간**\n3. **과제 제출 시점**\n4. **학점**\n5. **수강 신청**\n\n## 3. 수업 운영 개선 제안\n1. **과제 제출 시점 안내**: 수업 시간과 제출 시점이 혼동되는 경우가 있어, 제출 기한과 수업 시간을 명확히 구분해 안내하는 것이 좋습니다.\n2. **학점 관련 사전 안내**: 학점에 대한 질문이 있었으므로, 수강 신청 시점에 학점 기준을 안내하면 후속 질문을 줄일 수 있습니다.\n\n## 4. 자료에서 확인되지 않는 부분\n- C언어 과제의 구체적 내용과 평가 방식\n- 학점 기준\n- 제출 시점 혼동의 원인(수업 시간, 과제 공지, 개인 사정 등)\n- 학생 수와 질문 비율\n\n## 5. 문서에서 확인되지 않는 질문\n- \"C언어 과제는 어떤 과제인지\"는 질문이 아니라 \"C언어 과제는 어떤 과제인지\"로 잘못 표기되어 있어, 실제 질문 내용은 확인되지 않습니다."
     },
     "dataset_version": "professor_eval_v2_pilot",
-    "train_eval_overlap_status": "semantic_review_required"
+    "train_eval_overlap_status": "semantic_review_required",
+    "contexts": {
+      "Base Model": [],
+      "Base Model + Student LoRA": [],
+      "Base Model + Professor LoRA": []
+    },
+    "generation_latency_s": {
+      "Base Model": 0.4196,
+      "Base Model + Student LoRA": 44.7672,
+      "Base Model + Professor LoRA": 20.606
+    },
+    "served_model_names": {
+      "Base Model": "/abr/coss36/.cache/huggingface/hub/models--meta-llama--Llama-3.1-8B-Instruct/snapshots/0e9e39f249a16976918f6564b8830bc894c89659",
+      "Base Model + Student LoRA": "local:adapter_student_llama",
+      "Base Model + Professor LoRA": "local:adapter_professor_llama"
+    }
   },
   {
     "question_id": "P030",
@@ -1201,11 +1694,28 @@
       "확인 불가능한 점을 분명히 표시하는가"
     ],
     "models": {
-      "Base Model": "",
+      "Base Model": "학생 질문 묶음은 제공되지 않았습니다.",
       "Student LoRA": "",
-      "Professor LoRA": ""
+      "Professor LoRA": "",
+      "Base Model + Student LoRA": "(1) 반복 주제 요약: 과제, 과제 부담, 과제 난이도, 과제 제출 기한, 교수님과의 상담, 교수님 평가 방식, 수업 시간, 수업 내용, 수업 자료, 시험, 시험 문제, 시험 난이도, 시험 부담, 학점, 학점 부담, 학점 평가, 성적, 성적 부담, 성적 평가, 성적 비율, 성적 비율 평가, 성적 결과, 성적 결과 발표, 성적 상담, 성적 조정, 성적 증명서, 성적 증명서 발급, 성적 증명서 신청, 성적 증명서 신청 방법, 성적 증명서 발급 방법, 성적 증명서 발급 기간, 성적 증명서 발급 비용, 성적 증명서 발급 비용 지원, 성적 증명서 발급 비용 지원 여부, 성적 증명서 발급 여부, 성적 증명서 발급 여부 확인, 성적 증명서 발급 여부 확인 방법, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원, 성적 증명서 발급 여부 확인 비용 지원 여부, 성적 증명서 발급 여부 확인 기간, 성적 증명서 발급 여부 확인 비용, 성적 증명서 발급 여부 확인 비용 지원,",
+      "Base Model + Professor LoRA": "## 1. 반복 주제 요약\n- **C언어**: C언어 과제와 관련된 질문이 3건(과제 제출, 과제 내용, 과제 제출 시점) 있습니다.\n- **수업 운영**: 수업 시간과 과제 제출 시점에 대한 질문이 2건 있습니다.\n- **학점**: 학점에 대한 질문이 1건 있습니다.\n\n## 2. 핵심 키워드\n1. **C언어 과제**\n2. **수업 시간**\n3. **과제 제출 시점**\n4. **학점**\n5. **수강 신청**\n\n## 3. 수업 운영 개선 제안\n1. **과제 제출 시점 안내**: 수업 시간과 제출 시점이 혼동되는 경우가 있어, 제출 기한과 수업 시간을 명확히 구분해 안내하는 것이 좋습니다.\n2. **학점 관련 사전 안내**: 학점에 대한 질문이 있었으므로, 수강 신청 시점에 학점 기준을 안내하면 후속 질문을 줄일 수 있습니다.\n\n## 4. 자료에서 확인되지 않는 부분\n- C언어 과제의 구체적 내용과 평가 방식\n- 학점 기준\n- 제출 시점 혼동의 원인(수업 시간, 과제 공지, 개인 사정 등)\n- 학생 수와 질문 비율\n\n## 5. 문서에서 확인되지 않는 질문\n- \"C언어 과제는 어떤 과제인지\"는 질문이 아니라 \"C언어 과제는 어떤 과제인지\"로 잘못 표기되어 있어, 실제 질문 내용은 확인되지 않습니다."
     },
     "dataset_version": "professor_eval_v2_pilot",
-    "train_eval_overlap_status": "semantic_review_required"
+    "train_eval_overlap_status": "semantic_review_required",
+    "contexts": {
+      "Base Model": [],
+      "Base Model + Student LoRA": [],
+      "Base Model + Professor LoRA": []
+    },
+    "generation_latency_s": {
+      "Base Model": 0.4284,
+      "Base Model + Student LoRA": 44.7782,
+      "Base Model + Professor LoRA": 20.6064
+    },
+    "served_model_names": {
+      "Base Model": "/abr/coss36/.cache/huggingface/hub/models--meta-llama--Llama-3.1-8B-Instruct/snapshots/0e9e39f249a16976918f6564b8830bc894c89659",
+      "Base Model + Student LoRA": "local:adapter_student_llama",
+      "Base Model + Professor LoRA": "local:adapter_professor_llama"
+    }
   }
 ]
