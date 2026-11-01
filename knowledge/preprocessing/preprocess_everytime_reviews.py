@@ -16,7 +16,7 @@ import re
 import tempfile
 import unicodedata
 from collections import Counter
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -225,7 +225,7 @@ def run(source: Path, output: Path, report_path: Path) -> dict:
         input_sha256=before_hash,
         input_path=str(source),
         output_path=str(output),
-        generated_at=datetime.now(timezone.utc).isoformat(),
+        generated_at=datetime.now(UTC).isoformat(),
     )
     output_text = "".join(json.dumps(row, ensure_ascii=False) + "\n" for row in rows)
     report["output_sha256"] = digest(output_text)

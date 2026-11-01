@@ -26,7 +26,6 @@ from collections import Counter
 from pathlib import Path
 from typing import Any
 
-
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_INPUT = PROJECT_ROOT / "knowledge/raw/syllabi/knu_cs_syllabi.jsonl"
 DEFAULT_OUTPUT = PROJECT_ROOT / "knowledge/processed/syllabi/knu_syllabus_documents.jsonl"

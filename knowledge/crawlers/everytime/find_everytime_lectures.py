@@ -11,9 +11,9 @@ import os
 import re
 import sys
 import unicodedata
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
-from urllib.parse import urljoin, urlparse, urlencode, parse_qs
+from urllib.parse import parse_qs, urlencode, urljoin, urlparse
 
 HERE = Path(__file__).resolve().parent
 REPO_ROOT = HERE.parents[2]
@@ -329,7 +329,7 @@ def main(argv=None):
                 print(f"[{course_number}/{len(pending)}] {course['course_name']} 검색 시작", flush=True)
                 record = {**course, 'fingerprint':fingerprint(course,config), 'search_status':'in_progress',
                           'coverage':'scanning_results', 'queries_completed':[], 'query_scans':[], 'candidates':[],
-                          'checked_at':datetime.now(timezone.utc).isoformat()}
+                          'checked_at':datetime.now(UTC).isoformat()}
                 previous = state['courses'].get(course['course_code'])
                 try:
                     items = {}

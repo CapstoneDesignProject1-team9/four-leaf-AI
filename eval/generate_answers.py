@@ -5,11 +5,16 @@ import asyncio
 import json
 import logging
 import os
+import sys
 import time
 from pathlib import Path
 
 import aiohttp
 from dotenv import load_dotenv
+
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
 load_dotenv()
 
@@ -26,6 +31,17 @@ MODE_KEYS = {
     "student_lora_rag": "Base Model + Student LoRA + RAG",
 }
 LOCAL_MODES = ("base", "student_lora", "professor_lora")
+
+
+def build_generation_question(item: dict) -> str:
+    """Include the professor scenario's student-question bundle in the model prompt."""
+    question = str(item.get("question", ""))
+    student_questions = item.get("student_questions") or []
+    if student_questions:
+        question += "\n\n[제공된 학생 질문 묶음]\n" + "\n".join(
+            f"- {student_question}" for student_question in student_questions
+        )
+    return question
 
 
 class LocalTransformersBackend:
@@ -120,6 +136,22 @@ class LocalTransformersBackend:
         return {"answer": answer, "contexts": []}
 
 
+class LocalRAGBackend:
+    """Run the repository's Chroma/BGE-M3 RAG chain directly with local Ollama."""
+
+    def __init__(self) -> None:
+        from app.chains.rag_chain import build_rag_chain
+
+        self.chain = build_rag_chain()
+        self.model_name = os.getenv("OLLAMA_MODEL", "llama3.1:8b")
+
+    def generate(self, question: str) -> dict:
+        result = self.chain.invoke({"query": question})
+        answer = str(result.get("result", "")).strip()
+        contexts = [doc.page_content for doc in result.get("source_documents", [])]
+        return {"answer": answer, "contexts": contexts}
+
+
 async def _post(session: aiohttp.ClientSession, url: str, payload: dict) -> dict:
     async with session.post(url, json=payload) as response:
         response.raise_for_status()
@@ -171,7 +203,8 @@ async def _wait_for_models(session: aiohttp.ClientSession, modes: list[str]) -> 
     raise SystemExit(f"vLLM is not ready at {VLLM_MODELS_URL}: {last_error}. Check the base model and adapter folders.")
 
 
-async def generate_one(session: aiohttp.ClientSession, question: str, mode: str) -> dict:
+async def generate_one(session: aiohttp.ClientSession, item: dict, mode: str) -> dict:
+    question = build_generation_question(item)
     if mode in {"base", "student_lora", "professor_lora"}:
         if mode == "base":
             model_name = os.getenv("VLLM_BASE_MODEL", "meta-llama/Llama-3.1-8B-Instruct")
@@ -195,10 +228,37 @@ async def generate_one(session: aiohttp.ClientSession, question: str, mode: str)
 async def main_async(args: argparse.Namespace) -> None:
     dataset_path = Path(args.dataset)
     if not dataset_path.is_absolute():
-        dataset_path = Path(__file__).parent / dataset_path
+        from_cwd = Path.cwd() / dataset_path
+        from_eval_dir = Path(__file__).parent / dataset_path
+        dataset_path = from_cwd if from_cwd.exists() else from_eval_dir
     if not dataset_path.exists():
         raise SystemExit(f"Evaluation dataset not found: {dataset_path}")
     dataset = json.loads(dataset_path.read_text(encoding="utf-8"))
+    if args.backend == "rag-local":
+        if args.mode not in {"all", "rag"}:
+            raise SystemExit("The rag-local backend supports only --mode rag")
+        from app.chains.rag_chain import init_vectorstore
+
+        await init_vectorstore()
+        backend = LocalRAGBackend()
+        start = time.monotonic()
+        for idx, item in enumerate(dataset[args.start_from :], start=args.start_from):
+            item.setdefault("models", {})
+            item.setdefault("contexts", {})
+            item.setdefault("generation_latency_s", {})
+            item.setdefault("served_model_names", {})
+            started = time.perf_counter()
+            result = backend.generate(build_generation_question(item))
+            elapsed = time.perf_counter() - started
+            model_key = MODE_KEYS["rag"]
+            item["models"][model_key] = result["answer"]
+            item["contexts"][model_key] = result["contexts"]
+            item["generation_latency_s"][model_key] = round(elapsed, 4)
+            item["served_model_names"][model_key] = f"ollama:{backend.model_name} + local Chroma/BGE-M3"
+            dataset_path.write_text(json.dumps(dataset, ensure_ascii=False, indent=2), encoding="utf-8")
+            logger.info("[%d/%d] saved (elapsed %.1fs)", idx + 1, len(dataset), time.monotonic() - start)
+        return
+
     if args.backend == "transformers":
         if args.mode == "all":
             modes = list(LOCAL_MODES)
@@ -212,13 +272,17 @@ async def main_async(args: argparse.Namespace) -> None:
         for idx in range(args.start_from, len(dataset)):
             item = dataset[idx]
             item.setdefault("models", {})
+            # Remove unused legacy slots; canonical condition names below are authoritative.
+            for legacy_key in ("Student LoRA", "Professor LoRA"):
+                if not item["models"].get(legacy_key):
+                    item["models"].pop(legacy_key, None)
             item.setdefault("contexts", {})
             item.setdefault("generation_latency_s", {})
             item.setdefault("served_model_names", {})
             for mode in modes:
                 model_key = MODE_KEYS[mode]
                 started = time.perf_counter()
-                result = backend.generate(item["question"], mode)
+                result = backend.generate(build_generation_question(item), mode)
                 elapsed = time.perf_counter() - started
                 item["models"][model_key] = result["answer"]
                 item["contexts"][model_key] = []
@@ -260,7 +324,7 @@ async def main_async(args: argparse.Namespace) -> None:
                 async with semaphore:
                     started = time.perf_counter()
                     try:
-                        result = await generate_one(session, item["question"], mode)
+                        result = await generate_one(session, item, mode)
                         return mode, result, time.perf_counter() - started
                     except Exception as exc:
                         logger.exception("%s generation failed for question %s", mode, idx + 1)
@@ -287,7 +351,7 @@ def main() -> None:
     parser.add_argument("--dataset", default="student_eval_dataset.json", help="Dataset filename or path (default: student_eval_dataset.json)")
     parser.add_argument("--start-from", type=int, default=0)
     parser.add_argument("--mode", choices=["all", *MODE_KEYS], default="all")
-    parser.add_argument("--backend", choices=["vllm", "transformers"], default=os.getenv("EVAL_GENERATION_BACKEND", "vllm"))
+    parser.add_argument("--backend", choices=["vllm", "transformers", "rag-local"], default=os.getenv("EVAL_GENERATION_BACKEND", "vllm"))
     parser.add_argument("--concurrency", type=int, default=int(os.getenv("GENERATION_CONCURRENCY", "4")))
     args = parser.parse_args()
     if args.start_from < 0 or args.concurrency < 1:

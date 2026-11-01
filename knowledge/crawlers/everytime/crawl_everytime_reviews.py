@@ -16,10 +16,10 @@ import random
 import re
 import sys
 import time
+from collections.abc import Iterable
 from dataclasses import asdict, dataclass
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import Iterable
 
 # Keep the browser runtime beside this crawler instead of requiring a
 # machine-wide installation or write access to the user's AppData folder.
@@ -29,8 +29,9 @@ os.environ.setdefault(
 )
 
 try:
-    from playwright.sync_api import Locator, Page, Error as PlaywrightError, TimeoutError as PlaywrightTimeoutError
-    from playwright.sync_api import sync_playwright
+    from playwright.sync_api import Error as PlaywrightError
+    from playwright.sync_api import Locator, Page, sync_playwright
+    from playwright.sync_api import TimeoutError as PlaywrightTimeoutError
 except ImportError:  # Lets --help fail with a useful message instead of a traceback.
     Locator = Page = object  # type: ignore[assignment,misc]
     PlaywrightTimeoutError = TimeoutError
@@ -159,7 +160,7 @@ def update_recommendations(path: Path, reviews: Iterable[Review]) -> int:
         key = row.get('source_hash') or row.get('content_hash')
         if key in updates and row.get('recommendation_count') != updates[key]:
             row['recommendation_count'] = updates[key]
-            row['recommendation_updated_at'] = datetime.now(timezone.utc).isoformat()
+            row['recommendation_updated_at'] = datetime.now(UTC).isoformat()
             lines[index] = json.dumps(row, ensure_ascii=False) + '\n'
             changed += 1
     if changed:
@@ -321,7 +322,7 @@ def parse_review(
         content=content,
         source_url=source_url,
         source_hash=fingerprint,
-        crawled_at=datetime.now(timezone.utc).isoformat(),
+        crawled_at=datetime.now(UTC).isoformat(),
         course_name=course_name,
         professor=professor,
         recommendation_count=extract_recommendations(container),
@@ -358,7 +359,7 @@ def read_review_batch(containers: Locator, lecture: dict, source_url: str) -> li
         result.append(Review(
             lecture_id=lecture['lecture_id'], review_id=normalize_text(row['id']) or fingerprint[:16],
             semester=semester, rating=rating, content=content, source_url=source_url,
-            source_hash=fingerprint, crawled_at=datetime.now(timezone.utc).isoformat(),
+            source_hash=fingerprint, crawled_at=datetime.now(UTC).isoformat(),
             course_name=lecture.get('course_name'), professor=lecture.get('professor'),
             recommendation_count=count,
         ))
@@ -552,7 +553,7 @@ def crawl_and_record(page, lecture, args, seen, output):
         'lecture_id': lecture['lecture_id'],
         'course_name': lecture.get('course_name'),
         'professor': lecture.get('professor'),
-        'checked_at': datetime.now(timezone.utc).isoformat(),
+        'checked_at': datetime.now(UTC).isoformat(),
     }
     try:
         count = crawl_one(page, lecture, args, seen, output)

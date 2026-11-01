@@ -4,14 +4,14 @@ import json
 import logging
 import os
 import random
-import sys
 import re
+import sys
 from pathlib import Path
 
 from dotenv import load_dotenv
+from langchain_anthropic import ChatAnthropic
 from langchain_core.output_parsers import JsonOutputParser
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_anthropic import ChatAnthropic
 from pydantic import BaseModel, Field
 
 load_dotenv()
@@ -125,10 +125,10 @@ async def generate_synthetic_data_async(context_text: str, num_pairs: int, cat: 
         return []
 
 async def validate_qa_batch_async(qa_pairs: list[dict], context_text: str) -> list[dict]:
-    
+
     llm = ChatAnthropic(model="claude-haiku-5-5", max_tokens=4096)
     parser = JsonOutputParser(pydantic_object=JudgeBatchResult)
-    
+
     system_prompt = """당신은 'AI Advisor' 학습 데이터의 품질을 검증하는 엄격한 평가자입니다.
 [참고 문서]를 근거로 각 Q&A(instruction/output)를 평가하세요. 아래 중 하나라도 어기면 실패입니다.
 1. 근거성: 답변의 사실·일정·평가 비율·수치가 참고 문서에 있는가? 문서에 없는 통계(퍼센트, 학생 수 등)나 사실을 지어냈거나, 강의평 의견 범위를 넘어 일반화했다면 실패.
@@ -170,7 +170,7 @@ def extract_and_format_record(record: dict) -> str:
         v = record.get(k)
         if isinstance(v, (str, int)) and v and str(v).strip() not in body:
             meta.append(f"{k}: {str(v).strip()}")
-    
+
     head = f"[{' | '.join(meta)}]\n" if meta else ""
     return head + body
 
@@ -200,28 +200,29 @@ def iter_file_batches():
 
         conf = SOURCES[cat]
         buf = []
-        
+
         with open(fp, encoding="utf-8") as f:
             for line in f:
-                if not line.strip(): continue
+                if not line.strip():
+                    continue
                 try:
                     record = json.loads(line)
                     text = clean_text(extract_and_format_record(record))
                     if not is_valid_chunk(text, cat):
                         continue
-    
+
                     buf.append(text)
                     if len(buf) >= conf["group_size"]:
                         batches_by_cat[cat].append(("\n---\n".join(buf), fp.name, cat))
                         buf = []
                 except json.JSONDecodeError:
                     continue
-            if buf: 
+            if buf:
                 batches_by_cat[cat].append(("\n---\n".join(buf), fp.name, cat))
 
     for cat in batches_by_cat:
         random.Random(7).shuffle(batches_by_cat[cat])
-    
+
     return batches_by_cat
 
 def source_done(cat: str, counts_dict: dict) -> bool:
@@ -232,21 +233,22 @@ def source_done(cat: str, counts_dict: dict) -> bool:
 async def process_batch(combined_text: str, file_name: str, cat: str, done_keys: set) -> None:
     doc_hash = hashlib.md5(combined_text.encode("utf-8")).hexdigest()
     record_key = f"{file_name}_batch::{doc_hash}"
-    
+
     if not TEST_MODE and record_key in done_keys:
         return
-        
+
     if source_done(cat, passed_counts):
         return
-    
+
     attempted[cat] += 1
     num_pairs = 1 if TEST_MODE else SOURCES[cat]["pairs_per_batch"]
-    
+
     logger.info(f"[{cat}] API 요청 중... (목표: {passed_counts[cat]}/{SOURCES[cat]['target']})")
-    
+
     pairs = await generate_synthetic_data_async(combined_text, num_pairs=num_pairs, cat=cat)
-    if not pairs: return
-    
+    if not pairs:
+        return
+
     results = await validate_qa_batch_async(pairs, combined_text)
     if len(results) != len(pairs) or any(r is None for r in results):
         logger.warning(f"[{cat}] 검증 실패 및 누락 - 묶음 스킵")
@@ -254,7 +256,8 @@ async def process_batch(combined_text: str, file_name: str, cat: str, done_keys:
 
     for pair, res in zip(pairs, results):
         instruction, output = (pair.get("instruction") or "").strip(), (pair.get("output") or "").strip()
-        if not instruction or not output: continue
+        if not instruction or not output:
+            continue
 
         is_pass = res.get("pass", res.get("is_pass", False))
         out_data = {"category": cat, "source": file_name, "instruction": instruction, "output": output}
@@ -263,11 +266,12 @@ async def process_batch(combined_text: str, file_name: str, cat: str, done_keys:
             # 본 실행 중이면서 할당량을 다 채웠으면 파일에 안 씀
             if not TEST_MODE and passed_counts[cat] >= SOURCES[cat]["target"]:
                 continue
-                
+
             with open(VALIDATED_PATH, "a", encoding="utf-8") as f:
                 f.write(json.dumps(out_data, ensure_ascii=False) + "\n")
             passed_counts[cat] += 1
-            if TEST_MODE: logger.info(f"테스트 통과]: {instruction[:30]}...")
+            if TEST_MODE:
+                logger.info(f"테스트 통과]: {instruction[:30]}...")
         else:
             out_data["reject_reason"] = res.get("reason", "알 수 없음")
             with open(REJECTED_PATH, "a", encoding="utf-8") as f:
@@ -284,14 +288,15 @@ async def main():
 
     if not TEST_MODE:
         if os.path.exists(PROGRESS_PATH):
-            with open(PROGRESS_PATH, "r", encoding="utf-8") as f:
+            with open(PROGRESS_PATH, encoding="utf-8") as f:
                 done_keys = set(f.read().splitlines())
         if VALIDATED_PATH.exists():
-            with open(VALIDATED_PATH, "r", encoding="utf-8") as f:
+            with open(VALIDATED_PATH, encoding="utf-8") as f:
                 for line in f:
                     try:
                         cat = json.loads(line).get("category", "unknown")
-                        if cat in passed_counts: passed_counts[cat] += 1
+                        if cat in passed_counts:
+                            passed_counts[cat] += 1
                     except json.JSONDecodeError:
                         pass
 
@@ -300,7 +305,7 @@ async def main():
     batches_by_cat = iter_file_batches()
     counts = {c: len(b) for c, b in batches_by_cat.items()}
     logger.info(f"소스별 생성된 전체 묶음 수: {counts}")
-    
+
     empty = [c for c, b in batches_by_cat.items() if not b]
     if empty:
         logger.error(f"묶음이 0개인 소스: {empty} → SOURCES의 match를 실제 파일명에 맞게 고치세요")
@@ -328,7 +333,7 @@ async def main():
 
     n_workers = 1 if TEST_MODE else CONCURRENCY
     await asyncio.gather(*(worker() for _ in range(n_workers)))
-    
+
     logger.info(f"종료! 최종 누적 개수: {passed_counts}")
 
 if __name__ == "__main__":

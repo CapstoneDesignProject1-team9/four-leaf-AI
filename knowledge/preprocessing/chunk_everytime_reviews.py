@@ -6,7 +6,7 @@ import argparse
 import json
 import re
 from collections import Counter
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 if __package__:
@@ -131,7 +131,7 @@ def run(source: Path, output: Path, report_path: Path, size=700, overlap=100) ->
     text = "".join(json.dumps(row, ensure_ascii=False) + "\n" for row in chunks)
     report = {
         "schema_version": 1, "chunking_version": VERSION,
-        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "generated_at": datetime.now(UTC).isoformat(),
         "input_path": str(source), "output_path": str(output),
         "input_sha256": input_hash, "output_sha256": digest(text),
         "chunk_size_chars": size, "max_overlap_chars": overlap,

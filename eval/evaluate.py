@@ -8,14 +8,11 @@ must be recorded by generate_answers.py and is never inferred by the judge.
 from __future__ import annotations
 
 import asyncio
-import csv
 import itertools
 import json
 import logging
 import os
 import random
-import time
-from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any
 
@@ -171,12 +168,12 @@ def ragas_scores(dataset: list[dict[str, Any]]) -> dict[tuple[int, str], dict[st
     try:
         from datasets import Dataset
         from ragas import evaluate
-        from ragas.run_config import RunConfig
         from ragas.llms import LangchainLLMWrapper
+        from ragas.run_config import RunConfig
         try:
-            from ragas.metrics import faithfulness, context_precision
+            from ragas.metrics import context_precision, faithfulness
         except ImportError:
-            from ragas.metrics.collections import Faithfulness, ContextPrecision
+            from ragas.metrics.collections import ContextPrecision, Faithfulness
             faithfulness, context_precision = Faithfulness(), ContextPrecision()
         api_key = os.getenv("ANTHROPIC_API_KEY")
         if not api_key:
@@ -454,10 +451,13 @@ async def main() -> None:
         human_tests=planned_contrasts(hsummary,dataset_name)
         if not human_tests.empty:
             human_tests["Score Source"]="Human"
-            if not tests.empty: tests=pd.concat([tests,human_tests],ignore_index=True)
+            if not tests.empty:
+                tests=pd.concat([tests,human_tests],ignore_index=True)
             else: tests=human_tests
-    if not summary.empty: summary.to_csv(EVAL_DIR/f"{prefix}condition_summary.csv",index=False,encoding="utf-8-sig")
-    if not tests.empty: tests.to_csv(EVAL_DIR/f"{prefix}hypothesis_tests.csv",index=False,encoding="utf-8-sig")
+    if not summary.empty:
+        summary.to_csv(EVAL_DIR/f"{prefix}condition_summary.csv",index=False,encoding="utf-8-sig")
+    if not tests.empty:
+        tests.to_csv(EVAL_DIR/f"{prefix}hypothesis_tests.csv",index=False,encoding="utf-8-sig")
     else: pd.DataFrame(columns=["Dataset","Score Source","Metric","Hypothesis","N","Mean Difference","CI95_Lower","CI95_Upper","Paired_t","p_raw","p_Holm","Wilcoxon","p_wilcoxon","p_wilcoxon_Holm","Cohen_dz"]).to_csv(EVAL_DIR/f"{prefix}hypothesis_tests.csv",index=False)
     if not agreement.empty: agreement.to_csv(EVAL_DIR/f"{prefix}human_rater_agreement.csv",index=False,encoding="utf-8-sig")
     if not correlations.empty: correlations.to_csv(EVAL_DIR/f"{prefix}human_judge_correlation.csv",index=False,encoding="utf-8-sig")

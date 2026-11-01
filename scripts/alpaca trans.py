@@ -9,14 +9,14 @@ OUTPUT_FILE = os.path.join(BASE_DIR, "output", "professor_alpaca_dataset.json")
 
 alpaca_dataset = []
 
-with open(INPUT_FILE, "r", encoding="utf-8") as f:
+with open(INPUT_FILE, encoding="utf-8") as f:
     for line in f:
         line = line.strip()
         if not line:
             continue
-        
+
         data = json.loads(line)
-        
+
         # -------------------------------------------------------------
         # 2. 키 매핑 (기존 데이터셋의 필드명에 맞게 가져옵니다)
         # -------------------------------------------------------------
@@ -31,7 +31,7 @@ with open(INPUT_FILE, "r", encoding="utf-8") as f:
             "input": input_text,
             "output": output_text
         }
-        
+
         alpaca_dataset.append(alpaca_item)
 
 # 3. Alpaca 포맷 JSON 파일로 저장

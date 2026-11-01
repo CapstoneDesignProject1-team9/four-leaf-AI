@@ -1,6 +1,7 @@
 """PostgreSQL persistence for student questions used by professor reports."""
 
 import psycopg
+
 from app.core.config import settings
 
 
