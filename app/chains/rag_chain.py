@@ -259,43 +259,53 @@ def _requested_department(question: str) -> str | None:
     )
     return next((department for department in departments if department in normalized), None)
 
-
 def search_syllabi(question: str, grade: str | None = None) -> list[Document]:
     _, syllabi_collection, _ = _ready()
     if syllabi_collection is None:
         return []
-<<<<<<< HEAD
-    # Several chunks belong to each syllabus. Retrieve a wider pool, then keep
-    # the best matching chunk per course so one course cannot fill the results.
-    candidates = _search_collection(
-        syllabi_collection, list(_cached_embedding(question)),
-        max(settings.RAG_TOP_K * 20, 100), {"grade": grade} if grade else None,
-=======
+
     # Enforce explicit constraints before vector ranking.
     conditions: list[dict[str, Any]] = [{"active": True}]
+
     if grade:
         conditions.append({"grade": grade})
+
     category = _requested_category(question)
     if category:
         conditions.append({"category": category})
+
     department = _requested_department(question)
     if department:
         conditions.append({"department_filter": department})
+
     where = conditions[0] if len(conditions) == 1 else {"$and": conditions}
+
+    active_chunks = int(syllabi_collection.metadata["active_chunks"])
+    if active_chunks <= 0:
+        return []
+
     result = syllabi_collection.query(
         query_embeddings=[list(_cached_embedding(question))],
-        n_results=min(max(settings.RAG_TOP_K * 20, 100), int(syllabi_collection.metadata["active_chunks"])),
+        n_results=min(max(settings.RAG_TOP_K * 20, 100), active_chunks),
         where=where,
         include=["documents", "metadatas", "distances"],
->>>>>>> origin/develop
     )
+
     candidates = [
-        Document(page_content=text, metadata={**metadata, "distance": float(distance)})
+        Document(
+            page_content=text,
+            metadata={**metadata, "distance": float(distance)},
+        )
         for text, metadata, distance in zip(
-            result["documents"][0], result["metadatas"][0], result["distances"][0]
+            result["documents"][0],
+            result["metadatas"][0],
+            result["distances"][0],
         )
     ]
+
+    # Keep only the best matching chunk per course.
     best_by_course: dict[str, Document] = {}
+
     for document in candidates:
         course_id = str(
             document.metadata.get("course_code")
@@ -303,10 +313,12 @@ def search_syllabi(question: str, grade: str | None = None) -> list[Document]:
             or document.metadata.get("title")
         )
         best_by_course.setdefault(course_id, document)
-    # A category question returns a broader candidate set; this is still not
-    # claimed to be a complete official curriculum list.
+
+    # Category questions return a broader candidate set.
     limit = max(settings.RAG_TOP_K, 20) if category else settings.RAG_TOP_K
+
     return list(best_by_course.values())[:limit]
+
 
 
 def _is_review_question(question: str) -> bool:
