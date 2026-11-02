@@ -7,8 +7,8 @@ import logging
 import os
 import sys
 import time
-from types import SimpleNamespace
 from pathlib import Path
+from types import SimpleNamespace
 
 import aiohttp
 from dotenv import load_dotenv
