@@ -10,4 +10,3 @@ collect_ignore_glob = [
     # Playwright 브라우저가 필요한 에브리타임 크롤러 테스트. CI에서 skip.
     "tests/everytime/*",
 ]
-
