@@ -162,4 +162,3 @@ def classify_course(question: str) -> str:
 
     # 4. 어떤 과목에도 해당하지 않으면 "일반" (학사/행정/진로/생활 등)
     return "일반"
-

@@ -36,9 +36,7 @@ def initialize_question_store() -> None:
         )
 
 
-def save_student_question(
-    *, message: str, course_name: str | None, session_id: str | None
-) -> None:
+def save_student_question(*, message: str, course_name: str | None, session_id: str | None) -> None:
     """Store a question before generating the AI response."""
     with _connect() as connection:
         connection.execute(

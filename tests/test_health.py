@@ -75,15 +75,13 @@ def test_chat_endpoint_with_mock(client):
     mock_save.assert_called_once()
     assert mock_save.call_args.kwargs["message"] == question
     mock_builder.return_value.invoke.assert_called_once_with(
-        {"query": question}
+        {"query": question, "model_name": None}
     )
 
 
 def test_chat_generation_failure(client):
     test_client, mock_save, mock_builder = client
-    mock_builder.return_value.invoke.side_effect = RuntimeError(
-        "internal-test-error"
-    )
+    mock_builder.return_value.invoke.side_effect = RuntimeError("internal-test-error")
 
     response = test_client.post(
         "/api/v1/tutor/chat",
@@ -154,7 +152,10 @@ def test_advisor_report_success(client):
     }
 
     with (
-        patch("app.api.v1.advisor.get_student_questions", return_value=["파이프라인 질문1", "캐시 질문2"]),
+        patch(
+            "app.api.v1.advisor.get_student_questions",
+            return_value=["파이프라인 질문1", "캐시 질문2"],
+        ),
         patch("app.api.v1.advisor.ChatGoogleGenerativeAI"),
         patch("langchain_core.prompts.ChatPromptTemplate.__or__") as mock_chain_pipe,
     ):

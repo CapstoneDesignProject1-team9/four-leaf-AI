@@ -21,7 +21,6 @@ def main():
         models_page = client.models.list()
         models = [model.id for model in models_page.data]
 
-
         if not models:
             print("⚠️ 사용 가능한 모델이 없습니다.")
         else:
