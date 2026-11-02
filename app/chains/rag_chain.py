@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import json
 import logging
 import re
 from functools import lru_cache
@@ -13,7 +12,6 @@ import chromadb
 from chromadb.config import Settings
 from langchain_core.documents import Document
 from langchain_ollama import ChatOllama
-from langchain_openai import ChatOpenAI
 from sentence_transformers import SentenceTransformer
 
 from app.core.config import settings
@@ -24,17 +22,6 @@ _syllabi_collection: Any | None = None
 _everytime_collection: Any | None = None
 _review_names: dict[str, set[str]] = {"course_name": set(), "professor": set()}
 _embedder: BgeM3Embedder | None = None
-
-# Chroma remains the durable vector store. Cache query embeddings only: retrieved
-# documents continue to reflect the active collection and metadata filters.
-@lru_cache(maxsize=2048)
-def _cached_embedding(question: str) -> tuple[float, ...]:
-    _, _, embedder = _ready()
-    return tuple(embedder.embed_query(question))
-
-
-def clear_search_cache() -> None:
-    _cached_embedding.cache_clear()
 
 
 class BgeM3Embedder:
@@ -220,9 +207,9 @@ def _search_collection(
 
 
 def search_notices(question: str) -> list[Document]:
-    notice_collection, _, _ = _ready()
+    notice_collection, _, embedder = _ready()
     return _search_collection(
-        notice_collection, list(_cached_embedding(question)), settings.RAG_TOP_K
+        notice_collection, embedder.embed_query(question), settings.RAG_TOP_K
     )
 
 
@@ -259,53 +246,35 @@ def _requested_department(question: str) -> str | None:
     )
     return next((department for department in departments if department in normalized), None)
 
+
 def search_syllabi(question: str, grade: str | None = None) -> list[Document]:
     _, syllabi_collection, _ = _ready()
     if syllabi_collection is None:
         return []
-
     # Enforce explicit constraints before vector ranking.
     conditions: list[dict[str, Any]] = [{"active": True}]
-
     if grade:
         conditions.append({"grade": grade})
-
     category = _requested_category(question)
     if category:
         conditions.append({"category": category})
-
     department = _requested_department(question)
     if department:
         conditions.append({"department_filter": department})
-
     where = conditions[0] if len(conditions) == 1 else {"$and": conditions}
-
-    active_chunks = int(syllabi_collection.metadata["active_chunks"])
-    if active_chunks <= 0:
-        return []
-
     result = syllabi_collection.query(
         query_embeddings=[list(_cached_embedding(question))],
-        n_results=min(max(settings.RAG_TOP_K * 20, 100), active_chunks),
+        n_results=min(max(settings.RAG_TOP_K * 20, 100), int(syllabi_collection.metadata["active_chunks"])),
         where=where,
         include=["documents", "metadatas", "distances"],
     )
-
     candidates = [
-        Document(
-            page_content=text,
-            metadata={**metadata, "distance": float(distance)},
-        )
+        Document(page_content=text, metadata={**metadata, "distance": float(distance)})
         for text, metadata, distance in zip(
-            result["documents"][0],
-            result["metadatas"][0],
-            result["distances"][0],
+            result["documents"][0], result["metadatas"][0], result["distances"][0]
         )
     ]
-
-    # Keep only the best matching chunk per course.
     best_by_course: dict[str, Document] = {}
-
     for document in candidates:
         course_id = str(
             document.metadata.get("course_code")
@@ -313,12 +282,10 @@ def search_syllabi(question: str, grade: str | None = None) -> list[Document]:
             or document.metadata.get("title")
         )
         best_by_course.setdefault(course_id, document)
-
-    # Category questions return a broader candidate set.
+    # A category question returns a broader candidate set; this is still not
+    # claimed to be a complete official curriculum list.
     limit = max(settings.RAG_TOP_K, 20) if category else settings.RAG_TOP_K
-
     return list(best_by_course.values())[:limit]
-
 
 
 def _is_review_question(question: str) -> bool:
@@ -430,6 +397,22 @@ class NoticeRagChain:
         documents = search_documents(question)
         syllabus_question = _is_syllabus_question(question)
         grade = _requested_grade(question)
+<<<<<<< HEAD
+        if syllabus_question:
+            category = _requested_category(question)
+            department = _requested_department(question)
+            is_course_list = any(term in question for term in ("뭐가", "무엇", "목록", "알려", "과목이"))
+            constraints = []
+            if category:
+                constraints.append(f"교과목구분이 정확히 '{category}'인 과목만 답변하세요.")
+            if department:
+                constraints.append(f"조회학과가 '{department}'인 과목만 답변하세요.")
+            instructions = f"""강의계획서 질의입니다. 공지사항은 참고하지 말고, 검색된 강의계획서만 답변 근거로 사용하세요.
+질문 조건: {' '.join(constraints) if constraints else '문서의 필드 값을 그대로 따르고 조건을 지어내지 마세요.'}
+목록 질문에는 과목명·강좌번호·학점만 간결하게 정리하세요. 문서에서 확인되지 않는 과목은 추가하지 말고, 검색된 자료를 그대로 길게 복사하거나 자신의 역할을 소개하지 마세요.
+이 응답에서는 조건에 맞는 과목 {len(documents)}개가 검색되었습니다. 결과가 전체 공식 교육과정 목록임을 확인할 수 없으므로 반드시 '현재 검색된 강의계획서 기준'이라고 범위를 밝히고 전체 목록처럼 단정하지 마세요.
+질문이 학년별 수강 과목을 묻는다면 수강학년 값이 해당 학년인 과목만 최대 5개 제안하고, 개설학기와 짧은 설명을 덧붙이세요.
+=======
         if _is_review_question(question):
             if not documents:
                 return {
@@ -445,6 +428,7 @@ class NoticeRagChain:
         elif syllabus_question:
             instructions = """강의계획서 질의입니다. 공지사항은 참고하지 말고, 검색된 강의계획서만 답변 근거로 사용하세요.
 질문이 학년별 수강 과목을 묻는다면 강의계획서의 수강학년 값이 해당 학년인 과목만 최대 5개 제안하세요. 과목명, 강좌번호, 학점, 개설학기와 강의계획서 내용에 근거한 짧은 설명을 간결하게 제시하세요. 검색된 자료를 그대로 나열하거나 자신의 역할을 소개하지 마세요.
+>>>>>>> origin/develop
 강의계획서의 수강학년은 표시된 대상 학년이지 실제 수강 자격의 보증이 아닙니다. 선수과목이나 수강 제한이 자료에 없으면 임의로 단정하지 말고, 최종 수강 가능 여부는 수강편람에서 확인해야 한다고 짧게 덧붙이세요.
 근거 자료가 없으면 그 사실과 확인할 수 없는 점을 간단히 설명하세요.
 {'답변은 짧은 도입 한 문장 뒤에 과목 목록으로 작성하세요.' if is_course_list else '질문에 직접 답하고 필요한 설명만 덧붙이세요.'}"""
@@ -463,37 +447,18 @@ class NoticeRagChain:
 
 [질문]
 {question}"""
-        model_name = str(inputs.get("model_name") or "").strip()
-        llm = _llm_for_model(model_name) if model_name else self.llm
-        response = llm.invoke(prompt)
+        response = self.llm.invoke(prompt)
         return {"result": str(response.content), "source_documents": documents}
 
 
 def build_rag_chain() -> NoticeRagChain:
     _ready()
-    return NoticeRagChain(_llm_for_model())
-
-
-def _llm_for_model(model_name: str = "") -> Any:
-    if settings.VLLM_BASE_URL:
-        try:
-            adapters = json.loads(settings.VLLM_LORA_ADAPTERS or "{}")
-        except json.JSONDecodeError as exc:
-            raise RuntimeError("VLLM_LORA_ADAPTERS는 JSON 객체여야 합니다.") from exc
-        served_model = model_name if model_name in adapters else settings.VLLM_BASE_MODEL
-        return ChatOpenAI(
-            model=served_model or settings.VLLM_BASE_MODEL or "base",
-            base_url=settings.VLLM_BASE_URL.rstrip("/") + "/v1",
-            api_key="EMPTY",
-            temperature=0.2,
-            max_tokens=settings.OLLAMA_NUM_PREDICT,
-        )
-    if model_name:
-        logger.warning("vLLM이 설정되지 않아 model_name=%s 요청을 Ollama 기본 모델로 처리합니다.", model_name)
-    return ChatOllama(
+    return NoticeRagChain(
+        ChatOllama(
             model=settings.OLLAMA_MODEL,
             base_url=settings.OLLAMA_BASE_URL,
             temperature=0.2,
             num_ctx=settings.OLLAMA_NUM_CTX,
             num_predict=settings.OLLAMA_NUM_PREDICT,
         )
+    )

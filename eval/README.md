@@ -16,6 +16,14 @@
 
 ## 응답 생성과 평가
 
+교수자용 합성 평가 데이터 초안은 다음 명령으로 재생성합니다. 기본 출력은 기존 파일을 덮어쓰지 않는 `professor_eval_dataset_v3.json`입니다. 시나리오와 학생 질문 묶음은 실제 수강생 자료가 아니므로 교수자 검토 및 학습·평가 데이터 중복 검토 후 분석에 사용하세요.
+
+```bash
+python eval/generate_professor_eval_dataset.py
+```
+
+각 요청은 서로 다른 수업 준비·과제 운영·평가·접근성·소통 지원 작업을 요청합니다. 모델 응답 생성기는 `student_questions`를 프롬프트에 포함해야 합니다.
+
 먼저 두 어댑터를 다음 위치에 둡니다. 각 디렉터리에는 PEFT 형식의 `adapter_config.json`과 `adapter_model.safetensors`(또는 `adapter_model.bin`)가 있어야 합니다. `adapter_config.json`의 `base_model_name_or_path`는 두 어댑터 모두 `meta-llama/Llama-3.1-8B-Instruct`이며 `VLLM_BASE_MODEL`도 이 값으로 맞춥니다. 현재 rank는 16입니다.
 
 ```text

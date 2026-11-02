@@ -434,6 +434,8 @@ async def main() -> None:
     if not DATASET_PATH.exists():
         raise SystemExit(f"Evaluation dataset not found: {DATASET_PATH}")
     dataset=json.loads(DATASET_PATH.read_text(encoding="utf-8"))
+    # Keep only pure student‑question items (those without a "student_questions" field)
+    dataset = [item for item in dataset if not item.get("student_questions")]
     dataset_name="student" if "student" in DATASET_PATH.name.lower() else "professor" if "professor" in DATASET_PATH.name.lower() else DATASET_PATH.stem
     prefix=f"{dataset_name}_"
     chain=create_judge_chain()

@@ -1,0 +1,1354 @@
+[
+  {
+    "question_id": "P001",
+    "role": "professor",
+    "task_type": "lesson_planning",
+    "data_origin": "synthetic_instructor_support_scenario",
+    "course_name": "자료구조",
+    "scenario_theme": "핵심 개념 오개념 점검",
+    "student_questions": [
+      "스택이랑 큐 차이를 예시로 설명해 주세요.",
+      "재귀 함수가 반복문과 어떻게 다른지 모르겠습니다.",
+      "전위·중위·후위 순회 순서가 헷갈려요.",
+      "이진 탐색 트리는 어떤 입력에서 느려지나요?",
+      "그래프 탐색을 실제 문제에 어떻게 적용하나요?",
+      "포인터와 노드 연결 보충 자료가 필요합니다."
+    ],
+    "question": "다음 질문 묶음에서 헷갈리는 개념을 찾아 주세요. 다음 수업 도입부에서 할 10분 복습 활동을 세 단계로 제안하고, 각 단계가 어떤 질문에 대응하는지 연결해 주세요.",
+    "ground_truth": "{\"expected_findings\": [\"질문은 자료구조의 정의 암기보다 구조 간 비교와 실행 과정 추적에 집중되어 있습니다.\", \"재귀와 순회, 트리 성능, 그래프 적용에 대한 시각적·단계적 설명 요구가 있습니다.\"], \"expected_recommendations\": [\"스택·큐 연산과 트리 순회를 작은 예제로 직접 추적하는 활동을 제안합니다.\", \"재귀 호출 스택과 반복문 상태를 나란히 비교하고, 그래프 탐색은 작은 그래프에서 적용하게 합니다.\"], \"keywords\": [\"자료구조 개념 비교\", \"재귀\", \"트리 순회\", \"그래프 탐색\"], \"limitations\": [\"학생 질문은 합성 시나리오이며 실제 수강생의 빈도·대표성을 나타내지 않음\", \"질문에 없는 강의 정책·성적·학생 특성은 추론하지 않음\"]}",
+    "evaluation_criteria": [
+      "요약과 분석이 제공된 질문 묶음의 내용에 정확히 연결되는가",
+      "제안이 교수가 실제 수업 준비·운영·피드백에 활용할 만큼 구체적인가",
+      "질문에 없는 학교 정책, 과목 운영 사실, 학생 수·비율·빈도를 만들어내지 않는가",
+      "확인되지 않은 규정은 교수자 확인 필요로 분명히 구분하는가",
+      "요청한 결과물 형식과 교수자 역할에 맞고 읽기 쉬운가",
+      "합성 질문 사례를 실제 수강생 전체의 의견이나 대표성으로 일반화하지 않는가"
+    ],
+    "scenario_category": "concept_and_prerequisites",
+    "review_status": "needs_faculty_review",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "knowledge_scope": "제공된 합성 학생 질문만 근거로 사용; 실제 학생의 빈도·대표성 및 미기재 강의 정책은 추정하지 않음",
+    "source_verification": "synthetic_scenario; faculty review required before paper analysis",
+    "dataset_version": "professor_eval_v3_draft",
+    "train_eval_overlap_status": "needs_manual_train_eval_overlap_audit",
+    "models": {
+      "Base Model": "",
+      "Base Model + Student LoRA": "",
+      "Base Model + Professor LoRA": ""
+    },
+    "contexts": {
+      "Base Model": [],
+      "Base Model + Student LoRA": [],
+      "Base Model + Professor LoRA": []
+    },
+    "generation_latency_s": {},
+    "served_model_names": {}
+  },
+  {
+    "question_id": "P002",
+    "role": "professor",
+    "task_type": "lesson_planning",
+    "data_origin": "synthetic_instructor_support_scenario",
+    "course_name": "프로그래밍기초",
+    "scenario_theme": "조건문과 반복문",
+    "student_questions": [
+      "if와 elif를 언제 나눠 써야 하나요?",
+      "반복문이 한 번 더 도는 이유를 모르겠어요.",
+      "for와 while 중 무엇을 선택해야 하나요?",
+      "break와 continue가 결과에 어떤 차이를 만드나요?",
+      "중첩 반복문에서 변수 값이 어떻게 바뀌는지 헷갈립니다."
+    ],
+    "question": "초급 프로그래밍 수업에서 아래 질문에 대응할 짧은 보충 설명 순서를 제안해 주세요. 먼저 혼동 지점을 분리하고, 쉬운 예제에서 응용 예제로 이어지는 순서로 구성해 주세요.",
+    "ground_truth": "{\"expected_findings\": [\"조건 분기와 반복 제어의 실행 흐름을 추적하는 데 어려움이 있습니다.\", \"반복문 선택과 중첩 반복에서 변수 상태를 확인하려는 요구가 있습니다.\"], \"expected_recommendations\": [\"조건문 흐름도, 한 번 반복할 때마다 변수 표 작성, 중첩 반복의 작은 추적 예제를 순서대로 제안합니다.\"], \"keywords\": [\"조건 분기\", \"반복 제어\", \"변수 추적\", \"중첩 반복\"], \"limitations\": [\"학생 질문은 합성 시나리오이며 실제 수강생의 빈도·대표성을 나타내지 않음\", \"질문에 없는 강의 정책·성적·학생 특성은 추론하지 않음\"]}",
+    "evaluation_criteria": [
+      "요약과 분석이 제공된 질문 묶음의 내용에 정확히 연결되는가",
+      "제안이 교수가 실제 수업 준비·운영·피드백에 활용할 만큼 구체적인가",
+      "질문에 없는 학교 정책, 과목 운영 사실, 학생 수·비율·빈도를 만들어내지 않는가",
+      "확인되지 않은 규정은 교수자 확인 필요로 분명히 구분하는가",
+      "요청한 결과물 형식과 교수자 역할에 맞고 읽기 쉬운가",
+      "합성 질문 사례를 실제 수강생 전체의 의견이나 대표성으로 일반화하지 않는가"
+    ],
+    "scenario_category": "concept_and_prerequisites",
+    "review_status": "needs_faculty_review",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "knowledge_scope": "제공된 합성 학생 질문만 근거로 사용; 실제 학생의 빈도·대표성 및 미기재 강의 정책은 추정하지 않음",
+    "source_verification": "synthetic_scenario; faculty review required before paper analysis",
+    "dataset_version": "professor_eval_v3_draft",
+    "train_eval_overlap_status": "needs_manual_train_eval_overlap_audit",
+    "models": {
+      "Base Model": "",
+      "Base Model + Student LoRA": "",
+      "Base Model + Professor LoRA": ""
+    },
+    "contexts": {
+      "Base Model": [],
+      "Base Model + Student LoRA": [],
+      "Base Model + Professor LoRA": []
+    },
+    "generation_latency_s": {},
+    "served_model_names": {}
+  },
+  {
+    "question_id": "P003",
+    "role": "professor",
+    "task_type": "lesson_planning",
+    "data_origin": "synthetic_instructor_support_scenario",
+    "course_name": "알고리즘",
+    "scenario_theme": "복잡도와 알고리즘 선택",
+    "student_questions": [
+      "O(n)과 O(n log n)의 차이가 실제로 얼마나 큰가요?",
+      "정렬 알고리즘은 어떤 기준으로 선택하나요?",
+      "이중 반복문이면 항상 O(n²)인가요?",
+      "이진 탐색을 쓰려면 데이터가 정렬돼 있어야 하나요?",
+      "최악·평균 시간복잡도는 왜 다르게 보나요?"
+    ],
+    "question": "학생들이 알고리즘의 효율성과 선택 기준을 이해하도록, 질문 묶음에서 필요한 선행 개념과 수업 중 확인할 질문을 정리해 주세요. 구체적인 성적 수준은 추정하지 마세요.",
+    "ground_truth": "{\"expected_findings\": [\"복잡도 표기와 실제 입력 크기의 관계, 정렬 여부 같은 적용 조건을 함께 이해하려는 질문입니다.\", \"중첩 반복문을 기계적으로 복잡도와 연결하는 혼동이 드러납니다.\"], \"expected_recommendations\": [\"작은 입력에서 연산 횟수를 세고 입력 크기를 늘려 비교하는 활동을 제안합니다.\", \"이진 탐색의 정렬 전제와 알고리즘 선택 조건을 별도 점검 질문으로 확인합니다.\"], \"keywords\": [\"시간복잡도\", \"입력 크기\", \"정렬\", \"알고리즘 선택\"], \"limitations\": [\"학생 질문은 합성 시나리오이며 실제 수강생의 빈도·대표성을 나타내지 않음\", \"질문에 없는 강의 정책·성적·학생 특성은 추론하지 않음\"]}",
+    "evaluation_criteria": [
+      "요약과 분석이 제공된 질문 묶음의 내용에 정확히 연결되는가",
+      "제안이 교수가 실제 수업 준비·운영·피드백에 활용할 만큼 구체적인가",
+      "질문에 없는 학교 정책, 과목 운영 사실, 학생 수·비율·빈도를 만들어내지 않는가",
+      "확인되지 않은 규정은 교수자 확인 필요로 분명히 구분하는가",
+      "요청한 결과물 형식과 교수자 역할에 맞고 읽기 쉬운가",
+      "합성 질문 사례를 실제 수강생 전체의 의견이나 대표성으로 일반화하지 않는가"
+    ],
+    "scenario_category": "concept_and_prerequisites",
+    "review_status": "needs_faculty_review",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "knowledge_scope": "제공된 합성 학생 질문만 근거로 사용; 실제 학생의 빈도·대표성 및 미기재 강의 정책은 추정하지 않음",
+    "source_verification": "synthetic_scenario; faculty review required before paper analysis",
+    "dataset_version": "professor_eval_v3_draft",
+    "train_eval_overlap_status": "needs_manual_train_eval_overlap_audit",
+    "models": {
+      "Base Model": "",
+      "Base Model + Student LoRA": "",
+      "Base Model + Professor LoRA": ""
+    },
+    "contexts": {
+      "Base Model": [],
+      "Base Model + Student LoRA": [],
+      "Base Model + Professor LoRA": []
+    },
+    "generation_latency_s": {},
+    "served_model_names": {}
+  },
+  {
+    "question_id": "P004",
+    "role": "professor",
+    "task_type": "lesson_planning",
+    "data_origin": "synthetic_instructor_support_scenario",
+    "course_name": "데이터베이스",
+    "scenario_theme": "관계형 모델과 SQL",
+    "student_questions": [
+      "기본키와 외래키를 실제 표에서 구분하는 방법이 궁금합니다.",
+      "INNER JOIN과 LEFT JOIN 결과가 왜 다른가요?",
+      "정규화하면 테이블이 많아져서 불편하지 않나요?",
+      "NULL은 0이나 빈 문자열과 같은 뜻인가요?",
+      "GROUP BY를 쓰면 SELECT에 어떤 열을 넣을 수 있나요?"
+    ],
+    "question": "다음 데이터베이스 질문을 바탕으로 개념 설명과 실습을 어떤 순서로 배치하면 좋을지 제안해 주세요. 질문에 없는 수업 진도는 가정하지 말고, 확인 질문이 필요하면 표시해 주세요.",
+    "ground_truth": "{\"expected_findings\": [\"키 제약과 테이블 간 연결, 조인 결과 해석, NULL 의미, 집계 질의 규칙에 대한 혼동이 있습니다.\"], \"expected_recommendations\": [\"작은 두 테이블에서 키 관계를 표시한 뒤 JOIN 결과를 손으로 예측하게 합니다.\", \"NULL과 집계 규칙은 짧은 질의 예제로 분리해 설명합니다.\"], \"keywords\": [\"기본키·외래키\", \"JOIN\", \"NULL\", \"집계 질의\"], \"limitations\": [\"학생 질문은 합성 시나리오이며 실제 수강생의 빈도·대표성을 나타내지 않음\", \"질문에 없는 강의 정책·성적·학생 특성은 추론하지 않음\"]}",
+    "evaluation_criteria": [
+      "요약과 분석이 제공된 질문 묶음의 내용에 정확히 연결되는가",
+      "제안이 교수가 실제 수업 준비·운영·피드백에 활용할 만큼 구체적인가",
+      "질문에 없는 학교 정책, 과목 운영 사실, 학생 수·비율·빈도를 만들어내지 않는가",
+      "확인되지 않은 규정은 교수자 확인 필요로 분명히 구분하는가",
+      "요청한 결과물 형식과 교수자 역할에 맞고 읽기 쉬운가",
+      "합성 질문 사례를 실제 수강생 전체의 의견이나 대표성으로 일반화하지 않는가"
+    ],
+    "scenario_category": "concept_and_prerequisites",
+    "review_status": "needs_faculty_review",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "knowledge_scope": "제공된 합성 학생 질문만 근거로 사용; 실제 학생의 빈도·대표성 및 미기재 강의 정책은 추정하지 않음",
+    "source_verification": "synthetic_scenario; faculty review required before paper analysis",
+    "dataset_version": "professor_eval_v3_draft",
+    "train_eval_overlap_status": "needs_manual_train_eval_overlap_audit",
+    "models": {
+      "Base Model": "",
+      "Base Model + Student LoRA": "",
+      "Base Model + Professor LoRA": ""
+    },
+    "contexts": {
+      "Base Model": [],
+      "Base Model + Student LoRA": [],
+      "Base Model + Professor LoRA": []
+    },
+    "generation_latency_s": {},
+    "served_model_names": {}
+  },
+  {
+    "question_id": "P005",
+    "role": "professor",
+    "task_type": "lesson_planning",
+    "data_origin": "synthetic_instructor_support_scenario",
+    "course_name": "컴퓨터네트워크",
+    "scenario_theme": "네트워크 계층과 프로토콜",
+    "student_questions": [
+      "TCP와 UDP는 어떤 상황에서 다르게 쓰이나요?",
+      "DNS를 거쳐 웹사이트에 접속하는 과정을 알고 싶어요.",
+      "IP 주소와 포트 번호의 역할이 헷갈립니다.",
+      "라우터가 패킷을 전달하는 과정은 무엇인가요?",
+      "HTTP와 HTTPS 차이를 네트워크 관점에서 설명해 주세요."
+    ],
+    "question": "아래 질문을 이용해 네트워크 개념을 설명할 때 필요한 비교표와 실습 아이디어를 제안해 주세요. 학생이 이미 배운 범위는 질문만으로 단정하지 마세요.",
+    "ground_truth": "{\"expected_findings\": [\"전송 계층 프로토콜 비교와 주소 체계, DNS·라우팅·웹 요청의 단계적 흐름을 이해하려는 질문입니다.\"], \"expected_recommendations\": [\"주소·포트·프로토콜 역할을 구분한 표를 만들고, DNS 조회에서 HTTP 요청까지 흐름도를 따라가게 합니다.\"], \"keywords\": [\"TCP·UDP\", \"IP·포트\", \"DNS\", \"HTTP 요청 흐름\"], \"limitations\": [\"학생 질문은 합성 시나리오이며 실제 수강생의 빈도·대표성을 나타내지 않음\", \"질문에 없는 강의 정책·성적·학생 특성은 추론하지 않음\"]}",
+    "evaluation_criteria": [
+      "요약과 분석이 제공된 질문 묶음의 내용에 정확히 연결되는가",
+      "제안이 교수가 실제 수업 준비·운영·피드백에 활용할 만큼 구체적인가",
+      "질문에 없는 학교 정책, 과목 운영 사실, 학생 수·비율·빈도를 만들어내지 않는가",
+      "확인되지 않은 규정은 교수자 확인 필요로 분명히 구분하는가",
+      "요청한 결과물 형식과 교수자 역할에 맞고 읽기 쉬운가",
+      "합성 질문 사례를 실제 수강생 전체의 의견이나 대표성으로 일반화하지 않는가"
+    ],
+    "scenario_category": "concept_and_prerequisites",
+    "review_status": "needs_faculty_review",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "knowledge_scope": "제공된 합성 학생 질문만 근거로 사용; 실제 학생의 빈도·대표성 및 미기재 강의 정책은 추정하지 않음",
+    "source_verification": "synthetic_scenario; faculty review required before paper analysis",
+    "dataset_version": "professor_eval_v3_draft",
+    "train_eval_overlap_status": "needs_manual_train_eval_overlap_audit",
+    "models": {
+      "Base Model": "",
+      "Base Model + Student LoRA": "",
+      "Base Model + Professor LoRA": ""
+    },
+    "contexts": {
+      "Base Model": [],
+      "Base Model + Student LoRA": [],
+      "Base Model + Professor LoRA": []
+    },
+    "generation_latency_s": {},
+    "served_model_names": {}
+  },
+  {
+    "question_id": "P006",
+    "role": "professor",
+    "task_type": "lesson_planning",
+    "data_origin": "synthetic_instructor_support_scenario",
+    "course_name": "운영체제",
+    "scenario_theme": "프로세스·스레드와 동기화",
+    "student_questions": [
+      "프로세스와 스레드는 메모리를 어떻게 다르게 쓰나요?",
+      "문맥 교환이 일어나면 어떤 정보가 바뀌나요?",
+      "교착상태와 기아 상태는 어떻게 다른가요?",
+      "뮤텍스와 세마포어를 구분하기 어렵습니다.",
+      "스레드가 동시에 실행되면 항상 속도가 빨라지나요?"
+    ],
+    "question": "운영체제 수업의 다음 질문 묶음에서 서로 연결되는 개념을 묶고, 개념을 잘못 단순화하지 않도록 주의할 설명 포인트를 제안해 주세요.",
+    "ground_truth": "{\"expected_findings\": [\"실행 단위와 자원 공유, 동기화 도구, 동시성의 장단점을 함께 이해하려는 질문입니다.\", \"동시 실행이 항상 성능 향상을 준다고 단정하면 안 됩니다.\"], \"expected_recommendations\": [\"프로세스·스레드의 자원 관계를 그림으로 비교하고, 경쟁 조건이 발생하는 작은 예제를 단계별로 분석합니다.\"], \"keywords\": [\"프로세스·스레드\", \"문맥 교환\", \"동기화\", \"경쟁 조건\"], \"limitations\": [\"학생 질문은 합성 시나리오이며 실제 수강생의 빈도·대표성을 나타내지 않음\", \"질문에 없는 강의 정책·성적·학생 특성은 추론하지 않음\"]}",
+    "evaluation_criteria": [
+      "요약과 분석이 제공된 질문 묶음의 내용에 정확히 연결되는가",
+      "제안이 교수가 실제 수업 준비·운영·피드백에 활용할 만큼 구체적인가",
+      "질문에 없는 학교 정책, 과목 운영 사실, 학생 수·비율·빈도를 만들어내지 않는가",
+      "확인되지 않은 규정은 교수자 확인 필요로 분명히 구분하는가",
+      "요청한 결과물 형식과 교수자 역할에 맞고 읽기 쉬운가",
+      "합성 질문 사례를 실제 수강생 전체의 의견이나 대표성으로 일반화하지 않는가"
+    ],
+    "scenario_category": "concept_and_prerequisites",
+    "review_status": "needs_faculty_review",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "knowledge_scope": "제공된 합성 학생 질문만 근거로 사용; 실제 학생의 빈도·대표성 및 미기재 강의 정책은 추정하지 않음",
+    "source_verification": "synthetic_scenario; faculty review required before paper analysis",
+    "dataset_version": "professor_eval_v3_draft",
+    "train_eval_overlap_status": "needs_manual_train_eval_overlap_audit",
+    "models": {
+      "Base Model": "",
+      "Base Model + Student LoRA": "",
+      "Base Model + Professor LoRA": ""
+    },
+    "contexts": {
+      "Base Model": [],
+      "Base Model + Student LoRA": [],
+      "Base Model + Professor LoRA": []
+    },
+    "generation_latency_s": {},
+    "served_model_names": {}
+  },
+  {
+    "question_id": "P007",
+    "role": "professor",
+    "task_type": "assignment_support",
+    "data_origin": "synthetic_instructor_support_scenario",
+    "course_name": "프로그래밍기초",
+    "scenario_theme": "과제 명세와 제출 체크리스트",
+    "student_questions": [
+      "입력값은 한 줄에 공백으로 구분하면 되나요?",
+      "제출 파일 이름 규칙을 다시 알려주세요.",
+      "코드와 보고서를 모두 내야 하나요?",
+      "예제 출력과 공백 한 칸이 달라도 오답인가요?",
+      "개인 과제인지 팀 과제인지 찾기 어렵습니다.",
+      "마감 뒤 제출은 감점되나요?"
+    ],
+    "question": "다음 과제 관련 질문에서 학생들이 공지에서 찾기 어려워하는 항목을 체크리스트로 정리해 주세요. 제출 규정이 질문에 명시되지 않은 항목은 답을 만들지 말고 ‘교수자 확인 필요’로 표시해 주세요.",
+    "ground_truth": "{\"expected_findings\": [\"입출력 형식, 파일명, 제출물 종류, 과제 형태, 출력 형식, 지각 제출 기준이 질문에서 확인이 필요한 항목입니다.\"], \"expected_recommendations\": [\"공지에 제출물·파일명·입출력 예시·개인/팀 여부·마감 정책을 한 표로 정리하도록 제안합니다.\", \"질문만으로 정해지지 않은 채점·지각 제출 규정은 확인 필요로 남깁니다.\"], \"keywords\": [\"입출력 형식\", \"제출 파일\", \"과제 형태\", \"마감 정책\"], \"limitations\": [\"학생 질문은 합성 시나리오이며 실제 수강생의 빈도·대표성을 나타내지 않음\", \"질문에 없는 강의 정책·성적·학생 특성은 추론하지 않음\"]}",
+    "evaluation_criteria": [
+      "요약과 분석이 제공된 질문 묶음의 내용에 정확히 연결되는가",
+      "제안이 교수가 실제 수업 준비·운영·피드백에 활용할 만큼 구체적인가",
+      "질문에 없는 학교 정책, 과목 운영 사실, 학생 수·비율·빈도를 만들어내지 않는가",
+      "확인되지 않은 규정은 교수자 확인 필요로 분명히 구분하는가",
+      "요청한 결과물 형식과 교수자 역할에 맞고 읽기 쉬운가",
+      "합성 질문 사례를 실제 수강생 전체의 의견이나 대표성으로 일반화하지 않는가"
+    ],
+    "scenario_category": "assignment_and_project_operations",
+    "review_status": "needs_faculty_review",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "knowledge_scope": "제공된 합성 학생 질문만 근거로 사용; 실제 학생의 빈도·대표성 및 미기재 강의 정책은 추정하지 않음",
+    "source_verification": "synthetic_scenario; faculty review required before paper analysis",
+    "dataset_version": "professor_eval_v3_draft",
+    "train_eval_overlap_status": "needs_manual_train_eval_overlap_audit",
+    "models": {
+      "Base Model": "",
+      "Base Model + Student LoRA": "",
+      "Base Model + Professor LoRA": ""
+    },
+    "contexts": {
+      "Base Model": [],
+      "Base Model + Student LoRA": [],
+      "Base Model + Professor LoRA": []
+    },
+    "generation_latency_s": {},
+    "served_model_names": {}
+  },
+  {
+    "question_id": "P008",
+    "role": "professor",
+    "task_type": "project_support",
+    "data_origin": "synthetic_instructor_support_scenario",
+    "course_name": "소프트웨어설계",
+    "scenario_theme": "팀 프로젝트 역할과 산출물",
+    "student_questions": [
+      "팀원별 역할을 누가 정해야 하나요?",
+      "중간 발표 자료와 최종 보고서 둘 다 제출하나요?",
+      "Git 저장소는 팀장 계정으로 만들면 되나요?",
+      "팀원이 맡은 기능이 늦어지면 어떻게 조정하나요?",
+      "기여도는 어떤 자료로 확인하나요?"
+    ],
+    "question": "프로젝트 질문에서 요구사항과 협업 절차의 불명확한 부분을 추려 주세요. 교수자가 공지에 보완할 항목과 팀 회의에서 확인할 질문을 나누어 제안해 주세요.",
+    "ground_truth": "{\"expected_findings\": [\"역할 분담, 산출물 목록, 저장소 운영, 일정 지연 대응, 기여도 확인 방법이 불명확합니다.\"], \"expected_recommendations\": [\"역할·마일스톤·산출물·저장소 책임·기여 기록을 포함한 프로젝트 시작 체크리스트를 제안합니다.\", \"평가 비율과 분쟁 절차는 실제 강의 방침 확인이 필요하다고 표시합니다.\"], \"keywords\": [\"역할 분담\", \"마일스톤\", \"산출물\", \"기여도 기록\"], \"limitations\": [\"학생 질문은 합성 시나리오이며 실제 수강생의 빈도·대표성을 나타내지 않음\", \"질문에 없는 강의 정책·성적·학생 특성은 추론하지 않음\"]}",
+    "evaluation_criteria": [
+      "요약과 분석이 제공된 질문 묶음의 내용에 정확히 연결되는가",
+      "제안이 교수가 실제 수업 준비·운영·피드백에 활용할 만큼 구체적인가",
+      "질문에 없는 학교 정책, 과목 운영 사실, 학생 수·비율·빈도를 만들어내지 않는가",
+      "확인되지 않은 규정은 교수자 확인 필요로 분명히 구분하는가",
+      "요청한 결과물 형식과 교수자 역할에 맞고 읽기 쉬운가",
+      "합성 질문 사례를 실제 수강생 전체의 의견이나 대표성으로 일반화하지 않는가"
+    ],
+    "scenario_category": "assignment_and_project_operations",
+    "review_status": "needs_faculty_review",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "knowledge_scope": "제공된 합성 학생 질문만 근거로 사용; 실제 학생의 빈도·대표성 및 미기재 강의 정책은 추정하지 않음",
+    "source_verification": "synthetic_scenario; faculty review required before paper analysis",
+    "dataset_version": "professor_eval_v3_draft",
+    "train_eval_overlap_status": "needs_manual_train_eval_overlap_audit",
+    "models": {
+      "Base Model": "",
+      "Base Model + Student LoRA": "",
+      "Base Model + Professor LoRA": ""
+    },
+    "contexts": {
+      "Base Model": [],
+      "Base Model + Student LoRA": [],
+      "Base Model + Professor LoRA": []
+    },
+    "generation_latency_s": {},
+    "served_model_names": {}
+  },
+  {
+    "question_id": "P009",
+    "role": "professor",
+    "task_type": "assignment_support",
+    "data_origin": "synthetic_instructor_support_scenario",
+    "course_name": "알고리즘",
+    "scenario_theme": "자동채점과 디버깅 안내",
+    "student_questions": [
+      "샘플은 맞는데 숨은 테스트에서 틀립니다.",
+      "출력 끝의 줄바꿈도 비교하나요?",
+      "정수 범위가 커지면 오버플로가 날 수 있나요?",
+      "시간 초과와 오답은 무엇부터 확인해야 하나요?",
+      "같은 코드를 제출했는데 결과가 달라졌어요."
+    ],
+    "question": "자동채점 과제에 대한 질문을 분석해, 학생이 제출 전 확인할 디버깅 순서를 만들어 주세요. 채점기 내부 규칙은 질문에 나온 내용 이상으로 추측하지 마세요.",
+    "ground_truth": "{\"expected_findings\": [\"경계 입력, 출력 형식, 자료형 범위, 실행 시간, 재현 가능한 제출 버전 확인이 필요합니다.\"], \"expected_recommendations\": [\"최소·최대·빈 입력 등 경계 사례를 만들고, 출력 문자열과 자료형 범위를 확인하는 순서를 제안합니다.\", \"자동채점 세부 규칙은 공지나 담당자 확인이 필요하다고 표시합니다.\"], \"keywords\": [\"경계 사례\", \"출력 형식\", \"오버플로\", \"시간 초과\"], \"limitations\": [\"학생 질문은 합성 시나리오이며 실제 수강생의 빈도·대표성을 나타내지 않음\", \"질문에 없는 강의 정책·성적·학생 특성은 추론하지 않음\"]}",
+    "evaluation_criteria": [
+      "요약과 분석이 제공된 질문 묶음의 내용에 정확히 연결되는가",
+      "제안이 교수가 실제 수업 준비·운영·피드백에 활용할 만큼 구체적인가",
+      "질문에 없는 학교 정책, 과목 운영 사실, 학생 수·비율·빈도를 만들어내지 않는가",
+      "확인되지 않은 규정은 교수자 확인 필요로 분명히 구분하는가",
+      "요청한 결과물 형식과 교수자 역할에 맞고 읽기 쉬운가",
+      "합성 질문 사례를 실제 수강생 전체의 의견이나 대표성으로 일반화하지 않는가"
+    ],
+    "scenario_category": "assignment_and_project_operations",
+    "review_status": "needs_faculty_review",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "knowledge_scope": "제공된 합성 학생 질문만 근거로 사용; 실제 학생의 빈도·대표성 및 미기재 강의 정책은 추정하지 않음",
+    "source_verification": "synthetic_scenario; faculty review required before paper analysis",
+    "dataset_version": "professor_eval_v3_draft",
+    "train_eval_overlap_status": "needs_manual_train_eval_overlap_audit",
+    "models": {
+      "Base Model": "",
+      "Base Model + Student LoRA": "",
+      "Base Model + Professor LoRA": ""
+    },
+    "contexts": {
+      "Base Model": [],
+      "Base Model + Student LoRA": [],
+      "Base Model + Professor LoRA": []
+    },
+    "generation_latency_s": {},
+    "served_model_names": {}
+  },
+  {
+    "question_id": "P010",
+    "role": "professor",
+    "task_type": "project_support",
+    "data_origin": "synthetic_instructor_support_scenario",
+    "course_name": "종합설계프로젝트",
+    "scenario_theme": "프로젝트 주제 범위와 일정",
+    "student_questions": [
+      "아이디어가 너무 넓은지 어떻게 판단하나요?",
+      "프로토타입은 어느 수준까지 만들면 되나요?",
+      "주제를 바꾸려면 언제까지 말씀드려야 하나요?",
+      "중간 점검에서 어떤 자료를 보여야 하나요?",
+      "팀원이 사용할 기술이 달라도 괜찮나요?"
+    ],
+    "question": "캡스톤 프로젝트 준비 과정에서 나온 질문을 바탕으로, 주제 확정 전 팀이 점검할 범위·일정 질문과 교수자가 제공할 안내 항목을 정리해 주세요.",
+    "ground_truth": "{\"expected_findings\": [\"주제 범위, 프로토타입 수준, 변경 절차, 중간 산출물, 기술 선택의 호환성에 대한 기준 요청입니다.\"], \"expected_recommendations\": [\"문제·사용자·핵심 기능·검증 방법을 한 장으로 구체화하고, 주차별 마일스톤과 점검 산출물 예시를 안내하도록 제안합니다.\", \"승인·변경 기한은 실제 강의 계획 확인이 필요합니다.\"], \"keywords\": [\"주제 범위\", \"프로토타입\", \"중간 점검\", \"기술 선택\"], \"limitations\": [\"학생 질문은 합성 시나리오이며 실제 수강생의 빈도·대표성을 나타내지 않음\", \"질문에 없는 강의 정책·성적·학생 특성은 추론하지 않음\"]}",
+    "evaluation_criteria": [
+      "요약과 분석이 제공된 질문 묶음의 내용에 정확히 연결되는가",
+      "제안이 교수가 실제 수업 준비·운영·피드백에 활용할 만큼 구체적인가",
+      "질문에 없는 학교 정책, 과목 운영 사실, 학생 수·비율·빈도를 만들어내지 않는가",
+      "확인되지 않은 규정은 교수자 확인 필요로 분명히 구분하는가",
+      "요청한 결과물 형식과 교수자 역할에 맞고 읽기 쉬운가",
+      "합성 질문 사례를 실제 수강생 전체의 의견이나 대표성으로 일반화하지 않는가"
+    ],
+    "scenario_category": "assignment_and_project_operations",
+    "review_status": "needs_faculty_review",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "knowledge_scope": "제공된 합성 학생 질문만 근거로 사용; 실제 학생의 빈도·대표성 및 미기재 강의 정책은 추정하지 않음",
+    "source_verification": "synthetic_scenario; faculty review required before paper analysis",
+    "dataset_version": "professor_eval_v3_draft",
+    "train_eval_overlap_status": "needs_manual_train_eval_overlap_audit",
+    "models": {
+      "Base Model": "",
+      "Base Model + Student LoRA": "",
+      "Base Model + Professor LoRA": ""
+    },
+    "contexts": {
+      "Base Model": [],
+      "Base Model + Student LoRA": [],
+      "Base Model + Professor LoRA": []
+    },
+    "generation_latency_s": {},
+    "served_model_names": {}
+  },
+  {
+    "question_id": "P011",
+    "role": "professor",
+    "task_type": "assignment_support",
+    "data_origin": "synthetic_instructor_support_scenario",
+    "course_name": "프로그래밍기초",
+    "scenario_theme": "재제출과 버전 관리",
+    "student_questions": [
+      "마감 전에 수정본을 다시 올려도 되나요?",
+      "마지막 제출 파일을 어떻게 확인하나요?",
+      "파일을 잘못 올렸을 때 교체할 수 있나요?",
+      "Git 커밋 기록도 제출해야 하나요?",
+      "업로드 완료 표시가 안 보이면 어떻게 해야 하나요?"
+    ],
+    "question": "재제출 및 버전 관리 관련 문의를 유형별로 묶고, 학생이 실수를 줄이도록 공지할 절차를 제안해 주세요. 실제 재제출 허용 여부는 질문만으로 결론 내리지 마세요.",
+    "ground_truth": "{\"expected_findings\": [\"제출 버전 식별, 수정본 교체, 업로드 확인, 버전 기록의 제출 여부가 혼란 지점입니다.\"], \"expected_recommendations\": [\"파일명·업로드 확인 화면·최종 제출 기준·문의 채널을 안내하는 절차를 제안합니다.\", \"수정 허용 횟수와 기한은 강의 정책 확인 항목으로 둡니다.\"], \"keywords\": [\"재제출\", \"최종 버전\", \"업로드 확인\", \"버전 관리\"], \"limitations\": [\"학생 질문은 합성 시나리오이며 실제 수강생의 빈도·대표성을 나타내지 않음\", \"질문에 없는 강의 정책·성적·학생 특성은 추론하지 않음\"]}",
+    "evaluation_criteria": [
+      "요약과 분석이 제공된 질문 묶음의 내용에 정확히 연결되는가",
+      "제안이 교수가 실제 수업 준비·운영·피드백에 활용할 만큼 구체적인가",
+      "질문에 없는 학교 정책, 과목 운영 사실, 학생 수·비율·빈도를 만들어내지 않는가",
+      "확인되지 않은 규정은 교수자 확인 필요로 분명히 구분하는가",
+      "요청한 결과물 형식과 교수자 역할에 맞고 읽기 쉬운가",
+      "합성 질문 사례를 실제 수강생 전체의 의견이나 대표성으로 일반화하지 않는가"
+    ],
+    "scenario_category": "assignment_and_project_operations",
+    "review_status": "needs_faculty_review",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "knowledge_scope": "제공된 합성 학생 질문만 근거로 사용; 실제 학생의 빈도·대표성 및 미기재 강의 정책은 추정하지 않음",
+    "source_verification": "synthetic_scenario; faculty review required before paper analysis",
+    "dataset_version": "professor_eval_v3_draft",
+    "train_eval_overlap_status": "needs_manual_train_eval_overlap_audit",
+    "models": {
+      "Base Model": "",
+      "Base Model + Student LoRA": "",
+      "Base Model + Professor LoRA": ""
+    },
+    "contexts": {
+      "Base Model": [],
+      "Base Model + Student LoRA": [],
+      "Base Model + Professor LoRA": []
+    },
+    "generation_latency_s": {},
+    "served_model_names": {}
+  },
+  {
+    "question_id": "P012",
+    "role": "professor",
+    "task_type": "project_support",
+    "data_origin": "synthetic_instructor_support_scenario",
+    "course_name": "소프트웨어설계",
+    "scenario_theme": "코드 리뷰와 협업 도구",
+    "student_questions": [
+      "브랜치 이름은 자유롭게 정해도 되나요?",
+      "코드 리뷰는 모든 팀원이 해야 하나요?",
+      "충돌이 나면 누가 해결해야 하나요?",
+      "커밋 메시지는 어느 정도 자세히 쓰나요?",
+      "회의 내용을 어디에 기록하면 좋을까요?"
+    ],
+    "question": "팀 프로젝트에서 도구 사용과 코드 리뷰에 대한 질문을 바탕으로, 첫 팀 회의에서 합의할 운영 규칙 초안을 작성해 주세요. 강의에서 정한 도구가 있는 것처럼 말하지 마세요.",
+    "ground_truth": "{\"expected_findings\": [\"브랜치·리뷰 책임·충돌 해결·커밋 기록·회의 기록의 공통 규칙이 필요합니다.\"], \"expected_recommendations\": [\"팀이 선택한 저장소 도구에 맞춰 브랜치, 리뷰 승인, 충돌 처리, 기록 위치를 문서화하는 초안을 제안합니다.\", \"필수 도구나 평가 반영 여부는 강의 담당자가 확인해야 합니다.\"], \"keywords\": [\"브랜치 규칙\", \"코드 리뷰\", \"충돌 해결\", \"회의 기록\"], \"limitations\": [\"학생 질문은 합성 시나리오이며 실제 수강생의 빈도·대표성을 나타내지 않음\", \"질문에 없는 강의 정책·성적·학생 특성은 추론하지 않음\"]}",
+    "evaluation_criteria": [
+      "요약과 분석이 제공된 질문 묶음의 내용에 정확히 연결되는가",
+      "제안이 교수가 실제 수업 준비·운영·피드백에 활용할 만큼 구체적인가",
+      "질문에 없는 학교 정책, 과목 운영 사실, 학생 수·비율·빈도를 만들어내지 않는가",
+      "확인되지 않은 규정은 교수자 확인 필요로 분명히 구분하는가",
+      "요청한 결과물 형식과 교수자 역할에 맞고 읽기 쉬운가",
+      "합성 질문 사례를 실제 수강생 전체의 의견이나 대표성으로 일반화하지 않는가"
+    ],
+    "scenario_category": "assignment_and_project_operations",
+    "review_status": "needs_faculty_review",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "knowledge_scope": "제공된 합성 학생 질문만 근거로 사용; 실제 학생의 빈도·대표성 및 미기재 강의 정책은 추정하지 않음",
+    "source_verification": "synthetic_scenario; faculty review required before paper analysis",
+    "dataset_version": "professor_eval_v3_draft",
+    "train_eval_overlap_status": "needs_manual_train_eval_overlap_audit",
+    "models": {
+      "Base Model": "",
+      "Base Model + Student LoRA": "",
+      "Base Model + Professor LoRA": ""
+    },
+    "contexts": {
+      "Base Model": [],
+      "Base Model + Student LoRA": [],
+      "Base Model + Professor LoRA": []
+    },
+    "generation_latency_s": {},
+    "served_model_names": {}
+  },
+  {
+    "question_id": "P013",
+    "role": "professor",
+    "task_type": "assessment_support",
+    "data_origin": "synthetic_instructor_support_scenario",
+    "course_name": "자료구조",
+    "scenario_theme": "평가 기준과 부분 점수",
+    "student_questions": [
+      "정답은 맞지만 풀이 과정이 다르면 감점되나요?",
+      "자료구조 선택 이유도 평가하나요?",
+      "시간복잡도 설명이 없으면 점수를 못 받나요?",
+      "부분 점수 기준을 미리 볼 수 있나요?",
+      "구현은 맞는데 설명이 짧으면 어떻게 되나요?"
+    ],
+    "question": "평가 기준에 대한 학생 질문을 분석해, 채점표에서 명확히 설명해야 할 기준과 부분 점수 안내 문구 초안을 제안해 주세요. 실제 배점은 만들지 마세요.",
+    "ground_truth": "{\"expected_findings\": [\"정답·구현·자료구조 선택 근거·복잡도 분석·설명에 대한 평가 범위를 학생들이 알고 싶어 합니다.\"], \"expected_recommendations\": [\"정답, 구현 정확성, 선택 근거, 복잡도 분석을 분리한 루브릭 항목 초안을 제안합니다.\", \"각 항목 배점과 필수 여부는 교수자가 확정하도록 표시합니다.\"], \"keywords\": [\"루브릭\", \"부분 점수\", \"구현 정확성\", \"분석 근거\"], \"limitations\": [\"학생 질문은 합성 시나리오이며 실제 수강생의 빈도·대표성을 나타내지 않음\", \"질문에 없는 강의 정책·성적·학생 특성은 추론하지 않음\"]}",
+    "evaluation_criteria": [
+      "요약과 분석이 제공된 질문 묶음의 내용에 정확히 연결되는가",
+      "제안이 교수가 실제 수업 준비·운영·피드백에 활용할 만큼 구체적인가",
+      "질문에 없는 학교 정책, 과목 운영 사실, 학생 수·비율·빈도를 만들어내지 않는가",
+      "확인되지 않은 규정은 교수자 확인 필요로 분명히 구분하는가",
+      "요청한 결과물 형식과 교수자 역할에 맞고 읽기 쉬운가",
+      "합성 질문 사례를 실제 수강생 전체의 의견이나 대표성으로 일반화하지 않는가"
+    ],
+    "scenario_category": "assessment_and_feedback",
+    "review_status": "needs_faculty_review",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "knowledge_scope": "제공된 합성 학생 질문만 근거로 사용; 실제 학생의 빈도·대표성 및 미기재 강의 정책은 추정하지 않음",
+    "source_verification": "synthetic_scenario; faculty review required before paper analysis",
+    "dataset_version": "professor_eval_v3_draft",
+    "train_eval_overlap_status": "needs_manual_train_eval_overlap_audit",
+    "models": {
+      "Base Model": "",
+      "Base Model + Student LoRA": "",
+      "Base Model + Professor LoRA": ""
+    },
+    "contexts": {
+      "Base Model": [],
+      "Base Model + Student LoRA": [],
+      "Base Model + Professor LoRA": []
+    },
+    "generation_latency_s": {},
+    "served_model_names": {}
+  },
+  {
+    "question_id": "P014",
+    "role": "professor",
+    "task_type": "assessment_support",
+    "data_origin": "synthetic_instructor_support_scenario",
+    "course_name": "알고리즘",
+    "scenario_theme": "시험 범위와 연습 자료",
+    "student_questions": [
+      "시험에 동적 계획법도 포함되나요?",
+      "수업 예제와 과제 중 무엇을 복습해야 하나요?",
+      "코드를 직접 작성하는 문제가 나오나요?",
+      "복잡도 계산도 시험에서 다루나요?",
+      "지난 시험과 비슷한 문제를 제공하나요?"
+    ],
+    "question": "시험 준비 문의를 주제별로 정리하고, 학생에게 제공할 범위 확인 안내와 연습 방법을 초안으로 써 주세요. 질문에 없는 시험 범위나 출제 비율은 단정하지 마세요.",
+    "ground_truth": "{\"expected_findings\": [\"범위, 문제 형식, 복습 자료 우선순위, 연습 문제 제공 여부를 확인하려는 질문입니다.\"], \"expected_recommendations\": [\"확정된 시험 범위와 형식은 공식 공지 링크로 확인하도록 안내합니다.\", \"범위가 공개되지 않았다면 임의의 출제 내용을 말하지 않고, 주제별 복습 체크리스트를 제안합니다.\"], \"keywords\": [\"시험 범위\", \"문제 형식\", \"복습 자료\", \"공식 공지\"], \"limitations\": [\"학생 질문은 합성 시나리오이며 실제 수강생의 빈도·대표성을 나타내지 않음\", \"질문에 없는 강의 정책·성적·학생 특성은 추론하지 않음\"]}",
+    "evaluation_criteria": [
+      "요약과 분석이 제공된 질문 묶음의 내용에 정확히 연결되는가",
+      "제안이 교수가 실제 수업 준비·운영·피드백에 활용할 만큼 구체적인가",
+      "질문에 없는 학교 정책, 과목 운영 사실, 학생 수·비율·빈도를 만들어내지 않는가",
+      "확인되지 않은 규정은 교수자 확인 필요로 분명히 구분하는가",
+      "요청한 결과물 형식과 교수자 역할에 맞고 읽기 쉬운가",
+      "합성 질문 사례를 실제 수강생 전체의 의견이나 대표성으로 일반화하지 않는가"
+    ],
+    "scenario_category": "assessment_and_feedback",
+    "review_status": "needs_faculty_review",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "knowledge_scope": "제공된 합성 학생 질문만 근거로 사용; 실제 학생의 빈도·대표성 및 미기재 강의 정책은 추정하지 않음",
+    "source_verification": "synthetic_scenario; faculty review required before paper analysis",
+    "dataset_version": "professor_eval_v3_draft",
+    "train_eval_overlap_status": "needs_manual_train_eval_overlap_audit",
+    "models": {
+      "Base Model": "",
+      "Base Model + Student LoRA": "",
+      "Base Model + Professor LoRA": ""
+    },
+    "contexts": {
+      "Base Model": [],
+      "Base Model + Student LoRA": [],
+      "Base Model + Professor LoRA": []
+    },
+    "generation_latency_s": {},
+    "served_model_names": {}
+  },
+  {
+    "question_id": "P015",
+    "role": "professor",
+    "task_type": "feedback_support",
+    "data_origin": "synthetic_instructor_support_scenario",
+    "course_name": "프로그래밍기초",
+    "scenario_theme": "피드백을 학습 행동으로 연결",
+    "student_questions": [
+      "오류가 있다고만 적혀 있어 무엇을 고쳐야 할지 모르겠어요.",
+      "코드가 왜 틀렸는지 예시가 필요합니다.",
+      "같은 실수를 반복하지 않으려면 무엇을 확인하나요?",
+      "피드백을 다시 질문해도 되나요?",
+      "수정한 코드도 다시 봐주실 수 있나요?"
+    ],
+    "question": "학생 질문에서 피드백을 활용하기 어려운 지점을 찾고, 학생이 다음 시도에서 바로 적용할 수 있는 피드백 문장 예시를 세 개 작성해 주세요. 개인의 능력을 평가하지 마세요.",
+    "ground_truth": "{\"expected_findings\": [\"오류 위치뿐 아니라 원인과 다음 확인 행동이 포함된 피드백을 원합니다.\", \"피드백 후 재질문·재검토 절차가 궁금합니다.\"], \"expected_recommendations\": [\"관찰된 문제, 점검할 입력, 수정할 한 단계, 재실행 방법을 포함한 행동 중심 문구를 제안합니다.\", \"재검토 허용 여부는 수업 운영 기준 확인 항목으로 둡니다.\"], \"keywords\": [\"행동 중심 피드백\", \"오류 원인\", \"재시도\", \"재질문\"], \"limitations\": [\"학생 질문은 합성 시나리오이며 실제 수강생의 빈도·대표성을 나타내지 않음\", \"질문에 없는 강의 정책·성적·학생 특성은 추론하지 않음\"]}",
+    "evaluation_criteria": [
+      "요약과 분석이 제공된 질문 묶음의 내용에 정확히 연결되는가",
+      "제안이 교수가 실제 수업 준비·운영·피드백에 활용할 만큼 구체적인가",
+      "질문에 없는 학교 정책, 과목 운영 사실, 학생 수·비율·빈도를 만들어내지 않는가",
+      "확인되지 않은 규정은 교수자 확인 필요로 분명히 구분하는가",
+      "요청한 결과물 형식과 교수자 역할에 맞고 읽기 쉬운가",
+      "합성 질문 사례를 실제 수강생 전체의 의견이나 대표성으로 일반화하지 않는가"
+    ],
+    "scenario_category": "assessment_and_feedback",
+    "review_status": "needs_faculty_review",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "knowledge_scope": "제공된 합성 학생 질문만 근거로 사용; 실제 학생의 빈도·대표성 및 미기재 강의 정책은 추정하지 않음",
+    "source_verification": "synthetic_scenario; faculty review required before paper analysis",
+    "dataset_version": "professor_eval_v3_draft",
+    "train_eval_overlap_status": "needs_manual_train_eval_overlap_audit",
+    "models": {
+      "Base Model": "",
+      "Base Model + Student LoRA": "",
+      "Base Model + Professor LoRA": ""
+    },
+    "contexts": {
+      "Base Model": [],
+      "Base Model + Student LoRA": [],
+      "Base Model + Professor LoRA": []
+    },
+    "generation_latency_s": {},
+    "served_model_names": {}
+  },
+  {
+    "question_id": "P016",
+    "role": "professor",
+    "task_type": "assessment_support",
+    "data_origin": "synthetic_instructor_support_scenario",
+    "course_name": "운영체제",
+    "scenario_theme": "코드·서술형 채점 기준",
+    "student_questions": [
+      "코드가 동작하면 설명이 부족해도 괜찮나요?",
+      "동기화 문제는 실행 결과만 채점하나요?",
+      "그림으로 설명해도 되나요?",
+      "용어 정의와 적용 설명 중 무엇이 중요한가요?",
+      "예외 상황을 다루지 않으면 감점되나요?"
+    ],
+    "question": "코드와 서술형 답안을 함께 평가할 때 학생이 궁금해하는 기준을 표로 정리해 주세요. 각 기준에 대해 교수자가 공개할 설명과, 현재 질문만으로 알 수 없는 정책을 구분해 주세요.",
+    "ground_truth": "{\"expected_findings\": [\"실행 결과, 추론 과정, 용어 사용, 표현 형식, 예외 상황 처리의 평가 여부가 불명확합니다.\"], \"expected_recommendations\": [\"정확성·근거·표현 형식·예외 처리 여부를 구분한 채점 기준표 초안을 제안합니다.\", \"실제 필수 요소와 배점은 교수가 확정하도록 남깁니다.\"], \"keywords\": [\"코드 평가\", \"서술 근거\", \"예외 상황\", \"채점 기준\"], \"limitations\": [\"학생 질문은 합성 시나리오이며 실제 수강생의 빈도·대표성을 나타내지 않음\", \"질문에 없는 강의 정책·성적·학생 특성은 추론하지 않음\"]}",
+    "evaluation_criteria": [
+      "요약과 분석이 제공된 질문 묶음의 내용에 정확히 연결되는가",
+      "제안이 교수가 실제 수업 준비·운영·피드백에 활용할 만큼 구체적인가",
+      "질문에 없는 학교 정책, 과목 운영 사실, 학생 수·비율·빈도를 만들어내지 않는가",
+      "확인되지 않은 규정은 교수자 확인 필요로 분명히 구분하는가",
+      "요청한 결과물 형식과 교수자 역할에 맞고 읽기 쉬운가",
+      "합성 질문 사례를 실제 수강생 전체의 의견이나 대표성으로 일반화하지 않는가"
+    ],
+    "scenario_category": "assessment_and_feedback",
+    "review_status": "needs_faculty_review",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "knowledge_scope": "제공된 합성 학생 질문만 근거로 사용; 실제 학생의 빈도·대표성 및 미기재 강의 정책은 추정하지 않음",
+    "source_verification": "synthetic_scenario; faculty review required before paper analysis",
+    "dataset_version": "professor_eval_v3_draft",
+    "train_eval_overlap_status": "needs_manual_train_eval_overlap_audit",
+    "models": {
+      "Base Model": "",
+      "Base Model + Student LoRA": "",
+      "Base Model + Professor LoRA": ""
+    },
+    "contexts": {
+      "Base Model": [],
+      "Base Model + Student LoRA": [],
+      "Base Model + Professor LoRA": []
+    },
+    "generation_latency_s": {},
+    "served_model_names": {}
+  },
+  {
+    "question_id": "P017",
+    "role": "professor",
+    "task_type": "feedback_support",
+    "data_origin": "synthetic_instructor_support_scenario",
+    "course_name": "자료구조",
+    "scenario_theme": "오답 유형에 따른 보충 안내",
+    "student_questions": [
+      "큐에서 먼저 들어간 값이 먼저 나오는 이유가 헷갈립니다.",
+      "트리 높이와 노드 수 관계를 모르겠어요.",
+      "순회 결과를 손으로 구하면 자꾸 순서가 바뀝니다.",
+      "균형 트리와 일반 이진 탐색 트리는 같은 건가요?",
+      "삭제 연산에서 자식이 둘이면 어떻게 처리하나요?"
+    ],
+    "question": "아래 질문에서 드러나는 오답 가능 지점을 분류하고, 학생에게 제공할 보충 설명 자료의 구성안을 제안해 주세요. 실제 오답률이나 학생 수는 추정하지 마세요.",
+    "ground_truth": "{\"expected_findings\": [\"큐의 순서 규칙, 트리 구조 특성, 순회 절차, 균형 조건, 삭제 사례에 대한 설명이 필요합니다.\"], \"expected_recommendations\": [\"각 연산을 작은 그림과 상태 변화 표로 구성하고, 순회·삭제는 단계별 연습 문제로 보완합니다.\", \"질문만으로 실제 오답 빈도나 숙달도를 추론하지 않습니다.\"], \"keywords\": [\"큐 순서\", \"트리 높이\", \"순회\", \"삭제 연산\"], \"limitations\": [\"학생 질문은 합성 시나리오이며 실제 수강생의 빈도·대표성을 나타내지 않음\", \"질문에 없는 강의 정책·성적·학생 특성은 추론하지 않음\"]}",
+    "evaluation_criteria": [
+      "요약과 분석이 제공된 질문 묶음의 내용에 정확히 연결되는가",
+      "제안이 교수가 실제 수업 준비·운영·피드백에 활용할 만큼 구체적인가",
+      "질문에 없는 학교 정책, 과목 운영 사실, 학생 수·비율·빈도를 만들어내지 않는가",
+      "확인되지 않은 규정은 교수자 확인 필요로 분명히 구분하는가",
+      "요청한 결과물 형식과 교수자 역할에 맞고 읽기 쉬운가",
+      "합성 질문 사례를 실제 수강생 전체의 의견이나 대표성으로 일반화하지 않는가"
+    ],
+    "scenario_category": "assessment_and_feedback",
+    "review_status": "needs_faculty_review",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "knowledge_scope": "제공된 합성 학생 질문만 근거로 사용; 실제 학생의 빈도·대표성 및 미기재 강의 정책은 추정하지 않음",
+    "source_verification": "synthetic_scenario; faculty review required before paper analysis",
+    "dataset_version": "professor_eval_v3_draft",
+    "train_eval_overlap_status": "needs_manual_train_eval_overlap_audit",
+    "models": {
+      "Base Model": "",
+      "Base Model + Student LoRA": "",
+      "Base Model + Professor LoRA": ""
+    },
+    "contexts": {
+      "Base Model": [],
+      "Base Model + Student LoRA": [],
+      "Base Model + Professor LoRA": []
+    },
+    "generation_latency_s": {},
+    "served_model_names": {}
+  },
+  {
+    "question_id": "P018",
+    "role": "professor",
+    "task_type": "feedback_support",
+    "data_origin": "synthetic_instructor_support_scenario",
+    "course_name": "데이터베이스",
+    "scenario_theme": "시험 후 오답 분석",
+    "student_questions": [
+      "JOIN 결과 행이 늘어나는 이유를 모르겠어요.",
+      "GROUP BY에서 오류가 납니다.",
+      "정규화 문제에서 어떤 테이블을 나눠야 할지 모르겠습니다.",
+      "NULL 비교 조건이 왜 예상대로 되지 않나요?",
+      "SQL 실행 순서를 외워야 하나요?"
+    ],
+    "question": "시험 후 학생 문의를 바탕으로 전체 성적을 추정하지 말고, 보충 수업에서 다룰 개념과 학생에게 안내할 재학습 방법을 제안해 주세요.",
+    "ground_truth": "{\"expected_findings\": [\"JOIN 카디널리티, 그룹화 규칙, 정규화 판단, NULL 처리, 질의 처리 흐름의 재학습 요구입니다.\"], \"expected_recommendations\": [\"작은 표를 이용해 JOIN 전후 행 수를 세고, 질의 절을 단계별로 추적하는 복습 활동을 제안합니다.\", \"성적 분포와 오답 비율은 데이터가 없으므로 추정하지 않습니다.\"], \"keywords\": [\"JOIN 결과\", \"GROUP BY\", \"정규화\", \"NULL 처리\"], \"limitations\": [\"학생 질문은 합성 시나리오이며 실제 수강생의 빈도·대표성을 나타내지 않음\", \"질문에 없는 강의 정책·성적·학생 특성은 추론하지 않음\"]}",
+    "evaluation_criteria": [
+      "요약과 분석이 제공된 질문 묶음의 내용에 정확히 연결되는가",
+      "제안이 교수가 실제 수업 준비·운영·피드백에 활용할 만큼 구체적인가",
+      "질문에 없는 학교 정책, 과목 운영 사실, 학생 수·비율·빈도를 만들어내지 않는가",
+      "확인되지 않은 규정은 교수자 확인 필요로 분명히 구분하는가",
+      "요청한 결과물 형식과 교수자 역할에 맞고 읽기 쉬운가",
+      "합성 질문 사례를 실제 수강생 전체의 의견이나 대표성으로 일반화하지 않는가"
+    ],
+    "scenario_category": "assessment_and_feedback",
+    "review_status": "needs_faculty_review",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "knowledge_scope": "제공된 합성 학생 질문만 근거로 사용; 실제 학생의 빈도·대표성 및 미기재 강의 정책은 추정하지 않음",
+    "source_verification": "synthetic_scenario; faculty review required before paper analysis",
+    "dataset_version": "professor_eval_v3_draft",
+    "train_eval_overlap_status": "needs_manual_train_eval_overlap_audit",
+    "models": {
+      "Base Model": "",
+      "Base Model + Student LoRA": "",
+      "Base Model + Professor LoRA": ""
+    },
+    "contexts": {
+      "Base Model": [],
+      "Base Model + Student LoRA": [],
+      "Base Model + Professor LoRA": []
+    },
+    "generation_latency_s": {},
+    "served_model_names": {}
+  },
+  {
+    "question_id": "P019",
+    "role": "professor",
+    "task_type": "inclusive_teaching_support",
+    "data_origin": "synthetic_instructor_support_scenario",
+    "course_name": "컴퓨터네트워크",
+    "scenario_theme": "강의 자료의 접근성",
+    "student_questions": [
+      "녹화 영상에 자막이 있으면 좋겠습니다.",
+      "슬라이드 이미지 안의 글자를 검색할 수 없어요.",
+      "강의 자료를 미리 받아 필기하고 싶습니다.",
+      "도식의 색만으로 구분된 내용을 설명해 주세요.",
+      "영상에서 설명한 코드 내용을 텍스트로도 보고 싶어요."
+    ],
+    "question": "강의 자료 접근성에 관한 요청을 바탕으로 교수자가 점검할 자료 개선 항목과 대체 제공 방법을 제안해 주세요. 학생의 장애나 건강 상태를 추측하지 마세요.",
+    "ground_truth": "{\"expected_findings\": [\"자막, 검색 가능한 텍스트, 사전 자료 제공, 색 이외의 시각 구분, 코드의 텍스트 자료 요청입니다.\"], \"expected_recommendations\": [\"자막·텍스트 대본·접근 가능한 PDF·색상 외 레이블·코드 자료를 점검하고 가능한 제공 경로를 안내하도록 제안합니다.\", \"특정 학생의 상태나 법적 의무를 질문만으로 판단하지 않습니다.\"], \"keywords\": [\"자막\", \"검색 가능한 자료\", \"색상 외 구분\", \"사전 제공\"], \"limitations\": [\"학생 질문은 합성 시나리오이며 실제 수강생의 빈도·대표성을 나타내지 않음\", \"질문에 없는 강의 정책·성적·학생 특성은 추론하지 않음\"]}",
+    "evaluation_criteria": [
+      "요약과 분석이 제공된 질문 묶음의 내용에 정확히 연결되는가",
+      "제안이 교수가 실제 수업 준비·운영·피드백에 활용할 만큼 구체적인가",
+      "질문에 없는 학교 정책, 과목 운영 사실, 학생 수·비율·빈도를 만들어내지 않는가",
+      "확인되지 않은 규정은 교수자 확인 필요로 분명히 구분하는가",
+      "요청한 결과물 형식과 교수자 역할에 맞고 읽기 쉬운가",
+      "합성 질문 사례를 실제 수강생 전체의 의견이나 대표성으로 일반화하지 않는가"
+    ],
+    "scenario_category": "learning_environment_and_accessibility",
+    "review_status": "needs_faculty_review",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "knowledge_scope": "제공된 합성 학생 질문만 근거로 사용; 실제 학생의 빈도·대표성 및 미기재 강의 정책은 추정하지 않음",
+    "source_verification": "synthetic_scenario; faculty review required before paper analysis",
+    "dataset_version": "professor_eval_v3_draft",
+    "train_eval_overlap_status": "needs_manual_train_eval_overlap_audit",
+    "models": {
+      "Base Model": "",
+      "Base Model + Student LoRA": "",
+      "Base Model + Professor LoRA": ""
+    },
+    "contexts": {
+      "Base Model": [],
+      "Base Model + Student LoRA": [],
+      "Base Model + Professor LoRA": []
+    },
+    "generation_latency_s": {},
+    "served_model_names": {}
+  },
+  {
+    "question_id": "P020",
+    "role": "professor",
+    "task_type": "learning_environment_support",
+    "data_origin": "synthetic_instructor_support_scenario",
+    "course_name": "프로그래밍기초",
+    "scenario_theme": "실습 환경 설정 지원",
+    "student_questions": [
+      "수업용 패키지 설치가 계속 실패합니다.",
+      "학교 컴퓨터와 개인 노트북 결과가 달라요.",
+      "인터넷이 안 되는 실습실에서도 과제를 할 수 있나요?",
+      "오류 메시지를 어디에 올려야 하나요?",
+      "설치 권한이 없어 프로그램을 추가할 수 없습니다."
+    ],
+    "question": "실습 환경 문제를 수업 운영 관점에서 묶어 주세요. 학생이 먼저 확인할 공통 절차와 교수자가 준비할 대안을 제안하되, 특정 운영체제가 지원된다고 단정하지 마세요.",
+    "ground_truth": "{\"expected_findings\": [\"설치·버전 차이·네트워크 의존성·오류 문의 경로·권한 문제에 대한 지원 요구입니다.\"], \"expected_recommendations\": [\"설치 확인표와 오류 제출 양식을 만들고, 학교 실습 환경이나 대체 실습 방법을 사전에 안내하도록 제안합니다.\", \"지원 운영체제와 실습실 정책은 담당자가 확인하도록 표시합니다.\"], \"keywords\": [\"패키지 설치\", \"환경 차이\", \"오류 보고\", \"대체 실습\"], \"limitations\": [\"학생 질문은 합성 시나리오이며 실제 수강생의 빈도·대표성을 나타내지 않음\", \"질문에 없는 강의 정책·성적·학생 특성은 추론하지 않음\"]}",
+    "evaluation_criteria": [
+      "요약과 분석이 제공된 질문 묶음의 내용에 정확히 연결되는가",
+      "제안이 교수가 실제 수업 준비·운영·피드백에 활용할 만큼 구체적인가",
+      "질문에 없는 학교 정책, 과목 운영 사실, 학생 수·비율·빈도를 만들어내지 않는가",
+      "확인되지 않은 규정은 교수자 확인 필요로 분명히 구분하는가",
+      "요청한 결과물 형식과 교수자 역할에 맞고 읽기 쉬운가",
+      "합성 질문 사례를 실제 수강생 전체의 의견이나 대표성으로 일반화하지 않는가"
+    ],
+    "scenario_category": "learning_environment_and_accessibility",
+    "review_status": "needs_faculty_review",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "knowledge_scope": "제공된 합성 학생 질문만 근거로 사용; 실제 학생의 빈도·대표성 및 미기재 강의 정책은 추정하지 않음",
+    "source_verification": "synthetic_scenario; faculty review required before paper analysis",
+    "dataset_version": "professor_eval_v3_draft",
+    "train_eval_overlap_status": "needs_manual_train_eval_overlap_audit",
+    "models": {
+      "Base Model": "",
+      "Base Model + Student LoRA": "",
+      "Base Model + Professor LoRA": ""
+    },
+    "contexts": {
+      "Base Model": [],
+      "Base Model + Student LoRA": [],
+      "Base Model + Professor LoRA": []
+    },
+    "generation_latency_s": {},
+    "served_model_names": {}
+  },
+  {
+    "question_id": "P021",
+    "role": "professor",
+    "task_type": "inclusive_teaching_support",
+    "data_origin": "synthetic_instructor_support_scenario",
+    "course_name": "자료구조",
+    "scenario_theme": "참여 방식 선택지",
+    "student_questions": [
+      "수업 중 바로 발표하기 어려운데 질문을 남길 다른 방법이 있나요?",
+      "익명으로 개념 질문을 할 수 있나요?",
+      "생각할 시간이 조금 더 있으면 답할 수 있을 것 같아요.",
+      "채팅으로 답해도 참여로 인정되나요?",
+      "발표 대신 풀이 과정을 제출할 수 있나요?"
+    ],
+    "question": "수업 참여 방식에 대한 질문을 바탕으로 학생이 학습 목표를 달성할 수 있는 참여 선택지를 제안해 주세요. 질문에 나온 요구를 넘어 개인 사정을 추정하지 마세요.",
+    "ground_truth": "{\"expected_findings\": [\"즉석 발언 외에 익명 질문, 대기 시간, 채팅, 서면 풀이 등 참여 경로에 대한 문의입니다.\"], \"expected_recommendations\": [\"구두·익명·채팅·서면 등 여러 참여 경로를 검토하고, 참여 인정 기준은 사전에 명시하도록 제안합니다.\", \"개별 편의 제공의 승인 여부는 기관 절차와 담당자 확인이 필요합니다.\"], \"keywords\": [\"익명 질문\", \"대기 시간\", \"대체 참여\", \"참여 기준\"], \"limitations\": [\"학생 질문은 합성 시나리오이며 실제 수강생의 빈도·대표성을 나타내지 않음\", \"질문에 없는 강의 정책·성적·학생 특성은 추론하지 않음\"]}",
+    "evaluation_criteria": [
+      "요약과 분석이 제공된 질문 묶음의 내용에 정확히 연결되는가",
+      "제안이 교수가 실제 수업 준비·운영·피드백에 활용할 만큼 구체적인가",
+      "질문에 없는 학교 정책, 과목 운영 사실, 학생 수·비율·빈도를 만들어내지 않는가",
+      "확인되지 않은 규정은 교수자 확인 필요로 분명히 구분하는가",
+      "요청한 결과물 형식과 교수자 역할에 맞고 읽기 쉬운가",
+      "합성 질문 사례를 실제 수강생 전체의 의견이나 대표성으로 일반화하지 않는가"
+    ],
+    "scenario_category": "learning_environment_and_accessibility",
+    "review_status": "needs_faculty_review",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "knowledge_scope": "제공된 합성 학생 질문만 근거로 사용; 실제 학생의 빈도·대표성 및 미기재 강의 정책은 추정하지 않음",
+    "source_verification": "synthetic_scenario; faculty review required before paper analysis",
+    "dataset_version": "professor_eval_v3_draft",
+    "train_eval_overlap_status": "needs_manual_train_eval_overlap_audit",
+    "models": {
+      "Base Model": "",
+      "Base Model + Student LoRA": "",
+      "Base Model + Professor LoRA": ""
+    },
+    "contexts": {
+      "Base Model": [],
+      "Base Model + Student LoRA": [],
+      "Base Model + Professor LoRA": []
+    },
+    "generation_latency_s": {},
+    "served_model_names": {}
+  },
+  {
+    "question_id": "P022",
+    "role": "professor",
+    "task_type": "inclusive_teaching_support",
+    "data_origin": "synthetic_instructor_support_scenario",
+    "course_name": "운영체제",
+    "scenario_theme": "수업 속도와 자료 형식",
+    "student_questions": [
+      "슬라이드가 빠르게 넘어가 필기를 놓칩니다.",
+      "약어가 설명 없이 나와서 따라가기 어렵습니다.",
+      "판서와 슬라이드 내용이 달라 헷갈려요.",
+      "수업 뒤에 예제 코드를 다시 받을 수 있나요?",
+      "지난 주 개념을 복습할 요약이 필요합니다."
+    ],
+    "question": "학생이 수업 자료를 따라가기 어렵다고 느끼는 지점을 정리하고, 수업 흐름과 자료 형식을 개선할 작은 조치를 제안해 주세요. 질문만으로 학습 능력을 평가하지 마세요.",
+    "ground_truth": "{\"expected_findings\": [\"진행 속도, 약어 설명, 자료 간 일치, 예제 재접근, 누적 복습 자료가 필요합니다.\"], \"expected_recommendations\": [\"핵심 용어를 먼저 정의하고, 슬라이드와 판서를 맞추며, 수업 후 예제와 주차별 요약을 제공하는 방안을 제안합니다.\"], \"keywords\": [\"수업 속도\", \"용어 정의\", \"자료 일관성\", \"복습 자료\"], \"limitations\": [\"학생 질문은 합성 시나리오이며 실제 수강생의 빈도·대표성을 나타내지 않음\", \"질문에 없는 강의 정책·성적·학생 특성은 추론하지 않음\"]}",
+    "evaluation_criteria": [
+      "요약과 분석이 제공된 질문 묶음의 내용에 정확히 연결되는가",
+      "제안이 교수가 실제 수업 준비·운영·피드백에 활용할 만큼 구체적인가",
+      "질문에 없는 학교 정책, 과목 운영 사실, 학생 수·비율·빈도를 만들어내지 않는가",
+      "확인되지 않은 규정은 교수자 확인 필요로 분명히 구분하는가",
+      "요청한 결과물 형식과 교수자 역할에 맞고 읽기 쉬운가",
+      "합성 질문 사례를 실제 수강생 전체의 의견이나 대표성으로 일반화하지 않는가"
+    ],
+    "scenario_category": "learning_environment_and_accessibility",
+    "review_status": "needs_faculty_review",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "knowledge_scope": "제공된 합성 학생 질문만 근거로 사용; 실제 학생의 빈도·대표성 및 미기재 강의 정책은 추정하지 않음",
+    "source_verification": "synthetic_scenario; faculty review required before paper analysis",
+    "dataset_version": "professor_eval_v3_draft",
+    "train_eval_overlap_status": "needs_manual_train_eval_overlap_audit",
+    "models": {
+      "Base Model": "",
+      "Base Model + Student LoRA": "",
+      "Base Model + Professor LoRA": ""
+    },
+    "contexts": {
+      "Base Model": [],
+      "Base Model + Student LoRA": [],
+      "Base Model + Professor LoRA": []
+    },
+    "generation_latency_s": {},
+    "served_model_names": {}
+  },
+  {
+    "question_id": "P023",
+    "role": "professor",
+    "task_type": "inclusive_teaching_support",
+    "data_origin": "synthetic_instructor_support_scenario",
+    "course_name": "알고리즘",
+    "scenario_theme": "다양한 설명 표현",
+    "student_questions": [
+      "점화식을 읽어도 재귀 과정이 떠오르지 않습니다.",
+      "그림으로 보면 이해되는데 코드로 옮기기 어렵습니다.",
+      "코드만 보면 알고리즘의 전체 흐름을 놓칩니다.",
+      "예제 입력을 단계별 표로 보여 주세요.",
+      "복잡도 그래프와 실제 실행 횟수를 연결해 주세요."
+    ],
+    "question": "알고리즘 설명을 이해하는 방식에 관한 질문에서 자료 설계 요구를 찾아 주세요. 같은 개념을 여러 표현으로 제공하는 수업 자료 구성을 제안해 주세요.",
+    "ground_truth": "{\"expected_findings\": [\"수식·그림·코드·표·실행 횟수처럼 표현 간 연결을 원하는 질문입니다.\"], \"expected_recommendations\": [\"동일한 알고리즘을 의사코드, 상태 변화 표, 시각화, 실행 코드 순으로 연결하는 자료를 제안합니다.\", \"특정 표현 방식만이 모든 학생에게 적합하다고 단정하지 않습니다.\"], \"keywords\": [\"다중 표현\", \"상태 변화 표\", \"시각화\", \"코드 연결\"], \"limitations\": [\"학생 질문은 합성 시나리오이며 실제 수강생의 빈도·대표성을 나타내지 않음\", \"질문에 없는 강의 정책·성적·학생 특성은 추론하지 않음\"]}",
+    "evaluation_criteria": [
+      "요약과 분석이 제공된 질문 묶음의 내용에 정확히 연결되는가",
+      "제안이 교수가 실제 수업 준비·운영·피드백에 활용할 만큼 구체적인가",
+      "질문에 없는 학교 정책, 과목 운영 사실, 학생 수·비율·빈도를 만들어내지 않는가",
+      "확인되지 않은 규정은 교수자 확인 필요로 분명히 구분하는가",
+      "요청한 결과물 형식과 교수자 역할에 맞고 읽기 쉬운가",
+      "합성 질문 사례를 실제 수강생 전체의 의견이나 대표성으로 일반화하지 않는가"
+    ],
+    "scenario_category": "learning_environment_and_accessibility",
+    "review_status": "needs_faculty_review",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "knowledge_scope": "제공된 합성 학생 질문만 근거로 사용; 실제 학생의 빈도·대표성 및 미기재 강의 정책은 추정하지 않음",
+    "source_verification": "synthetic_scenario; faculty review required before paper analysis",
+    "dataset_version": "professor_eval_v3_draft",
+    "train_eval_overlap_status": "needs_manual_train_eval_overlap_audit",
+    "models": {
+      "Base Model": "",
+      "Base Model + Student LoRA": "",
+      "Base Model + Professor LoRA": ""
+    },
+    "contexts": {
+      "Base Model": [],
+      "Base Model + Student LoRA": [],
+      "Base Model + Professor LoRA": []
+    },
+    "generation_latency_s": {},
+    "served_model_names": {}
+  },
+  {
+    "question_id": "P024",
+    "role": "professor",
+    "task_type": "learning_environment_support",
+    "data_origin": "synthetic_instructor_support_scenario",
+    "course_name": "컴퓨터네트워크",
+    "scenario_theme": "실습 장비와 대체 참여",
+    "student_questions": [
+      "실습 장비를 수업 시간 외에도 사용할 수 있나요?",
+      "개인 컴퓨터에 필요한 네트워크 도구를 설치할 수 없어요.",
+      "원격으로 실습을 이어갈 방법이 있나요?",
+      "장비 예약 방법을 어디서 확인하나요?",
+      "실습을 못 한 경우 관찰 기록으로 대체할 수 있나요?"
+    ],
+    "question": "네트워크 실습 참여에 관한 문의를 분석해 장비·접속·대체 활동의 점검 목록을 만들어 주세요. 학교의 실제 장비나 원격 접속 가능 여부는 미확인으로 남기세요.",
+    "ground_truth": "{\"expected_findings\": [\"장비 접근 시간, 소프트웨어 설치, 원격 실습, 예약 절차, 대체 과제 가능 여부 문의입니다.\"], \"expected_recommendations\": [\"장비·소프트웨어 접근 방법, 예약 안내, 실습 대체 절차를 한 곳에 정리하도록 제안합니다.\", \"실제 이용 가능 시간과 대체 인정 여부는 담당자 확인으로 둡니다.\"], \"keywords\": [\"장비 접근\", \"소프트웨어\", \"원격 실습\", \"대체 절차\"], \"limitations\": [\"학생 질문은 합성 시나리오이며 실제 수강생의 빈도·대표성을 나타내지 않음\", \"질문에 없는 강의 정책·성적·학생 특성은 추론하지 않음\"]}",
+    "evaluation_criteria": [
+      "요약과 분석이 제공된 질문 묶음의 내용에 정확히 연결되는가",
+      "제안이 교수가 실제 수업 준비·운영·피드백에 활용할 만큼 구체적인가",
+      "질문에 없는 학교 정책, 과목 운영 사실, 학생 수·비율·빈도를 만들어내지 않는가",
+      "확인되지 않은 규정은 교수자 확인 필요로 분명히 구분하는가",
+      "요청한 결과물 형식과 교수자 역할에 맞고 읽기 쉬운가",
+      "합성 질문 사례를 실제 수강생 전체의 의견이나 대표성으로 일반화하지 않는가"
+    ],
+    "scenario_category": "learning_environment_and_accessibility",
+    "review_status": "needs_faculty_review",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "knowledge_scope": "제공된 합성 학생 질문만 근거로 사용; 실제 학생의 빈도·대표성 및 미기재 강의 정책은 추정하지 않음",
+    "source_verification": "synthetic_scenario; faculty review required before paper analysis",
+    "dataset_version": "professor_eval_v3_draft",
+    "train_eval_overlap_status": "needs_manual_train_eval_overlap_audit",
+    "models": {
+      "Base Model": "",
+      "Base Model + Student LoRA": "",
+      "Base Model + Professor LoRA": ""
+    },
+    "contexts": {
+      "Base Model": [],
+      "Base Model + Student LoRA": [],
+      "Base Model + Professor LoRA": []
+    },
+    "generation_latency_s": {},
+    "served_model_names": {}
+  },
+  {
+    "question_id": "P025",
+    "role": "professor",
+    "task_type": "course_communication_support",
+    "data_origin": "synthetic_instructor_support_scenario",
+    "course_name": "자료구조",
+    "scenario_theme": "질문·상담 창구 안내",
+    "student_questions": [
+      "수업 끝나고 질문해도 되나요?",
+      "이메일과 게시판 중 어디로 질문해야 하나요?",
+      "질문 답변까지 보통 얼마나 걸리나요?",
+      "개인적인 질문은 공개 게시판에 써도 되나요?",
+      "조교에게 먼저 물어봐도 되나요?"
+    ],
+    "question": "질문을 어디에 남길지 묻는 학생들을 위해 교수자가 공지할 상담·질문 안내문 초안을 작성해 주세요. 실제 채널이나 응답 시간은 임의로 정하지 말고 대괄호 자리표시자로 남겨 주세요.",
+    "ground_truth": "{\"expected_findings\": [\"질문 채널 선택, 공개·비공개 구분, 조교 문의 범위, 응답 기대에 대한 안내가 필요합니다.\"], \"expected_recommendations\": [\"[질문 게시판], [비공개 연락 방법], [조교 문의 범위], [예상 응답 시간]을 채울 수 있는 짧은 공지 초안을 제안합니다.\"], \"keywords\": [\"질문 채널\", \"비공개 문의\", \"조교 역할\", \"응답 기대\"], \"limitations\": [\"학생 질문은 합성 시나리오이며 실제 수강생의 빈도·대표성을 나타내지 않음\", \"질문에 없는 강의 정책·성적·학생 특성은 추론하지 않음\"]}",
+    "evaluation_criteria": [
+      "요약과 분석이 제공된 질문 묶음의 내용에 정확히 연결되는가",
+      "제안이 교수가 실제 수업 준비·운영·피드백에 활용할 만큼 구체적인가",
+      "질문에 없는 학교 정책, 과목 운영 사실, 학생 수·비율·빈도를 만들어내지 않는가",
+      "확인되지 않은 규정은 교수자 확인 필요로 분명히 구분하는가",
+      "요청한 결과물 형식과 교수자 역할에 맞고 읽기 쉬운가",
+      "합성 질문 사례를 실제 수강생 전체의 의견이나 대표성으로 일반화하지 않는가"
+    ],
+    "scenario_category": "participation_and_communication",
+    "review_status": "needs_faculty_review",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "knowledge_scope": "제공된 합성 학생 질문만 근거로 사용; 실제 학생의 빈도·대표성 및 미기재 강의 정책은 추정하지 않음",
+    "source_verification": "synthetic_scenario; faculty review required before paper analysis",
+    "dataset_version": "professor_eval_v3_draft",
+    "train_eval_overlap_status": "needs_manual_train_eval_overlap_audit",
+    "models": {
+      "Base Model": "",
+      "Base Model + Student LoRA": "",
+      "Base Model + Professor LoRA": ""
+    },
+    "contexts": {
+      "Base Model": [],
+      "Base Model + Student LoRA": [],
+      "Base Model + Professor LoRA": []
+    },
+    "generation_latency_s": {},
+    "served_model_names": {}
+  },
+  {
+    "question_id": "P026",
+    "role": "professor",
+    "task_type": "course_communication_support",
+    "data_origin": "synthetic_instructor_support_scenario",
+    "course_name": "프로그래밍기초",
+    "scenario_theme": "익명 질문과 수업 중 발언",
+    "student_questions": [
+      "기초적인 질문이라 말하기가 망설여집니다.",
+      "익명 질문 상자를 사용할 수 있나요?",
+      "질문을 적을 시간이 조금 더 필요합니다.",
+      "다른 학생이 질문한 내용도 볼 수 있나요?",
+      "수업 중 말하지 않아도 질문을 전달할 수 있나요?"
+    ],
+    "question": "수업 중 질문을 망설이는 학생을 위해, 참여를 독려하는 안내 문구와 수업에서 적용할 수 있는 질문 수집 방안을 제안해 주세요. 참여하지 않는 이유를 추측하지 마세요.",
+    "ground_truth": "{\"expected_findings\": [\"익명·비동기·숙고 시간 등 발언 이외의 질문 통로를 원하는 내용입니다.\"], \"expected_recommendations\": [\"익명 질문 양식이나 수업 후 질문 제출 경로를 검토하고, 질문의 난이도를 평가하지 않는 환영 문구를 제안합니다.\", \"질문 공개 범위와 답변 일정은 교수자가 정하도록 남깁니다.\"], \"keywords\": [\"익명 질문\", \"비동기 참여\", \"질문 환영\", \"공개 범위\"], \"limitations\": [\"학생 질문은 합성 시나리오이며 실제 수강생의 빈도·대표성을 나타내지 않음\", \"질문에 없는 강의 정책·성적·학생 특성은 추론하지 않음\"]}",
+    "evaluation_criteria": [
+      "요약과 분석이 제공된 질문 묶음의 내용에 정확히 연결되는가",
+      "제안이 교수가 실제 수업 준비·운영·피드백에 활용할 만큼 구체적인가",
+      "질문에 없는 학교 정책, 과목 운영 사실, 학생 수·비율·빈도를 만들어내지 않는가",
+      "확인되지 않은 규정은 교수자 확인 필요로 분명히 구분하는가",
+      "요청한 결과물 형식과 교수자 역할에 맞고 읽기 쉬운가",
+      "합성 질문 사례를 실제 수강생 전체의 의견이나 대표성으로 일반화하지 않는가"
+    ],
+    "scenario_category": "participation_and_communication",
+    "review_status": "needs_faculty_review",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "knowledge_scope": "제공된 합성 학생 질문만 근거로 사용; 실제 학생의 빈도·대표성 및 미기재 강의 정책은 추정하지 않음",
+    "source_verification": "synthetic_scenario; faculty review required before paper analysis",
+    "dataset_version": "professor_eval_v3_draft",
+    "train_eval_overlap_status": "needs_manual_train_eval_overlap_audit",
+    "models": {
+      "Base Model": "",
+      "Base Model + Student LoRA": "",
+      "Base Model + Professor LoRA": ""
+    },
+    "contexts": {
+      "Base Model": [],
+      "Base Model + Student LoRA": [],
+      "Base Model + Professor LoRA": []
+    },
+    "generation_latency_s": {},
+    "served_model_names": {}
+  },
+  {
+    "question_id": "P027",
+    "role": "professor",
+    "task_type": "course_communication_support",
+    "data_origin": "synthetic_instructor_support_scenario",
+    "course_name": "소프트웨어설계",
+    "scenario_theme": "팀 활동 참여 점검",
+    "student_questions": [
+      "회의에 참석하지 못했을 때 역할을 어떻게 공유하나요?",
+      "팀원이 맡은 일을 어디에 기록하면 좋나요?",
+      "의견이 다를 때 교수자에게 언제 상담해야 하나요?",
+      "기여도 기록은 어떤 방식이 공정한가요?",
+      "팀 내 일정 변경을 어떻게 알리면 되나요?"
+    ],
+    "question": "팀 활동에 관한 질문 묶음에서 교수자가 공통 안내로 다룰 주제를 정리해 주세요. 특정 팀의 갈등이나 무임승차가 실제로 있다고 단정하지 마세요.",
+    "ground_truth": "{\"expected_findings\": [\"회의 기록, 역할·진척 공유, 의견 조정, 상담 시점, 기여 기록의 공통 절차를 묻고 있습니다.\"], \"expected_recommendations\": [\"팀 합의 기록 양식과 주간 진행 점검표를 제공하고, 조정이 어려울 때 상담할 공식 경로를 안내하도록 제안합니다.\", \"실제 갈등이나 특정 팀의 책임을 추측하지 않습니다.\"], \"keywords\": [\"회의 기록\", \"역할 공유\", \"의견 조정\", \"기여 기록\"], \"limitations\": [\"학생 질문은 합성 시나리오이며 실제 수강생의 빈도·대표성을 나타내지 않음\", \"질문에 없는 강의 정책·성적·학생 특성은 추론하지 않음\"]}",
+    "evaluation_criteria": [
+      "요약과 분석이 제공된 질문 묶음의 내용에 정확히 연결되는가",
+      "제안이 교수가 실제 수업 준비·운영·피드백에 활용할 만큼 구체적인가",
+      "질문에 없는 학교 정책, 과목 운영 사실, 학생 수·비율·빈도를 만들어내지 않는가",
+      "확인되지 않은 규정은 교수자 확인 필요로 분명히 구분하는가",
+      "요청한 결과물 형식과 교수자 역할에 맞고 읽기 쉬운가",
+      "합성 질문 사례를 실제 수강생 전체의 의견이나 대표성으로 일반화하지 않는가"
+    ],
+    "scenario_category": "participation_and_communication",
+    "review_status": "needs_faculty_review",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "knowledge_scope": "제공된 합성 학생 질문만 근거로 사용; 실제 학생의 빈도·대표성 및 미기재 강의 정책은 추정하지 않음",
+    "source_verification": "synthetic_scenario; faculty review required before paper analysis",
+    "dataset_version": "professor_eval_v3_draft",
+    "train_eval_overlap_status": "needs_manual_train_eval_overlap_audit",
+    "models": {
+      "Base Model": "",
+      "Base Model + Student LoRA": "",
+      "Base Model + Professor LoRA": ""
+    },
+    "contexts": {
+      "Base Model": [],
+      "Base Model + Student LoRA": [],
+      "Base Model + Professor LoRA": []
+    },
+    "generation_latency_s": {},
+    "served_model_names": {}
+  },
+  {
+    "question_id": "P028",
+    "role": "professor",
+    "task_type": "course_communication_support",
+    "data_origin": "synthetic_instructor_support_scenario",
+    "course_name": "데이터베이스",
+    "scenario_theme": "주간 공지와 FAQ",
+    "student_questions": [
+      "이번 주 실습 자료는 어디서 받나요?",
+      "과제 마감일이 강의계획서와 공지에서 다르게 보여요.",
+      "지난 수업 SQL 예제를 다시 볼 수 있나요?",
+      "질문 답변은 공지에도 정리되나요?",
+      "휴강이나 보강 안내는 어디서 확인하나요?"
+    ],
+    "question": "학생 질문을 바탕으로 주간 FAQ 초안을 만들어 주세요. 질문에서 확인되는 답은 간결히 정리하고, 강의 운영 사실이 필요한 항목은 [강의 공지 확인 필요]라고 표시해 주세요.",
+    "ground_truth": "{\"expected_findings\": [\"자료 위치, 상충하는 일정 정보, 예제 재접근, 반복 질문 공유, 수업 일정 공지 경로에 대한 문의입니다.\"], \"expected_recommendations\": [\"자료·예제 위치와 공식 일정 확인 경로를 FAQ에 포함하고, 상충 정보는 교수자가 확인한 뒤 공지하도록 제안합니다.\"], \"keywords\": [\"자료 위치\", \"일정 확인\", \"예제 재공유\", \"FAQ\"], \"limitations\": [\"학생 질문은 합성 시나리오이며 실제 수강생의 빈도·대표성을 나타내지 않음\", \"질문에 없는 강의 정책·성적·학생 특성은 추론하지 않음\"]}",
+    "evaluation_criteria": [
+      "요약과 분석이 제공된 질문 묶음의 내용에 정확히 연결되는가",
+      "제안이 교수가 실제 수업 준비·운영·피드백에 활용할 만큼 구체적인가",
+      "질문에 없는 학교 정책, 과목 운영 사실, 학생 수·비율·빈도를 만들어내지 않는가",
+      "확인되지 않은 규정은 교수자 확인 필요로 분명히 구분하는가",
+      "요청한 결과물 형식과 교수자 역할에 맞고 읽기 쉬운가",
+      "합성 질문 사례를 실제 수강생 전체의 의견이나 대표성으로 일반화하지 않는가"
+    ],
+    "scenario_category": "participation_and_communication",
+    "review_status": "needs_faculty_review",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "knowledge_scope": "제공된 합성 학생 질문만 근거로 사용; 실제 학생의 빈도·대표성 및 미기재 강의 정책은 추정하지 않음",
+    "source_verification": "synthetic_scenario; faculty review required before paper analysis",
+    "dataset_version": "professor_eval_v3_draft",
+    "train_eval_overlap_status": "needs_manual_train_eval_overlap_audit",
+    "models": {
+      "Base Model": "",
+      "Base Model + Student LoRA": "",
+      "Base Model + Professor LoRA": ""
+    },
+    "contexts": {
+      "Base Model": [],
+      "Base Model + Student LoRA": [],
+      "Base Model + Professor LoRA": []
+    },
+    "generation_latency_s": {},
+    "served_model_names": {}
+  },
+  {
+    "question_id": "P029",
+    "role": "professor",
+    "task_type": "course_improvement_support",
+    "data_origin": "synthetic_instructor_support_scenario",
+    "course_name": "알고리즘",
+    "scenario_theme": "중간 피드백을 수업에 반영",
+    "student_questions": [
+      "풀이 예제를 한 문제 더 보고 싶습니다.",
+      "과제와 수업 예제의 난도가 갑자기 달라지는 것 같아요.",
+      "복잡도 계산 과정을 천천히 보여 주세요.",
+      "질문 답변이 다음 강의에도 이어졌으면 합니다.",
+      "어떤 부분을 복습해야 하는지 정리해 주세요."
+    ],
+    "question": "중간 수업 피드백에서 나온 질문을 주제별로 묶고, 다음 수업에서 학생에게 공유할 ‘반영한 점·추가 확인할 점’ 안내 초안을 작성해 주세요. 질문 수를 실제 여론으로 표현하지 마세요.",
+    "ground_truth": "{\"expected_findings\": [\"추가 예제, 난이도 연결, 풀이 속도, 질문 후속 공유, 복습 우선순위 요청이 있습니다.\"], \"expected_recommendations\": [\"확인된 요청을 반영 가능한 조치와 추가 검토 항목으로 나눈 안내를 제안합니다.\", \"합성 질문 묶음이므로 실제 수강생 다수의 의견이라고 표현하지 않습니다.\"], \"keywords\": [\"추가 예제\", \"난이도 연결\", \"풀이 과정\", \"후속 안내\"], \"limitations\": [\"학생 질문은 합성 시나리오이며 실제 수강생의 빈도·대표성을 나타내지 않음\", \"질문에 없는 강의 정책·성적·학생 특성은 추론하지 않음\"]}",
+    "evaluation_criteria": [
+      "요약과 분석이 제공된 질문 묶음의 내용에 정확히 연결되는가",
+      "제안이 교수가 실제 수업 준비·운영·피드백에 활용할 만큼 구체적인가",
+      "질문에 없는 학교 정책, 과목 운영 사실, 학생 수·비율·빈도를 만들어내지 않는가",
+      "확인되지 않은 규정은 교수자 확인 필요로 분명히 구분하는가",
+      "요청한 결과물 형식과 교수자 역할에 맞고 읽기 쉬운가",
+      "합성 질문 사례를 실제 수강생 전체의 의견이나 대표성으로 일반화하지 않는가"
+    ],
+    "scenario_category": "participation_and_communication",
+    "review_status": "needs_faculty_review",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "knowledge_scope": "제공된 합성 학생 질문만 근거로 사용; 실제 학생의 빈도·대표성 및 미기재 강의 정책은 추정하지 않음",
+    "source_verification": "synthetic_scenario; faculty review required before paper analysis",
+    "dataset_version": "professor_eval_v3_draft",
+    "train_eval_overlap_status": "needs_manual_train_eval_overlap_audit",
+    "models": {
+      "Base Model": "",
+      "Base Model + Student LoRA": "",
+      "Base Model + Professor LoRA": ""
+    },
+    "contexts": {
+      "Base Model": [],
+      "Base Model + Student LoRA": [],
+      "Base Model + Professor LoRA": []
+    },
+    "generation_latency_s": {},
+    "served_model_names": {}
+  },
+  {
+    "question_id": "P030",
+    "role": "professor",
+    "task_type": "course_communication_support",
+    "data_origin": "synthetic_instructor_support_scenario",
+    "course_name": "운영체제",
+    "scenario_theme": "수업 후 질문을 다음 수업에 연결",
+    "student_questions": [
+      "지난 시간 동기화 예제에서 잠금 순서를 다시 설명해 주세요.",
+      "교착상태 조건을 실제 상황과 연결해 주세요.",
+      "스레드 예제 코드를 다시 공유해 주세요.",
+      "수업 중 답하지 못한 질문의 후속 답변이 궁금합니다.",
+      "관련 용어를 정리한 자료가 필요합니다."
+    ],
+    "question": "수업 후 들어온 질문을 다음 강의 도입부에서 다루는 짧은 계획을 만들어 주세요. 질문별로 다룰 내용과, 시간이 부족할 때 제공할 비동기 대안을 구분해 주세요.",
+    "ground_truth": "{\"expected_findings\": [\"동기화·교착상태의 재설명, 예제 코드, 미응답 질문의 후속, 용어 정리 요구입니다.\"], \"expected_recommendations\": [\"다음 강의에서 개념 재설명과 코드 추적을 짧게 진행하고, 용어표·답변 기록을 비동기 자료로 제공하도록 제안합니다.\"], \"keywords\": [\"동기화\", \"교착상태\", \"예제 코드\", \"후속 답변\"], \"limitations\": [\"학생 질문은 합성 시나리오이며 실제 수강생의 빈도·대표성을 나타내지 않음\", \"질문에 없는 강의 정책·성적·학생 특성은 추론하지 않음\"]}",
+    "evaluation_criteria": [
+      "요약과 분석이 제공된 질문 묶음의 내용에 정확히 연결되는가",
+      "제안이 교수가 실제 수업 준비·운영·피드백에 활용할 만큼 구체적인가",
+      "질문에 없는 학교 정책, 과목 운영 사실, 학생 수·비율·빈도를 만들어내지 않는가",
+      "확인되지 않은 규정은 교수자 확인 필요로 분명히 구분하는가",
+      "요청한 결과물 형식과 교수자 역할에 맞고 읽기 쉬운가",
+      "합성 질문 사례를 실제 수강생 전체의 의견이나 대표성으로 일반화하지 않는가"
+    ],
+    "scenario_category": "participation_and_communication",
+    "review_status": "needs_faculty_review",
+    "reviewer_id": "",
+    "reviewed_at": "",
+    "knowledge_scope": "제공된 합성 학생 질문만 근거로 사용; 실제 학생의 빈도·대표성 및 미기재 강의 정책은 추정하지 않음",
+    "source_verification": "synthetic_scenario; faculty review required before paper analysis",
+    "dataset_version": "professor_eval_v3_draft",
+    "train_eval_overlap_status": "needs_manual_train_eval_overlap_audit",
+    "models": {
+      "Base Model": "",
+      "Base Model + Student LoRA": "",
+      "Base Model + Professor LoRA": ""
+    },
+    "contexts": {
+      "Base Model": [],
+      "Base Model + Student LoRA": [],
+      "Base Model + Professor LoRA": []
+    },
+    "generation_latency_s": {},
+    "served_model_names": {}
+  }
+]
