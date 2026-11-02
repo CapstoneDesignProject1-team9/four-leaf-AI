@@ -10,10 +10,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-# 의존성 먼저 설치 (레이어 캐시)
-COPY requirements.txt ./
+# API 런타임 의존성만 설치한다. 학습·평가 패키지는 별도 환경에서 관리한다.
+COPY requirements-runtime.txt ./
 RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
+    pip install --no-cache-dir torch==2.12.0+cpu --index-url https://download.pytorch.org/whl/cpu && \
+    pip install --no-cache-dir -r requirements-runtime.txt
 
 # ─────────────────────────────────────────
 # Stage 2: 실행 이미지

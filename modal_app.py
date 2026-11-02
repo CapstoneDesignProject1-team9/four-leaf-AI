@@ -1,111 +1,127 @@
+"""Serve the Llama 3.1 base model and both role LoRAs on Modal with vLLM.
+
+The API is OpenAI-compatible. Pass ``base-model``, ``student-lora``, or
+``professor-lora`` as the request's ``model`` value.
 """
-Modal 서버리스 배포 엔트리포인트
 
-FastAPI 앱을 Modal에서 서버리스로 실행합니다.
-- Scale-to-Zero: 요청 없으면 비용 0원
-- 요청 시 자동으로 컨테이너 시작 (콜드 스타트 ~수 초)
-- ChromaDB + 임베딩 모델은 Modal Volume에 캐시
-
-배포:
-  modal deploy modal_app.py
-
-로컬 테스트:
-  modal serve modal_app.py
-"""
+import subprocess
+import time
 
 import modal
 
-# ─────────────────────────────────────────
-# Modal 앱 정의
-# ─────────────────────────────────────────
-app = modal.App("four-leaf-ai")
+APP_NAME = "four-leaf-llama"
+BASE_MODEL = "meta-llama/Llama-3.1-8B-Instruct"
+BASE_MODEL_REVISION = "0e9e39f249a16976918f6564b8830bc894c89659"
+PORT = 8000
+ADAPTERS_PATH = "/models/adapters"
+HF_CACHE_PATH = "/root/.cache/huggingface"
 
-# ─────────────────────────────────────────
-# 컨테이너 이미지 정의 (Dockerfile 대체)
-# ─────────────────────────────────────────
-image = (
-    modal.Image.debian_slim(python_version="3.12")
-    .apt_install("build-essential", "libgomp1")
-    .pip_install(
-        # FastAPI Core
-        "fastapi==0.115.0",
-        "uvicorn[standard]==0.30.6",
-        "python-dotenv==1.0.1",
-        "pydantic-settings==2.5.2",
-        "httpx==0.27.2",
-        # LangChain
-        "langchain==0.3.0",
-        "langchain-core==0.3.0",
-        "langchain-community==0.3.0",
-        "langchain-text-splitters==0.3.0",
-        # Vector Store & Embeddings (RAG)
-        "langchain-chroma==0.1.4",
-        "chromadb==0.5.11",
-        "sentence-transformers==3.1.1",
-        # Document Loaders
-        "pypdf==4.3.1",
-        "python-docx==1.1.2",
-        # Google Gemini
-        "langchain-google-genai>=1.0.8",
+app = modal.App(APP_NAME)
+
+# Modal Volumes keep uploads and the gated base model cache out of image layers.
+adapter_volume = modal.Volume.from_name("four-leaf-adapters", create_if_missing=True, version=2)
+# Reuse the workspace's existing HF cache volume rather than duplicating it.
+hf_cache_volume = modal.Volume.from_name("four-leaf-model-cache", create_if_missing=True)
+
+vllm_image = (
+    modal.Image.from_registry(
+        "nvidia/cuda:12.9.0-devel-ubuntu22.04",
+        add_python="3.12",
     )
-    # 소스 코드를 컨테이너에 마운트 (기존 modal.Mount 대체)
-    .add_local_dir("app", remote_path="/root/app")
-    .add_local_dir("knowledge", remote_path="/root/knowledge")
-    .add_local_dir("data", remote_path="/root/data")
+    .entrypoint([])
+    .uv_pip_install("vllm==0.21.0")
+    .env({"HF_HOME": HF_CACHE_PATH})
 )
 
-# ─────────────────────────────────────────
-# 영속 볼륨: ChromaDB 인덱스 + 임베딩 모델 캐시
-# ─────────────────────────────────────────
-# Modal Volume은 컨테이너가 종료되어도 데이터가 유지됩니다.
-# → ChromaDB 인덱스를 매번 다시 빌드하지 않아도 됩니다.
-chroma_volume = modal.Volume.from_name("four-leaf-chroma-db", create_if_missing=True)
-model_cache_volume = modal.Volume.from_name("four-leaf-model-cache", create_if_missing=True)
 
-
-# ─────────────────────────────────────────
-# FastAPI 앱을 Modal ASGI 앱으로 서빙
-# ─────────────────────────────────────────
-@app.function(
-    image=image,
-    # 볼륨 마운트: ChromaDB와 HuggingFace 모델 캐시
-    volumes={
-        "/root/chroma_db": chroma_volume,
-        "/root/.cache/huggingface": model_cache_volume,
-    },
-    # 시크릿: Modal Dashboard에서 설정 (Settings → Secrets)
-    secrets=[modal.Secret.from_name("four-leaf-ai-secrets")],
-    # 리소스 설정
-    cpu=2.0,  # CPU 코어 (필요 시 조정)
-    memory=2048,  # 메모리 2GB (임베딩 모델 로딩용)
-    # 타임아웃 & 동시성
-    timeout=300,  # 요청 최대 5분 (RAG 응답 생성 시간 고려)
-    # 최소 0개 → Scale-to-Zero (비용 0원)
-    # 트래픽이 있을 때만 컨테이너가 올라옵니다.
+@app.server(
+    image=vllm_image,
+    # Prefer the lower-cost L4; fall back to A10 when L4 capacity is unavailable.
+    gpu=["L4", "A10"],
+    cpu=4,
+    memory=24576,
+    startup_timeout=1200,
+    scaledown_window=300,
     min_containers=0,
-    max_containers=5,  # 동시 최대 5개 (필요 시 조정)
-    # 콜드 스타트 최적화: 10분간 요청 없으면 컨테이너 종료
-    scaledown_window=600,
+    max_containers=1,
+    target_concurrency=1,
+    port=PORT,
+    volumes={
+        ADAPTERS_PATH: adapter_volume,
+        HF_CACHE_PATH: hf_cache_volume,
+    },
+    secrets=[modal.Secret.from_name("huggingface-secret")],
 )
-@modal.asgi_app()
-def fastapi_app():
-    """기존 FastAPI 앱을 그대로 Modal에서 서빙"""
-    import os
-    import sys
+class LlamaServer:
+    """Run an authenticated, scale-to-zero OpenAI-compatible vLLM server."""
 
-    # 작업 디렉토리 설정 (기존 코드의 상대 경로 호환)
-    os.chdir("/root")
-    sys.path.insert(0, "/root")
+    @modal.enter()
+    def start(self):
+        import os
 
-    # 환경 변수 설정 (Modal Volume 경로에 맞게)
-    os.environ.setdefault("CHROMA_PERSIST_DIR", "/root/chroma_db")
-    os.environ.setdefault("KNOWLEDGE_BASE_DIR", "/root/knowledge")
-    os.environ.setdefault("APP_ENV", "production")
+        # Support either common Hugging Face token variable name in the existing
+        # Modal secret without printing or exposing its value.
+        if "HF_TOKEN" not in os.environ and os.environ.get("HUGGING_FACE_HUB_TOKEN"):
+            os.environ["HF_TOKEN"] = os.environ["HUGGING_FACE_HUB_TOKEN"]
+        if not os.environ.get("HF_TOKEN"):
+            raise RuntimeError(
+                "Modal secret 'huggingface-secret' must contain HF_TOKEN or HUGGING_FACE_HUB_TOKEN"
+            )
 
-    # HuggingFace 모델 캐시 디렉토리 (Volume에 저장 → 재시작 시 다운로드 불필요)
-    os.environ.setdefault("HF_HOME", "/root/.cache/huggingface")
-    os.environ.setdefault("TRANSFORMERS_CACHE", "/root/.cache/huggingface")
+        command = [
+            "vllm",
+            "serve",
+            BASE_MODEL,
+            "--revision",
+            BASE_MODEL_REVISION,
+            "--host",
+            "0.0.0.0",
+            "--port",
+            str(PORT),
+            "--served-model-name",
+            "base-model",
+            "--enable-lora",
+            "--max-loras",
+            "2",
+            "--max-lora-rank",
+            "16",
+            "--lora-modules",
+            f"student-lora={ADAPTERS_PATH}/adapter_student_llama",
+            f"professor-lora={ADAPTERS_PATH}/adapter_professor_llama",
+            "--max-model-len",
+            "4096",
+            "--max-num-seqs",
+            "8",
+            "--gpu-memory-utilization",
+            "0.90",
+            "--dtype",
+            "half",
+        ]
+        self.process = subprocess.Popen(command)
 
-    from app.main import app as _app
+        # Modal considers the server ready when the port accepts connections.
+        # Wait for vLLM's model initialization so failed loads exit clearly.
+        import httpx
 
-    return _app
+        deadline = time.monotonic() + 1100
+        while time.monotonic() < deadline:
+            if self.process.poll() is not None:
+                raise RuntimeError(f"vLLM exited during startup (code {self.process.returncode})")
+            try:
+                response = httpx.get(f"http://127.0.0.1:{PORT}/health", timeout=2)
+                if response.is_success:
+                    return
+            except httpx.HTTPError:
+                pass
+            time.sleep(2)
+        raise TimeoutError("vLLM did not become healthy before the startup deadline")
+
+    @modal.exit()
+    def stop(self):
+        if self.process.poll() is None:
+            self.process.terminate()
+            try:
+                self.process.wait(timeout=30)
+            except subprocess.TimeoutExpired:
+                self.process.kill()
+        hf_cache_volume.commit()

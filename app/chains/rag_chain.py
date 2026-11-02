@@ -39,8 +39,16 @@ class BgeM3Embedder:
             / settings.EMBEDDING_MODEL_REVISION
         )
         if not snapshot.is_dir():
-            raise RuntimeError(
-                "BGE-M3 모델 캐시가 없습니다. embed_notices.py index로 모델 캐시를 준비하세요."
+            # Download the pinned public model once into the persistent cache volume.
+            # Subsequent container starts reuse this snapshot without another download.
+            from huggingface_hub import snapshot_download
+
+            snapshot = Path(
+                snapshot_download(
+                    repo_id=settings.EMBEDDING_MODEL_NAME,
+                    revision=settings.EMBEDDING_MODEL_REVISION,
+                    cache_dir=settings.EMBEDDING_MODEL_CACHE_DIR,
+                )
             )
         if settings.EMBEDDING_DEVICE == "cpu":
             import torch
