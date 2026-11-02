@@ -12,7 +12,6 @@ from collections import Counter
 from pathlib import Path
 from typing import Any
 
-
 EVALUATION_CRITERIA = [
     "요약과 분석이 제공된 질문 묶음의 내용에 정확히 연결되는가",
     "제안이 교수가 실제 수업 준비·운영·피드백에 활용할 만큼 구체적인가",
