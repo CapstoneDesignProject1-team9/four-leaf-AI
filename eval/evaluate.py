@@ -219,7 +219,8 @@ def condition_summaries(rows: list[dict[str, Any]], dataset_name: str) -> pd.Dat
             for metric in metrics:
                 if metric not in group: continue
                 vals = pd.to_numeric(group[metric], errors="coerce").dropna()
-                if vals.empty: continue
+                if vals.empty: 
+                    continue
                 lo, hi = mean_ci(vals)
                 outputs.append({"Dataset": dataset_name, "Score Source": "Claude", **base, "Metric": metric, "N": len(vals),
                                 "Mean": vals.mean(), "SD": vals.std(ddof=1) if len(vals)>1 else np.nan,
@@ -254,7 +255,8 @@ def test_differences(diff: np.ndarray) -> dict[str, float]:
     if n < 2:
         return {"N": n, "Mean Difference": np.nan, "CI95_Lower": np.nan, "CI95_Upper": np.nan,
                 "Paired_t": np.nan, "p_raw": np.nan, "Wilcoxon": np.nan, "p_wilcoxon": np.nan, "Cohen_dz": np.nan}
-    avg = float(np.mean(diff)); sd = float(np.std(diff, ddof=1))
+    avg = float(np.mean(diff))
+    sd = float(np.std(diff, ddof=1))
     half = float(t.ppf(.975,n-1)*sd/np.sqrt(n))
     tt = ttest_1samp(diff,0.0)
     try:
@@ -270,24 +272,41 @@ def test_differences(diff: np.ndarray) -> dict[str, float]:
 def cluster_bootstrap_corr(frame: pd.DataFrame, x: str, y: str, reps: int = 1000) -> tuple[float,float,float,float]:
     """Percentile CIs resampling questions as clusters, preserving repeated model rows."""
     clusters=frame["Question_ID"].drop_duplicates().tolist()
-    if len(clusters)<3: return (np.nan,np.nan,np.nan,np.nan)
+    if len(clusters) < 3: 
+        return (np.nan,np.nan,np.nan,np.nan)
     rng=np.random.default_rng(20261031)
-    pearsons=[]; spearmans=[]
+    pearsons=[]
+    spearmans=[]
+
     by_id={qid:frame[frame.Question_ID==qid] for qid in clusters}
     for _ in range(reps):
         sampled=rng.choice(clusters,size=len(clusters),replace=True)
         sample=pd.concat([by_id[qid] for qid in sampled],ignore_index=True)
-        a=pd.to_numeric(sample[x],errors="coerce"); b=pd.to_numeric(sample[y],errors="coerce")
-        valid=a.notna() & b.notna(); a=a[valid]; b=b[valid]
-        if len(a)<3 or a.nunique()<2 or b.nunique()<2: continue
-        pearsons.append(pearsonr(a,b).statistic); spearmans.append(spearmanr(a,b).statistic)
-    if not pearsons: return (np.nan,np.nan,np.nan,np.nan)
+        a=pd.to_numeric(sample[x],errors="coerce")
+        b=pd.to_numeric(sample[y],errors="coerce")
+
+        valid=a.notna() & b.notna()
+
+        a=a[valid]
+        b=b[valid]
+
+        if len(a) < 3 or a.nunique() < 2 or b.nunique() < 2: 
+            continue
+
+        pearsons.append(pearsonr(a,b).statistic)
+        spearmans.append(spearmanr(a,b).statistic)
+
+    if not pearsons: 
+        return (np.nan,np.nan,np.nan,np.nan)
+
     return tuple(float(np.percentile(v,q)) for v in (pearsons,spearmans) for q in (2.5,97.5))
 
 
 def planned_contrasts(frame: pd.DataFrame, dataset_name: str) -> pd.DataFrame:
     """Paired, pre-specified comparisons by question ID; excludes missing pairs."""
-    if frame.empty: return pd.DataFrame()
+    if frame.empty: 
+        return pd.DataFrame()
+
     if "Metric" not in frame:
         metric_columns=[m for m in [*SCORE_FIELDS,"ROUGE-L","Faithfulness","Context Precision"] if m in frame.columns]
         frame=frame.melt(id_vars=["Question_ID","Model"],value_vars=metric_columns,var_name="Metric",value_name="Value")
@@ -301,10 +320,12 @@ def planned_contrasts(frame: pd.DataFrame, dataset_name: str) -> pd.DataFrame:
         maps={m:dict(zip(g["Question_ID"],pd.to_numeric(g["Value"],errors="coerce")))
               for m,g in frame[frame["Metric"]==metric].groupby("Model")}
         names=list(formula)
-        if any(n not in maps for n in names): return None
+        if any(n not in maps for n in names): 
+            return None
         ids=set.intersection(*(set(maps[n]) for n in names))
         ids=[i for i in ids if all(np.isfinite(maps[n].get(i,np.nan)) for n in names)]
-        if len(ids)<2:return None
+        if len(ids) < 2:
+            return None
         return np.array([sum(formula[n]*maps[n][i] for n in names) for i in ids],dtype=float)
     if dataset_name.startswith("student"):
         hypotheses={
@@ -324,9 +345,14 @@ def planned_contrasts(frame: pd.DataFrame, dataset_name: str) -> pd.DataFrame:
     for source, metric in itertools.product(["Claude"],score_metrics):
         if metric not in frame["Metric"].values: continue
         for hypothesis,formula in hypotheses.items():
-            if not set(formula).issubset(available): continue
+            if not set(formula).issubset(available): 
+                continue
+
             diff=paired_diff(metric,formula)
-            if diff is None: continue
+
+            if diff is None: 
+                continue
+
             result=test_differences(diff)
             outputs.append({"Dataset":dataset_name,"Score Source":source,"Metric":metric,"Hypothesis":hypothesis,**result})
     # Human ratings are added by the caller using the same contrasts and mapping.
@@ -341,20 +367,27 @@ def planned_contrasts(frame: pd.DataFrame, dataset_name: str) -> pd.DataFrame:
 
 
 def human_outputs(raw_rows: list[dict[str,Any]], human_path: Path, dataset_name: str) -> tuple[pd.DataFrame,pd.DataFrame,pd.DataFrame]:
-    if not human_path.exists(): return pd.DataFrame(),pd.DataFrame(),pd.DataFrame()
+    if not human_path.exists(): 
+        return pd.DataFrame(),pd.DataFrame(),pd.DataFrame()
+
     human=pd.read_csv(human_path)
     required={"question_id","rater_id","model",*HUMAN_FIELDS.values()}
+
     if not required.issubset(human.columns):
         logger.warning("Human CSV missing columns: %s", sorted(required-set(human.columns)))
         return pd.DataFrame(),pd.DataFrame(),pd.DataFrame()
     human=human.dropna(subset=["question_id","rater_id","model"])
-    for col in HUMAN_FIELDS.values(): human[col]=pd.to_numeric(human[col],errors="coerce")
+    for col in HUMAN_FIELDS.values(): 
+        human[col]=pd.to_numeric(human[col],errors="coerce")
+
     human["Model"]=human["model"].map(model_condition)
     # Keep this run's item IDs and conditions only.
     valid={(r["Question_ID"],r["Model"]) for r in raw_rows}
     human=human[human.apply(lambda r:(str(r["question_id"]),r["Model"]) in valid,axis=1)]
     hlong=human.melt(id_vars=["question_id","rater_id","Model"],value_vars=list(HUMAN_FIELDS.values()),var_name="Metric",value_name="Score")
-    reverse={v:k for k,v in HUMAN_FIELDS.items()}; hlong["Metric"]=hlong["Metric"].map(reverse)
+    reverse={v:k for k,v in HUMAN_FIELDS.items()}
+    hlong["Metric"]=hlong["Metric"].map(reverse)
+
     hlong=hlong.dropna(subset=["Score"])
     human_summary=hlong.groupby(["question_id","Model","Metric"],as_index=False)["Score"].mean().rename(columns={"question_id":"Question_ID","Score":"Value"})
     # Rater agreement per question-condition-metric; Fleiss requires equal ratings per unit.
@@ -365,7 +398,8 @@ def human_outputs(raw_rows: list[dict[str,Any]], human_path: Path, dataset_name:
             counts=[]
             for _, unit in grp.groupby(["question_id"]):
                 vals=unit["Score"].dropna().round().astype(int).tolist()
-                if len(vals)<2 or any(v<1 or v>5 for v in vals): continue
+                if len(vals)<2 or any(v<1 or v>5 for v in vals): 
+                    continue
                 counts.append([vals.count(k) for k in range(1,6)])
             if len(counts)>=2 and len({sum(row) for row in counts})==1:
                 agreements.append({"Dataset":dataset_name,"Model":condition,"Metric":metric,
@@ -382,7 +416,9 @@ def human_outputs(raw_rows: list[dict[str,Any]], human_path: Path, dataset_name:
         joined=h.merge(a,on=["Question_ID","Model"])
         joined=joined.dropna(subset=["Value","Claude"])
         if len(joined)>=3 and joined.Value.nunique()>1 and joined.Claude.nunique()>1:
-            pr=pearsonr(joined.Claude,joined.Value); sr=spearmanr(joined.Claude,joined.Value)
+            pr=pearsonr(joined.Claude,joined.Value)
+            sr=spearmanr(joined.Claude,joined.Value)
+
             p_lo,p_hi,s_lo,s_hi=cluster_bootstrap_corr(joined,"Claude","Value")
             correlations.append({"Dataset":dataset_name,"Metric":metric,"N_Response_Pairs":len(joined),
                                  "Pearson_r":pr.statistic,"Pearson_p":pr.pvalue,"Pearson_CI95_Lower":p_lo,"Pearson_CI95_Upper":p_hi,
@@ -397,7 +433,8 @@ async def main() -> None:
     dataset_name="student" if "student" in DATASET_PATH.name.lower() else "professor" if "professor" in DATASET_PATH.name.lower() else DATASET_PATH.stem
     prefix=f"{dataset_name}_"
     chain=create_judge_chain()
-    jobs=[]; metas=[]
+    jobs=[]
+    metas=[]
     for idx,item in enumerate(dataset):
         qid=question_id(item,idx)
         for raw_name,answer in item.get("models",{}).items():
@@ -407,7 +444,8 @@ async def main() -> None:
             condition=model_condition(raw_name)
             jobs.append(build_judge_input(item,raw_name,answer))
             metas.append((idx,qid,condition,raw_name,item,answer))
-    if not jobs: raise SystemExit("No generated answers found in selected dataset")
+    if not jobs: 
+        raise SystemExit("No generated answers found in selected dataset")
     sem=asyncio.Semaphore(max(1,int(os.getenv("EVAL_MAX_CONCURRENCY","5"))))
     judged=await asyncio.gather(*(judge_one(chain,j,sem,i+1,len(jobs)) for i,j in enumerate(jobs)))
     ragas=await asyncio.to_thread(ragas_scores,dataset)
@@ -415,8 +453,10 @@ async def main() -> None:
     for meta,result in zip(metas,judged):
         idx,qid,condition,raw_name,item,answer=meta
         gt=item.get("ground_truth","")
-        try: rouge_l=rouge.score(str(gt),str(answer))["rougeL"].fmeasure if gt and answer else np.nan
-        except Exception: rouge_l=np.nan
+        try: 
+            rouge_l=rouge.score(str(gt),str(answer))["rougeL"].fmeasure if gt and answer else np.nan
+        except Exception: 
+            rouge_l=np.nan
         rscore=ragas.get((idx,condition),ragas.get((idx,raw_name),{}))
         latency=item.get("generation_latency_s",{}).get(raw_name,np.nan)
         row={"Dataset":dataset_name,"Question_ID":qid,"Question":item.get("question",""),
@@ -428,7 +468,8 @@ async def main() -> None:
              "Faithfulness":rscore.get("Faithfulness",np.nan),"Context Precision":rscore.get("Context Precision",np.nan),
              "Retrieved_Contexts":json.dumps(item.get("contexts",{}).get(raw_name,[]),ensure_ascii=False),
              "Generation Latency (s)":latency,"Hallucination":result.get("hallucination"),"Judge Reason":result.get("reason","")}
-        for label,key in SCORE_FIELDS.items(): row[label]=result.get(key,np.nan)
+        for label,key in SCORE_FIELDS.items(): 
+            row[label]=result.get(key,np.nan)
         rows.append(row)
     raw=pd.DataFrame(rows)
     raw.to_csv(EVAL_DIR/f"{prefix}eval_results.csv",index=False,encoding="utf-8-sig")
@@ -441,28 +482,35 @@ async def main() -> None:
         hs=[]
         for (condition,metric),group in hsummary.groupby(["Model","Metric"]):
             vals=pd.to_numeric(group["Value"],errors="coerce").dropna()
-            if vals.empty: continue
+            if vals.empty: 
+                continue
             lo,hi=mean_ci(vals)
             hs.append({"Dataset":dataset_name,"Score Source":"Human","Model":condition,"Metric":metric,"N":len(vals),
                        "Mean":vals.mean(),"SD":vals.std(ddof=1) if len(vals)>1 else np.nan,"Median":vals.median(),
                        "Q1":vals.quantile(.25),"Q3":vals.quantile(.75),"P95":vals.quantile(.95),"CI95_Lower":lo,"CI95_Upper":hi})
-        if hs: summary=pd.concat([summary,pd.DataFrame(hs)],ignore_index=True)
+        if hs: 
+            summary=pd.concat([summary,pd.DataFrame(hs)],ignore_index=True)
         # Add human paired contrasts.
         human_tests=planned_contrasts(hsummary,dataset_name)
         if not human_tests.empty:
             human_tests["Score Source"]="Human"
             if not tests.empty:
                 tests=pd.concat([tests,human_tests],ignore_index=True)
-            else: tests=human_tests
+            else: 
+                tests=human_tests
     if not summary.empty:
         summary.to_csv(EVAL_DIR/f"{prefix}condition_summary.csv",index=False,encoding="utf-8-sig")
     if not tests.empty:
         tests.to_csv(EVAL_DIR/f"{prefix}hypothesis_tests.csv",index=False,encoding="utf-8-sig")
-    else: pd.DataFrame(columns=["Dataset","Score Source","Metric","Hypothesis","N","Mean Difference","CI95_Lower","CI95_Upper","Paired_t","p_raw","p_Holm","Wilcoxon","p_wilcoxon","p_wilcoxon_Holm","Cohen_dz"]).to_csv(EVAL_DIR/f"{prefix}hypothesis_tests.csv",index=False)
-    if not agreement.empty: agreement.to_csv(EVAL_DIR/f"{prefix}human_rater_agreement.csv",index=False,encoding="utf-8-sig")
-    if not correlations.empty: correlations.to_csv(EVAL_DIR/f"{prefix}human_judge_correlation.csv",index=False,encoding="utf-8-sig")
+    else: 
+        pd.DataFrame(columns=["Dataset","Score Source","Metric","Hypothesis","N","Mean Difference","CI95_Lower","CI95_Upper","Paired_t","p_raw","p_Holm","Wilcoxon","p_wilcoxon","p_wilcoxon_Holm","Cohen_dz"]).to_csv(EVAL_DIR/f"{prefix}hypothesis_tests.csv",index=False)
+    if not agreement.empty: 
+        agreement.to_csv(EVAL_DIR/f"{prefix}human_rater_agreement.csv",index=False,encoding="utf-8-sig")
+    if not correlations.empty: 
+        correlations.to_csv(EVAL_DIR/f"{prefix}human_judge_correlation.csv",index=False,encoding="utf-8-sig")
     logger.info("Wrote %seval_results.csv, %scondition_summary.csv, %shypothesis_tests.csv",prefix,prefix,prefix)
-    if hsummary.empty: logger.info("No completed human ratings found; human-based tables will be generated after human_evaluation.csv is filled")
+    if hsummary.empty: 
+        logger.info("No completed human ratings found; human-based tables will be generated after human_evaluation.csv is filled")
 
 
 def cli() -> None:

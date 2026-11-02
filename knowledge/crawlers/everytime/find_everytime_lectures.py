@@ -314,7 +314,8 @@ def main(argv=None):
     if args.limit:
         pending = pending[:args.limit]
     if not pending:
-        print('검색할 새 과목이 없습니다. 재검색은 --retry를 사용하세요.'); return 0
+        print('검색할 새 과목이 없습니다. 재검색은 --retry를 사용하세요.')
+        return 0
     with sync_playwright() as pw:
         context = pw.chromium.launch_persistent_context(str(args.profile_dir.resolve()),headless=False,locale='ko-KR')
         dialogs = DialogMonitor()
@@ -396,6 +397,8 @@ if __name__ == '__main__':
     try:
         raise SystemExit(main())
     except KeyboardInterrupt:
-        print('중단했습니다. 저장된 결과는 유지됩니다.'); raise SystemExit(130)
+        print('중단했습니다. 저장된 결과는 유지됩니다.')
+        raise SystemExit(130)
     except Exception as exc:
-        print(f'실행 실패: {exc}'); raise SystemExit(1)
+        print(f'실행 실패: {exc}')
+        raise SystemExit(1)

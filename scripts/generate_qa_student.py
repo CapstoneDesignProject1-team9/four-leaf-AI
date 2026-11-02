@@ -158,11 +158,13 @@ def iter_file_batches():
 
         with open(fp, encoding="utf-8") as f:
             for line in f:
-                if not line.strip(): continue
+                if not line.strip():
+                    continue
                 try:
                     record = json.loads(line)
                     text = extract_and_format_record(record)
-                    if len(text) < 10: continue
+                    if len(text) < 10:
+                        continue
 
                     buf.append(text)
                     if len(buf) >= conf["group_size"]:
@@ -200,7 +202,8 @@ async def process_batch(combined_text: str, file_name: str, cat: str, done_keys:
     logger.info(f"[{cat}] API 요청 중... (목표: {passed_counts[cat]}/{SOURCES[cat]['target']})")
 
     pairs = await generate_synthetic_data_async(combined_text, num_pairs=num_pairs)
-    if not pairs: return
+    if not pairs:
+        return
 
     results = await validate_qa_batch_async(pairs, combined_text)
     if len(results) != len(pairs) or any(r is None for r in results):
@@ -209,7 +212,8 @@ async def process_batch(combined_text: str, file_name: str, cat: str, done_keys:
 
     for pair, res in zip(pairs, results):
         instruction, output = (pair.get("instruction") or "").strip(), (pair.get("output") or "").strip()
-        if not instruction or not output: continue
+        if not instruction or not output:
+            continue
 
         is_pass = res.get("pass", res.get("is_pass", False))
         out_data = {"category": cat, "source": file_name, "instruction": instruction, "output": output}
@@ -218,11 +222,11 @@ async def process_batch(combined_text: str, file_name: str, cat: str, done_keys:
             # 본 실행 중이면서 할당량을 다 채웠으면 파일에 안 씀
             if not TEST_MODE and passed_counts[cat] >= SOURCES[cat]["target"]:
                 continue
-
             with open(VALIDATED_PATH, "a", encoding="utf-8") as f:
                 f.write(json.dumps(out_data, ensure_ascii=False) + "\n")
             passed_counts[cat] += 1
-            if TEST_MODE: logger.info(f"테스트 통과]: {instruction[:30]}...")
+            if TEST_MODE:
+                logger.info(f"테스트 통과]: {instruction[:30]}...")
         else:
             out_data["reject_reason"] = res.get("reason", "알 수 없음")
             with open(REJECTED_PATH, "a", encoding="utf-8") as f:
