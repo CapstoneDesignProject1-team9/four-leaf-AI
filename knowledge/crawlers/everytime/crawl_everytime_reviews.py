@@ -58,7 +58,7 @@ MORE_BUTTON_NAMES = ("더 보기", "더보기", "다음", "계속 보기")
 LOGIN_MARKERS = ("로그인", "아이디", "비밀번호")
 
 
-class ReviewUnavailable(RuntimeError):
+class ReviewUnavailableError(RuntimeError):
     """Lecture-local missing review DOM; safe to record and continue."""
 
 
@@ -501,7 +501,7 @@ def crawl_one(page: Page, lecture: dict, args: argparse.Namespace, seen: set[str
         body = page.locator('body').inner_text(timeout=3_000).lower()
         if any(marker in body for marker in ('abnormal access', 'requests have been blocked', '접근이 제한', '접근이 차단', 'captcha', '자동입력 방지')):
             raise RuntimeError('접근 제한 안내가 감지되어 수집을 중단합니다.') from exc
-        raise ReviewUnavailable(f'{args.review_wait_seconds}초 동안 리뷰 요소 없음: 리뷰 0개·로딩 지연·화면 변경 여부 확인 필요') from exc
+        raise ReviewUnavailableError(f'{args.review_wait_seconds}초 동안 리뷰 요소 없음: 리뷰 0개·로딩 지연·화면 변경 여부 확인 필요') from exc
 
     new_count = 0
     stagnant_rounds = 0
@@ -558,7 +558,7 @@ def crawl_and_record(page, lecture, args, seen, output):
     try:
         count = crawl_one(page, lecture, args, seen, output)
         record.update(status=lecture.pop('_scan_status', 'scanned_completeness_unverified'), new_reviews=count)
-    except ReviewUnavailable as exc:
+    except ReviewUnavailableError as exc:
         count = 0
         record.update(status='needs_check', reason=str(exc))
         logging.warning('%s / %s / 강의 %s: %s. 다음 강의로 넘어갑니다.',

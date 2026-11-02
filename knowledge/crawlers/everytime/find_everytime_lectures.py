@@ -202,6 +202,7 @@ def search_direct(page, query, config, timeout, max_scrolls):
           const root=document.scrollingElement; root.scrollTop=root.scrollHeight;
           return {height:root.scrollHeight, panes:panes.join('|')};
         }""")
+        print(metrics)
         page.wait_for_timeout(2000)
     else:
         coverage = 'max_scroll_rounds_reached'

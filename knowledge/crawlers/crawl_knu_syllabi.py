@@ -22,7 +22,7 @@ from selenium.common.exceptions import (
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import WebDriverWait
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -104,7 +104,7 @@ def make_driver(headless: bool = False) -> webdriver.Chrome:
 
 def wait_for_id(driver: webdriver.Chrome, element_id: str, timeout: int):
     return WebDriverWait(driver, timeout).until(
-        EC.presence_of_element_located((By.ID, element_id))
+        ec.presence_of_element_located((By.ID, element_id))
     )
 
 
@@ -331,7 +331,7 @@ def read_syllabus_tabs(driver: webdriver.Chrome, timeout: int) -> dict[str, str]
     for name, suffix in SYLLABUS_TABS.items():
         tab_id = f"popupContent_tabCon_tab_{suffix}_tabHTML"
         try:
-            tab = WebDriverWait(driver, timeout).until(EC.element_to_be_clickable((By.ID, tab_id)))
+            tab = WebDriverWait(driver, timeout).until(ec.element_to_be_clickable((By.ID, tab_id)))
             tab.click()
             time.sleep(0.15)
             details[name] = driver.find_element(By.ID, "popupContent").text.strip()
