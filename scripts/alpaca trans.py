@@ -26,11 +26,7 @@ with open(INPUT_FILE, encoding="utf-8") as f:
         input_text = data.get("input") or ""  # 없으면 빈 문자열("")
         output_text = data.get("output") or data.get("answer") or ""
 
-        alpaca_item = {
-            "instruction": instruction_text,
-            "input": input_text,
-            "output": output_text
-        }
+        alpaca_item = {"instruction": instruction_text, "input": input_text, "output": output_text}
 
         alpaca_dataset.append(alpaca_item)
 

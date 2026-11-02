@@ -288,9 +288,7 @@ def index(args):
     fingerprint = input_digest(args.input)
     active_ids, report = inspect_input(args.input)
     print(json.dumps(report, ensure_ascii=False), flush=True)
-    client, collection = open_collection(
-        args.db, create=True, collection_name=args.collection
-    )
+    client, collection = open_collection(args.db, create=True, collection_name=args.collection)
     meta = dict(collection.metadata or {})
     revision = meta.get("model_revision")
     if collection.count() and not revision:

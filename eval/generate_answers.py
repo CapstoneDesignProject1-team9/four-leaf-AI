@@ -20,7 +20,9 @@ load_dotenv()
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
-VLLM_CHAT_COMPLETIONS_URL = os.getenv("VLLM_CHAT_COMPLETIONS_URL", "http://localhost:8001/v1/chat/completions")
+VLLM_CHAT_COMPLETIONS_URL = os.getenv(
+    "VLLM_CHAT_COMPLETIONS_URL", "http://localhost:8001/v1/chat/completions"
+)
 VLLM_MODELS_URL = os.getenv("VLLM_MODELS_URL", "http://localhost:8001/v1/models")
 RAG_API_URL = os.getenv("RAG_API_URL", "http://localhost:8000/api/v1/tutor/chat")
 MODE_KEYS = {
@@ -56,9 +58,13 @@ class LocalTransformersBackend:
         if not model_path:
             hf_home = Path(os.getenv("HF_HOME", str(Path.home() / ".cache/huggingface")))
             snapshots = hf_home / "hub/models--meta-llama--Llama-3.1-8B-Instruct/snapshots"
-            candidates = sorted((p for p in snapshots.iterdir() if p.is_dir()), key=lambda p: p.stat().st_mtime)
+            candidates = sorted(
+                (p for p in snapshots.iterdir() if p.is_dir()), key=lambda p: p.stat().st_mtime
+            )
             if not candidates:
-                raise RuntimeError(f"No cached Llama snapshot found under {snapshots}; set MODEL_DIR")
+                raise RuntimeError(
+                    f"No cached Llama snapshot found under {snapshots}; set MODEL_DIR"
+                )
             model_path = str(candidates[-1])
         if not Path(model_path).is_dir():
             raise RuntimeError(f"MODEL_DIR is not a local model directory: {model_path}")
@@ -162,7 +168,10 @@ async def _generate_vllm(session: aiohttp.ClientSession, question: str, model_na
     payload = {
         "model": model_name,
         "messages": [
-            {"role": "system", "content": "당신은 경북대학교 컴퓨터학부 학생을 돕는 AI 튜터입니다. 한국어로 질문에 직접 답하고, 모르는 내용은 추측하지 마세요."},
+            {
+                "role": "system",
+                "content": "당신은 경북대학교 컴퓨터학부 학생을 돕는 AI 튜터입니다. 한국어로 질문에 직접 답하고, 모르는 내용은 추측하지 마세요.",
+            },
             {"role": "user", "content": question},
         ],
         "temperature": 0.0,
@@ -200,7 +209,9 @@ async def _wait_for_models(session: aiohttp.ClientSession, modes: list[str]) -> 
             last_error = str(exc)
         logger.info("Waiting for configured vLLM models: %s", last_error)
         await asyncio.sleep(5)
-    raise SystemExit(f"vLLM is not ready at {VLLM_MODELS_URL}: {last_error}. Check the base model and adapter folders.")
+    raise SystemExit(
+        f"vLLM is not ready at {VLLM_MODELS_URL}: {last_error}. Check the base model and adapter folders."
+    )
 
 
 async def generate_one(session: aiohttp.ClientSession, item: dict, mode: str) -> dict:
@@ -213,7 +224,9 @@ async def generate_one(session: aiohttp.ClientSession, item: dict, mode: str) ->
         else:
             model_name = os.getenv("VLLM_PROFESSOR_LORA_MODEL_NAME", "professor-lora")
         if mode != "base" and not model_name:
-            raise RuntimeError(f"Set the model name environment variable for {mode} before generation")
+            raise RuntimeError(
+                f"Set the model name environment variable for {mode} before generation"
+            )
         return await _generate_vllm(session, question, model_name)
     if mode == "rag":
         model_name = os.getenv("VLLM_BASE_MODEL", "meta-llama/Llama-3.1-8B-Instruct")
@@ -222,7 +235,10 @@ async def generate_one(session: aiohttp.ClientSession, item: dict, mode: str) ->
         if not model_name:
             raise RuntimeError("Set VLLM_STUDENT_LORA_MODEL_NAME for student_lora_rag generation")
     data = await _post(session, RAG_API_URL, {"message": question, "model_name": model_name})
-    return {"answer": data.get("answer", "").strip(), "contexts": [s.get("content", "") for s in data.get("sources", [])]}
+    return {
+        "answer": data.get("answer", "").strip(),
+        "contexts": [s.get("content", "") for s in data.get("sources", [])],
+    }
 
 
 async def main_async(args: argparse.Namespace) -> None:
@@ -254,9 +270,15 @@ async def main_async(args: argparse.Namespace) -> None:
             item["models"][model_key] = result["answer"]
             item["contexts"][model_key] = result["contexts"]
             item["generation_latency_s"][model_key] = round(elapsed, 4)
-            item["served_model_names"][model_key] = f"ollama:{backend.model_name} + local Chroma/BGE-M3"
-            dataset_path.write_text(json.dumps(dataset, ensure_ascii=False, indent=2), encoding="utf-8")
-            logger.info("[%d/%d] saved (elapsed %.1fs)", idx + 1, len(dataset), time.monotonic() - start)
+            item["served_model_names"][model_key] = (
+                f"ollama:{backend.model_name} + local Chroma/BGE-M3"
+            )
+            dataset_path.write_text(
+                json.dumps(dataset, ensure_ascii=False, indent=2), encoding="utf-8"
+            )
+            logger.info(
+                "[%d/%d] saved (elapsed %.1fs)", idx + 1, len(dataset), time.monotonic() - start
+            )
         return
 
     if args.backend == "transformers":
@@ -266,7 +288,9 @@ async def main_async(args: argparse.Namespace) -> None:
             modes = [args.mode]
         rag_modes = [mode for mode in modes if mode not in LOCAL_MODES]
         if rag_modes:
-            raise SystemExit("The local Transformers backend supports base/student_lora/professor_lora only; RAG needs the AI API.")
+            raise SystemExit(
+                "The local Transformers backend supports base/student_lora/professor_lora only; RAG needs the AI API."
+            )
         backend = LocalTransformersBackend()
         start = time.monotonic()
         for idx in range(args.start_from, len(dataset)):
@@ -292,10 +316,16 @@ async def main_async(args: argparse.Namespace) -> None:
                 elif mode == "student_lora":
                     served_name = f"local:{os.getenv('STUDENT_LORA_PATH', 'adapter_student_llama')}"
                 else:
-                    served_name = f"local:{os.getenv('PROFESSOR_LORA_PATH', 'adapter_professor_llama')}"
+                    served_name = (
+                        f"local:{os.getenv('PROFESSOR_LORA_PATH', 'adapter_professor_llama')}"
+                    )
                 item["served_model_names"][model_key] = served_name
-            dataset_path.write_text(json.dumps(dataset, ensure_ascii=False, indent=2), encoding="utf-8")
-            logger.info("[%d/%d] saved (elapsed %.1fs)", idx + 1, len(dataset), time.monotonic() - start)
+            dataset_path.write_text(
+                json.dumps(dataset, ensure_ascii=False, indent=2), encoding="utf-8"
+            )
+            logger.info(
+                "[%d/%d] saved (elapsed %.1fs)", idx + 1, len(dataset), time.monotonic() - start
+            )
         return
 
     modes = list(MODE_KEYS) if args.mode == "all" else [args.mode]
@@ -303,7 +333,9 @@ async def main_async(args: argparse.Namespace) -> None:
     if any(mode in {"student_lora", "student_lora_rag"} for mode in modes):
         if not os.getenv("VLLM_STUDENT_LORA_MODEL_NAME", "student-lora"):
             missing.append("VLLM_STUDENT_LORA_MODEL_NAME")
-    if "professor_lora" in modes and not os.getenv("VLLM_PROFESSOR_LORA_MODEL_NAME", "professor-lora"):
+    if "professor_lora" in modes and not os.getenv(
+        "VLLM_PROFESSOR_LORA_MODEL_NAME", "professor-lora"
+    ):
         missing.append("VLLM_PROFESSOR_LORA_MODEL_NAME")
     if missing:
         raise SystemExit("Missing required model configuration: " + ", ".join(missing))
@@ -328,7 +360,11 @@ async def main_async(args: argparse.Namespace) -> None:
                         return mode, result, time.perf_counter() - started
                     except Exception as exc:
                         logger.exception("%s generation failed for question %s", mode, idx + 1)
-                        return mode, {"answer": f"[ERROR] {exc}", "contexts": []}, time.perf_counter() - started
+                        return (
+                            mode,
+                            {"answer": f"[ERROR] {exc}", "contexts": []},
+                            time.perf_counter() - started,
+                        )
 
             for mode, result, elapsed in await asyncio.gather(*(run(mode) for mode in modes)):
                 model_key = MODE_KEYS[mode]
@@ -342,17 +378,31 @@ async def main_async(args: argparse.Namespace) -> None:
                 else:
                     served_name = os.getenv("VLLM_STUDENT_LORA_MODEL_NAME", "student-lora")
                 item["served_model_names"][model_key] = served_name
-            dataset_path.write_text(json.dumps(dataset, ensure_ascii=False, indent=2), encoding="utf-8")
-            logger.info("[%d/%d] saved (elapsed %.1fs)", idx + 1, len(dataset), time.monotonic() - start)
+            dataset_path.write_text(
+                json.dumps(dataset, ensure_ascii=False, indent=2), encoding="utf-8"
+            )
+            logger.info(
+                "[%d/%d] saved (elapsed %.1fs)", idx + 1, len(dataset), time.monotonic() - start
+            )
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Generate answers asynchronously.")
-    parser.add_argument("--dataset", default="student_eval_dataset.json", help="Dataset filename or path (default: student_eval_dataset.json)")
+    parser.add_argument(
+        "--dataset",
+        default="student_eval_dataset.json",
+        help="Dataset filename or path (default: student_eval_dataset.json)",
+    )
     parser.add_argument("--start-from", type=int, default=0)
     parser.add_argument("--mode", choices=["all", *MODE_KEYS], default="all")
-    parser.add_argument("--backend", choices=["vllm", "transformers", "rag-local"], default=os.getenv("EVAL_GENERATION_BACKEND", "vllm"))
-    parser.add_argument("--concurrency", type=int, default=int(os.getenv("GENERATION_CONCURRENCY", "4")))
+    parser.add_argument(
+        "--backend",
+        choices=["vllm", "transformers", "rag-local"],
+        default=os.getenv("EVAL_GENERATION_BACKEND", "vllm"),
+    )
+    parser.add_argument(
+        "--concurrency", type=int, default=int(os.getenv("GENERATION_CONCURRENCY", "4"))
+    )
     args = parser.parse_args()
     if args.start_from < 0 or args.concurrency < 1:
         parser.error("--start-from must be >= 0 and --concurrency must be >= 1")

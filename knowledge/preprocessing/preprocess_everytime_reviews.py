@@ -86,8 +86,10 @@ def clean_record(row: dict) -> dict:
     source_hash = optional_text(row.get("source_hash"))
     # Identity is determined BEFORE masking; distinct private data must not
     # collapse two unrelated reviews into a single record.
-    identity = review_id or source_hash or digest(
-        json.dumps([semester, content_before_mask], ensure_ascii=False)
+    identity = (
+        review_id
+        or source_hash
+        or digest(json.dumps([semester, content_before_mask], ensure_ascii=False))
     )
     content, masks = mask_personal_data(content_before_mask)
     result = {
@@ -209,7 +211,9 @@ def atomic_write(path: Path, text: str) -> None:
 
 
 def run(source: Path, output: Path, report_path: Path) -> dict:
-    source, output, report_path = [path.expanduser().resolve() for path in (source, output, report_path)]
+    source, output, report_path = [
+        path.expanduser().resolve() for path in (source, output, report_path)
+    ]
     if len({source, output, report_path}) != 3:
         raise ValueError("입력·출력·보고서 경로는 모두 달라야 합니다.")
     for destination in (output, report_path):
@@ -246,8 +250,10 @@ def main(argv=None) -> int:
     except (OSError, ValueError, RuntimeError) as exc:
         print(f"전처리 실패: {exc}")
         return 1
-    print(f"입력 {report['input_records']} / 출력 {report['output_reviews']} / "
-          f"중복 제거 {report['duplicates_removed']} / 제외 {report['rejected_records']}")
+    print(
+        f"입력 {report['input_records']} / 출력 {report['output_reviews']} / "
+        f"중복 제거 {report['duplicates_removed']} / 제외 {report['rejected_records']}"
+    )
     print(f"개인정보 패턴 마스킹 리뷰: {report['masked_reviews']}개")
     print(f"결과: {args.output.resolve()}\n보고서: {report_path.resolve()}")
     return 0

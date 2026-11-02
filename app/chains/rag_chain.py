@@ -58,12 +58,14 @@ class BgeM3Embedder:
     def embed_query(self, query: str) -> list[float]:
         self.load()
         assert self.model is not None
-        if len(self.model.tokenizer(query, truncation=False)["input_ids"]) > self.model.max_seq_length:
+        if (
+            len(self.model.tokenizer(query, truncation=False)["input_ids"])
+            > self.model.max_seq_length
+        ):
             raise ValueError("질문이 BGE-M3 입력 길이를 초과했습니다.")
-        return (
-            self.model.encode([query], normalize_embeddings=True, convert_to_numpy=True, show_progress_bar=False)[0]
-            .tolist()
-        )
+        return self.model.encode(
+            [query], normalize_embeddings=True, convert_to_numpy=True, show_progress_bar=False
+        )[0].tolist()
 
 
 def _validate(collection: Any, corpus_name: str) -> None:
@@ -172,6 +174,7 @@ def _ready() -> tuple[Any, Any | None, BgeM3Embedder]:
         raise RuntimeError("RAG가 초기화되지 않았습니다.")
     return _notice_collection, _syllabi_collection, _embedder
 
+
 @lru_cache(maxsize=2048)
 def _cached_embedding(question: str) -> tuple[float, ...]:
     """Cache repeated query embeddings while always querying current Chroma data."""
@@ -206,6 +209,7 @@ def search_notices(question: str) -> list[Document]:
     notice_collection, _, embedder = _ready()
     return _search_collection(notice_collection, embedder.embed_query(question), settings.RAG_TOP_K)
 
+
 def _requested_grade(question: str) -> str | None:
     match = re.search(r"([1-6])\s*학년", question)
     return match.group(1) if match else None
@@ -213,9 +217,10 @@ def _requested_grade(question: str) -> str | None:
 
 def _is_syllabus_question(question: str) -> bool:
     normalized = question.replace(" ", "")
-    if any(term in normalized for term in (
-        "강의계획서", "강의목록", "강의내용", "강의추천", "강좌", "교과목", "과목"
-    )):
+    if any(
+        term in normalized
+        for term in ("강의계획서", "강의목록", "강의내용", "강의추천", "강좌", "교과목", "과목")
+    ):
         return True
     return _requested_grade(question) is not None and any(
         term in normalized for term in ("강의", "수강", "들을수")
@@ -258,7 +263,9 @@ def search_syllabi(question: str, grade: str | None = None) -> list[Document]:
     where = conditions[0] if len(conditions) == 1 else {"$and": conditions}
     result = syllabi_collection.query(
         query_embeddings=[list(_cached_embedding(question))],
-        n_results=min(max(settings.RAG_TOP_K * 20, 100), int(syllabi_collection.metadata["active_chunks"])),
+        n_results=min(
+            max(settings.RAG_TOP_K * 20, 100), int(syllabi_collection.metadata["active_chunks"])
+        ),
         where=where,
         include=["documents", "metadatas", "distances"],
     )
@@ -282,11 +289,28 @@ def search_syllabi(question: str, grade: str | None = None) -> list[Document]:
 
 def _is_review_question(question: str) -> bool:
     normalized = re.sub(r"\s+", "", question).lower()
-    return any(term in normalized for term in (
-        "에브리타임", "에타", "everytime", "강의평", "수강평", "수강후기",
-        "강의후기", "수업후기", "과목후기", "수업난이도", "강의난이도",
-        "과목난이도", "꿀강", "과제많", "과제가많", "시험어려", "시험이어려",
-    ))
+    return any(
+        term in normalized
+        for term in (
+            "에브리타임",
+            "에타",
+            "everytime",
+            "강의평",
+            "수강평",
+            "수강후기",
+            "강의후기",
+            "수업후기",
+            "과목후기",
+            "수업난이도",
+            "강의난이도",
+            "과목난이도",
+            "꿀강",
+            "과제많",
+            "과제가많",
+            "시험어려",
+            "시험이어려",
+        )
+    )
 
 
 def _review_filter(question: str) -> dict[str, Any]:
@@ -294,11 +318,15 @@ def _review_filter(question: str) -> dict[str, Any]:
     filters: list[dict[str, Any]] = [{"source_type": "everytime_review"}]
     for field, values in _review_names.items():
         matches = [v for v in values if re.sub(r"\s+", "", v).casefold() in normalized]
-        matches = [v for v in matches if not any(
-            re.sub(r"\s+", "", v).casefold() in re.sub(r"\s+", "", other).casefold()
-            and len(re.sub(r"\s+", "", other)) > len(re.sub(r"\s+", "", v))
-            for other in matches
-        )]
+        matches = [
+            v
+            for v in matches
+            if not any(
+                re.sub(r"\s+", "", v).casefold() in re.sub(r"\s+", "", other).casefold()
+                and len(re.sub(r"\s+", "", other)) > len(re.sub(r"\s+", "", v))
+                for other in matches
+            )
+        ]
         if matches:
             filters.append({field: {"$in": sorted(matches)}})
     return {"$and": filters} if len(filters) > 1 else filters[0]
@@ -317,9 +345,11 @@ def search_everytime(question: str) -> list[Document]:
     unique: dict[str, Document] = {}
     for doc in candidates:
         md = doc.metadata
-        key = str(md.get("document_id") or (md.get("lecture_id"), md.get("review_id"), doc.page_content))
+        key = str(
+            md.get("document_id") or (md.get("lecture_id"), md.get("review_id"), doc.page_content)
+        )
         unique.setdefault(key, doc)
-    return list(unique.values())[:settings.RAG_TOP_K]
+    return list(unique.values())[: settings.RAG_TOP_K]
 
 
 def search_documents(question: str) -> list[Document]:
@@ -402,7 +432,10 @@ class NoticeRagChain:
             instructions = instruction_body
         elif _is_review_question(question):
             if not documents:
-                return {"result": "검색 가능한 강의평이 없거나 요청 조건에 맞는 후기를 찾지 못했습니다. 과목명·교수명을 확인해주세요.", "source_documents": []}
+                return {
+                    "result": "검색 가능한 강의평이 없거나 요청 조건에 맞는 후기를 찾지 못했습니다. 과목명·교수명을 확인해주세요.",
+                    "source_documents": [],
+                }
             instructions = (
                 "에브리타임 강의평 질의입니다. 제공된 후기만 근거로 간결하게 요약하세요.\n"
                 "강의평은 학생 개인의 주관적 의견이며 공식 강의계획서나 확정된 사실이 아님을 밝혀주세요.\n"
