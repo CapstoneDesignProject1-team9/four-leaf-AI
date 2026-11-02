@@ -74,7 +74,9 @@ def test_chat_endpoint_with_mock(client):
 
     mock_save.assert_called_once()
     assert mock_save.call_args.kwargs["message"] == question
-    mock_builder.return_value.invoke.assert_called_once_with({"query": question})
+    mock_builder.return_value.invoke.assert_called_once_with(
+        {"query": question, "model_name": None}
+    )
 
 
 def test_chat_generation_failure(client):
