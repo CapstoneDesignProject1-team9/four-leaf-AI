@@ -1,0 +1,331 @@
+﻿question_id,rater_id,model,accuracy,overall_score,fluency,conciseness
+S001,김지호,Base Model,1.0,1.0,4.0,4.0
+S001,김지호,Base Model + RAG,2.0,3.0,3.0,2.0
+S001,김지호,Base Model + Student LoRA,1.0,1.0,3.0,3.0
+S001,김지호,Base Model + Professor LoRA,1.0,1.0,1.0,1.0
+S002,김지호,Base Model,4.0,4.0,4.0,3.0
+S002,김지호,Base Model + RAG,3.0,2.0,3.0,3.0
+S002,김지호,Base Model + Student LoRA,3.0,1.0,1.0,1.0
+S002,김지호,Base Model + Professor LoRA,1.0,1.0,1.0,1.0
+S003,김지호,Base Model,2.0,2.0,2.0,2.0
+S003,김지호,Base Model + RAG,1.0,1.0,2.0,2.0
+S003,김지호,Base Model + Student LoRA,3.0,3.0,2.0,2.0
+S003,김지호,Base Model + Professor LoRA,2.0,3.0,4.0,3.0
+S004,김지호,Base Model,4.0,4.0,4.0,3.0
+S004,김지호,Base Model + RAG,2.0,2.0,2.0,3.0
+S004,김지호,Base Model + Student LoRA,1.0,1.0,2.0,2.0
+S004,김지호,Base Model + Professor LoRA,3.0,2.0,2.0,1.0
+S005,김지호,Base Model,1.0,1.0,3.0,3.0
+S005,김지호,Base Model + RAG,5.0,2.0,3.0,3.0
+S005,김지호,Base Model + Student LoRA,5.0,5.0,4.0,4.0
+S005,김지호,Base Model + Professor LoRA,3.0,3.0,3.0,2.0
+S006,김지호,Base Model,4.0,4.0,3.0,3.0
+S006,김지호,Base Model + RAG,2.0,3.0,3.0,3.0
+S006,김지호,Base Model + Student LoRA,1.0,1.0,3.0,3.0
+S006,김지호,Base Model + Professor LoRA,2.0,2.0,2.0,3.0
+S007,김지호,Base Model,4.0,4.0,3.0,4.0
+S007,김지호,Base Model + RAG,4.0,4.0,3.0,4.0
+S007,김지호,Base Model + Student LoRA,4.0,4.0,4.0,4.0
+S007,김지호,Base Model + Professor LoRA,3.0,1.0,1.0,1.0
+S008,김지호,Base Model,1.0,2.0,2.0,3.0
+S008,김지호,Base Model + RAG,5.0,5.0,4.0,4.0
+S008,김지호,Base Model + Student LoRA,2.0,2.0,3.0,3.0
+S008,김지호,Base Model + Professor LoRA,2.0,1.0,2.0,2.0
+S009,김지호,Base Model,3.0,2.0,2.0,2.0
+S009,김지호,Base Model + RAG,1.0,1.0,2.0,2.0
+S009,김지호,Base Model + Student LoRA,1.0,1.0,2.0,1.0
+S009,김지호,Base Model + Professor LoRA,1.0,2.0,2.0,2.0
+S010,김지호,Base Model,2.0,2.0,3.0,2.0
+S010,김지호,Base Model + RAG,5.0,5.0,4.0,4.0
+S010,김지호,Base Model + Student LoRA,4.0,4.0,5.0,5.0
+S010,김지호,Base Model + Professor LoRA,2.0,1.0,3.0,2.0
+S011,김지호,Base Model,2.0,2.0,2.0,2.0
+S011,김지호,Base Model + RAG,3.0,3.0,3.0,3.0
+S011,김지호,Base Model + Student LoRA,2.0,2.0,3.0,2.0
+S011,김지호,Base Model + Professor LoRA,2.0,2.0,2.0,2.0
+S012,김지호,Base Model,2.0,2.0,3.0,3.0
+S012,김지호,Base Model + RAG,5.0,5.0,4.0,5.0
+S012,김지호,Base Model + Student LoRA,3.0,3.0,3.0,3.0
+S012,김지호,Base Model + Professor LoRA,2.0,2.0,2.0,3.0
+S013,김지호,Base Model,3.0,2.0,3.0,2.0
+S013,김지호,Base Model + RAG,3.0,3.0,3.0,3.0
+S013,김지호,Base Model + Student LoRA,4.0,4.0,4.0,4.0
+S013,김지호,Base Model + Professor LoRA,5.0,5.0,4.0,4.0
+S014,김지호,Base Model,2.0,2.0,3.0,2.0
+S014,김지호,Base Model + RAG,5.0,4.0,4.0,5.0
+S014,김지호,Base Model + Student LoRA,3.0,2.0,2.0,2.0
+S014,김지호,Base Model + Professor LoRA,1.0,1.0,2.0,1.0
+S015,김지호,Base Model,2.0,1.0,2.0,1.0
+S015,김지호,Base Model + RAG,4.0,4.0,3.0,4.0
+S015,김지호,Base Model + Student LoRA,3.0,2.0,3.0,3.0
+S015,김지호,Base Model + Professor LoRA,3.0,3.0,2.0,1.0
+S016,김지호,Base Model,3.0,3.0,2.0,3.0
+S016,김지호,Base Model + RAG,1.0,2.0,3.0,3.0
+S016,김지호,Base Model + Student LoRA,2.0,2.0,2.0,3.0
+S016,김지호,Base Model + Professor LoRA,2.0,2.0,3.0,2.0
+S017,김지호,Base Model,3.0,2.0,2.0,2.0
+S017,김지호,Base Model + RAG,4.0,5.0,4.0,4.0
+S017,김지호,Base Model + Student LoRA,2.0,2.0,2.0,3.0
+S017,김지호,Base Model + Professor LoRA,2.0,1.0,2.0,2.0
+S018,김지호,Base Model,2.0,2.0,3.0,2.0
+S018,김지호,Base Model + RAG,3.0,3.0,2.0,2.0
+S018,김지호,Base Model + Student LoRA,4.0,3.0,3.0,3.0
+S018,김지호,Base Model + Professor LoRA,4.0,3.0,3.0,3.0
+S019,김지호,Base Model,3.0,3.0,3.0,2.0
+S019,김지호,Base Model + RAG,5.0,5.0,4.0,4.0
+S019,김지호,Base Model + Student LoRA,2.0,1.0,2.0,2.0
+S019,김지호,Base Model + Professor LoRA,1.0,1.0,2.0,2.0
+S020,김지호,Base Model,2.0,1.0,2.0,2.0
+S020,김지호,Base Model + RAG,5.0,5.0,4.0,4.0
+S020,김지호,Base Model + Student LoRA,2.0,1.0,2.0,2.0
+S020,김지호,Base Model + Professor LoRA,1.0,1.0,2.0,1.0
+S021,김지호,Base Model,3.0,2.0,2.0,2.0
+S021,김지호,Base Model + RAG,5.0,5.0,4.0,4.0
+S021,김지호,Base Model + Student LoRA,3.0,2.0,3.0,2.0
+S021,김지호,Base Model + Professor LoRA,2.0,2.0,2.0,2.0
+S022,김지호,Base Model,2.0,3.0,3.0,3.0
+S022,김지호,Base Model + RAG,4.0,4.0,4.0,4.0
+S022,김지호,Base Model + Student LoRA,4.0,3.0,3.0,3.0
+S022,김지호,Base Model + Professor LoRA,2.0,1.0,1.0,1.0
+S023,김지호,Base Model,3.0,3.0,2.0,2.0
+S023,김지호,Base Model + RAG,5.0,5.0,4.0,5.0
+S023,김지호,Base Model + Student LoRA,3.0,2.0,2.0,2.0
+S023,김지호,Base Model + Professor LoRA,1.0,1.0,1.0,1.0
+S024,김지호,Base Model,2.0,1.0,2.0,1.0
+S024,김지호,Base Model + RAG,5.0,4.0,4.0,2.0
+S024,김지호,Base Model + Student LoRA,2.0,1.0,3.0,2.0
+S024,김지호,Base Model + Professor LoRA,2.0,1.0,2.0,1.0
+S025,김지호,Base Model,2.0,2.0,1.0,1.0
+S025,김지호,Base Model + RAG,4.0,4.0,3.0,4.0
+S025,김지호,Base Model + Student LoRA,3.0,2.0,2.0,2.0
+S025,김지호,Base Model + Professor LoRA,1.0,1.0,2.0,1.0
+S026,김지호,Base Model,2.0,2.0,3.0,1.0
+S026,김지호,Base Model + RAG,5.0,5.0,4.0,5.0
+S026,김지호,Base Model + Student LoRA,2.0,2.0,4.0,4.0
+S026,김지호,Base Model + Professor LoRA,1.0,1.0,2.0,1.0
+S027,김지호,Base Model,4.0,4.0,3.0,4.0
+S027,김지호,Base Model + RAG,5.0,5.0,4.0,5.0
+S027,김지호,Base Model + Student LoRA,4.0,4.0,4.0,4.0
+S027,김지호,Base Model + Professor LoRA,5.0,4.0,4.0,3.0
+S028,김지호,Base Model,2.0,3.0,3.0,2.0
+S028,김지호,Base Model + RAG,5.0,5.0,5.0,5.0
+S028,김지호,Base Model + Student LoRA,1.0,2.0,2.0,2.0
+S028,김지호,Base Model + Professor LoRA,1.0,1.0,1.0,1.0
+S029,김지호,Base Model,5.0,5.0,4.0,4.0
+S029,김지호,Base Model + RAG,4.0,4.0,4.0,2.0
+S029,김지호,Base Model + Student LoRA,1.0,1.0,2.0,1.0
+S029,김지호,Base Model + Professor LoRA,1.0,1.0,1.0,1.0
+S030,김지호,Base Model,1.0,2.0,3.0,3.0
+S030,김지호,Base Model + RAG,5.0,5.0,5.0,5.0
+S030,김지호,Base Model + Student LoRA,5.0,5.0,5.0,5.0
+S030,김지호,Base Model + Professor LoRA,1.0,1.0,1.0,1.0
+S001,박혁진,Base Model,1.0,1.0,4.0,4.0
+S001,박혁진,Base Model + RAG,3.0,3.0,4.0,2.0
+S001,박혁진,Base Model + Student LoRA,2.0,2.0,4.0,3.0
+S002,박혁진,Base Model,3.0,2.0,3.0,2.0
+S002,박혁진,Base Model + RAG,4.0,4.0,5.0,5.0
+S002,박혁진,Base Model + Student LoRA,1.0,1.0,1.0,1.0
+S003,박혁진,Base Model,1.0,1.0,4.0,3.0
+S003,박혁진,Base Model + RAG,3.0,3.0,4.0,4.0
+S003,박혁진,Base Model + Student LoRA,1.0,1.0,2.0,1.0
+S004,박혁진,Base Model,1.0,1.0,4.0,3.0
+S004,박혁진,Base Model + RAG,1.0,1.0,3.0,4.0
+S004,박혁진,Base Model + Student LoRA,1.0,1.0,3.0,3.0
+S005,박혁진,Base Model,1.0,1.0,4.0,4.0
+S005,박혁진,Base Model + RAG,3.0,3.0,5.0,5.0
+S005,박혁진,Base Model + Student LoRA,2.0,2.0,4.0,4.0
+S006,박혁진,Base Model,4.0,4.0,4.0,3.0
+S006,박혁진,Base Model + RAG,1.0,1.0,3.0,3.0
+S006,박혁진,Base Model + Student LoRA,1.0,1.0,5.0,5.0
+S007,박혁진,Base Model,2.0,2.0,4.0,3.0
+S007,박혁진,Base Model + RAG,2.0,2.0,4.0,4.0
+S007,박혁진,Base Model + Student LoRA,2.0,2.0,4.0,4.0
+S008,박혁진,Base Model,1.0,2.0,4.0,3.0
+S008,박혁진,Base Model + RAG,5.0,4.0,5.0,4.0
+S008,박혁진,Base Model + Student LoRA,1.0,1.0,4.0,5.0
+S009,박혁진,Base Model,1.0,1.0,3.0,1.0
+S009,박혁진,Base Model + RAG,2.0,2.0,4.0,4.0
+S009,박혁진,Base Model + Student LoRA,1.0,1.0,3.0,3.0
+S010,박혁진,Base Model,1.0,2.0,4.0,4.0
+S010,박혁진,Base Model + RAG,4.0,3.0,3.0,2.0
+S010,박혁진,Base Model + Student LoRA,1.0,1.0,4.0,4.0
+S011,박혁진,Base Model,1.0,1.0,4.0,3.0
+S011,박혁진,Base Model + RAG,2.0,2.0,5.0,5.0
+S011,박혁진,Base Model + Student LoRA,1.0,1.0,4.0,5.0
+S012,박혁진,Base Model,1.0,1.0,4.0,3.0
+S012,박혁진,Base Model + RAG,4.0,4.0,5.0,5.0
+S012,박혁진,Base Model + Student LoRA,1.0,1.0,4.0,5.0
+S013,박혁진,Base Model,1.0,1.0,4.0,3.0
+S013,박혁진,Base Model + RAG,3.0,3.0,4.0,4.0
+S013,박혁진,Base Model + Student LoRA,1.0,1.0,2.0,2.0
+S014,박혁진,Base Model,1.0,1.0,4.0,3.0
+S014,박혁진,Base Model + RAG,4.0,4.0,5.0,5.0
+S014,박혁진,Base Model + Student LoRA,1.0,1.0,2.0,2.0
+S015,박혁진,Base Model,1.0,1.0,3.0,2.0
+S015,박혁진,Base Model + RAG,2.0,2.0,4.0,2.0
+S015,박혁진,Base Model + Student LoRA,1.0,1.0,4.0,4.0
+S016,박혁진,Base Model,1.0,1.0,3.0,1.0
+S016,박혁진,Base Model + RAG,1.0,1.0,4.0,5.0
+S016,박혁진,Base Model + Student LoRA,1.0,1.0,4.0,4.0
+S017,박혁진,Base Model,1.0,2.0,4.0,4.0
+S017,박혁진,Base Model + RAG,4.0,4.0,4.0,4.0
+S017,박혁진,Base Model + Student LoRA,1.0,1.0,4.0,5.0
+S018,박혁진,Base Model,1.0,1.0,2.0,1.0
+S018,박혁진,Base Model + RAG,2.0,2.0,3.0,2.0
+S018,박혁진,Base Model + Student LoRA,1.0,1.0,4.0,4.0
+S019,박혁진,Base Model,1.0,1.0,4.0,3.0
+S019,박혁진,Base Model + RAG,4.0,4.0,4.0,3.0
+S019,박혁진,Base Model + Student LoRA,1.0,1.0,4.0,4.0
+S020,박혁진,Base Model,1.0,1.0,4.0,4.0
+S020,박혁진,Base Model + RAG,5.0,5.0,4.0,4.0
+S020,박혁진,Base Model + Student LoRA,1.0,1.0,4.0,3.0
+S021,박혁진,Base Model,1.0,1.0,4.0,4.0
+S021,박혁진,Base Model + RAG,4.0,4.0,4.0,3.0
+S021,박혁진,Base Model + Student LoRA,1.0,1.0,3.0,3.0
+S022,박혁진,Base Model,2.0,2.0,4.0,3.0
+S022,박혁진,Base Model + RAG,4.0,4.0,4.0,4.0
+S022,박혁진,Base Model + Student LoRA,1.0,1.0,4.0,3.0
+S023,박혁진,Base Model,2.0,2.0,4.0,2.0
+S023,박혁진,Base Model + RAG,4.0,4.0,4.0,5.0
+S023,박혁진,Base Model + Student LoRA,1.0,1.0,4.0,4.0
+S024,박혁진,Base Model,1.0,2.0,4.0,3.0
+S024,박혁진,Base Model + RAG,4.0,4.0,4.0,2.0
+S024,박혁진,Base Model + Student LoRA,1.0,1.0,4.0,4.0
+S025,박혁진,Base Model,1.0,1.0,4.0,3.0
+S025,박혁진,Base Model + RAG,4.0,4.0,5.0,5.0
+S025,박혁진,Base Model + Student LoRA,1.0,1.0,4.0,4.0
+S026,박혁진,Base Model,1.0,1.0,4.0,2.0
+S026,박혁진,Base Model + RAG,4.0,4.0,4.0,4.0
+S026,박혁진,Base Model + Student LoRA,1.0,1.0,4.0,4.0
+S027,박혁진,Base Model,2.0,2.0,4.0,3.0
+S027,박혁진,Base Model + RAG,4.0,4.0,4.0,3.0
+S027,박혁진,Base Model + Student LoRA,1.0,1.0,2.0,3.0
+S028,박혁진,Base Model,1.0,1.0,4.0,4.0
+S028,박혁진,Base Model + RAG,4.0,4.0,5.0,5.0
+S028,박혁진,Base Model + Student LoRA,1.0,1.0,4.0,5.0
+S029,박혁진,Base Model,4.0,4.0,4.0,3.0
+S029,박혁진,Base Model + RAG,1.0,1.0,3.0,1.0
+S029,박혁진,Base Model + Student LoRA,1.0,1.0,5.0,5.0
+S030,박혁진,Base Model,1.0,1.0,4.0,4.0
+S030,박혁진,Base Model + RAG,4.0,4.0,5.0,5.0
+S030,박혁진,Base Model + Student LoRA,4.0,4.0,5.0,4.0
+S001,사공탁,Base Model,1.0,3.0,3.0,4.0
+S001,사공탁,Base Model + RAG,5.0,4.0,4.0,4.0
+S001,사공탁,Base Model + Student LoRA,3.0,3.5,4.0,4.0
+S001,사공탁,Base Model + Professor LoRA,1.0,2.0,3.0,2.0
+S002,사공탁,Base Model,4.0,4.0,4.0,3.0
+S002,사공탁,Base Model + RAG,5.0,5.0,5.0,5.0
+S002,사공탁,Base Model + Student LoRA,5.0,3.0,2.0,2.0
+S002,사공탁,Base Model + Professor LoRA,2.0,2.0,3.0,2.0
+S003,사공탁,Base Model,1.0,2.5,3.0,3.0
+S003,사공탁,Base Model + RAG,3.0,3.0,3.0,3.0
+S003,사공탁,Base Model + Student LoRA,4.0,4.0,4.0,2.0
+S003,사공탁,Base Model + Professor LoRA,1.0,2.0,3.0,2.0
+S004,사공탁,Base Model,1.0,2.0,3.0,2.0
+S004,사공탁,Base Model + RAG,3.0,2.0,2.0,1.0
+S004,사공탁,Base Model + Student LoRA,1.0,2.0,4.0,2.0
+S004,사공탁,Base Model + Professor LoRA,4.0,4.0,4.0,3.0
+S005,사공탁,Base Model,2.0,3.0,3.0,3.0
+S005,사공탁,Base Model + RAG,4.0,4.0,2.0,4.0
+S005,사공탁,Base Model + Student LoRA,5.0,4.0,3.0,5.0
+S005,사공탁,Base Model + Professor LoRA,5.0,4.5,5.0,4.0
+S006,사공탁,Base Model,4.0,3.0,3.0,3.0
+S006,사공탁,Base Model + RAG,1.0,2.0,3.0,3.0
+S006,사공탁,Base Model + Student LoRA,1.0,2.0,1.0,4.0
+S006,사공탁,Base Model + Professor LoRA,5.0,4.0,4.0,4.0
+S007,사공탁,Base Model,4.0,3.0,3.0,3.0
+S007,사공탁,Base Model + RAG,5.0,4.5,3.0,5.0
+S007,사공탁,Base Model + Student LoRA,5.0,4.0,3.0,5.0
+S007,사공탁,Base Model + Professor LoRA,4.0,3.0,3.0,1.0
+S008,사공탁,Base Model,1.0,2.0,3.0,2.0
+S008,사공탁,Base Model + RAG,5.0,4.0,4.0,3.0
+S008,사공탁,Base Model + Student LoRA,2.0,3.0,3.0,4.0
+S008,사공탁,Base Model + Professor LoRA,1.0,3.0,4.0,3.0
+S009,사공탁,Base Model,1.0,2.0,4.0,1.0
+S009,사공탁,Base Model + RAG,4.0,3.5,2.0,4.0
+S009,사공탁,Base Model + Student LoRA,2.0,2.5,4.0,2.0
+S009,사공탁,Base Model + Professor LoRA,2.0,4.0,4.0,2.0
+S010,사공탁,Base Model,1.0,3.0,3.0,3.0
+S010,사공탁,Base Model + RAG,5.0,4.5,4.0,3.0
+S010,사공탁,Base Model + Student LoRA,2.0,2.0,2.0,4.0
+S010,사공탁,Base Model + Professor LoRA,1.0,2.0,3.0,2.0
+S011,사공탁,Base Model,4.0,4.0,5.0,4.0
+S011,사공탁,Base Model + RAG,4.0,4.0,2.0,5.0
+S011,사공탁,Base Model + Student LoRA,1.0,3.5,4.0,4.0
+S011,사공탁,Base Model + Professor LoRA,1.0,2.0,5.0,1.0
+S012,사공탁,Base Model,1.0,2.0,4.0,2.0
+S012,사공탁,Base Model + RAG,5.0,5.0,3.0,5.0
+S012,사공탁,Base Model + Student LoRA,3.0,3.0,3.0,3.0
+S012,사공탁,Base Model + Professor LoRA,1.0,2.0,4.0,3.0
+S013,사공탁,Base Model,2.0,2.0,3.0,2.0
+S013,사공탁,Base Model + RAG,3.0,3.0,3.0,5.0
+S013,사공탁,Base Model + Student LoRA,1.0,2.5,5.0,2.0
+S013,사공탁,Base Model + Professor LoRA,1.0,2.5,5.0,2.0
+S014,사공탁,Base Model,2.0,2.0,4.0,2.0
+S014,사공탁,Base Model + RAG,5.0,5.0,3.0,5.0
+S014,사공탁,Base Model + Student LoRA,3.0,3.0,3.0,3.0
+S014,사공탁,Base Model + Professor LoRA,1.0,1.0,1.0,1.0
+S015,사공탁,Base Model,1.0,1.0,3.0,2.0
+S015,사공탁,Base Model + RAG,2.0,3.0,4.0,3.0
+S015,사공탁,Base Model + Student LoRA,1.0,2.0,3.0,4.0
+S015,사공탁,Base Model + Professor LoRA,1.0,1.0,4.0,1.0
+S016,사공탁,Base Model,1.0,1.0,4.0,1.0
+S016,사공탁,Base Model + RAG,3.0,3.0,3.0,3.0
+S016,사공탁,Base Model + Student LoRA,4.0,4.0,4.0,4.0
+S016,사공탁,Base Model + Professor LoRA,4.0,3.0,4.0,2.0
+S017,사공탁,Base Model,2.0,2.0,2.0,3.0
+S017,사공탁,Base Model + RAG,5.0,5.0,2.0,5.0
+S017,사공탁,Base Model + Student LoRA,1.0,3.0,3.0,5.0
+S017,사공탁,Base Model + Professor LoRA,2.0,4.0,5.0,2.0
+S018,사공탁,Base Model,1.0,3.0,4.0,2.0
+S018,사공탁,Base Model + RAG,4.0,4.0,4.0,2.0
+S018,사공탁,Base Model + Student LoRA,1.0,2.0,2.0,3.0
+S018,사공탁,Base Model + Professor LoRA,4.0,3.0,4.0,1.0
+S019,사공탁,Base Model,4.0,4.0,4.0,2.0
+S019,사공탁,Base Model + RAG,5.0,4.0,5.0,2.0
+S019,사공탁,Base Model + Student LoRA,2.0,3.0,2.0,4.0
+S019,사공탁,Base Model + Professor LoRA,1.0,2.0,4.0,3.0
+S020,사공탁,Base Model,3.0,1.0,4.0,3.0
+S020,사공탁,Base Model + RAG,5.0,4.0,3.0,4.0
+S020,사공탁,Base Model + Student LoRA,1.0,2.0,3.0,2.0
+S020,사공탁,Base Model + Professor LoRA,4.0,3.0,5.0,1.0
+S021,사공탁,Base Model,4.0,1.0,4.0,2.0
+S021,사공탁,Base Model + RAG,5.0,3.0,3.0,3.0
+S021,사공탁,Base Model + Student LoRA,3.0,3.0,4.0,3.0
+S021,사공탁,Base Model + Professor LoRA,3.0,3.0,3.0,3.0
+S022,사공탁,Base Model,2.0,3.0,4.0,2.0
+S022,사공탁,Base Model + RAG,5.0,4.0,3.0,5.0
+S022,사공탁,Base Model + Student LoRA,1.0,2.0,4.0,3.0
+S022,사공탁,Base Model + Professor LoRA,4.0,4.0,2.0,5.0
+S023,사공탁,Base Model,3.0,3.0,4.0,2.0
+S023,사공탁,Base Model + RAG,5.0,4.5,1.0,5.0
+S023,사공탁,Base Model + Student LoRA,4.0,3.0,3.0,3.0
+S023,사공탁,Base Model + Professor LoRA,1.0,1.0,1.0,1.0
+S024,사공탁,Base Model,1.0,2.0,4.0,2.0
+S024,사공탁,Base Model + RAG,5.0,4.5,5.0,1.0
+S024,사공탁,Base Model + Student LoRA,2.0,3.0,3.0,4.0
+S024,사공탁,Base Model + Professor LoRA,3.0,3.0,2.0,4.0
+S025,사공탁,Base Model,2.0,2.0,5.0,1.0
+S025,사공탁,Base Model + RAG,5.0,4.5,1.0,5.0
+S025,사공탁,Base Model + Student LoRA,1.0,2.0,2.0,4.0
+S025,사공탁,Base Model + Professor LoRA,2.0,1.0,5.0,1.0
+S026,사공탁,Base Model,1.0,1.0,4.0,1.0
+S026,사공탁,Base Model + RAG,5.0,4.5,2.0,5.0
+S026,사공탁,Base Model + Student LoRA,1.0,2.0,3.0,3.0
+S026,사공탁,Base Model + Professor LoRA,1.0,1.0,5.0,1.0
+S027,사공탁,Base Model,1.0,1.0,4.0,1.0
+S027,사공탁,Base Model + RAG,5.0,4.0,4.0,3.0
+S027,사공탁,Base Model + Student LoRA,1.0,3.0,3.0,3.0
+S027,사공탁,Base Model + Professor LoRA,1.0,1.0,1.0,1.0
+S028,사공탁,Base Model,1.0,2.0,2.0,2.0
+S028,사공탁,Base Model + RAG,5.0,5.0,2.0,5.0
+S028,사공탁,Base Model + Student LoRA,1.0,1.0,1.0,4.0
+S028,사공탁,Base Model + Professor LoRA,1.0,1.0,4.0,1.0
+S029,사공탁,Base Model,5.0,5.0,3.0,5.0
+S029,사공탁,Base Model + RAG,1.0,1.0,2.0,1.0
+S029,사공탁,Base Model + Student LoRA,1.0,1.0,1.0,3.0
+S029,사공탁,Base Model + Professor LoRA,3.0,2.0,5.0,2.0
+S030,사공탁,Base Model,1.0,1.0,1.0,3.0
+S030,사공탁,Base Model + RAG,5.0,4.0,1.0,5.0
+S030,사공탁,Base Model + Student LoRA,5.0,5.0,3.0,5.0
+S030,사공탁,Base Model + Professor LoRA,1.0,2.5,5.0,2.0

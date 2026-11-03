@@ -82,6 +82,18 @@ class JudgeResult(BaseModel):
 rouge = rouge_scorer.RougeScorer(["rougeL"], use_stemmer=False)
 
 
+def anthropic_llm(model: str, api_key: str) -> ChatAnthropic:
+    """Newer Claude models reject `temperature`; only send it to legacy models."""
+    kwargs: dict[str, Any] = {"model": model, "api_key": api_key}
+    if accepts_temperature(model):
+        kwargs["temperature"] = 0.0
+    return ChatAnthropic(**kwargs)
+
+
+def accepts_temperature(model: str) -> bool:
+    return model.startswith("claude-3") or "-4" in model
+
+
 def model_condition(name: str) -> str:
     return CONDITION_ALIASES.get(name, name)
 
@@ -138,7 +150,7 @@ def create_judge_chain() -> Any:
     if not key:
         raise RuntimeError("ANTHROPIC_API_KEY is required to score model answers")
     model = os.getenv("ANTHROPIC_MODEL", "claude-3-5-sonnet-20241022")
-    llm = ChatAnthropic(model=model, temperature=0.0, api_key=key)
+    llm = anthropic_llm(model, key)
     parser = JsonOutputParser(pydantic_object=JudgeResult)
     prompt = ChatPromptTemplate.from_messages(
         [
@@ -207,17 +219,16 @@ def ragas_scores(dataset: list[dict[str, Any]]) -> dict[tuple[int, str], dict[st
         if not api_key:
             logger.warning("RAGAS skipped: ANTHROPIC_API_KEY is not set")
             return {}
-        evaluator = ChatAnthropic(
-            model=os.getenv(
-                "RAGAS_ANTHROPIC_MODEL", os.getenv("ANTHROPIC_MODEL", "claude-3-5-sonnet-20241022")
-            ),
-            temperature=0.0,
-            api_key=api_key,
+        ragas_model = os.getenv(
+            "RAGAS_ANTHROPIC_MODEL", os.getenv("ANTHROPIC_MODEL", "claude-3-5-sonnet-20241022")
         )
+        evaluator = anthropic_llm(ragas_model, api_key)
         result = evaluate(
             Dataset.from_list(rows),
             metrics=[faithfulness, context_precision],
-            llm=LangchainLLMWrapper(evaluator),
+            llm=LangchainLLMWrapper(
+                evaluator, bypass_temperature=not accepts_temperature(ragas_model)
+            ),
             run_config=RunConfig(timeout=180),
         ).to_pandas()
         output = {}
