@@ -1,6 +1,6 @@
-# ─────────────────────────────────────────
+# -----------------------------------------
 # FastAPI Core
-# ─────────────────────────────────────────
+# -----------------------------------------
 fastapi==0.115.0
 uvicorn[standard]==0.30.6
 python-dotenv==1.0.1
@@ -8,41 +8,41 @@ pydantic-settings==2.5.2
 httpx==0.27.2
 psycopg[binary]>=3.2,<4
 
-# ─────────────────────────────────────────
+# -----------------------------------------
 # LangChain
-# ─────────────────────────────────────────
+# -----------------------------------------
 langchain==0.3.27
 langchain-core>=0.3.75,<0.4.0
 langchain-community==0.3.27
 langchain-text-splitters==0.3.9
 langchain-ollama==0.2.3
 
-# ─────────────────────────────────────────
+# -----------------------------------------
 # Vector Store & Embeddings (RAG)
-# ─────────────────────────────────────────
+# -----------------------------------------
 chromadb==1.0.20
 
-# NAVER Clova Studio 한국어 임베딩 대안
-# (Clova Embedding API 직접 호출 또는 sentence-transformers)
+# Alternative Korean embeddings (NAVER Clova Studio)
+# (call the Clova Embedding API directly, or use sentence-transformers)
 sentence-transformers==3.1.1
 
-# ─────────────────────────────────────────
-# Document Loaders (RAG 지식베이스)
-# ─────────────────────────────────────────
-pypdf==4.3.1         # PDF 문서 로드
-python-docx==1.1.2   # Word 문서 로드
+# -----------------------------------------
+# Document Loaders (RAG knowledge base)
+# -----------------------------------------
+pypdf==4.3.1         # load PDF documents
+python-docx==1.1.2   # load Word documents
 
-# ─────────────────────────────────────────
+# -----------------------------------------
 # Test
-# ─────────────────────────────────────────
+# -----------------------------------------
 pytest==8.3.3
 pytest-asyncio==0.24.0
 pytest-mock==3.14.0
-httpx==0.27.2         # FastAPI TestClient용
+httpx==0.27.2         # for the FastAPI TestClient
 
-# ─────────────────────────────────────────
+# -----------------------------------------
 # Fine-Tuning & Research (LLM Training)
-# ─────────────────────────────────────────
+# -----------------------------------------
 torch>=2.4.0
 transformers>=4.43.0
 peft>=0.11.1
@@ -51,10 +51,10 @@ accelerate>=0.33.0
 datasets>=2.20.0
 tqdm>=4.66.4
 
-# [주의] 아래 패키지들은 Mac 환경에서 설치 시 의존성 충돌(무한 루프)이 발생할 수 있습니다.
-# 실제 파인튜닝을 진행할 A100(Linux/CUDA) 서버에서만 설치하세요.
+# [Note] The packages below may hit dependency conflicts (infinite loop) on macOS.
+# Install them only on the Linux/CUDA GPU server used for fine-tuning.
 # bitsandbytes>=0.43.3
-# vllm>=0.5.0          # 파인튜닝된 모델의 고속 추론 서빙용
+# vllm>=0.5.0          # fast serving of the fine-tuned model
 
 
 langchain-google-genai>=2.1.12,<3.0.0
@@ -68,12 +68,12 @@ rouge-score>=0.1.2,<1
 langchain-anthropic>=0.3,<1
 langchain-openai>=0.3,<1
 
-# WebSquare 강의계획서 화면 자동 조회
+# automated lookup of the WebSquare syllabus page
 selenium==4.49.0
 
-# ─────────────────────────────────────────
+# -----------------------------------------
 # Evaluation (RAGAS)
-# ─────────────────────────────────────────
+# -----------------------------------------
 ragas>=0.2.0           # RAG 파이프라인 평가 프레임워크
 datasets>=2.20.0       # HuggingFace datasets (RAGAS 입력 형식)
 langchain-openai>=0.2.0  # RAGAS 기본 LLM/임베딩 백엔드 (OpenAI)

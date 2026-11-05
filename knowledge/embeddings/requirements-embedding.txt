@@ -1,7 +1,8 @@
-# Python 3.10~3.12. 독립 가상환경 사용 (프로젝트의 chromadb 0.5.x와 분리).
+# Python 3.10-3.12. Use a separate virtualenv (kept apart from the project's chromadb 0.5.x).
 sentence-transformers==3.1.1
 chromadb==1.0.20
 numpy>=1.26.4,<2
 transformers>=4.41,<5
 huggingface-hub[hf_xet]>=0.36,<1
 posthog>=2.4,<4
+pyarrow>=19,<21  # datasets (pulled in by sentence-transformers) needs pyarrow>=19; pyarrow>=21 requires NumPy 2 (conflicts with numpy<2)
