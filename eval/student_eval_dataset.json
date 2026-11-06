@@ -1554,5 +1554,915 @@
       "Base Model + Professor LoRA": "local:adapter_professor_llama",
       "Base Model + RAG": "ollama:llama3.1:8b + local Chroma/BGE-M3"
     }
+  },
+  {
+    "question": "학·석사연계과정 신청하려면 자격이랑 기간이 어떻게 돼?",
+    "ground_truth": "2026학년도 2학기 학·석사 및 학·석박사통합연계과정 이수예정자 신청자격은 2학년(5년제 과정은 3학년) 이상 재학생으로 성적 평점평균 3.0 이상인 학생입니다(편입생은 편입학 후 2개 학기 이상 이수 중인 자). 신청기간은 2026. 6. 10.(수) 10:00 ~ 6. 17.(수) 18:00이며, 통합정보시스템 [전공관리-(통합)연계과정신청]에서 신청한 뒤 지원서·추천서·연구활동계획서·성적증명서 각 1부를 진학하려는 대학원 학과 사무실(대학원 컴퓨터학부: 공대 9호관 413호)에 제출합니다. 선발자 결정은 2026. 7. 2.(목) 예정입니다. 학사과정 중 입학 예정 대학원의 전공과목을 6학점 이상 이수해야 하고, 글솝 학생의 학석사 연계트랙은 반드시 대학원 컴퓨터학부로 진학해야 합니다.",
+    "models": {},
+    "contexts": {},
+    "question_id": "S031",
+    "role": "student",
+    "task_type": "student_factual_qa",
+    "source_dataset": "student_eval_v3 extension (30 items, drafted from knowledge/processed/notices)",
+    "topic": "curriculum_and_major",
+    "temporal_scope": "2026학년도 2학기 기준",
+    "reference_type": "factual_answer",
+    "review_status": "draft_needs_team_review",
+    "evaluation_criteria": [
+      "공식 자료에 명시된 필수 사실을 포함함",
+      "질문에 명시된 학기·전공·학번 등 적용 조건을 지킴",
+      "근거에 없는 세부사항을 추가하지 않음"
+    ],
+    "dataset_version": "student_eval_v3",
+    "knowledge_base_scope": "2026학년도 2학기",
+    "source_verification": "KB 문서에서 정답 작성(게시일 메타데이터 없음). 공식 공지 원문과 대조 후 verified로 변경: 2026학년도 2학기 학·석사 및 학·석박사통합연계과정 이수예정자 선발에 따른 신청 안내 (https://computer.knu.ac.kr/bbs/board.php?bo_table=sub6_1_a&wr_id=29285)",
+    "source_documents": [
+      {
+        "wr_id": 29285,
+        "title": "2026학년도 2학기 학·석사 및 학·석박사통합연계과정 이수예정자 선발에 따른 신청 안내",
+        "url": "https://computer.knu.ac.kr/bbs/board.php?bo_table=sub6_1_a&wr_id=29285"
+      }
+    ]
+  },
+  {
+    "question": "비즈니스인텔리전스 융합전공 이수지침이 바뀌었다는데 뭐가 달라졌어?",
+    "ground_truth": "개정 전에는 경영학부·통계학과·컴퓨터학부 전공과목을 각각 18학점까지만 인정하고, 편성된 전공과목 중 36학점 이상을 선택 이수해야 했습니다. 개정 후에는 전공별 18학점 이수 제한 지침이 삭제되어 편성된 전공과목 중 36학점 이상을 선택 이수하면 됩니다. 변경 내용은 학번과 상관없이 소급 적용됩니다.",
+    "models": {},
+    "contexts": {},
+    "question_id": "S032",
+    "role": "student",
+    "task_type": "student_factual_qa",
+    "source_dataset": "student_eval_v3 extension (30 items, drafted from knowledge/processed/notices)",
+    "topic": "curriculum_and_major",
+    "temporal_scope": "2026학년도 2학기 기준",
+    "reference_type": "factual_answer",
+    "review_status": "draft_needs_team_review",
+    "evaluation_criteria": [
+      "공식 자료에 명시된 필수 사실을 포함함",
+      "질문에 명시된 학기·전공·학번 등 적용 조건을 지킴",
+      "근거에 없는 세부사항을 추가하지 않음"
+    ],
+    "dataset_version": "student_eval_v3",
+    "knowledge_base_scope": "2026학년도 2학기",
+    "source_verification": "KB 문서에서 정답 작성(게시일 메타데이터 없음). 공식 공지 원문과 대조 후 verified로 변경: 비즈니스인텔리전스 융합전공 이수지침 변경 공지 (https://computer.knu.ac.kr/bbs/board.php?bo_table=sub6_1_a&wr_id=29264)",
+    "source_documents": [
+      {
+        "wr_id": 29264,
+        "title": "비즈니스인텔리전스 융합전공 이수지침 변경 공지",
+        "url": "https://computer.knu.ac.kr/bbs/board.php?bo_table=sub6_1_a&wr_id=29264"
+      }
+    ]
+  },
+  {
+    "question": "인컴인데 교과구분이 잘못 들어간 과목은 어떻게 변경 신청해?",
+    "ground_truth": "인공지능컴퓨팅전공 학생은 졸업 전까지, 성적 확정(성적증명서 반영) 이후 교과구분 변경을 신청할 수 있으며 진로(부전공·복수전공 등) 확정 후 신청이 권장됩니다. 차세대통합정보시스템 → 성적 → 교과구분관리 → 증명성적 교과구분 변경신청에서 [추가]로 교과목을 선택하고, 전공구분을 주전공으로 한 뒤 신청학과코드 1O0208(컴퓨터학부 인공지능컴퓨팅전공)을 반드시 입력하고 저장 후 '신청하기'까지 완료해야 합니다(미입력 시 미승인 가능). 신청 후 2일 내 승인 여부를 확인하고, 미승인 시 imgreen@knu.ac.kr로 문의합니다. 졸업 전 전공필수 7과목은 반드시 전공필수로 인정되어야 하며, 동일 교과목의 교과구분 중복 인정은 불가합니다.",
+    "models": {},
+    "contexts": {},
+    "question_id": "S033",
+    "role": "student",
+    "task_type": "student_factual_qa",
+    "source_dataset": "student_eval_v3 extension (30 items, drafted from knowledge/processed/notices)",
+    "topic": "curriculum_and_major",
+    "temporal_scope": "2026학년도 2학기 기준",
+    "reference_type": "factual_answer",
+    "review_status": "draft_needs_team_review",
+    "evaluation_criteria": [
+      "공식 자료에 명시된 필수 사실을 포함함",
+      "질문에 명시된 학기·전공·학번 등 적용 조건을 지킴",
+      "근거에 없는 세부사항을 추가하지 않음"
+    ],
+    "dataset_version": "student_eval_v3",
+    "knowledge_base_scope": "2026학년도 2학기",
+    "source_verification": "KB 문서에서 정답 작성(게시일 메타데이터 없음). 공식 공지 원문과 대조 후 verified로 변경: [성적] 인컴 교과구분 변경 안내 (https://computer.knu.ac.kr/bbs/board.php?bo_table=sub6_1_a&wr_id=29159)",
+    "source_documents": [
+      {
+        "wr_id": 29159,
+        "title": "[성적] 인컴 교과구분 변경 안내",
+        "url": "https://computer.knu.ac.kr/bbs/board.php?bo_table=sub6_1_a&wr_id=29159"
+      }
+    ]
+  },
+  {
+    "question": "인컴으로 편입했는데 전적대학에서 들은 과목은 어떻게 인정받아?",
+    "ground_truth": "인공지능컴퓨팅전공 편입생은 해당 학년도 편입생 전원이 전적대학 이수 교과목의 전공/교양/일반선택 학점 승인을 신청해야 합니다. 매년 3월 초 입학년도 기준 신청기간 내에만 전공 승인이 되므로 입학 후 바로 휴학할 예정이어도 반드시 진행해야 합니다. 학생용 서버에 ① 전공승인 신청 교과목 현황(조서) 엑셀 파일과 ② 전적대학 성적증명서, 이수과목 강의내용 요약서, 전적대학 공식 강의계획서 등을 하나로 합친 PDF를 업로드합니다. 심사는 전공 주임교수 심의로 결정되고 결과는 이메일로 통보되며 별도 이의제기는 받지 않습니다. 편입인정학점은 졸업학점의 1/2로, 2023~2025학번은 140학점 중 70학점, 2026학번부터는 130학점 중 65학점입니다.",
+    "models": {},
+    "contexts": {},
+    "question_id": "S034",
+    "role": "student",
+    "task_type": "student_factual_qa",
+    "source_dataset": "student_eval_v3 extension (30 items, drafted from knowledge/processed/notices)",
+    "topic": "curriculum_and_major",
+    "temporal_scope": "2026학년도 2학기 기준",
+    "reference_type": "factual_answer",
+    "review_status": "draft_needs_team_review",
+    "evaluation_criteria": [
+      "공식 자료에 명시된 필수 사실을 포함함",
+      "질문에 명시된 학기·전공·학번 등 적용 조건을 지킴",
+      "근거에 없는 세부사항을 추가하지 않음"
+    ],
+    "dataset_version": "student_eval_v3",
+    "knowledge_base_scope": "2026학년도 2학기",
+    "source_verification": "KB 문서에서 정답 작성(게시일 메타데이터 없음). 공식 공지 원문과 대조 후 verified로 변경: [편입] 인컴 편입생 성적 심사 및 인정 안내 (https://computer.knu.ac.kr/bbs/board.php?bo_table=sub6_1_a&wr_id=29173)",
+    "source_documents": [
+      {
+        "wr_id": 29173,
+        "title": "[편입] 인컴 편입생 성적 심사 및 인정 안내",
+        "url": "https://computer.knu.ac.kr/bbs/board.php?bo_table=sub6_1_a&wr_id=29173"
+      }
+    ]
+  },
+  {
+    "question": "2026년 8월 졸업예정자인데 졸업요건은 다 채웠고 졸업을 미루고 싶어. 어떻게 신청해?",
+    "ground_truth": "2026년 8월 학사과정 졸업예정자는 '학사학위취득의 유예'를 신청할 수 있습니다(현재 유예 중인 학생 포함, 기 수료자·조기졸업신청자 제외). 신청기간은 2026. 7. 13.(월) ~ 7. 24.(금)이며 추가 신청기간은 없습니다. 통합정보시스템 '졸업' → '졸업예정자관리' → '학사학위취득유예신청'에서 신청한 뒤 신청서를 출력·서명하여 소속 학부 졸업담당 선생님께 메일 또는 방문으로 제출합니다. 신청 전 졸업요건 충족 여부를 졸업담당 선생님께 꼭 확인받아야 하며, 유예기간 중에는 휴학하거나 유예를 취소할 수 없습니다. 결과 조회는 8. 4. 이후이며, 수강신청 여부와 관계없이 등록금(미수강자는 등록금의 5% 시설사용료)을 납부해야 합니다.",
+    "models": {},
+    "contexts": {},
+    "question_id": "S035",
+    "role": "student",
+    "task_type": "student_factual_qa",
+    "source_dataset": "student_eval_v3 extension (30 items, drafted from knowledge/processed/notices)",
+    "topic": "graduation_and_student_status",
+    "temporal_scope": "2026학년도 2학기 기준",
+    "reference_type": "factual_answer",
+    "review_status": "draft_needs_team_review",
+    "evaluation_criteria": [
+      "공식 자료에 명시된 필수 사실을 포함함",
+      "질문에 명시된 학기·전공·학번 등 적용 조건을 지킴",
+      "근거에 없는 세부사항을 추가하지 않음"
+    ],
+    "dataset_version": "student_eval_v3",
+    "knowledge_base_scope": "2026학년도 2학기",
+    "source_verification": "KB 문서에서 정답 작성(게시일 메타데이터 없음). 공식 공지 원문과 대조 후 verified로 변경: [졸업] 2026년 8월 졸업예정자의 학사학위취득 유예 선발 안내(7.13.~7.24.) (https://computer.knu.ac.kr/bbs/board.php?bo_table=sub6_1_a&wr_id=29300); ★★ 2026년 8월 졸업예정자 중 학사학위취득유예자 등록 안내 ☆☆ (https://computer.knu.ac.kr/bbs/board.php?bo_table=sub6_1_a&wr_id=29363)",
+    "source_documents": [
+      {
+        "wr_id": 29300,
+        "title": "[졸업] 2026년 8월 졸업예정자의 학사학위취득 유예 선발 안내(7.13.~7.24.)",
+        "url": "https://computer.knu.ac.kr/bbs/board.php?bo_table=sub6_1_a&wr_id=29300"
+      },
+      {
+        "wr_id": 29363,
+        "title": "★★ 2026년 8월 졸업예정자 중 학사학위취득유예자 등록 안내 ☆☆",
+        "url": "https://computer.knu.ac.kr/bbs/board.php?bo_table=sub6_1_a&wr_id=29363"
+      }
+    ],
+    "review_note": "29300(납부 8.11.~8.13.)과 29363(등록기간 8.11.~8.12. 16:00)의 납부기간이 달라 정답에서 납부 날짜는 제외함."
+  },
+  {
+    "question": "모집단위 폐지/신설 때문에 학적 변경 신청하라던데 누가 어떻게 하는 거야?",
+    "ground_truth": "현재 통합정보시스템 학적기본사항에 [IT대학 컴퓨터학부] 소속으로 되어 있는 1~3학년 재적생이 대상입니다(4학년, 졸업생, 현재 교직과정 대상자인 플랫폼소프트웨어전공 및 글솝·인컴 재적생은 신청 불가). 붙임 학적변경신청서를 작성·서명한 뒤 PDF로 rosetum2nd@knu.ac.kr에 제출하며, 메일 제목은 '학적변경신청서 제출 (홍길동/2026123456)' 형식입니다. 신청기한은 2026. 6. 1.(월) 11:00 ~ 6. 12.(금) 17:00이고 적용은 2026학년도 2학기부터 처리될 예정입니다. 변경을 희망하면 에이빅 포기 공지를 확인하고 신청을 완료해야 하며, 학적변경 후에도 본인 학번 기준 졸업요건을 이수해야 하고 학과명칭 변경 후 원상회복은 불가합니다.",
+    "models": {},
+    "contexts": {},
+    "question_id": "S036",
+    "role": "student",
+    "task_type": "student_factual_qa",
+    "source_dataset": "student_eval_v3 extension (30 items, drafted from knowledge/processed/notices)",
+    "topic": "graduation_and_student_status",
+    "temporal_scope": "2026학년도 2학기 기준",
+    "reference_type": "factual_answer",
+    "review_status": "draft_needs_team_review",
+    "evaluation_criteria": [
+      "공식 자료에 명시된 필수 사실을 포함함",
+      "질문에 명시된 학기·전공·학번 등 적용 조건을 지킴",
+      "근거에 없는 세부사항을 추가하지 않음"
+    ],
+    "dataset_version": "student_eval_v3",
+    "knowledge_base_scope": "2026학년도 2학기",
+    "source_verification": "KB 문서에서 정답 작성(게시일 메타데이터 없음). 공식 공지 원문과 대조 후 verified로 변경: [학사] ★★ 2026학년도 대학 모집단위 폐지/신설에 따른 학적 변경 신청안내 ★★ (~6.12. 17시까지) (https://computer.knu.ac.kr/bbs/board.php?bo_table=sub6_1_a&wr_id=29275)",
+    "source_documents": [
+      {
+        "wr_id": 29275,
+        "title": "[학사] ★★ 2026학년도 대학 모집단위 폐지/신설에 따른 학적 변경 신청안내 ★★ (~6.12. 17시까지)",
+        "url": "https://computer.knu.ac.kr/bbs/board.php?bo_table=sub6_1_a&wr_id=29275"
+      }
+    ]
+  },
+  {
+    "question": "인컴 2027년 2월 졸업예정자는 졸업 준비로 뭘 해야 돼?",
+    "ground_truth": "인공지능컴퓨팅전공 2027년 2월 졸업예정자(재학생만, 휴학생 불가)는 졸업예정자 오픈톡(https://open.kakao.com/o/gKQ4ATJi, 아이디 '이름-학번')에 필수 참여하고 사전 졸업예정자로 등록되어야 졸업사정이 가능합니다. 절차는 1차 졸업요건 확인 구글폼 응답(~2026. 9. 10.), 2차 졸업요건 증빙자료 PDF 제출(해당자, ~2026. 11. 30. 기한엄수), 3차 졸업조사표 전원 응답(11월 말), 4차 통합정보시스템 졸업자격인정원 신청(실용영어·소프트웨어·상담 8회 이상·전공영역)입니다. 졸업요건은 입학년도 기준 졸업학점 충족, 현장실습 3학점 이상 이수(대체 시 대체승인서 제출), 졸업자격인정원 충족입니다. 졸업요건 문의는 imgreen@knu.ac.kr, 그 외 학사 문의는 scse@knu.ac.kr입니다.",
+    "models": {},
+    "contexts": {},
+    "question_id": "S037",
+    "role": "student",
+    "task_type": "student_factual_qa",
+    "source_dataset": "student_eval_v3 extension (30 items, drafted from knowledge/processed/notices)",
+    "topic": "graduation_and_student_status",
+    "temporal_scope": "2026학년도 2학기 기준",
+    "reference_type": "factual_answer",
+    "review_status": "draft_needs_team_review",
+    "evaluation_criteria": [
+      "공식 자료에 명시된 필수 사실을 포함함",
+      "질문에 명시된 학기·전공·학번 등 적용 조건을 지킴",
+      "근거에 없는 세부사항을 추가하지 않음"
+    ],
+    "dataset_version": "student_eval_v3",
+    "knowledge_base_scope": "2026학년도 2학기",
+    "source_verification": "KB 문서에서 정답 작성(게시일 메타데이터 없음). 공식 공지 원문과 대조 후 verified로 변경: [인컴-졸업] 졸업예정자 준비 사항 안내_27년 2월 예정자 필독!!! (https://computer.knu.ac.kr/bbs/board.php?bo_table=sub6_1_a&wr_id=29385)",
+    "source_documents": [
+      {
+        "wr_id": 29385,
+        "title": "[인컴-졸업] 졸업예정자 준비 사항 안내_27년 2월 예정자 필독!!!",
+        "url": "https://computer.knu.ac.kr/bbs/board.php?bo_table=sub6_1_a&wr_id=29385"
+      }
+    ]
+  },
+  {
+    "question": "AI대학이 생기면 지금 컴퓨터학부 학생들 학적은 어떻게 바뀌어?",
+    "ground_truth": "AI대학 설치에 따라 학칙 부칙에 의거해 기존 IT대학 컴퓨터학부 재적생의 학적정보가 AI대학 및 해당 전공정보로 일괄 변경될 예정입니다. 적용 예정일은 2027년 3월 1일(AI대학 설치 및 2027학년도 1학기 시작일)입니다. 예를 들어 인공지능컴퓨팅전공(2023~2026학번)은 AI대학 인공지능시스템학과로, 글로벌소프트웨어융합전공(~25학번)은 AI대학 컴퓨터학부 글로벌소프트웨어융합전공으로 변경됩니다. 변동사항이 생기면 안내가 갱신될 수 있으며 문의는 학부메일 scse@knu.ac.kr입니다.",
+    "models": {},
+    "contexts": {},
+    "question_id": "S038",
+    "role": "student",
+    "task_type": "student_factual_qa",
+    "source_dataset": "student_eval_v3 extension (30 items, drafted from knowledge/processed/notices)",
+    "topic": "graduation_and_student_status",
+    "temporal_scope": "2026학년도 2학기 기준",
+    "reference_type": "factual_answer",
+    "review_status": "draft_needs_team_review",
+    "evaluation_criteria": [
+      "공식 자료에 명시된 필수 사실을 포함함",
+      "질문에 명시된 학기·전공·학번 등 적용 조건을 지킴",
+      "근거에 없는 세부사항을 추가하지 않음"
+    ],
+    "dataset_version": "student_eval_v3",
+    "knowledge_base_scope": "2026학년도 2학기",
+    "source_verification": "KB 문서에서 정답 작성(게시일 메타데이터 없음). 공식 공지 원문과 대조 후 verified로 변경: 중요 ☆☆ AI대학 개설에 따른 학적정보 변동 안내 ! (https://computer.knu.ac.kr/bbs/board.php?bo_table=sub6_1_a&wr_id=29441)",
+    "source_documents": [
+      {
+        "wr_id": 29441,
+        "title": "중요 ☆☆ AI대학 개설에 따른 학적정보 변동 안내 !",
+        "url": "https://computer.knu.ac.kr/bbs/board.php?bo_table=sub6_1_a&wr_id=29441"
+      }
+    ],
+    "review_note": "전공별 변경 매핑은 이미지 OCR(오탈자 다수)에서 읽은 것이므로 원문 이미지로 확인 필요."
+  },
+  {
+    "question": "2026학년도 2학기 수강신청 기간이 언제야?",
+    "ground_truth": "2026학년도 2학기 수강신청 기간은 2026. 8. 11.(화) 10:00 ~ 8. 13.(목) 17:59(3일간)입니다. 수강신청 사이트(https://sugang.knu.ac.kr) 로그인과 수강꾸러미 일괄수강신청 내역 삭제는 8. 11.(화) 10:00부터 가능하며, 매일 18:00~19:00는 시스템 점검으로 접속할 수 없습니다. 학생 구분에 따라 신청 가능 과목과 시작 시각이 다르므로 첨부 안내를 확인해야 하고, 수강취소제도가 없으므로 수강신청·수강변경·수강정정 기간에 수강을 확정해야 합니다.",
+    "models": {},
+    "contexts": {},
+    "question_id": "S039",
+    "role": "student",
+    "task_type": "student_factual_qa",
+    "source_dataset": "student_eval_v3 extension (30 items, drafted from knowledge/processed/notices)",
+    "topic": "registration_and_academic_calendar",
+    "temporal_scope": "2026학년도 2학기 기준",
+    "reference_type": "factual_answer",
+    "review_status": "draft_needs_team_review",
+    "evaluation_criteria": [
+      "공식 자료에 명시된 필수 사실을 포함함",
+      "질문에 명시된 학기·전공·학번 등 적용 조건을 지킴",
+      "근거에 없는 세부사항을 추가하지 않음"
+    ],
+    "dataset_version": "student_eval_v3",
+    "knowledge_base_scope": "2026학년도 2학기",
+    "source_verification": "KB 문서에서 정답 작성(게시일 메타데이터 없음). 공식 공지 원문과 대조 후 verified로 변경: 2026학년도 2학기 수강신청 안내 (https://computer.knu.ac.kr/bbs/board.php?bo_table=sub6_1_a&wr_id=29373)",
+    "source_documents": [
+      {
+        "wr_id": 29373,
+        "title": "2026학년도 2학기 수강신청 안내",
+        "url": "https://computer.knu.ac.kr/bbs/board.php?bo_table=sub6_1_a&wr_id=29373"
+      }
+    ],
+    "review_note": "원문이 이미지 OCR이며 제목 OCR에 '2020학년도'로 오인식된 부분이 있음."
+  },
+  {
+    "question": "2학기 수강변경 기간 알려줘",
+    "ground_truth": "2026학년도 2학기 수강변경 기간은 2026. 9. 2.(수) 12:00 ~ 9. 4.(금) 17:59와 9. 7.(월) 9:00 ~ 17:59입니다. 로그인은 9. 2.(수) 11:00부터 가능하며 11:00부터 이미 신청된 교과목을 삭제할 수 있습니다. 매일 18:00~19:00는 시스템 점검으로 접속이 불가하고, 신청은 수강신청 사이트(sugang.knu.ac.kr)에서 합니다. 수강취소제도가 없으므로 수강변경·수강정정 기간 중에 수강내역을 확정해야 합니다.",
+    "models": {},
+    "contexts": {},
+    "question_id": "S040",
+    "role": "student",
+    "task_type": "student_factual_qa",
+    "source_dataset": "student_eval_v3 extension (30 items, drafted from knowledge/processed/notices)",
+    "topic": "registration_and_academic_calendar",
+    "temporal_scope": "2026학년도 2학기 기준",
+    "reference_type": "factual_answer",
+    "review_status": "draft_needs_team_review",
+    "evaluation_criteria": [
+      "공식 자료에 명시된 필수 사실을 포함함",
+      "질문에 명시된 학기·전공·학번 등 적용 조건을 지킴",
+      "근거에 없는 세부사항을 추가하지 않음"
+    ],
+    "dataset_version": "student_eval_v3",
+    "knowledge_base_scope": "2026학년도 2학기",
+    "source_verification": "KB 문서에서 정답 작성(게시일 메타데이터 없음). 공식 공지 원문과 대조 후 verified로 변경: 2026.2학기 수강변경 안내 (https://computer.knu.ac.kr/bbs/board.php?bo_table=sub6_1_a&wr_id=29388)",
+    "source_documents": [
+      {
+        "wr_id": 29388,
+        "title": "2026.2학기 수강변경 안내",
+        "url": "https://computer.knu.ac.kr/bbs/board.php?bo_table=sub6_1_a&wr_id=29388"
+      }
+    ]
+  },
+  {
+    "question": "수강변경 때 정원이 다 찬 과목은 어떻게 신청해?",
+    "ground_truth": "수강정원이 초과된 과목은 원칙적으로 수강신청이 불가하지만, 특별한 사정이 있으면 담당교수의 허가(수강정원변경원)를 받아 신청할 수 있습니다. 학생은 통합정보시스템(knuin.knu.ac.kr)에서 수강정원변경원을 작성·입력하며 기간은 2026. 8. 28.(금) 9:00~17:59, 8. 31.(월) 9:00 ~ 9. 4.(금) 17:59, 9. 7.(월) 9:00~13:59입니다. 이후 교과목 담당교수의 온라인 승인(9. 7. 15:59까지)과 소속대학 행정실 또는 학과사무실의 최종 승인(9. 2.(수) 13:00 ~ 9. 4.(금) 17:59, 9. 7.(월) 9:00~16:59)을 거칩니다.",
+    "models": {},
+    "contexts": {},
+    "question_id": "S041",
+    "role": "student",
+    "task_type": "student_factual_qa",
+    "source_dataset": "student_eval_v3 extension (30 items, drafted from knowledge/processed/notices)",
+    "topic": "registration_and_academic_calendar",
+    "temporal_scope": "2026학년도 2학기 기준",
+    "reference_type": "factual_answer",
+    "review_status": "draft_needs_team_review",
+    "evaluation_criteria": [
+      "공식 자료에 명시된 필수 사실을 포함함",
+      "질문에 명시된 학기·전공·학번 등 적용 조건을 지킴",
+      "근거에 없는 세부사항을 추가하지 않음"
+    ],
+    "dataset_version": "student_eval_v3",
+    "knowledge_base_scope": "2026학년도 2학기",
+    "source_verification": "KB 문서에서 정답 작성(게시일 메타데이터 없음). 공식 공지 원문과 대조 후 verified로 변경: 2026.2학기 수강변경 안내 (https://computer.knu.ac.kr/bbs/board.php?bo_table=sub6_1_a&wr_id=29388)",
+    "source_documents": [
+      {
+        "wr_id": 29388,
+        "title": "2026.2학기 수강변경 안내",
+        "url": "https://computer.knu.ac.kr/bbs/board.php?bo_table=sub6_1_a&wr_id=29388"
+      }
+    ]
+  },
+  {
+    "question": "재이수는 몇 점 이하 과목부터 할 수 있고 성적은 어떻게 나와?",
+    "ground_truth": "재이수는 B- 이하(U 포함) 과목에 한해 수강신청할 수 있습니다. 재이수 시 취득 성적은 전 과목 A-까지만 부여되며, 한 학기에 9학점 이내로 재이수를 신청할 수 있습니다(2026학년도 2학기 수강꾸러미 신청 안내 기준).",
+    "models": {},
+    "contexts": {},
+    "question_id": "S042",
+    "role": "student",
+    "task_type": "student_factual_qa",
+    "source_dataset": "student_eval_v3 extension (30 items, drafted from knowledge/processed/notices)",
+    "topic": "registration_and_academic_calendar",
+    "temporal_scope": "2026학년도 2학기 기준",
+    "reference_type": "factual_answer",
+    "review_status": "draft_needs_team_review",
+    "evaluation_criteria": [
+      "공식 자료에 명시된 필수 사실을 포함함",
+      "질문에 명시된 학기·전공·학번 등 적용 조건을 지킴",
+      "근거에 없는 세부사항을 추가하지 않음"
+    ],
+    "dataset_version": "student_eval_v3",
+    "knowledge_base_scope": "2026학년도 2학기",
+    "source_verification": "KB 문서에서 정답 작성(게시일 메타데이터 없음). 공식 공지 원문과 대조 후 verified로 변경: 2026학년도 2학기 수강꾸러미 신청 안내(첨부파일 필독) (https://computer.knu.ac.kr/bbs/board.php?bo_table=sub6_1_a&wr_id=29330)",
+    "source_documents": [
+      {
+        "wr_id": 29330,
+        "title": "2026학년도 2학기 수강꾸러미 신청 안내(첨부파일 필독)",
+        "url": "https://computer.knu.ac.kr/bbs/board.php?bo_table=sub6_1_a&wr_id=29330"
+      }
+    ],
+    "review_note": "29373(수강신청 안내) 이미지 OCR에는 기준 성적이 '6-이하'로 오인식되어 있음. 검색 결과에 따라 오답 유도 가능."
+  },
+  {
+    "question": "IT대학 인권·젠더 대면교육 꼭 들어야 해? 못 가면 어떻게 해?",
+    "ground_truth": "IT대학 인권·젠더 대면교육은 컴퓨터학부 학부생(인컴·심컴·첨컴·글솝·플솝)과 대학원생 전체의 필수교육이며, 온라인 인권교육을 이미 이수한 학생도 대면교육에 참여해야 합니다. 신청은 구글폼(https://forms.gle/Gnm9xdZkCAzqR9zm9)으로 하며 교육 참석은 공적출석 인정이 가능합니다. 미이수 시 장학생·해외연수 선발과 학부 학생지원 프로그램 선발에 반영되고, 발전기금·마일리지·근로장학, URP 등에서 제외되거나 학생회 행사 참여가 제한될 수 있습니다. 국내·외 인턴, 교환학생, 휴학, 군 복학 등 불가피한 사유로 참여할 수 없는 경우에만 온라인 교육으로 대체할 수 있으며, 대면교육 참여 불가 사유서와 온라인 교육 이수 확인증을 제출 서버(https://knuitcse.synology.me/)의 「인권·젠더 교육이수증」 폴더에 업로드해야 합니다.",
+    "models": {},
+    "contexts": {},
+    "question_id": "S043",
+    "role": "student",
+    "task_type": "student_factual_qa",
+    "source_dataset": "student_eval_v3 extension (30 items, drafted from knowledge/processed/notices)",
+    "topic": "course_and_student_operations",
+    "temporal_scope": "2026학년도 2학기 기준",
+    "reference_type": "factual_answer",
+    "review_status": "draft_needs_team_review",
+    "evaluation_criteria": [
+      "공식 자료에 명시된 필수 사실을 포함함",
+      "질문에 명시된 학기·전공·학번 등 적용 조건을 지킴",
+      "근거에 없는 세부사항을 추가하지 않음"
+    ],
+    "dataset_version": "student_eval_v3",
+    "knowledge_base_scope": "2026학년도 2학기",
+    "source_verification": "KB 문서에서 정답 작성(게시일 메타데이터 없음). 공식 공지 원문과 대조 후 verified로 변경: [학생] 2026 IT대학 인권·젠더 대면교육 실시 안내(학부 및 대학원 전체 필수참여) (https://computer.knu.ac.kr/bbs/board.php?bo_table=sub6_1_a&wr_id=29395)",
+    "source_documents": [
+      {
+        "wr_id": 29395,
+        "title": "[학생] 2026 IT대학 인권·젠더 대면교육 실시 안내(학부 및 대학원 전체 필수참여)",
+        "url": "https://computer.knu.ac.kr/bbs/board.php?bo_table=sub6_1_a&wr_id=29395"
+      }
+    ]
+  },
+  {
+    "question": "2학기 3학년 이상 전공과목 중에 성적 평가방법이 지정된 과목이 있다던데 무슨 내용이야?",
+    "ground_truth": "학업성적처리규정 제3조에 따라 2026학년도 2학기 3학년 이상 개설 전공과목 중 일부 과목은 '상대평가 권장'으로 평가됩니다. 상대평가 권장 과목은 상대평가 대상 인원 중 50% 이내로 A를 부여할 수 있습니다. 해당 과목과 세부 내용은 붙임 지정내역을 참고해야 하며, 수강꾸러미(2026. 7. 22.~7. 24.)와 수강신청(2026. 8. 11.~8. 13.) 계획에 참고하도록 안내되었습니다. 이 평가방법은 지속 적용 예정이나 지정 내역은 변동될 수 있습니다.",
+    "models": {},
+    "contexts": {},
+    "question_id": "S044",
+    "role": "student",
+    "task_type": "student_factual_qa",
+    "source_dataset": "student_eval_v3 extension (30 items, drafted from knowledge/processed/notices)",
+    "topic": "course_and_student_operations",
+    "temporal_scope": "2026학년도 2학기 기준",
+    "reference_type": "factual_answer",
+    "review_status": "draft_needs_team_review",
+    "evaluation_criteria": [
+      "공식 자료에 명시된 필수 사실을 포함함",
+      "질문에 명시된 학기·전공·학번 등 적용 조건을 지킴",
+      "근거에 없는 세부사항을 추가하지 않음"
+    ],
+    "dataset_version": "student_eval_v3",
+    "knowledge_base_scope": "2026학년도 2학기",
+    "source_verification": "KB 문서에서 정답 작성(게시일 메타데이터 없음). 공식 공지 원문과 대조 후 verified로 변경: 2026학년도 2학기 3학년 이상 개설 전공과목 중 일부 과목 성적 평가방법 지정 현황 안내 (https://computer.knu.ac.kr/bbs/board.php?bo_table=sub6_1_a&wr_id=29342)",
+    "source_documents": [
+      {
+        "wr_id": 29342,
+        "title": "2026학년도 2학기 3학년 이상 개설 전공과목 중 일부 과목 성적 평가방법 지정 현황 안내",
+        "url": "https://computer.knu.ac.kr/bbs/board.php?bo_table=sub6_1_a&wr_id=29342"
+      }
+    ]
+  },
+  {
+    "question": "진로탐색수업은 누가 신청할 수 있고 학점은 어떻게 받아?",
+    "ground_truth": "2026학년도 2학기 진로탐색수업은 정규학기 1학기 이상 6학기 이하 등록한 학부생이 개인 또는 4명 이하 그룹으로 신청할 수 있습니다(수업연한 5년 이상 학과는 1~8학기, 편입생은 본교 1~2학기 등록자). 진로탐색수업에 2회 선발된 학생은 신청할 수 없습니다. 모집기간은 2026. 6. 22.(월) ~ 7. 15.(수)이며 KNUCUBE-[역량개발]-[진로탐색수업]-[신청하기]에서 신청서를 작성해 제출합니다. 학점은 1~3학점(1학점당 과제수행 30시간 필수), S/U 평가, 교과구분은 일반선택(KNU 미래설계)입니다. S 학점 취득 시 학점·인원에 따라 팀별로 장학금이 지급됩니다.",
+    "models": {},
+    "contexts": {},
+    "question_id": "S045",
+    "role": "student",
+    "task_type": "student_factual_qa",
+    "source_dataset": "student_eval_v3 extension (30 items, drafted from knowledge/processed/notices)",
+    "topic": "course_and_student_operations",
+    "temporal_scope": "2026학년도 2학기 기준",
+    "reference_type": "factual_answer",
+    "review_status": "draft_needs_team_review",
+    "evaluation_criteria": [
+      "공식 자료에 명시된 필수 사실을 포함함",
+      "질문에 명시된 학기·전공·학번 등 적용 조건을 지킴",
+      "근거에 없는 세부사항을 추가하지 않음"
+    ],
+    "dataset_version": "student_eval_v3",
+    "knowledge_base_scope": "2026학년도 2학기",
+    "source_verification": "KB 문서에서 정답 작성(게시일 메타데이터 없음). 공식 공지 원문과 대조 후 verified로 변경: 2026학년도 2학기 진로탐색수업 운영 안내 (https://computer.knu.ac.kr/bbs/board.php?bo_table=sub6_1_a&wr_id=29324)",
+    "source_documents": [
+      {
+        "wr_id": 29324,
+        "title": "2026학년도 2학기 진로탐색수업 운영 안내",
+        "url": "https://computer.knu.ac.kr/bbs/board.php?bo_table=sub6_1_a&wr_id=29324"
+      }
+    ],
+    "review_note": "선발인원이 본문(50팀 내외)과 포스터 OCR(30팀 내외)에서 달라 정답에서 제외함."
+  },
+  {
+    "question": "2학기 튜터링 튜터는 어떤 조건이면 지원할 수 있어?",
+    "ground_truth": "2026학년도 2학기 튜터링 튜터는 학부 3~4학년 및 대학원 석사과정 재학생 중 전학년 총점 평점평균 3.3 이상이고 튜터 전공 과목 성적이 A-(3.7) 이상인 학생이 지원할 수 있습니다. 튜터 희망원서는 2026. 8. 28.(금) ~ 9. 4.(금) 18:00까지 차세대통합정보시스템으로 접수하며, 1차 심사 공고는 9. 9.(수), 최종 선정 공고는 9. 18.(금)입니다. 활동은 9. 21.(월) ~ 12. 4.(금) 대면으로 주 1회 2시간씩 10회(총 20시간) 진행하고 중간·결과보고를 제출해야 합니다(지연 제출 시 1일당 출석율 2%p 차감).",
+    "models": {},
+    "contexts": {},
+    "question_id": "S046",
+    "role": "student",
+    "task_type": "student_factual_qa",
+    "source_dataset": "student_eval_v3 extension (30 items, drafted from knowledge/processed/notices)",
+    "topic": "course_and_student_operations",
+    "temporal_scope": "2026학년도 2학기 기준",
+    "reference_type": "factual_answer",
+    "review_status": "draft_needs_team_review",
+    "evaluation_criteria": [
+      "공식 자료에 명시된 필수 사실을 포함함",
+      "질문에 명시된 학기·전공·학번 등 적용 조건을 지킴",
+      "근거에 없는 세부사항을 추가하지 않음"
+    ],
+    "dataset_version": "student_eval_v3",
+    "knowledge_base_scope": "2026학년도 2학기",
+    "source_verification": "KB 문서에서 정답 작성(게시일 메타데이터 없음). 공식 공지 원문과 대조 후 verified로 변경: [자원봉사센터] 2026학년도 2학기 튜터링 운영 계획 안내 (https://computer.knu.ac.kr/bbs/board.php?bo_table=sub6_1_a&wr_id=29400)",
+    "source_documents": [
+      {
+        "wr_id": 29400,
+        "title": "[자원봉사센터] 2026학년도 2학기 튜터링 운영 계획 안내",
+        "url": "https://computer.knu.ac.kr/bbs/board.php?bo_table=sub6_1_a&wr_id=29400"
+      }
+    ]
+  },
+  {
+    "question": "다문화가정 장학금은 누가 받을 수 있고 얼마야?",
+    "ground_truth": "2026학년도 2학기 다문화가정 장학금은 「다문화가족지원법」상 다문화 가정의 자녀로 직전학기 성적 1.7 이상(4.3 기준), 한국장학재단 학자금 지원구간 8구간 이내인 학부 재학생이 대상입니다. 선발인원은 24명 이내이고 장학금액은 학업장려비 80만원(등록금 초과 수혜 가능)입니다. 신청기간은 2026. 9. 21.(월) ~ 10. 16.(금)이며 통합정보시스템 → 장학 → 학생신청장학 → 장학금신청서에서 신청서와 제출서류를 업로드합니다.",
+    "models": {},
+    "contexts": {},
+    "question_id": "S047",
+    "role": "student",
+    "task_type": "student_factual_qa",
+    "source_dataset": "student_eval_v3 extension (30 items, drafted from knowledge/processed/notices)",
+    "topic": "student_financial_or_travel_support",
+    "temporal_scope": "2026학년도 2학기 기준",
+    "reference_type": "factual_answer",
+    "review_status": "draft_needs_team_review",
+    "evaluation_criteria": [
+      "공식 자료에 명시된 필수 사실을 포함함",
+      "질문에 명시된 학기·전공·학번 등 적용 조건을 지킴",
+      "근거에 없는 세부사항을 추가하지 않음"
+    ],
+    "dataset_version": "student_eval_v3",
+    "knowledge_base_scope": "2026학년도 2학기",
+    "source_verification": "KB 문서에서 정답 작성(게시일 메타데이터 없음). 공식 공지 원문과 대조 후 verified로 변경: 2026학년도 2학기 다문화가정 장학금 장학생 선발 안내 (https://computer.knu.ac.kr/bbs/board.php?bo_table=sub6_1_a&wr_id=29438)",
+    "source_documents": [
+      {
+        "wr_id": 29438,
+        "title": "2026학년도 2학기 다문화가정 장학금 장학생 선발 안내",
+        "url": "https://computer.knu.ac.kr/bbs/board.php?bo_table=sub6_1_a&wr_id=29438"
+      }
+    ]
+  },
+  {
+    "question": "AI 학업장려 학자금 대출은 얼마까지 빌릴 수 있고 금리는 어떻게 돼?",
+    "ground_truth": "AI 학업장려 학자금대출은 한국장학재단이 2026학년도 2학기부터 운영하며, AI·SW 중심대학 및 AI 거점대학 사업 대상학과 학부생 중 만 35세 이하가 대상입니다(소득기준·신용요건 제한 없음). 대출한도는 연간 200만원 이내(개인 총 한도 1,000만원 이내)이고 금리는 연 1.7%(변동금리)입니다. 취업 후 상환/일반 상환 학자금(등록금·생활비) 대출과 별도 상품이라 중복 이용이 가능합니다.",
+    "models": {},
+    "contexts": {},
+    "question_id": "S048",
+    "role": "student",
+    "task_type": "student_factual_qa",
+    "source_dataset": "student_eval_v3 extension (30 items, drafted from knowledge/processed/notices)",
+    "topic": "student_financial_or_travel_support",
+    "temporal_scope": "2026학년도 2학기 기준",
+    "reference_type": "factual_answer",
+    "review_status": "draft_needs_team_review",
+    "evaluation_criteria": [
+      "공식 자료에 명시된 필수 사실을 포함함",
+      "질문에 명시된 학기·전공·학번 등 적용 조건을 지킴",
+      "근거에 없는 세부사항을 추가하지 않음"
+    ],
+    "dataset_version": "student_eval_v3",
+    "knowledge_base_scope": "2026학년도 2학기",
+    "source_verification": "KB 문서에서 정답 작성(게시일 메타데이터 없음). 공식 공지 원문과 대조 후 verified로 변경: 2026학년도 2학기 AI학업장려 학자금 대출 안내 (https://computer.knu.ac.kr/bbs/board.php?bo_table=sub6_1_a&wr_id=29420)",
+    "source_documents": [
+      {
+        "wr_id": 29420,
+        "title": "2026학년도 2학기 AI학업장려 학자금 대출 안내",
+        "url": "https://computer.knu.ac.kr/bbs/board.php?bo_table=sub6_1_a&wr_id=29420"
+      }
+    ],
+    "review_note": "이수학점 기준이 본문(직전 학기 6학점 이상)과 포스터 OCR(12학점 이상)에서 달라 정답에서 제외함."
+  },
+  {
+    "question": "2학기 등록금 감면장학금 우선선발대상자는 누가 언제 신청해?",
+    "ground_truth": "2026학년도 2학기 등록금 감면장학금 우선선발대상자 신청 대상은 학부 재학생(복학예정자 포함) 중 교육지원대상자(국가유공자, 북한이탈주민 등 신규신청자), 보호(연장)아동, 복지시설생활자 및 자립준비청년(보호종료아동), 장애학생 본인, 장애인자녀(기초생활수급자에 한함)와 대학원 재학생 중 장애학생 본인입니다. 신청기간은 2026. 6. 8.(월) 9:00 ~ 7. 7.(화) 18:00이며, 통합정보시스템 → 학사행정/장학 → 학생신청장학 → 장학금신청서에서 온라인 신청하고 첨부서류를 등록합니다.",
+    "models": {},
+    "contexts": {},
+    "question_id": "S049",
+    "role": "student",
+    "task_type": "student_factual_qa",
+    "source_dataset": "student_eval_v3 extension (30 items, drafted from knowledge/processed/notices)",
+    "topic": "student_financial_or_travel_support",
+    "temporal_scope": "2026학년도 2학기 기준",
+    "reference_type": "factual_answer",
+    "review_status": "draft_needs_team_review",
+    "evaluation_criteria": [
+      "공식 자료에 명시된 필수 사실을 포함함",
+      "질문에 명시된 학기·전공·학번 등 적용 조건을 지킴",
+      "근거에 없는 세부사항을 추가하지 않음"
+    ],
+    "dataset_version": "student_eval_v3",
+    "knowledge_base_scope": "2026학년도 2학기",
+    "source_verification": "KB 문서에서 정답 작성(게시일 메타데이터 없음). 공식 공지 원문과 대조 후 verified로 변경: 2026학년도 2학기 재학생 등록금 감면장학금 우선선발대상자 신청 안내 (https://computer.knu.ac.kr/bbs/board.php?bo_table=sub6_1_a&wr_id=29287)",
+    "source_documents": [
+      {
+        "wr_id": 29287,
+        "title": "2026학년도 2학기 재학생 등록금 감면장학금 우선선발대상자 신청 안내",
+        "url": "https://computer.knu.ac.kr/bbs/board.php?bo_table=sub6_1_a&wr_id=29287"
+      }
+    ]
+  },
+  {
+    "question": "박남순장학기금은 선발 기준이 뭐고 어떻게 신청해?",
+    "ground_truth": "박남순장학기금(2026학년도 대구캠퍼스 발전기금)은 배정인원 1명으로, 직전학기 12학점 이상 취득하고 직전학기 평점평균 2.7/4.3 이상인 학생 중 가계곤란자를 우선 선발하며 지원학기는 2026학년도 2학기입니다. 휴학자(예정자 포함), 수업연한 초과자, 징계처분자 등은 선발에서 제한됩니다. 장학생 추천명단(엑셀), 추천서(제목 아래 '박남순장학기금' 기재), 성적증명서(4.3 만점), 통장사본을 준비해 엑셀을 제외한 서류를 하나의 PDF로 병합한 뒤 2026. 8. 12.(수) 17:00까지 crotus@knu.ac.kr로 이메일 제출합니다. 문의는 학부사무실(053-950-6605)입니다.",
+    "models": {},
+    "contexts": {},
+    "question_id": "S050",
+    "role": "student",
+    "task_type": "student_factual_qa",
+    "source_dataset": "student_eval_v3 extension (30 items, drafted from knowledge/processed/notices)",
+    "topic": "student_financial_or_travel_support",
+    "temporal_scope": "2026학년도 2학기 기준",
+    "reference_type": "factual_answer",
+    "review_status": "draft_needs_team_review",
+    "evaluation_criteria": [
+      "공식 자료에 명시된 필수 사실을 포함함",
+      "질문에 명시된 학기·전공·학번 등 적용 조건을 지킴",
+      "근거에 없는 세부사항을 추가하지 않음"
+    ],
+    "dataset_version": "student_eval_v3",
+    "knowledge_base_scope": "2026학년도 2학기",
+    "source_verification": "KB 문서에서 정답 작성(게시일 메타데이터 없음). 공식 공지 원문과 대조 후 verified로 변경: 2026학년도 발전기금 운영 『박남순장학기금』 장학생 모집 안내 (https://computer.knu.ac.kr/bbs/board.php?bo_table=sub6_1_a&wr_id=29375)",
+    "source_documents": [
+      {
+        "wr_id": 29375,
+        "title": "2026학년도 발전기금 운영 『박남순장학기금』 장학생 모집 안내",
+        "url": "https://computer.knu.ac.kr/bbs/board.php?bo_table=sub6_1_a&wr_id=29375"
+      }
+    ]
+  },
+  {
+    "question": "대구캠퍼스 장학기금(농제장학기금)은 컴퓨터학부에 몇 명이고 얼마 줘?",
+    "ground_truth": "2026학년도 대구캠퍼스 발전기금 『경북대학교장학기금 농제장학기금』은 IT대학 컴퓨터학부에 1명이 배정되어 있으며 1인당 1,000,000원(등록금 외 학업지원비)을 지원합니다. 선발기준은 직전학기 12학점 이상 취득, 직전학기 평점평균 2.7/4.3 이상이며 가계곤란자를 우선 선발합니다. 지원학기는 2026학년도 2학기이고, 휴학자(예정자 포함)·수업연한 초과자·징계처분자 등은 제한됩니다. 2026. 8. 5.(수) 17:00까지 추천명단(엑셀)·추천서·성적증명서·통장사본을 crotus@knu.ac.kr로 이메일 제출합니다.",
+    "models": {},
+    "contexts": {},
+    "question_id": "S051",
+    "role": "student",
+    "task_type": "student_factual_qa",
+    "source_dataset": "student_eval_v3 extension (30 items, drafted from knowledge/processed/notices)",
+    "topic": "student_financial_or_travel_support",
+    "temporal_scope": "2026학년도 2학기 기준",
+    "reference_type": "factual_answer",
+    "review_status": "draft_needs_team_review",
+    "evaluation_criteria": [
+      "공식 자료에 명시된 필수 사실을 포함함",
+      "질문에 명시된 학기·전공·학번 등 적용 조건을 지킴",
+      "근거에 없는 세부사항을 추가하지 않음"
+    ],
+    "dataset_version": "student_eval_v3",
+    "knowledge_base_scope": "2026학년도 2학기",
+    "source_verification": "KB 문서에서 정답 작성(게시일 메타데이터 없음). 공식 공지 원문과 대조 후 verified로 변경: 2026학년도 발전기금 운영 『대구캠퍼스 장학기금』 장학생 모집 안내 (https://computer.knu.ac.kr/bbs/board.php?bo_table=sub6_1_a&wr_id=29358)",
+    "source_documents": [
+      {
+        "wr_id": 29358,
+        "title": "2026학년도 발전기금 운영 『대구캠퍼스 장학기금』 장학생 모집 안내",
+        "url": "https://computer.knu.ac.kr/bbs/board.php?bo_table=sub6_1_a&wr_id=29358"
+      }
+    ]
+  },
+  {
+    "question": "청년창업농 장학금은 컴퓨터학부 학생도 받을 수 있어? 조건이 뭐야?",
+    "ground_truth": "한국농어촌희망재단 청년창업농 장학금은 비농업계 대학의 경우 대학교 3학년 이상(선발학기 기준, 3학년 1학기 진학 예정자 포함)이고 2026. 1. 1. 기준 만 40세 미만이면 지원할 수 있으며, 비농업계 대학은 최대 4회 수혜 가능합니다. 지원금액은 한 학기당 등록금 전액과 학업장려금 250만원입니다. 졸업 후 수혜 학기 수 × 6개월 이상 영농·농식품 분야에 취·창업해야 하는 의무종사 조건(미이행 시 환수), 재단 의무교육 이수, 수혜 학기별 보증보험 가입이 필요합니다. 신청기간은 2026. 6. 1.(월) ~ 6. 30.(화) 17:00이며 재단 홈페이지(www.rhof.or.kr)에서 직접 신청하고 반드시 '완료' 버튼을 눌러야 합니다. 계속장학생도 기간 내 신청해야 합니다.",
+    "models": {},
+    "contexts": {},
+    "question_id": "S052",
+    "role": "student",
+    "task_type": "student_factual_qa",
+    "source_dataset": "student_eval_v3 extension (30 items, drafted from knowledge/processed/notices)",
+    "topic": "student_financial_or_travel_support",
+    "temporal_scope": "2026학년도 2학기 기준",
+    "reference_type": "factual_answer",
+    "review_status": "draft_needs_team_review",
+    "evaluation_criteria": [
+      "공식 자료에 명시된 필수 사실을 포함함",
+      "질문에 명시된 학기·전공·학번 등 적용 조건을 지킴",
+      "근거에 없는 세부사항을 추가하지 않음"
+    ],
+    "dataset_version": "student_eval_v3",
+    "knowledge_base_scope": "2026학년도 2학기",
+    "source_verification": "KB 문서에서 정답 작성(게시일 메타데이터 없음). 공식 공지 원문과 대조 후 verified로 변경: 2026학년도 2학기 농어촌희망재단 청년창업농장학생 선발 안내 (https://computer.knu.ac.kr/bbs/board.php?bo_table=sub6_1_a&wr_id=29295)",
+    "source_documents": [
+      {
+        "wr_id": 29295,
+        "title": "2026학년도 2학기 농어촌희망재단 청년창업농장학생 선발 안내",
+        "url": "https://computer.knu.ac.kr/bbs/board.php?bo_table=sub6_1_a&wr_id=29295"
+      }
+    ]
+  },
+  {
+    "question": "2026학년도 2학기 성적 공개일은 언제야?",
+    "ground_truth": "제공된 평가 지식베이스에는 2026학년도 2학기 성적처리(성적 공개) 일정 공지가 없어 확인할 수 없습니다. 지식베이스에 있는 2025학년도 2학기 성적처리 일정(성적공개 2026. 1. 2.)은 다른 학기 정보이므로 2026학년도 2학기 일정으로 제시하면 안 되며, 학사공지 확인을 안내해야 합니다.",
+    "models": {},
+    "contexts": {},
+    "question_id": "S053",
+    "role": "student",
+    "task_type": "student_factual_qa",
+    "source_dataset": "student_eval_v3 extension (30 items, drafted from knowledge/processed/notices)",
+    "topic": "out_of_scope_abstention",
+    "temporal_scope": "2026학년도 2학기 자료 범위",
+    "reference_type": "abstention",
+    "review_status": "designed_out_of_scope",
+    "evaluation_criteria": [
+      "제공된 2026학년도 2학기 자료만으로 답할 수 없다고 명시함",
+      "날짜·인원 등 답을 추측하거나 다른 학기 정보를 가져오지 않음",
+      "공식 학사공지를 확인하도록 안내함",
+      "지난 학기(2025학년도 2학기·2026학년도 1학기) 성적처리 일정을 2026학년도 2학기 일정처럼 제시하지 않음"
+    ],
+    "dataset_version": "student_eval_v3",
+    "knowledge_base_scope": "2026학년도 2학기",
+    "source_verification": "지식베이스 제목·본문 검색으로 해당 정보 부재 확인(2026-11-06).",
+    "out_of_scope_type": "past_semester_only",
+    "distractor_documents": [
+      {
+        "wr_id": 28978,
+        "title": "2025.2학기 성적처리 일정 안내",
+        "url": "https://computer.knu.ac.kr/bbs/board.php?bo_table=sub6_1_a&wr_id=28978"
+      },
+      {
+        "wr_id": 29328,
+        "title": "2026학년도 1학기 성적처리 일정 안내",
+        "url": "https://computer.knu.ac.kr/bbs/board.php?bo_table=sub6_1_a&wr_id=29328"
+      }
+    ]
+  },
+  {
+    "question": "2026학년도 겨울계절수업 수강신청 기간 알려줘",
+    "ground_truth": "제공된 평가 지식베이스에는 2026학년도 겨울계절수업 수강신청 공지가 없어 기간을 확인할 수 없습니다. 지식베이스의 겨울계절수업 공지는 2025학년도 이전 것이므로 이를 2026학년도 일정으로 안내하면 안 되며, 학사공지 확인을 안내해야 합니다.",
+    "models": {},
+    "contexts": {},
+    "question_id": "S054",
+    "role": "student",
+    "task_type": "student_factual_qa",
+    "source_dataset": "student_eval_v3 extension (30 items, drafted from knowledge/processed/notices)",
+    "topic": "out_of_scope_abstention",
+    "temporal_scope": "2026학년도 2학기 자료 범위",
+    "reference_type": "abstention",
+    "review_status": "designed_out_of_scope",
+    "evaluation_criteria": [
+      "제공된 2026학년도 2학기 자료만으로 답할 수 없다고 명시함",
+      "날짜·인원 등 답을 추측하거나 다른 학기 정보를 가져오지 않음",
+      "공식 학사공지를 확인하도록 안내함",
+      "2025학년도 겨울계절수업 일정을 2026학년도 일정처럼 제시하지 않음"
+    ],
+    "dataset_version": "student_eval_v3",
+    "knowledge_base_scope": "2026학년도 2학기",
+    "source_verification": "지식베이스 제목·본문 검색으로 해당 정보 부재 확인(2026-11-06).",
+    "out_of_scope_type": "past_semester_only",
+    "distractor_documents": [
+      {
+        "wr_id": 28928,
+        "title": "2025학년도 겨울계절수업 수강신청 안내",
+        "url": "https://computer.knu.ac.kr/bbs/board.php?bo_table=sub6_1_a&wr_id=28928"
+      },
+      {
+        "wr_id": 28950,
+        "title": "2025학년도 겨울계절수업 수강변경 및 수강정원변경원신청 안내",
+        "url": "https://computer.knu.ac.kr/bbs/board.php?bo_table=sub6_1_a&wr_id=28950"
+      }
+    ]
+  },
+  {
+    "question": "이번 2학기 지도교수 상담Week는 언제야?",
+    "ground_truth": "제공된 평가 지식베이스에는 2026학년도 2학기 지도교수 상담Week 공지가 없어 확인할 수 없습니다. 지식베이스에는 2025학년도 2학기(11. 3.~11. 7.)와 2026학년도 1학기(5. 7.~5. 13.) 상담Week만 있으므로 이를 이번 학기 일정으로 제시하면 안 되며, 학부 공지 확인을 안내해야 합니다.",
+    "models": {},
+    "contexts": {},
+    "question_id": "S055",
+    "role": "student",
+    "task_type": "student_factual_qa",
+    "source_dataset": "student_eval_v3 extension (30 items, drafted from knowledge/processed/notices)",
+    "topic": "out_of_scope_abstention",
+    "temporal_scope": "2026학년도 2학기 자료 범위",
+    "reference_type": "abstention",
+    "review_status": "designed_out_of_scope",
+    "evaluation_criteria": [
+      "제공된 2026학년도 2학기 자료만으로 답할 수 없다고 명시함",
+      "날짜·인원 등 답을 추측하거나 다른 학기 정보를 가져오지 않음",
+      "공식 학사공지를 확인하도록 안내함",
+      "지난 학기 상담Week 날짜를 이번 학기 일정처럼 제시하지 않음"
+    ],
+    "dataset_version": "student_eval_v3",
+    "knowledge_base_scope": "2026학년도 2학기",
+    "source_verification": "지식베이스 제목·본문 검색으로 해당 정보 부재 확인(2026-11-06).",
+    "out_of_scope_type": "past_semester_only",
+    "distractor_documents": [
+      {
+        "wr_id": 28919,
+        "title": "[학생] 2025학년도 2학기 지도교수 상담Week (11.3.~11.7.)",
+        "url": "https://computer.knu.ac.kr/bbs/board.php?bo_table=sub6_1_a&wr_id=28919"
+      },
+      {
+        "wr_id": 29229,
+        "title": "[학생] 2026학년도 1학기 지도교수 상담Week (5.7.~5.13.)",
+        "url": "https://computer.knu.ac.kr/bbs/board.php?bo_table=sub6_1_a&wr_id=29229"
+      }
+    ]
+  },
+  {
+    "question": "2026학년도 2학기 강의평가는 언제 해?",
+    "ground_truth": "제공된 평가 지식베이스에는 2026학년도 2학기 강의평가 실시 공지가 없어 기간을 확인할 수 없습니다. 지식베이스의 2025학년도 2학기 등 이전 학기 강의평가 공지를 2026학년도 2학기 일정으로 제시하면 안 되며, 학사공지 확인을 안내해야 합니다.",
+    "models": {},
+    "contexts": {},
+    "question_id": "S056",
+    "role": "student",
+    "task_type": "student_factual_qa",
+    "source_dataset": "student_eval_v3 extension (30 items, drafted from knowledge/processed/notices)",
+    "topic": "out_of_scope_abstention",
+    "temporal_scope": "2026학년도 2학기 자료 범위",
+    "reference_type": "abstention",
+    "review_status": "designed_out_of_scope",
+    "evaluation_criteria": [
+      "제공된 2026학년도 2학기 자료만으로 답할 수 없다고 명시함",
+      "날짜·인원 등 답을 추측하거나 다른 학기 정보를 가져오지 않음",
+      "공식 학사공지를 확인하도록 안내함",
+      "이전 학기·계절학기 강의평가 일정을 2026학년도 2학기 일정처럼 제시하지 않음"
+    ],
+    "dataset_version": "student_eval_v3",
+    "knowledge_base_scope": "2026학년도 2학기",
+    "source_verification": "지식베이스 제목·본문 검색으로 해당 정보 부재 확인(2026-11-06).",
+    "out_of_scope_type": "past_semester_only",
+    "distractor_documents": [
+      {
+        "wr_id": 28979,
+        "title": "2025학년도 2학기 강의평가 실시 안내",
+        "url": "https://computer.knu.ac.kr/bbs/board.php?bo_table=sub6_1_a&wr_id=28979"
+      },
+      {
+        "wr_id": 29329,
+        "title": "2026학년도 여름계절수업 성적처리 및 강의평가 일정안내",
+        "url": "https://computer.knu.ac.kr/bbs/board.php?bo_table=sub6_1_a&wr_id=29329"
+      }
+    ]
+  },
+  {
+    "question": "2026학년도 2학기 국가장학금 3차 신청 기간은 언제야?",
+    "ground_truth": "제공된 평가 지식베이스에는 2026학년도 2학기 국가장학금 1차·2차 신청 공지만 있고 3차 신청 공지는 없어 확인할 수 없습니다. 2차 신청기간(2026. 8. 12.~9. 9.)을 3차 일정으로 제시하거나 3차 일정을 추측하면 안 되며, 한국장학재단 누리집이나 학부 공지 확인을 안내해야 합니다.",
+    "models": {},
+    "contexts": {},
+    "question_id": "S057",
+    "role": "student",
+    "task_type": "student_factual_qa",
+    "source_dataset": "student_eval_v3 extension (30 items, drafted from knowledge/processed/notices)",
+    "topic": "out_of_scope_abstention",
+    "temporal_scope": "2026학년도 2학기 자료 범위",
+    "reference_type": "abstention",
+    "review_status": "designed_out_of_scope",
+    "evaluation_criteria": [
+      "제공된 2026학년도 2학기 자료만으로 답할 수 없다고 명시함",
+      "날짜·인원 등 답을 추측하거나 다른 학기 정보를 가져오지 않음",
+      "공식 학사공지를 확인하도록 안내함",
+      "1·2차 신청 일정을 3차 일정처럼 제시하지 않음"
+    ],
+    "dataset_version": "student_eval_v3",
+    "knowledge_base_scope": "2026학년도 2학기",
+    "source_verification": "지식베이스 제목·본문 검색으로 해당 정보 부재 확인(2026-11-06).",
+    "out_of_scope_type": "nonexistent_round",
+    "distractor_documents": [
+      {
+        "wr_id": 29374,
+        "title": "2026학년도 2학기 국가장학금, 국가근로장학금, 주거안정장학금 2차 신청 안내",
+        "url": "https://computer.knu.ac.kr/bbs/board.php?bo_table=sub6_1_a&wr_id=29374"
+      },
+      {
+        "wr_id": 29256,
+        "title": "2026학년도 2학기 국가장학금 1차 신청 안내",
+        "url": "https://computer.knu.ac.kr/bbs/board.php?bo_table=sub6_1_a&wr_id=29256"
+      }
+    ]
+  },
+  {
+    "question": "2027학년도 1학기 등록금 납부 기간은 언제야?",
+    "ground_truth": "제공된 평가 지식베이스는 2026학년도 2학기 자료로 한정되어 있어 2027학년도 1학기 등록금 납부 기간은 확인할 수 없습니다. 2026학년도 2학기 등록금 납부 일정을 다음 학기 일정으로 제시하면 안 되며, 공식 학사공지 확인을 안내해야 합니다.",
+    "models": {},
+    "contexts": {},
+    "question_id": "S058",
+    "role": "student",
+    "task_type": "student_factual_qa",
+    "source_dataset": "student_eval_v3 extension (30 items, drafted from knowledge/processed/notices)",
+    "topic": "out_of_scope_abstention",
+    "temporal_scope": "2026학년도 2학기 자료 범위",
+    "reference_type": "abstention",
+    "review_status": "designed_out_of_scope",
+    "evaluation_criteria": [
+      "제공된 2026학년도 2학기 자료만으로 답할 수 없다고 명시함",
+      "날짜·인원 등 답을 추측하거나 다른 학기 정보를 가져오지 않음",
+      "공식 학사공지를 확인하도록 안내함",
+      "2026학년도 2학기 등록 일정을 2027학년도 1학기 일정처럼 제시하지 않음"
+    ],
+    "dataset_version": "student_eval_v3",
+    "knowledge_base_scope": "2026학년도 2학기",
+    "source_verification": "지식베이스 제목·본문 검색으로 해당 정보 부재 확인(2026-11-06).",
+    "out_of_scope_type": "future_semester",
+    "distractor_documents": [
+      {
+        "wr_id": 29351,
+        "title": "★★ 2026학년도 2학기 재학생 등록금 수납일정 안내 ★★",
+        "url": "https://computer.knu.ac.kr/bbs/board.php?bo_table=sub6_1_a&wr_id=29351"
+      }
+    ]
+  },
+  {
+    "question": "서울대학교 컴퓨터공학부 졸업요건은 어떻게 돼?",
+    "ground_truth": "제공된 평가 지식베이스는 경북대학교 컴퓨터학부 공지사항과 강의계획서로 한정되어 있어 서울대학교 컴퓨터공학부의 졸업요건은 확인할 수 없습니다. 경북대 졸업요건을 대신 제시하거나 추측하지 말고, 해당 대학 공식 홈페이지 확인을 안내해야 합니다.",
+    "models": {},
+    "contexts": {},
+    "question_id": "S059",
+    "role": "student",
+    "task_type": "student_factual_qa",
+    "source_dataset": "student_eval_v3 extension (30 items, drafted from knowledge/processed/notices)",
+    "topic": "out_of_scope_abstention",
+    "temporal_scope": "2026학년도 2학기 자료 범위",
+    "reference_type": "abstention",
+    "review_status": "designed_out_of_scope",
+    "evaluation_criteria": [
+      "제공된 2026학년도 2학기 자료만으로 답할 수 없다고 명시함",
+      "날짜·인원 등 답을 추측하거나 다른 학기 정보를 가져오지 않음",
+      "공식 학사공지를 확인하도록 안내함",
+      "경북대학교 졸업요건이나 일반적인 대학 졸업요건을 서울대 요건처럼 제시하지 않음"
+    ],
+    "dataset_version": "student_eval_v3",
+    "knowledge_base_scope": "2026학년도 2학기",
+    "source_verification": "지식베이스 제목·본문 검색으로 해당 정보 부재 확인(2026-11-06).",
+    "out_of_scope_type": "other_institution",
+    "distractor_documents": []
+  },
+  {
+    "question": "내가 지금까지 들은 걸로 치면 졸업까지 전공학점 몇 학점 남았어?",
+    "ground_truth": "제공된 평가 지식베이스에는 학생 개인의 수강·성적 기록이 없어 남은 전공학점을 계산할 수 없습니다. 학번·전공별 졸업요건 안내는 가능하지만 개인 이수 현황은 통합정보시스템 졸업사정 조회나 학부 졸업담당자 확인을 안내해야 합니다.",
+    "models": {},
+    "contexts": {},
+    "question_id": "S060",
+    "role": "student",
+    "task_type": "student_factual_qa",
+    "source_dataset": "student_eval_v3 extension (30 items, drafted from knowledge/processed/notices)",
+    "topic": "out_of_scope_abstention",
+    "temporal_scope": "2026학년도 2학기 자료 범위",
+    "reference_type": "abstention",
+    "review_status": "designed_out_of_scope",
+    "evaluation_criteria": [
+      "제공된 2026학년도 2학기 자료만으로 답할 수 없다고 명시함",
+      "날짜·인원 등 답을 추측하거나 다른 학기 정보를 가져오지 않음",
+      "공식 학사공지를 확인하도록 안내함",
+      "개인 이수 학점을 추측해 남은 학점을 단정하지 않음"
+    ],
+    "dataset_version": "student_eval_v3",
+    "knowledge_base_scope": "2026학년도 2학기",
+    "source_verification": "지식베이스 제목·본문 검색으로 해당 정보 부재 확인(2026-11-06).",
+    "out_of_scope_type": "personal_record",
+    "distractor_documents": []
   }
 ]

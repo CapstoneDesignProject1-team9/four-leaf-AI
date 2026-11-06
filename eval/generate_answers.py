@@ -165,13 +165,13 @@ class TransformersPromptAdapter:
 
 
 class LocalRAGBackend:
-    """Run the repository's Chroma/BGE-M3 RAG chain directly with local Ollama."""
+    """Run the repository's Chroma/BGE-M3 RAG chain in-process; generation goes to vLLM (temperature 0)."""
 
     def __init__(self) -> None:
         from app.chains.rag_chain import build_rag_chain
 
-        self.chain = build_rag_chain()
-        self.model_name = os.getenv("OLLAMA_MODEL", "llama3.1:8b")
+        self.model_name = os.getenv("VLLM_BASE_MODEL", "meta-llama/Llama-3.1-8B-Instruct")
+        self.chain = build_rag_chain(self.model_name)
 
     def generate(self, question: str) -> dict:
         result = self.chain.invoke({"query": question})
@@ -325,7 +325,7 @@ async def main_async(args: argparse.Namespace) -> None:
             item["contexts"][model_key] = result["contexts"]
             item["generation_latency_s"][model_key] = round(elapsed, 4)
             item["served_model_names"][model_key] = (
-                f"ollama:{backend.model_name} + local Chroma/BGE-M3"
+                f"vllm:{backend.model_name} (temperature 0) + local Chroma/BGE-M3"
             )
             dataset_path.write_text(
                 json.dumps(dataset, ensure_ascii=False, indent=2), encoding="utf-8"
@@ -425,7 +425,13 @@ async def main_async(args: argparse.Namespace) -> None:
                 item["models"][model_key] = result["answer"]
                 item["contexts"][model_key] = result["contexts"]
                 item["generation_latency_s"][model_key] = round(elapsed, 4)
-                if mode in {"base", "rag"}:
+                if mode == "rag":
+                    served_name = (
+                        "vllm:"
+                        + os.getenv("VLLM_BASE_MODEL", "meta-llama/Llama-3.1-8B-Instruct")
+                        + " (temperature 0) + Chroma/BGE-M3"
+                    )
+                elif mode == "base":
                     served_name = os.getenv("VLLM_BASE_MODEL", "meta-llama/Llama-3.1-8B-Instruct")
                 elif mode == "professor_lora":
                     served_name = os.getenv("VLLM_PROFESSOR_LORA_MODEL_NAME", "professor-lora")

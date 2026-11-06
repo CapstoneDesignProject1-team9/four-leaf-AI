@@ -21,7 +21,7 @@ rsync -avh --partial four-leaf-AI/.cache/embedding_models/models--BAAI--bge-m3/ 
 ```bash
 cd ~/four-leaf-AI
 du -sh knowledge/vectorstores .cache/embedding_models/models--BAAI--bge-m3
-python -c "import chromadb, sentence_transformers, langchain_ollama, langchain_openai; print('RAG dependencies available')"
+python -c "import chromadb, sentence_transformers, langchain_openai; print('RAG dependencies available')"
 ```
 
 가져온 벡터 DB는 아래 경로에 있어야 합니다.
