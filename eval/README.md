@@ -40,7 +40,7 @@ cp .env.dev.example .env.dev
 docker compose -f docker-compose.dev.yml --profile gpu up -d --build
 ```
 
-vLLM과 AI/RAG 서비스가 준비되면 `four-leaf-AI/`에서 생성·평가를 실행합니다. 생성기는 vLLM `/v1/models`에서 base와 두 어댑터가 등록됐는지 확인하고, 준비 전이면 최대 3분 대기합니다.
+RAG 검색은 키워드 라우팅 없이 공지·강의계획서 두 컬렉션에서 cosine 거리 상위 5개 청크를 가져옵니다(에브리타임 강의평 제외). vLLM과 AI/RAG 서비스가 준비되면 `four-leaf-AI/`에서 생성·평가를 실행합니다. 생성기는 vLLM `/v1/models`에서 base와 두 어댑터가 등록됐는지 확인하고, 준비 전이면 최대 3분 대기합니다.
 
 ```bash
 python eval/generate_answers.py --dataset student_eval_dataset.json
@@ -68,13 +68,16 @@ RAGAS는 `ANTHROPIC_API_KEY`로 Claude를 평가 LLM으로 사용합니다. RAGA
 
 학생용 가설 검정은 Base의 RAG 효과, RAG 없는 Student LoRA 효과, 결합 조건 대 Base, RAG×Student LoRA 상호작용, Professor LoRA의 학생 질문 전이, 두 역할 LoRA 차이를 계산합니다. 교수용은 Professor LoRA 개선, Student LoRA 전이, 두 어댑터 차이를 계산합니다. 출력되는 모든 쌍별 통계가 연구 가설은 아니므로, 논문에는 사전에 정한 주요 대비를 중심으로 보고합니다.
 
-## 사람 평가 입력
+## 사람 평가 (학생용)
 
-`human_evaluation.csv`의 열은 다음과 같습니다.
+학생용 인간평가는 **정확성(1~5)과 응답 유형(1 정답·부분정답 / 2 답변 유보 / 3 다른 학기 정보 사용 / 4 근거 없는 사실 날조)** 두 가지만 기록합니다. 기준과 절차는 [HUMAN_EVAL_GUIDE.md](HUMAN_EVAL_GUIDE.md)를 따릅니다.
 
-`question_id,rater_id,model,accuracy,completeness,groundedness,clarity,usefulness,role_fit,overall_score,notes`
+```bash
+python eval/human_eval.py sheet     # 맹검 시트·템플릿·키 생성 (응답 생성 완료 후)
+python eval/human_eval.py analyze   # eval/human_eval/ratings/*.csv 분석
+```
 
-각 점수는 1~5 정수입니다. 동일한 질문·모델에 평가자가 여럿이면 행을 복사해 평가자마다 `rater_id`를 다르게 기록합니다. 빈 템플릿은 결과를 자동 생성하지 않습니다. 사람 기반 평균·검정·일치도는 점수가 입력된 뒤에 계산됩니다.
+분석 결과(`student_human_by_item.csv`, `student_human_summary.csv`, `student_human_tests.csv`, `student_human_agreement.csv`)는 `eval/human_eval/`에 저장됩니다. 이전 형식의 `student_human_evaluation.csv`(정확성·유용성·간결성·유창성)는 v2 30문항 평가 기록으로 남겨 둡니다.
 
 ## 해석 범위
 
