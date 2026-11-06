@@ -14,14 +14,14 @@ class Settings(BaseSettings):
     GOOGLE_API_KEY: str = ""
     GEMINI_MODEL: str = "gemini-1.5-flash"
 
-    # Local chat generation through Ollama (M1 Air friendly Q4_K_M quantization)
-    OLLAMA_BASE_URL: str = "http://localhost:11434"
-    OLLAMA_MODEL: str = "llama3.1:8b"
-    OLLAMA_NUM_CTX: int = 4096
-    OLLAMA_NUM_PREDICT: int = 768
-    VLLM_BASE_URL: str = ""
-    VLLM_BASE_MODEL: str = ""
-    VLLM_LORA_ADAPTERS: str = "{}"
+    # RAG 답변 생성: vLLM OpenAI 호환 서버 (bf16, temperature 0)
+    # VLLM_BASE_URL에는 /v1을 붙이지 않습니다. (예: http://localhost:8001, http://vllm:8000)
+    VLLM_BASE_URL: str = "http://localhost:8001"
+    VLLM_BASE_MODEL: str = "meta-llama/Llama-3.1-8B-Instruct"
+    VLLM_LORA_ADAPTERS: str = '{"student-lora":"student-lora","professor-lora":"professor-lora"}'
+    VLLM_API_KEY: str = "EMPTY"
+    VLLM_MAX_TOKENS: int = 768
+    VLLM_TIMEOUT_S: float = 180.0
 
     # Clova Studio API 엔드포인트
 

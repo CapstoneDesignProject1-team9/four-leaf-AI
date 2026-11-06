@@ -1,7 +1,8 @@
-"""BGE-M3 공지·강의계획서·강의평 검색과 Ollama 답변 생성."""
+"""BGE-M3 공지·강의계획서·강의평 검색과 vLLM 답변 생성."""
 
 from __future__ import annotations
 
+import json
 import logging
 import re
 from functools import lru_cache
@@ -11,7 +12,7 @@ from typing import Any
 import chromadb
 from chromadb.config import Settings
 from langchain_core.documents import Document
-from langchain_ollama import ChatOllama
+from langchain_openai import ChatOpenAI
 from sentence_transformers import SentenceTransformer
 
 from app.core.config import settings
@@ -469,14 +470,28 @@ class NoticeRagChain:
         return {"result": str(response.content), "source_documents": documents}
 
 
-def build_rag_chain() -> NoticeRagChain:
+def _served_model_names() -> set[str]:
+    adapters = json.loads(settings.VLLM_LORA_ADAPTERS or "{}")
+    if not isinstance(adapters, dict):
+        raise ValueError("VLLM_LORA_ADAPTERS는 JSON 객체여야 합니다.")
+    return {settings.VLLM_BASE_MODEL, *adapters}
+
+
+def build_rag_chain(model_name: str | None = None) -> NoticeRagChain:
+    """vLLM OpenAI 호환 API로 결정적(temperature 0) 답변을 생성하는 RAG 체인."""
     _ready()
+    if not settings.VLLM_BASE_URL or not settings.VLLM_BASE_MODEL:
+        raise RuntimeError("VLLM_BASE_URL과 VLLM_BASE_MODEL을 설정해야 합니다.")
+    served_model = model_name or settings.VLLM_BASE_MODEL
+    if served_model not in _served_model_names():
+        raise ValueError(f"vLLM에 등록되지 않은 모델입니다: {served_model}")
     return NoticeRagChain(
-        ChatOllama(
-            model=settings.OLLAMA_MODEL,
-            base_url=settings.OLLAMA_BASE_URL,
-            temperature=0.2,
-            num_ctx=settings.OLLAMA_NUM_CTX,
-            num_predict=settings.OLLAMA_NUM_PREDICT,
+        ChatOpenAI(
+            model=served_model,
+            base_url=f"{settings.VLLM_BASE_URL.rstrip('/')}/v1",
+            api_key=settings.VLLM_API_KEY,
+            temperature=0.0,
+            max_tokens=settings.VLLM_MAX_TOKENS,
+            timeout=settings.VLLM_TIMEOUT_S,
         )
     )

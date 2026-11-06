@@ -1,8 +1,8 @@
 # 🍀 four-leaf-AI
 
-Four-Leaf 프로젝트의 AI 서비스 저장소입니다. 경북대학교 컴퓨터학부 공지사항·강의계획서를 수집·가공하고, **BGE-M3와 ChromaDB로 관련 문서를 검색한 뒤 로컬 Ollama 모델로 근거 기반 답변을 생성**합니다.
+Four-Leaf 프로젝트의 AI 서비스 저장소입니다. 경북대학교 컴퓨터학부 공지사항·강의계획서를 수집·가공하고, **BGE-M3와 ChromaDB로 관련 문서를 검색한 뒤 vLLM으로 서빙하는 Llama-3.1-8B-Instruct(temperature 0)로 근거 기반 답변을 생성**합니다.
 
-대학생활·진로 상담으로의 확장을 목표로 하며, 합성 학습 데이터 생성과 오픈소스 모델 파인튜닝 스크립트도 포함합니다. **현재 학생 채팅은 Ollama의 `llama3.1:8b`가 기본**이며, 합성 데이터 생성과 교수자 리포트는 Gemini를 사용합니다. 파인튜닝 결과가 학생 채팅에 자동 연결되는 구조는 아닙니다.
+대학생활·진로 상담으로의 확장을 목표로 하며, 합성 학습 데이터 생성과 오픈소스 모델 파인튜닝 스크립트도 포함합니다. **현재 학생 채팅은 vLLM의 `meta-llama/Llama-3.1-8B-Instruct`가 기본**이며, 합성 데이터 생성과 교수자 리포트는 Gemini를 사용합니다. 파인튜닝 결과가 학생 채팅에 자동 연결되는 구조는 아닙니다.
 
 ## 1. 구현 범위 및 기술 스택
 
@@ -12,7 +12,7 @@ Four-Leaf 프로젝트의 AI 서비스 저장소입니다. 경북대학교 컴�
 | 텍스트 추출 | pypdf, PyMuPDF, pytesseract, Pillow, olefile, ZIP/XML |
 | 전처리·청킹 | 출처별 문서 생성, 품질 보고서, 청크와 메타데이터 생성 |
 | 임베딩·검색 | BAAI/bge-m3, sentence-transformers, ChromaDB 1.0.20 |
-| 학생 답변·API | Ollama (`llama3.1:8b` 기본), LangChain, FastAPI, Uvicorn |
+| 학생 답변·API | vLLM (`meta-llama/Llama-3.1-8B-Instruct`, temperature 0), LangChain, FastAPI, Uvicorn |
 | 합성 데이터·교수자 리포트 | Gemini API (학생 채팅과 별도) |
 | 질문 저장 | PostgreSQL `student_questions` |
 | 에타 수집 | Playwright, 수동 로그인, 리뷰 JSONL 및 과목·교수별 JSON |
@@ -32,7 +32,7 @@ Four-Leaf 프로젝트의 AI 서비스 저장소입니다. 경북대학교 컴�
                                                ↓
                                             ChromaDB
 
-학생 질문 → 질문 임베딩 → 관련 청크 검색 → Ollama → 답변 + 출처
+학생 질문 → 질문 임베딩 → 관련 청크 검색 → vLLM → 답변 + 출처
 ```
 
 합성 데이터와 학습은 별도 흐름입니다.
@@ -52,7 +52,7 @@ four-leaf-AI/
 ├── app/
 │   ├── main.py                       # FastAPI 진입점
 │   ├── core/config.py                # 환경변수 및 RAG 설정
-│   ├── chains/rag_chain.py           # BGE-M3 검색 + Ollama 답변
+│   ├── chains/rag_chain.py           # BGE-M3 검색 + vLLM 답변
 │   ├── models/                       # 요청·응답 스키마, 모델 관련 코드
 │   └── api/v1/
 │       ├── chat.py                   # 학생용 채팅
@@ -106,25 +106,19 @@ OCR에는 Python 패키지 외에 **Tesseract 실행 프로그램과 한국어·
 
 학습용 GPU 환경은 로컬 RAG 환경과 분리해 관리합니다. 패키지 버전은 실제 의존성 파일을 확인합니다.
 
-### 로컬 학생 채팅 모델 준비
+### 학생 채팅 모델(vLLM) 준비
 
-Ollama를 설치하고 실행한 뒤 기본 모델을 준비합니다.
-
-```bash
-ollama pull llama3.1:8b
-```
-
-모델은 `OLLAMA_MODEL`로 변경할 수 있습니다. API를 Docker에서 실행하고 Ollama가 호스트에서 실행된다면 해당 환경에 맞는 `OLLAMA_BASE_URL`을 지정하세요(예: `http://host.docker.internal:11434`). 컨텍스트 기본값은 4096이며 메모리·응답 품질은 실행 환경에서 검증해야 합니다.
+RAG 답변은 vLLM의 OpenAI 호환 API로 생성합니다(`meta-llama/Llama-3.1-8B-Instruct`, bf16, temperature 0, 최대 768토큰). 기본 모델과 LoRA 어댑터 평가와 같은 서빙 환경을 쓰기 위해서입니다. NVIDIA GPU 호스트에서 `four-leaf-infra`의 `docker compose -f docker-compose.dev.yml --profile gpu up -d`로 vLLM을 띄웁니다. 그런 다음 `VLLM_BASE_URL`(`/v1` 제외, 예: `http://localhost:8001`)을 지정하세요. 채팅 요청의 `model_name`에 `student-lora`처럼 `VLLM_LORA_ADAPTERS`에 등록된 이름을 주면, 해당 어댑터로 RAG 답변을 생성합니다.
 
 ### 환경변수
 
 프로젝트 루트의 `.env.example`을 참고해 `.env`를 생성합니다. 기존 `.env`가 있으면 덮어쓰지 말고 필요한 항목을 확인하세요.
 
 ```dotenv
-OLLAMA_BASE_URL=http://localhost:11434
-OLLAMA_MODEL=llama3.1:8b
-OLLAMA_NUM_CTX=4096
-OLLAMA_NUM_PREDICT=768
+VLLM_BASE_URL=http://localhost:8001
+VLLM_BASE_MODEL=meta-llama/Llama-3.1-8B-Instruct
+VLLM_LORA_ADAPTERS={"student-lora":"student-lora","professor-lora":"professor-lora"}
+VLLM_MAX_TOKENS=768
 DB_HOST=localhost
 DB_PORT=5432
 DB_NAME=fourleaf_dev
@@ -239,7 +233,7 @@ API 키와 모델 ID의 안내 문구는 실제 값으로 교체해야 합니다
 
 ## 6. 서버 및 답변 테스트
 
-완료된 공지 ChromaDB, 같은 revision의 BGE-M3 모델 캐시, 실행 중인 Ollama와 PostgreSQL 연결을 준비한 뒤 **프로젝트 루트에서** 실행합니다.
+완료된 공지 ChromaDB, 같은 revision의 BGE-M3 모델 캐시, 실행 중인 vLLM 서버와 PostgreSQL 연결을 준비한 뒤 **프로젝트 루트에서** 실행합니다.
 
 ```powershell
 .\.venv312\Scripts\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8000
@@ -270,7 +264,7 @@ AI 서버는 채팅 요청의 학생 질문을 기존 PostgreSQL 데이터베이
 서비스에 연결합니다.
 
 로컬에서 AI 서버를 직접 실행할 때는 `.env.example`을 `.env`로 복사한 뒤
-Ollama 및 PostgreSQL 연결 정보를 환경에 맞게 설정합니다. `GOOGLE_API_KEY`는 학생 채팅에는 필요하지 않으며 Gemini 기반 교수자 리포트 등 별도 기능에 사용됩니다. Docker Compose 전체 스택은
+vLLM 및 PostgreSQL 연결 정보를 환경에 맞게 설정합니다. `GOOGLE_API_KEY`는 학생 채팅에는 필요하지 않으며 Gemini 기반 교수자 리포트 등 별도 기능에 사용됩니다. Docker Compose 전체 스택은
 `four-leaf-infra/.env.dev`의 설정을 사용합니다.
 
 채팅 요청에 `course_name`을 포함하면 강의별로 분류됩니다. 생략하면 `미지정`으로 저장됩니다.
@@ -311,7 +305,7 @@ Content-Type: application/json
 
 ## 8. 합성 데이터 및 파인튜닝
 
-현재 Ollama 기반 학생 RAG 실행에 필수인 단계는 아닙니다.
+현재 vLLM 기반 학생 RAG 실행에 필수인 단계는 아닙니다.
 
 ### 합성 데이터 생성
 
@@ -357,7 +351,7 @@ python train/finetune.py
 | `notice_without_text` | 원본의 `content`, `ocr_text`, 첨부 `text` 및 추출 상태 |
 | 모듈을 찾지 못함 | 패키지를 설치한 환경과 실행 Python 일치 여부 |
 | 서버 시작 시 DB·캐시 오류 | 색인 완료 여부, DB 위치, 캐시·모델 revision |
-| 질문 후 지연·오류 | 서버 로그의 모델 로딩·Ollama 연결·PostgreSQL 오류 (리포트는 Gemini 권한·할당량도 확인) |
+| 질문 후 지연·오류 | 서버 로그의 모델 로딩·vLLM 연결·PostgreSQL 오류 (리포트는 Gemini 권한·할당량도 확인) |
 | 팀원 검색 결과가 다름 | DB 버전·활성 청크·모델 revision·검색 설정 |
 
 테스트 실행:
