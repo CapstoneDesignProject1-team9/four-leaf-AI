@@ -8,8 +8,8 @@
 
 ```bash
 cd /Users/tak/Desktop/CDP1-team9-fourleaf
-rsync -avh --partial four-leaf-AI/knowledge/vectorstores/ coss36@<LOGIN_HOST>:~/four-leaf-AI/knowledge/vectorstores/
-rsync -avh --partial four-leaf-AI/.cache/embedding_models/models--BAAI--bge-m3/ coss36@<LOGIN_HOST>:~/four-leaf-AI/.cache/embedding_models/models--BAAI--bge-m3/
+rsync -avh --partial -e "ssh -p 10000" four-leaf-AI/knowledge/vectorstores/ coss36@155.230.81.91:~/four-leaf-AI/knowledge/vectorstores/
+rsync -avh --partial -e "ssh -p 10000" four-leaf-AI/.cache/embedding_models/models--BAAI--bge-m3/ coss36@155.230.81.91:~/four-leaf-AI/.cache/embedding_models/models--BAAI--bge-m3/
 ```
 
 또한 최신 `eval/generate_answers.py`를 서버의 같은 경로에 복사합니다. HF의 Llama 3.1 8B 캐시와 어댑터는 이미 서버에 있으므로 다시 복사할 필요가 없습니다.

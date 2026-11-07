@@ -33,7 +33,9 @@ MODE_KEYS = {
     "professor_lora": "Base Model + Professor LoRA",
     "student_lora_rag": "Base Model + Student LoRA + RAG",
 }
-LOCAL_MODES = ("base", "student_lora", "professor_lora")
+# The student evaluation compares these four conditions; --mode all generates exactly these.
+STUDENT_MODES = ("base", "rag", "student_lora", "student_lora_rag")
+RAG_MODES = {"rag", "student_lora_rag"}
 
 
 def build_generation_question(item: dict) -> str:
@@ -48,9 +50,9 @@ def build_generation_question(item: dict) -> str:
 
 
 class LocalTransformersBackend:
-    """Load one base model and switch between base and two local LoRA adapters."""
+    """Load one base model and switch between base and local LoRA adapters."""
 
-    def __init__(self, load_adapters: bool = True) -> None:
+    def __init__(self, load_student: bool = True, load_professor: bool = False) -> None:
         import torch
         from peft import PeftModel
         from transformers import AutoModelForCausalLM, AutoTokenizer
@@ -81,20 +83,28 @@ class LocalTransformersBackend:
             device_map="auto",
             local_files_only=True,
         )
-        if load_adapters:
-            student_path = os.getenv("STUDENT_LORA_PATH", "adapter_student_llama")
-            professor_path = os.getenv("PROFESSOR_LORA_PATH", "adapter_professor_llama")
-            if not Path(student_path).is_dir() or not Path(professor_path).is_dir():
-                raise RuntimeError(
-                    "LoRA folders were not found. Set STUDENT_LORA_PATH and PROFESSOR_LORA_PATH "
-                    "or run from the four-leaf-AI directory."
-                )
-            self.model = PeftModel.from_pretrained(
-                base, student_path, adapter_name="student", is_trainable=False
+        adapters = []
+        if load_student:
+            adapters.append(("student", os.getenv("STUDENT_LORA_PATH", "adapter_student_llama")))
+        if load_professor:
+            adapters.append(
+                ("professor", os.getenv("PROFESSOR_LORA_PATH", "adapter_professor_llama"))
             )
-            self.model.load_adapter(professor_path, adapter_name="professor", is_trainable=False)
-        else:
-            self.model = base
+        missing = [path for _, path in adapters if not Path(path).is_dir()]
+        if missing:
+            raise RuntimeError(
+                "LoRA folders were not found: "
+                + ", ".join(missing)
+                + ". Set STUDENT_LORA_PATH/PROFESSOR_LORA_PATH or run from the four-leaf-AI directory."
+            )
+        self.model = base
+        for i, (name, path) in enumerate(adapters):
+            if i == 0:
+                self.model = PeftModel.from_pretrained(
+                    base, path, adapter_name=name, is_trainable=False
+                )
+            else:
+                self.model.load_adapter(path, adapter_name=name, is_trainable=False)
         self.model.eval()
         # Greedy decoding is deterministic; remove sampling settings inherited from the model config.
         self.model.generation_config.temperature = None
@@ -102,7 +112,7 @@ class LocalTransformersBackend:
 
     def generate_prompt(self, text: str, mode: str = "base") -> str:
         is_peft_model = hasattr(self.model, "peft_config")
-        if mode == "student_lora":
+        if mode in {"student_lora", "student_lora_rag"}:
             if not is_peft_model:
                 raise RuntimeError("LoRA adapters were not loaded")
             self.model.set_adapter("student")
@@ -130,7 +140,7 @@ class LocalTransformersBackend:
             attention_mask = attention_mask.to(device)
 
         with self.torch.inference_mode():
-            if mode == "base" and is_peft_model:
+            if mode in {"base", "rag"} and is_peft_model:
                 with self.model.disable_adapter():
                     output = self.model.generate(
                         input_ids=input_ids,
@@ -157,11 +167,12 @@ class LocalTransformersBackend:
 class TransformersPromptAdapter:
     """Use a local Transformers model behind the repository's existing RAG chain."""
 
-    def __init__(self, backend: LocalTransformersBackend) -> None:
+    def __init__(self, backend: LocalTransformersBackend, mode: str = "base") -> None:
         self.backend = backend
+        self.mode = mode
 
     def invoke(self, prompt: str) -> SimpleNamespace:
-        return SimpleNamespace(content=self.backend.generate_prompt(str(prompt), mode="base"))
+        return SimpleNamespace(content=self.backend.generate_prompt(str(prompt), mode=self.mode))
 
 
 class LocalRAGBackend:
@@ -272,38 +283,6 @@ async def main_async(args: argparse.Namespace) -> None:
     if not dataset_path.exists():
         raise SystemExit(f"Evaluation dataset not found: {dataset_path}")
     dataset = json.loads(dataset_path.read_text(encoding="utf-8"))
-    if args.backend == "transformers-rag":
-        if args.mode not in {"all", "rag"}:
-            raise SystemExit("The transformers-rag backend supports only --mode rag")
-        from app.chains.rag_chain import NoticeRagChain, init_vectorstore
-
-        await init_vectorstore()
-        backend = LocalTransformersBackend(load_adapters=False)
-        rag_chain = NoticeRagChain(TransformersPromptAdapter(backend))
-        start = time.monotonic()
-        for idx, item in enumerate(dataset[args.start_from :], start=args.start_from):
-            item.setdefault("models", {})
-            item.setdefault("contexts", {})
-            item.setdefault("generation_latency_s", {})
-            item.setdefault("served_model_names", {})
-            started = time.perf_counter()
-            result = rag_chain.invoke({"query": str(item["question"]).strip()})
-            elapsed = time.perf_counter() - started
-            model_key = MODE_KEYS["rag"]
-            item["models"][model_key] = result["result"]
-            item["contexts"][model_key] = [
-                doc.page_content for doc in result.get("source_documents", [])
-            ]
-            item["generation_latency_s"][model_key] = round(elapsed, 4)
-            item["served_model_names"][model_key] = f"{backend.model_path} + Chroma/BGE-M3"
-            dataset_path.write_text(
-                json.dumps(dataset, ensure_ascii=False, indent=2), encoding="utf-8"
-            )
-            logger.info(
-                "[%d/%d] saved (elapsed %.1fs)", idx + 1, len(dataset), time.monotonic() - start
-            )
-        return
-
     if args.backend == "rag-local":
         if args.mode not in {"all", "rag"}:
             raise SystemExit("The rag-local backend supports only --mode rag")
@@ -335,54 +314,65 @@ async def main_async(args: argparse.Namespace) -> None:
             )
         return
 
-    if args.backend == "transformers":
+    if args.backend in {"transformers", "transformers-rag"}:
         if args.mode == "all":
-            modes = list(LOCAL_MODES)
+            modes = list(STUDENT_MODES)
+            if args.backend == "transformers-rag":
+                modes = [mode for mode in modes if mode in RAG_MODES]
         else:
             modes = [args.mode]
-        rag_modes = [mode for mode in modes if mode not in LOCAL_MODES]
-        if rag_modes:
-            raise SystemExit(
-                "The local Transformers backend supports base/student_lora/professor_lora only; RAG needs the AI API."
-            )
-        backend = LocalTransformersBackend()
+        if args.backend == "transformers-rag" and not set(modes) <= RAG_MODES:
+            raise SystemExit("The transformers-rag backend supports only rag/student_lora_rag")
+        backend = LocalTransformersBackend(
+            load_student=any(m in {"student_lora", "student_lora_rag"} for m in modes),
+            load_professor="professor_lora" in modes,
+        )
+        rag_chains = {}
+        if RAG_MODES & set(modes):
+            from app.chains.rag_chain import NoticeRagChain, init_vectorstore
+
+            await init_vectorstore()
+            for mode in RAG_MODES & set(modes):
+                rag_chains[mode] = NoticeRagChain(TransformersPromptAdapter(backend, mode))
+        student_path = os.getenv("STUDENT_LORA_PATH", "adapter_student_llama")
+        served_names = {
+            "base": f"local:{backend.model_path}",
+            "rag": f"local:{backend.model_path} + Chroma/BGE-M3",
+            "student_lora": f"local:{backend.model_path} + {student_path}",
+            "student_lora_rag": f"local:{backend.model_path} + {student_path} + Chroma/BGE-M3",
+            "professor_lora": f"local:{backend.model_path} + "
+            + os.getenv("PROFESSOR_LORA_PATH", "adapter_professor_llama"),
+        }
+        logger.info("Generating conditions: %s", ", ".join(MODE_KEYS[m] for m in modes))
         start = time.monotonic()
         for idx in range(args.start_from, len(dataset)):
             item = dataset[idx]
-            item.setdefault("models", {})
-            # Remove unused legacy slots; canonical condition names below are authoritative.
-            for legacy_key in ("Student LoRA", "Professor LoRA"):
-                if not item["models"].get(legacy_key):
-                    item["models"].pop(legacy_key, None)
-            item.setdefault("contexts", {})
-            item.setdefault("generation_latency_s", {})
-            item.setdefault("served_model_names", {})
+            for field in ("models", "contexts", "generation_latency_s", "served_model_names"):
+                item.setdefault(field, {})
             for mode in modes:
                 model_key = MODE_KEYS[mode]
                 started = time.perf_counter()
-                result = backend.generate(build_generation_question(item), mode)
-                elapsed = time.perf_counter() - started
-                item["models"][model_key] = result["answer"]
-                item["contexts"][model_key] = []
-                item["generation_latency_s"][model_key] = round(elapsed, 4)
-                if mode == "base":
-                    served_name = backend.model_path
-                elif mode == "student_lora":
-                    served_name = f"local:{os.getenv('STUDENT_LORA_PATH', 'adapter_student_llama')}"
+                if mode in rag_chains:
+                    # The RAG chain searches with the raw question, matching the serving API.
+                    result = rag_chains[mode].invoke({"query": str(item["question"]).strip()})
+                    answer = str(result["result"]).strip()
+                    contexts = [doc.page_content for doc in result.get("source_documents", [])]
                 else:
-                    served_name = (
-                        f"local:{os.getenv('PROFESSOR_LORA_PATH', 'adapter_professor_llama')}"
-                    )
-                item["served_model_names"][model_key] = served_name
+                    answer = backend.generate_prompt(build_generation_question(item), mode)
+                    contexts = []
+                item["models"][model_key] = answer
+                item["contexts"][model_key] = contexts
+                item["generation_latency_s"][model_key] = round(time.perf_counter() - started, 4)
+                item["served_model_names"][model_key] = served_names[mode]
             dataset_path.write_text(
-                json.dumps(dataset, ensure_ascii=False, indent=2), encoding="utf-8"
+                json.dumps(dataset, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
             )
             logger.info(
                 "[%d/%d] saved (elapsed %.1fs)", idx + 1, len(dataset), time.monotonic() - start
             )
         return
 
-    modes = list(MODE_KEYS) if args.mode == "all" else [args.mode]
+    modes = list(STUDENT_MODES) if args.mode == "all" else [args.mode]
     missing = []
     if any(mode in {"student_lora", "student_lora_rag"} for mode in modes):
         if not os.getenv("VLLM_STUDENT_LORA_MODEL_NAME", "student-lora"):
