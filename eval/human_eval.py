@@ -30,20 +30,22 @@ CONDITIONS = [
     "Base Model",
     "Base Model + RAG",
     "Base Model + Student LoRA",
-    "Base Model + Professor LoRA",
+    "Base Model + Student LoRA + RAG",
 ]
 SHORT = {
     "Base Model": "Base",
     "Base Model + RAG": "RAG",
     "Base Model + Student LoRA": "StudentLoRA",
-    "Base Model + Professor LoRA": "ProfessorLoRA",
+    "Base Model + Student LoRA + RAG": "StudentLoRA_RAG",
 }
 TYPES = {1: "correct", 2: "abstain", 3: "other_semester", 4: "fabricated"}
 TYPE_KO = {1: "정답·부분정답", 2: "답변 유보", 3: "다른 학기 정보 사용", 4: "근거 없는 사실 날조"}
+# 2x2 (RAG x Student LoRA) design: each factor's effect with and without the other, plus RAG vs LoRA.
 CONTRASTS = [
     ("Base Model + RAG", "Base Model"),
+    ("Base Model + Student LoRA + RAG", "Base Model + Student LoRA"),
     ("Base Model + Student LoRA", "Base Model"),
-    ("Base Model + Professor LoRA", "Base Model"),
+    ("Base Model + Student LoRA + RAG", "Base Model + RAG"),
     ("Base Model + RAG", "Base Model + Student LoRA"),
 ]
 SEED = 20261106

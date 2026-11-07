@@ -1,6 +1,6 @@
 # 학생용 인간평가 가이드 (정확성 + 응답 유형)
 
-평가자는 응답마다 **정확성(1~5)** 과 **응답 유형(1~4)** 두 가지만 기록합니다. 60문항 × 4조건(Base, RAG, 학생용 LoRA, 교수자용 LoRA) = **1인당 240건**이며, 평가자 3명이 모든 건을 평가합니다.
+평가자는 응답마다 **정확성(1~5)** 과 **응답 유형(1~4)** 두 가지만 기록합니다. 60문항 × 4조건(Base, Base+RAG, Base+학생용 LoRA, Base+학생용 LoRA+RAG) = **1인당 240건**이며, 평가자 3명이 모든 건을 평가합니다.
 
 ## 진행 순서
 
@@ -71,7 +71,7 @@
 |---|---|
 | `student_human_by_item.csv` | 문항·조건별 정확성 평균, 정답 여부(평균 4점 이상), 응답 유형 다수결과 표 수 |
 | `student_human_summary.csv` | 조건별 정확성 평균·표준편차, 정확도(%), 유형별 비율(전체·범위 내·범위 밖), 답변 유보 성능 |
-| `student_human_tests.csv` | 사전 지정 대비(RAG−Base, 학생용 LoRA−Base, 교수자용 LoRA−Base, RAG−학생용 LoRA)의 정확성 Wilcoxon·대응 t 검정과 Cohen's dz, 환각 비율의 정확 McNemar 검정, Holm 보정 |
+| `student_human_tests.csv` | 사전 지정 대비(RAG−Base, LoRA+RAG−LoRA: RAG 효과 / LoRA−Base, LoRA+RAG−RAG: LoRA 효과 / RAG−LoRA: 두 방법 비교)의 정확성 Wilcoxon·대응 t 검정과 Cohen's dz, 환각 비율의 정확 McNemar 검정, Holm 보정 |
 | `student_human_agreement.csv` | 정확성은 평가자 쌍별 QWK, 응답 유형은 Cohen's κ, 둘 다 Fleiss' κ |
 
 지표는 다음과 같이 정의됩니다.

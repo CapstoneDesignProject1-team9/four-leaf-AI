@@ -90,12 +90,15 @@ class LocalTransformersBackend:
             adapters.append(
                 ("professor", os.getenv("PROFESSOR_LORA_PATH", "adapter_professor_llama"))
             )
-        missing = [path for _, path in adapters if not Path(path).is_dir()]
+        missing = [
+            path for _, path in adapters if not (Path(path) / "adapter_config.json").is_file()
+        ]
         if missing:
             raise RuntimeError(
-                "LoRA folders were not found: "
+                "adapter_config.json was not found directly inside: "
                 + ", ".join(missing)
-                + ". Set STUDENT_LORA_PATH/PROFESSOR_LORA_PATH or run from the four-leaf-AI directory."
+                + ". Point STUDENT_LORA_PATH/PROFESSOR_LORA_PATH at the folder that contains "
+                "adapter_config.json and adapter_model.safetensors."
             )
         self.model = base
         for i, (name, path) in enumerate(adapters):
