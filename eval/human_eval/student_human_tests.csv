@@ -1,0 +1,21 @@
+﻿scope,metric,contrast,n_items,mean_diff,cohen_dz,wilcoxon_p,paired_t_p,holm_p,discordant_a_only,discordant_b_only,mcnemar_exact_p
+all,accuracy,RAG - Base,60,2.0194,1.0495,0.0000,0.0000,0.0000,,,
+all,hallucination,RAG - Base,60,-60.0000,,,,0.0000,0.0000,36.0000,0.0000
+all,accuracy,StudentLoRA_RAG - StudentLoRA,60,1.6000,1.0533,0.0000,0.0000,0.0000,,,
+all,hallucination,StudentLoRA_RAG - StudentLoRA,60,-36.6667,,,,0.0000,0.0000,22.0000,0.0000
+all,accuracy,StudentLoRA - Base,60,0.2847,0.1913,0.1740,0.1438,0.2895,,,
+all,hallucination,StudentLoRA - Base,60,-23.3333,,,,0.0576,11.0000,25.0000,0.0288
+all,accuracy,StudentLoRA_RAG - RAG,60,-0.1347,-0.1341,0.1447,0.3033,0.2895,,,
+all,hallucination,StudentLoRA_RAG - RAG,60,0.0000,,,,1.0000,2.0000,2.0000,1.0000
+all,accuracy,RAG - StudentLoRA,60,1.7347,1.0058,0.0000,0.0000,0.0000,,,
+all,hallucination,RAG - StudentLoRA,60,-36.6667,,,,0.0000,1.0000,23.0000,0.0000
+in_scope,accuracy,RAG - Base,50,2.5683,2.2947,0.0000,0.0000,0.0000,,,
+in_scope,hallucination,RAG - Base,50,-66.0000,,,,0.0000,0.0000,33.0000,0.0000
+in_scope,accuracy,StudentLoRA_RAG - StudentLoRA,50,1.8900,1.3287,0.0000,0.0000,0.0000,,,
+in_scope,hallucination,StudentLoRA_RAG - StudentLoRA,50,-40.0000,,,,0.0000,0.0000,20.0000,0.0000
+in_scope,accuracy,StudentLoRA - Base,50,0.3767,0.3731,0.0369,0.0111,0.0369,,,
+in_scope,hallucination,StudentLoRA - Base,50,-30.0000,,,,0.0163,7.0000,22.0000,0.0081
+in_scope,accuracy,StudentLoRA_RAG - RAG,50,-0.3017,-0.3513,0.0119,0.0164,0.0237,,,
+in_scope,hallucination,StudentLoRA_RAG - RAG,50,-4.0000,,,,0.5000,0.0000,2.0000,0.5000
+in_scope,accuracy,RAG - StudentLoRA,50,2.1917,1.5448,0.0000,0.0000,0.0000,,,
+in_scope,hallucination,RAG - StudentLoRA,50,-36.0000,,,,0.0001,1.0000,19.0000,0.0000
