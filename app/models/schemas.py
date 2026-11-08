@@ -6,7 +6,9 @@ class ChatRequest(BaseModel):
 
     message: str = Field(..., description="사용자 메시지", min_length=1, max_length=2000)
     session_id: str | None = Field(None, description="대화 세션 ID (멀티턴 대화용)")
-    course_name: str | None = Field(None, description="관련 강의명 (선택)", max_length=200)
+    course_name: str | None = Field(
+        None, description="사용하지 않음(이전 클라이언트 호환용)", max_length=200
+    )
     model_name: str | None = Field(
         None, description="vLLM 모델 또는 등록된 LoRA 어댑터 이름", max_length=200
     )
@@ -26,7 +28,7 @@ class ChatResponse(BaseModel):
     answer: str = Field(..., description="AI 튜터 답변")
     sources: list[SourceDocument] = Field(default=[], description="참고한 문서 목록")
     session_id: str | None = None
-    course_name: str | None = Field(default=None, description="자동 분류 또는 지정된 과목명")
+    course_name: str | None = Field(default=None, description="사용하지 않음(이전 클라이언트 호환용)")
 
 
 class HealthResponse(BaseModel):
