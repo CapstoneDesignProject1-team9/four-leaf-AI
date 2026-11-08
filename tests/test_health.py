@@ -1,6 +1,6 @@
 """실제 DB·벡터 초기화·AI 호출 없이 서버 API를 검증한다."""
 
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -115,7 +115,7 @@ def test_chat_still_answers_when_storage_is_down(client):
 
 
 def _questions():
-    now = datetime(2026, 11, 8, tzinfo=timezone.utc)
+    now = datetime(2026, 11, 8, tzinfo=UTC)
     texts = [
         "캐시 직접 매핑이 뭐야?",
         "캐시 히트율 계산법",
@@ -157,7 +157,10 @@ def test_advisor_ask_counts_groups_in_code(client):
     assert data["matched_count"] == 3
     assert data["total_count"] == 4
     assert data["period_days"] == 30
-    assert [(g["label"], g["count"]) for g in data["groups"]] == [("캐시", 2), ("파이프라인 해저드", 1)]
+    assert [(g["label"], g["count"]) for g in data["groups"]] == [
+        ("캐시", 2),
+        ("파이프라인 해저드", 1),
+    ]
     # 대표 질문은 최신순
     assert data["groups"][0]["examples"] == ["캐시 직접 매핑이 뭐야?", "캐시 히트율 계산법"]
     assert fetch.call_args.kwargs["days"] == 30

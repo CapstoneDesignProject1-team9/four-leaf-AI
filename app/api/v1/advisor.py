@@ -30,7 +30,9 @@ class _RawGroup(BaseModel):
 
 
 class _Grouping(BaseModel):
-    topic: str | None = Field(description="교수자가 묻는 주제. 전체 질문을 묻거나 리포트 요청이면 null")
+    topic: str | None = Field(
+        description="교수자가 묻는 주제. 전체 질문을 묻거나 리포트 요청이면 null"
+    )
     groups: list[_RawGroup] = Field(description="관련 질문을 비슷한 내용끼리 묶은 결과")
 
 
@@ -64,7 +66,10 @@ def _gemini() -> ChatGoogleGenerativeAI:
 async def group_with_gemini(question: str, questions: list[StoredQuestion]) -> dict:
     parser = JsonOutputParser(pydantic_object=_Grouping)
     prompt = ChatPromptTemplate.from_messages(
-        [("system", _GROUP_SYSTEM), ("human", "교수자 질문: {question}\n\n학생 질문 목록:\n{questions}")]
+        [
+            ("system", _GROUP_SYSTEM),
+            ("human", "교수자 질문: {question}\n\n학생 질문 목록:\n{questions}"),
+        ]
     )
     listing = "\n".join(f"[{q.id}] {' '.join(q.question.split())}" for q in questions)
     return await (prompt | _gemini() | parser).ainvoke(
@@ -111,7 +116,11 @@ def build_groups(
 
 
 def _period_text(days: int | None) -> str:
-    return f"최근 {days}일" if days else f"최근 {settings.CHAT_LOG_RETENTION_MONTHS}개월(보관 기간 전체)"
+    return (
+        f"최근 {days}일"
+        if days
+        else f"최근 {settings.CHAT_LOG_RETENTION_MONTHS}개월(보관 기간 전체)"
+    )
 
 
 def _groups_text(groups: list[QuestionGroup]) -> str:
@@ -152,9 +161,14 @@ async def write_answer_with_gemini(
     )
 
 
-def fallback_answer(topic: str | None, groups: list[QuestionGroup], matched: int, days: int | None) -> str:
+def fallback_answer(
+    topic: str | None, groups: list[QuestionGroup], matched: int, days: int | None
+) -> str:
     subject = f"'{topic}' 관련" if topic else "전체"
-    return f"{_period_text(days)} 동안 {subject} 학생 질문은 {matched}건이었습니다.\n" + _groups_text(groups)
+    return (
+        f"{_period_text(days)} 동안 {subject} 학생 질문은 {matched}건이었습니다.\n"
+        + _groups_text(groups)
+    )
 
 
 @router.post("/ask", response_model=AdvisorAskResponse)
@@ -180,7 +194,9 @@ async def ask_advisor(request: AdvisorAskRequest):
         raw = await group_with_gemini(request.question, questions)
     except Exception:
         logger.exception("Gemini 질문 분류 실패")
-        raise HTTPException(status_code=503, detail="학생 질문을 분석하지 못했습니다. 잠시 후 다시 시도해주세요.")
+        raise HTTPException(
+            status_code=503, detail="학생 질문을 분석하지 못했습니다. 잠시 후 다시 시도해주세요."
+        )
 
     topic, groups, matched = build_groups(raw if isinstance(raw, dict) else {}, questions)
     if matched == 0:
@@ -194,7 +210,9 @@ async def ask_advisor(request: AdvisorAskRequest):
         )
 
     try:
-        answer = await write_answer_with_gemini(request.question, topic, groups, matched, total, request.days)
+        answer = await write_answer_with_gemini(
+            request.question, topic, groups, matched, total, request.days
+        )
     except Exception:
         logger.exception("Gemini 답변 생성 실패 — 집계 결과로 대신 답합니다.")
         answer = fallback_answer(topic, groups, matched, request.days)

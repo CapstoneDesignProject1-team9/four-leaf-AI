@@ -28,7 +28,9 @@ class ChatResponse(BaseModel):
     answer: str = Field(..., description="AI 튜터 답변")
     sources: list[SourceDocument] = Field(default=[], description="참고한 문서 목록")
     session_id: str | None = None
-    course_name: str | None = Field(default=None, description="사용하지 않음(이전 클라이언트 호환용)")
+    course_name: str | None = Field(
+        default=None, description="사용하지 않음(이전 클라이언트 호환용)"
+    )
 
 
 class HealthResponse(BaseModel):
@@ -47,7 +49,10 @@ class AdvisorAskRequest(BaseModel):
         description="교수자 질문 (예: 컴퓨터구조 관련 학생들 질문은 뭐가 많았어?)",
     )
     days: int | None = Field(
-        default=None, ge=1, le=124, description="최근 며칠 동안의 질문만 볼지. 비우면 보관 기간 전체"
+        default=None,
+        ge=1,
+        le=124,
+        description="최근 며칠 동안의 질문만 볼지. 비우면 보관 기간 전체",
     )
 
 
@@ -66,5 +71,7 @@ class AdvisorAskResponse(BaseModel):
     topic: str | None = Field(default=None, description="질문에서 파악한 주제. 전체 대상이면 null")
     matched_count: int = Field(..., description="주제와 관련된 학생 질문 수")
     total_count: int = Field(..., description="분석 대상 기간의 전체 학생 질문 수")
-    period_days: int | None = Field(default=None, description="분석 기간(일). null이면 보관 기간 전체")
+    period_days: int | None = Field(
+        default=None, description="분석 기간(일). null이면 보관 기간 전체"
+    )
     groups: list[QuestionGroup] = Field(default=[], description="질문 유형별 집계(많은 순)")
