@@ -19,7 +19,12 @@ class Settings(BaseSettings):
     VLLM_BASE_URL: str = "http://localhost:8001"
     VLLM_BASE_MODEL: str = "meta-llama/Llama-3.1-8B-Instruct"
     VLLM_LORA_ADAPTERS: str = '{"student-lora":"student-lora","professor-lora":"professor-lora"}'
+    # 요청에 model_name이 없을 때 쓸 모델. 비우면 VLLM_BASE_MODEL(RAG만), "student-lora"면 LoRA+RAG.
+    VLLM_DEFAULT_MODEL: str = ""
     VLLM_API_KEY: str = "EMPTY"
+    # Modal 프록시 인증 토큰(Modal 서버 사용 시). 둘 다 설정하면 Modal-Key/Modal-Secret 헤더로 보냅니다.
+    VLLM_PROXY_KEY: str = ""
+    VLLM_PROXY_SECRET: str = ""
     VLLM_MAX_TOKENS: int = 768
     VLLM_TIMEOUT_S: float = 180.0
 

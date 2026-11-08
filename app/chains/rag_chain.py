@@ -247,14 +247,18 @@ def build_rag_chain(model_name: str | None = None) -> NoticeRagChain:
     _ready()
     if not settings.VLLM_BASE_URL or not settings.VLLM_BASE_MODEL:
         raise RuntimeError("VLLM_BASE_URL과 VLLM_BASE_MODEL을 설정해야 합니다.")
-    served_model = model_name or settings.VLLM_BASE_MODEL
+    served_model = model_name or settings.VLLM_DEFAULT_MODEL or settings.VLLM_BASE_MODEL
     if served_model not in _served_model_names():
         raise ValueError(f"vLLM에 등록되지 않은 모델입니다: {served_model}")
+    headers = None
+    if settings.VLLM_PROXY_KEY and settings.VLLM_PROXY_SECRET:
+        headers = {"Modal-Key": settings.VLLM_PROXY_KEY, "Modal-Secret": settings.VLLM_PROXY_SECRET}
     return NoticeRagChain(
         ChatOpenAI(
             model=served_model,
             base_url=f"{settings.VLLM_BASE_URL.rstrip('/')}/v1",
             api_key=settings.VLLM_API_KEY,
+            default_headers=headers,
             temperature=0.0,
             max_tokens=settings.VLLM_MAX_TOKENS,
             timeout=settings.VLLM_TIMEOUT_S,

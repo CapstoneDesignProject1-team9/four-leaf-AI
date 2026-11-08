@@ -1,7 +1,7 @@
-"""Serve the Llama 3.1 base model and both role LoRAs on Modal with vLLM.
+"""Serve the Llama 3.1 base model and the student LoRA on Modal with vLLM.
 
-The API is OpenAI-compatible. Pass ``base-model``, ``student-lora``, or
-``professor-lora`` as the request's ``model`` value.
+The API is OpenAI-compatible. Pass ``base-model`` or ``student-lora`` as the
+request's ``model`` value.
 """
 
 import subprocess
@@ -82,12 +82,11 @@ class LlamaServer:
             "base-model",
             "--enable-lora",
             "--max-loras",
-            "2",
+            "1",
             "--max-lora-rank",
             "16",
             "--lora-modules",
             f"student-lora={ADAPTERS_PATH}/adapter_student_llama",
-            f"professor-lora={ADAPTERS_PATH}/adapter_professor_llama",
             "--max-model-len",
             "4096",
             "--max-num-seqs",
