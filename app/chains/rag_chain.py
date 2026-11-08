@@ -242,12 +242,17 @@ def _served_model_names() -> set[str]:
     return {settings.VLLM_BASE_MODEL, *adapters}
 
 
+def resolve_model_name(model_name: str | None = None) -> str:
+    """요청 모델 → 기본 모델(VLLM_DEFAULT_MODEL) → 기반 모델 순으로 실제 사용할 모델명을 정한다."""
+    return model_name or settings.VLLM_DEFAULT_MODEL or settings.VLLM_BASE_MODEL
+
+
 def build_rag_chain(model_name: str | None = None) -> NoticeRagChain:
     """vLLM OpenAI 호환 API로 결정적(temperature 0) 답변을 생성하는 RAG 체인."""
     _ready()
     if not settings.VLLM_BASE_URL or not settings.VLLM_BASE_MODEL:
         raise RuntimeError("VLLM_BASE_URL과 VLLM_BASE_MODEL을 설정해야 합니다.")
-    served_model = model_name or settings.VLLM_DEFAULT_MODEL or settings.VLLM_BASE_MODEL
+    served_model = resolve_model_name(model_name)
     if served_model not in _served_model_names():
         raise ValueError(f"vLLM에 등록되지 않은 모델입니다: {served_model}")
     headers = None
