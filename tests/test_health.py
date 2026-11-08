@@ -139,9 +139,9 @@ def test_advisor_ask_counts_groups_in_code(client):
     with (
         patch("app.api.v1.advisor.purge_expired_chat_logs"),
         patch("app.api.v1.advisor.fetch_recent_questions", return_value=_questions()) as fetch,
-        patch("app.api.v1.advisor.group_with_gemini", new=AsyncMock(return_value=raw)),
+        patch("app.api.v1.advisor.group_with_claude", new=AsyncMock(return_value=raw)),
         patch(
-            "app.api.v1.advisor.write_answer_with_gemini",
+            "app.api.v1.advisor.write_answer_with_claude",
             new=AsyncMock(return_value="캐시 질문이 가장 많았습니다."),
         ) as write,
     ):
@@ -174,7 +174,7 @@ def test_advisor_ask_without_stored_questions(client):
     with (
         patch("app.api.v1.advisor.purge_expired_chat_logs"),
         patch("app.api.v1.advisor.fetch_recent_questions", return_value=[]),
-        patch("app.api.v1.advisor.group_with_gemini", new=AsyncMock()) as group,
+        patch("app.api.v1.advisor.group_with_claude", new=AsyncMock()) as group,
     ):
         response = test_client.post("/api/v1/advisor/ask", json={"question": "학생들 리포트 써줘"})
 
@@ -190,7 +190,7 @@ def test_advisor_ask_no_matching_questions(client):
         patch("app.api.v1.advisor.purge_expired_chat_logs"),
         patch("app.api.v1.advisor.fetch_recent_questions", return_value=_questions()),
         patch(
-            "app.api.v1.advisor.group_with_gemini",
+            "app.api.v1.advisor.group_with_claude",
             new=AsyncMock(return_value={"topic": "데이터베이스", "groups": []}),
         ),
     ):
@@ -210,9 +210,9 @@ def test_advisor_ask_falls_back_when_answer_generation_fails(client):
     with (
         patch("app.api.v1.advisor.purge_expired_chat_logs"),
         patch("app.api.v1.advisor.fetch_recent_questions", return_value=_questions()),
-        patch("app.api.v1.advisor.group_with_gemini", new=AsyncMock(return_value=raw)),
+        patch("app.api.v1.advisor.group_with_claude", new=AsyncMock(return_value=raw)),
         patch(
-            "app.api.v1.advisor.write_answer_with_gemini",
+            "app.api.v1.advisor.write_answer_with_claude",
             new=AsyncMock(side_effect=RuntimeError("quota")),
         ),
     ):
@@ -230,7 +230,7 @@ def test_advisor_ask_grouping_failure_returns_503(client):
         patch("app.api.v1.advisor.purge_expired_chat_logs"),
         patch("app.api.v1.advisor.fetch_recent_questions", return_value=_questions()),
         patch(
-            "app.api.v1.advisor.group_with_gemini",
+            "app.api.v1.advisor.group_with_claude",
             new=AsyncMock(side_effect=RuntimeError("invalid key")),
         ),
     ):
@@ -244,9 +244,9 @@ def _ask(test_client, raw, answer="생성 결과", question="컴퓨터구조 퀴
     with (
         patch("app.api.v1.advisor.purge_expired_chat_logs"),
         patch("app.api.v1.advisor.fetch_recent_questions", return_value=_questions()),
-        patch("app.api.v1.advisor.group_with_gemini", new=AsyncMock(return_value=raw)),
+        patch("app.api.v1.advisor.group_with_claude", new=AsyncMock(return_value=raw)),
         patch(
-            "app.api.v1.advisor.write_answer_with_gemini", new=AsyncMock(return_value=answer)
+            "app.api.v1.advisor.write_answer_with_claude", new=AsyncMock(return_value=answer)
         ) as write,
     ):
         response = test_client.post("/api/v1/advisor/ask", json={"question": question})
@@ -298,9 +298,9 @@ def test_advisor_quiz_fallback_says_generation_failed(client):
     with (
         patch("app.api.v1.advisor.purge_expired_chat_logs"),
         patch("app.api.v1.advisor.fetch_recent_questions", return_value=_questions()),
-        patch("app.api.v1.advisor.group_with_gemini", new=AsyncMock(return_value=raw)),
+        patch("app.api.v1.advisor.group_with_claude", new=AsyncMock(return_value=raw)),
         patch(
-            "app.api.v1.advisor.write_answer_with_gemini",
+            "app.api.v1.advisor.write_answer_with_claude",
             new=AsyncMock(side_effect=RuntimeError("quota")),
         ),
     ):
@@ -319,20 +319,18 @@ def test_advisor_quiz_fallback_says_generation_failed(client):
         ("report", ["'요약', '주요 질문 유형', '학생들이 어려워하는 부분', '강의 제안'"]),
     ],
 )
-def test_task_prompts_reach_gemini(task, expected_phrases):
+def test_task_prompts_reach_claude(task, expected_phrases):
     import asyncio
-
-    from langchain_core.language_models.fake_chat_models import FakeListChatModel
+    from types import SimpleNamespace
 
     from app.api.v1 import advisor
 
-    seen = []
-
-    class Spy(FakeListChatModel):
-        def _call(self, messages, *args, **kwargs):
-            seen.append(messages)
-            return super()._call(messages, *args, **kwargs)
-
+    fake = MagicMock()
+    fake.beta.messages.create = AsyncMock(
+        return_value=SimpleNamespace(
+            stop_reason="end_turn", content=[SimpleNamespace(type="text", text="ok")]
+        )
+    )
     analysis = advisor.build_analysis(
         {
             "task": task,
@@ -342,16 +340,90 @@ def test_task_prompts_reach_gemini(task, expected_phrases):
         },
         _questions(),
     )
-    with patch.object(advisor, "_gemini", return_value=Spy(responses=["ok"])):
-        answer = asyncio.run(advisor.write_answer_with_gemini("질문", analysis, 4, None))
+    with patch.object(advisor, "_claude", return_value=fake):
+        answer = asyncio.run(advisor.write_answer_with_claude("질문", analysis, 4, None))
 
     assert answer == "ok"
-    system, human = seen[0][0].content, seen[0][1].content
+    kwargs = fake.beta.messages.create.await_args.kwargs
+    assert kwargs["model"] == advisor.settings.ADVISOR_MODEL
+    assert kwargs["fallbacks"] == "default"
+    assert kwargs["betas"] == [advisor.FALLBACK_BETA]
     for phrase in expected_phrases:
-        assert phrase in system
-    assert "{item_count}" not in system
+        assert phrase in kwargs["system"]
+    assert "{item_count}" not in kwargs["system"]
+    human = kwargs["messages"][0]["content"]
     assert "캐시 {매핑} (2건)" in human
     assert "캐시 직접 매핑이 뭐야?" in human
+
+
+def test_refused_answer_raises_so_fallback_text_is_used():
+    import asyncio
+    from types import SimpleNamespace
+
+    from app.api.v1 import advisor
+
+    fake = MagicMock()
+    fake.beta.messages.create = AsyncMock(
+        return_value=SimpleNamespace(stop_reason="refusal", content=[])
+    )
+    analysis = advisor.build_analysis(
+        {"task": "summary", "groups": [{"label": "캐시", "question_ids": [1]}]}, _questions()
+    )
+    with patch.object(advisor, "_claude", return_value=fake), pytest.raises(RuntimeError):
+        asyncio.run(advisor.write_answer_with_claude("질문", analysis, 4, None))
+
+
+def test_grouping_request_shape_through_real_sdk():
+    """실제 Anthropic SDK가 보내는 HTTP 요청(모델, 대체 모델 베타, JSON 스키마)과 응답 파싱을 확인한다."""
+    import asyncio
+    import json
+
+    import httpx
+    from anthropic import AsyncAnthropic
+
+    from app.api.v1 import advisor
+
+    captured = {}
+    reply = {
+        "task": "quiz",
+        "item_count": 3,
+        "topic": "컴퓨터구조",
+        "groups": [{"label": "캐시", "question_ids": [1, 2]}],
+    }
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        captured["headers"] = request.headers
+        captured["body"] = json.loads(request.content)
+        return httpx.Response(
+            200,
+            json={
+                "id": "msg_test",
+                "type": "message",
+                "role": "assistant",
+                "model": advisor.settings.ADVISOR_MODEL,
+                "content": [{"type": "text", "text": json.dumps(reply, ensure_ascii=False)}],
+                "stop_reason": "end_turn",
+                "stop_sequence": None,
+                "usage": {"input_tokens": 10, "output_tokens": 10},
+            },
+        )
+
+    client = AsyncAnthropic(
+        api_key="test", http_client=httpx.AsyncClient(transport=httpx.MockTransport(handler))
+    )
+    with patch.object(advisor, "_claude", return_value=client):
+        raw = asyncio.run(advisor.group_with_claude("컴퓨터구조 퀴즈 3개", _questions()))
+
+    assert raw == reply
+    body = captured["body"]
+    assert body["model"] == advisor.settings.ADVISOR_MODEL
+    assert body["fallbacks"] == "default"
+    assert advisor.FALLBACK_BETA in captured["headers"]["anthropic-beta"]
+    assert "temperature" not in body
+    schema = body["output_config"]["format"]["schema"]
+    assert body["output_config"]["format"]["type"] == "json_schema"
+    assert set(schema["properties"]) >= {"task", "item_count", "topic", "groups"}
+    assert "[1] 캐시 직접 매핑이 뭐야?" in body["messages"][0]["content"]
 
 
 def test_chat_retries_while_llm_server_wakes_up(client):

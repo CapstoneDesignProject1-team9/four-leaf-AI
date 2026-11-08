@@ -1,21 +1,20 @@
 """교수자용 AI 어드바이저: 저장된 학생 질문 기록에 대한 자유 질문에 답한다.
 
-1. 보관 기간 안의 최근 학생 질문에 번호를 붙여 Gemini에 보낸다. Gemini는 교수자가 원하는
+1. 보관 기간 안의 최근 학생 질문에 번호를 붙여 Claude에 보낸다. Claude는 교수자가 원하는
    작업(요약·리포트·어려운 부분·퀴즈·시험문제)과 주제를 정하고, 주제와 관련된 질문 번호를
    유형별로 묶는다.
 2. 반환된 번호를 실제 기록과 대조해 검증하고, 유형별 건수는 코드가 센다.
-3. Gemini가 작업별 지침에 따라 답한다. 분석 작업은 집계만 근거로 쓰고, 퀴즈·시험문제는
+3. Claude가 작업별 지침에 따라 답한다. 분석 작업은 집계만 근거로 쓰고, 퀴즈·시험문제는
    학생 질문에서 드러난 개념을 바탕으로 새 문항을 만든다. 실패하면 집계를 그대로 문장으로 만든다.
 """
 
 import logging
 from dataclasses import dataclass
+from functools import lru_cache
 from typing import Literal
 
+from anthropic import AsyncAnthropic, transform_schema
 from fastapi import APIRouter, HTTPException
-from langchain_core.output_parsers import JsonOutputParser, StrOutputParser
-from langchain_core.prompts import ChatPromptTemplate
-from langchain_google_genai import ChatGoogleGenerativeAI
 from pydantic import BaseModel, Field
 
 from app.core.config import settings
@@ -32,6 +31,9 @@ DEFAULT_ITEMS = {"quiz": 5, "exam": 3}
 MAX_ITEMS = 20
 MAX_EXAMPLES = 3  # 응답에 담을 대표 질문 수
 MAX_PROMPT_EXAMPLES = 8  # 답변 생성 프롬프트에 넣을 유형별 질문 수
+MAX_TOKENS = 16000
+# 안전 분류기가 요청을 거절하면 같은 호출 안에서 대체 모델로 다시 실행한다.
+FALLBACK_BETA = "server-side-fallback-2026-07-01"
 
 
 class _RawGroup(BaseModel):
@@ -66,9 +68,7 @@ _GROUP_SYSTEM = """당신은 대학 AI 튜터에 들어온 학생 질문 기록�
 - topic이 있으면 그 주제와 직접 관련된 질문만 포함하고 나머지는 제외하세요. topic이 null이면 모든 질문을 포함하세요.
 - 질문 내용이 비슷한 것끼리 2~8개 묶음으로 나누고, 한 질문은 한 묶음에만 넣으세요.
 - label은 교수자가 바로 이해할 수 있는 짧은 유형 이름으로 쓰세요(예: '캐시 매핑 방식').
-- question_ids에는 목록에 있는 [번호]만 쓰고, 없는 번호를 만들지 마세요.
-
-{format_instructions}"""
+- question_ids에는 목록에 있는 [번호]만 쓰고, 없는 번호를 만들지 마세요."""
 
 _COMMON_RULES = """- 건수는 집계 결과의 숫자를 그대로 쓰고, 새로 세거나 추정하지 마세요.
 - 마크다운 표나 굵은 글씨(**) 없이 짧은 문단, 번호, '-' 목록만 쓰세요."""
@@ -130,30 +130,34 @@ class Analysis:
     matched: int
 
 
-def _gemini() -> ChatGoogleGenerativeAI:
-    return ChatGoogleGenerativeAI(
-        model=settings.GEMINI_MODEL,
-        google_api_key=settings.GOOGLE_API_KEY or None,
-        temperature=0,
-    )
+@lru_cache(maxsize=1)
+def _claude() -> AsyncAnthropic:
+    return AsyncAnthropic(api_key=settings.ANTHROPIC_API_KEY or None)
 
 
-async def group_with_gemini(question: str, questions: list[StoredQuestion]) -> dict:
-    parser = JsonOutputParser(pydantic_object=_Grouping)
-    prompt = ChatPromptTemplate.from_messages(
-        [
-            ("system", _GROUP_SYSTEM),
-            ("human", "교수자 질문: {question}\n\n학생 질문 목록:\n{questions}"),
-        ]
-    )
+_GROUPING_FORMAT = {
+    "type": "json_schema",
+    "schema": transform_schema(_Grouping.model_json_schema()),
+}
+
+
+async def group_with_claude(question: str, questions: list[StoredQuestion]) -> dict:
     listing = "\n".join(f"[{q.id}] {' '.join(q.question.split())}" for q in questions)
-    return await (prompt | _gemini() | parser).ainvoke(
-        {
-            "question": question,
-            "questions": listing,
-            "format_instructions": parser.get_format_instructions(),
-        }
+    response = await _claude().beta.messages.create(
+        model=settings.ADVISOR_MODEL,
+        max_tokens=MAX_TOKENS,
+        system=_GROUP_SYSTEM,
+        messages=[
+            {"role": "user", "content": f"교수자 질문: {question}\n\n학생 질문 목록:\n{listing}"}
+        ],
+        output_config={"format": _GROUPING_FORMAT},
+        betas=[FALLBACK_BETA],
+        fallbacks="default",
     )
+    if response.stop_reason != "end_turn":
+        raise RuntimeError(f"Claude가 질문 분류를 완료하지 못했습니다: {response.stop_reason}")
+    text = next(block.text for block in response.content if block.type == "text")
+    return _Grouping.model_validate_json(text).model_dump()
 
 
 def _clean_task(value: object) -> str:
@@ -171,7 +175,7 @@ def _clean_items(task: str, value: object) -> int | None:
 
 
 def build_analysis(raw: dict, questions: list[StoredQuestion]) -> Analysis:
-    """Gemini 결과에서 실제로 있는 번호만 남기고(중복 제거) 유형별 건수와 대표 질문을 만든다."""
+    """Claude 결과에서 실제로 있는 번호만 남기고(중복 제거) 유형별 건수와 대표 질문을 만든다."""
     by_id = {q.id: q for q in questions}
     task = _clean_task(raw.get("task"))
     topic = raw.get("topic") or None
@@ -226,33 +230,32 @@ def _groups_text(groups: list[QuestionGroup], examples: list[list[str]] | None =
     return "\n".join(lines)
 
 
-async def write_answer_with_gemini(
+async def write_answer_with_claude(
     question: str, analysis: Analysis, total: int, days: int | None
 ) -> str:
     system = _TASK_SYSTEMS[analysis.task]
     if analysis.item_count is not None:
         system = system.replace("{item_count}", str(analysis.item_count))
-    prompt = ChatPromptTemplate.from_messages(
-        [
-            ("system", "{system}"),
-            (
-                "human",
-                "교수자 질문: {question}\n분석 기간: {period}\n기간 내 전체 학생 질문: {total}건\n"
-                "주제: {topic}\n관련 질문: {matched}건\n\n질문 유형별 집계와 학생 질문:\n{groups}",
-            ),
-        ]
+    user = (
+        f"교수자 질문: {question}\n분석 기간: {_period_text(days)}\n"
+        f"기간 내 전체 학생 질문: {total}건\n주제: {analysis.topic or '전체'}\n"
+        f"관련 질문: {analysis.matched}건\n\n질문 유형별 집계와 학생 질문:\n"
+        + _groups_text(analysis.groups, analysis.prompt_examples)
     )
-    return await (prompt | _gemini() | StrOutputParser()).ainvoke(
-        {
-            "system": system,
-            "question": question,
-            "period": _period_text(days),
-            "total": total,
-            "topic": analysis.topic or "전체",
-            "matched": analysis.matched,
-            "groups": _groups_text(analysis.groups, analysis.prompt_examples),
-        }
+    response = await _claude().beta.messages.create(
+        model=settings.ADVISOR_MODEL,
+        max_tokens=MAX_TOKENS,
+        system=system,
+        messages=[{"role": "user", "content": user}],
+        betas=[FALLBACK_BETA],
+        fallbacks="default",
     )
+    if response.stop_reason == "refusal":
+        raise RuntimeError("Claude가 답변 생성을 거절했습니다.")
+    text = "".join(block.text for block in response.content if block.type == "text")
+    if not text.strip():
+        raise RuntimeError(f"Claude 답변이 비어 있습니다: {response.stop_reason}")
+    return text
 
 
 def fallback_answer(analysis: Analysis, days: int | None) -> str:
@@ -291,9 +294,9 @@ async def ask_advisor(request: AdvisorAskRequest):
         )
 
     try:
-        raw = await group_with_gemini(request.question, questions)
+        raw = await group_with_claude(request.question, questions)
     except Exception:
-        logger.exception("Gemini 질문 분류 실패")
+        logger.exception("Claude 질문 분류 실패")
         raise HTTPException(
             status_code=503, detail="학생 질문을 분석하지 못했습니다. 잠시 후 다시 시도해주세요."
         )
@@ -314,9 +317,9 @@ async def ask_advisor(request: AdvisorAskRequest):
         )
 
     try:
-        answer = await write_answer_with_gemini(request.question, analysis, total, request.days)
+        answer = await write_answer_with_claude(request.question, analysis, total, request.days)
     except Exception:
-        logger.exception("Gemini 답변 생성 실패 — 집계 결과로 대신 답합니다.")
+        logger.exception("Claude 답변 생성 실패 — 집계 결과로 대신 답합니다.")
         answer = fallback_answer(analysis, request.days)
 
     return AdvisorAskResponse(

@@ -12,9 +12,10 @@ class Settings(BaseSettings):
     # ─────────────────────────────────────────
     # Google Gemini
     GOOGLE_API_KEY: str = ""
-    # 교수자 어드바이저 답변에 사용. 서비스 중인 모델명으로 .env에서 지정하세요.
-    GEMINI_MODEL: str = "gemini-2.5-flash"
-    # 교수자 질문 하나에 Gemini로 보낼 최근 학생 질문의 최대 개수
+    # 교수자 어드바이저(Claude)
+    ANTHROPIC_API_KEY: str = ""
+    ADVISOR_MODEL: str = "claude-opus-5-5"
+    # 교수자 질문 하나에 Claude로 보낼 최근 학생 질문의 최대 개수
     ADVISOR_MAX_QUESTIONS: int = 800
 
     # RAG 답변 생성: vLLM OpenAI 호환 서버 (bf16, temperature 0)
