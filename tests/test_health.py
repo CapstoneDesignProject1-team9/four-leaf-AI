@@ -164,7 +164,9 @@ def test_advisor_ask_counts_groups_in_code(client):
     # 대표 질문은 최신순
     assert data["groups"][0]["examples"] == ["캐시 직접 매핑이 뭐야?", "캐시 히트율 계산법"]
     assert fetch.call_args.kwargs["days"] == 30
-    assert write.await_args.args[3] == 3  # matched
+    assert write.await_args.args[1].matched == 3
+    assert data["task"] == "summary"
+    assert data["item_count"] is None
 
 
 def test_advisor_ask_without_stored_questions(client):
@@ -236,3 +238,147 @@ def test_advisor_ask_grouping_failure_returns_503(client):
 
     assert response.status_code == 503
     assert "invalid key" not in response.text
+
+
+def _ask(test_client, raw, answer="생성 결과", question="컴퓨터구조 퀴즈 만들어줘"):
+    with (
+        patch("app.api.v1.advisor.purge_expired_chat_logs"),
+        patch("app.api.v1.advisor.fetch_recent_questions", return_value=_questions()),
+        patch("app.api.v1.advisor.group_with_gemini", new=AsyncMock(return_value=raw)),
+        patch(
+            "app.api.v1.advisor.write_answer_with_gemini", new=AsyncMock(return_value=answer)
+        ) as write,
+    ):
+        response = test_client.post("/api/v1/advisor/ask", json={"question": question})
+    return response, write
+
+
+@pytest.mark.parametrize(
+    ("task", "requested", "expected"),
+    [("quiz", None, 5), ("exam", None, 3), ("quiz", 7, 7), ("quiz", 50, 20), ("exam", 0, 1)],
+)
+def test_advisor_generation_tasks_clamp_item_count(client, task, requested, expected):
+    test_client, _ = client
+    raw = {
+        "task": task,
+        "item_count": requested,
+        "topic": "컴퓨터구조",
+        "groups": [{"label": "캐시", "question_ids": [1, 2]}],
+    }
+    response, write = _ask(test_client, raw)
+
+    data = response.json()
+    assert response.status_code == 200
+    assert data["task"] == task
+    assert data["item_count"] == expected
+    assert write.await_args.args[1].item_count == expected
+
+
+def test_advisor_unknown_task_falls_back_to_summary(client):
+    test_client, _ = client
+    raw = {
+        "task": "poem",
+        "item_count": 3,
+        "topic": None,
+        "groups": [{"label": "캐시", "question_ids": [1]}],
+    }
+    response, _ = _ask(test_client, raw, question="학생 질문 알려줘")
+
+    assert response.json()["task"] == "summary"
+    assert response.json()["item_count"] is None
+
+
+def test_advisor_quiz_fallback_says_generation_failed(client):
+    test_client, _ = client
+    raw = {
+        "task": "quiz",
+        "topic": "컴퓨터구조",
+        "groups": [{"label": "캐시", "question_ids": [1]}],
+    }
+    with (
+        patch("app.api.v1.advisor.purge_expired_chat_logs"),
+        patch("app.api.v1.advisor.fetch_recent_questions", return_value=_questions()),
+        patch("app.api.v1.advisor.group_with_gemini", new=AsyncMock(return_value=raw)),
+        patch(
+            "app.api.v1.advisor.write_answer_with_gemini",
+            new=AsyncMock(side_effect=RuntimeError("quota")),
+        ),
+    ):
+        response = test_client.post("/api/v1/advisor/ask", json={"question": "퀴즈 만들어줘"})
+
+    assert response.status_code == 200
+    assert response.json()["answer"].startswith("퀴즈를 생성하지 못해 집계 결과만 보여드립니다.")
+
+
+@pytest.mark.parametrize(
+    ("task", "expected_phrases"),
+    [
+        ("quiz", ["정확히 7개", "4지선다", "검토해 주세요"]),
+        ("exam", ["정확히 7개", "모범답안", "채점 기준"]),
+        ("difficulty", ["어려워하는 부분", "보충할 방법"]),
+        ("report", ["'요약', '주요 질문 유형', '학생들이 어려워하는 부분', '강의 제안'"]),
+    ],
+)
+def test_task_prompts_reach_gemini(task, expected_phrases):
+    import asyncio
+
+    from langchain_core.language_models.fake_chat_models import FakeListChatModel
+
+    from app.api.v1 import advisor
+
+    seen = []
+
+    class Spy(FakeListChatModel):
+        def _call(self, messages, *args, **kwargs):
+            seen.append(messages)
+            return super()._call(messages, *args, **kwargs)
+
+    analysis = advisor.build_analysis(
+        {
+            "task": task,
+            "item_count": 7,
+            "topic": "컴퓨터구조",
+            "groups": [{"label": "캐시 {매핑}", "question_ids": [1, 2]}],
+        },
+        _questions(),
+    )
+    with patch.object(advisor, "_gemini", return_value=Spy(responses=["ok"])):
+        answer = asyncio.run(advisor.write_answer_with_gemini("질문", analysis, 4, None))
+
+    assert answer == "ok"
+    system, human = seen[0][0].content, seen[0][1].content
+    for phrase in expected_phrases:
+        assert phrase in system
+    assert "{item_count}" not in system
+    assert "캐시 {매핑} (2건)" in human
+    assert "캐시 직접 매핑이 뭐야?" in human
+
+
+def test_chat_retries_while_llm_server_wakes_up(client):
+    test_client, mocks = client
+    mocks["builder"].return_value.invoke.side_effect = [
+        RuntimeError('Error code: 500 - {"error":"no upstreams available"}'),
+        {"result": "깨어난 뒤 답변", "source_documents": []},
+    ]
+    with patch("app.api.v1.chat.asyncio.sleep", new=AsyncMock()) as sleep:
+        response = test_client.post("/api/v1/tutor/chat", json={"message": "질문"})
+
+    assert response.status_code == 200
+    assert response.json()["answer"] == "깨어난 뒤 답변"
+    assert mocks["builder"].return_value.invoke.call_count == 2
+    sleep.assert_awaited_once()
+    mocks["complete"].assert_called_once()
+
+
+def test_chat_returns_503_when_llm_server_stays_cold(client):
+    test_client, mocks = client
+    mocks["builder"].return_value.invoke.side_effect = RuntimeError("no upstreams available")
+    with (
+        patch("app.api.v1.chat.settings.VLLM_COLD_START_WAIT_S", 0.0),
+        patch("app.api.v1.chat.asyncio.sleep", new=AsyncMock()),
+    ):
+        response = test_client.post("/api/v1/tutor/chat", json={"message": "질문"})
+
+    assert response.status_code == 503
+    assert response.json()["detail"] == "AI 모델을 준비하고 있어요. 1~2분 후 다시 질문해 주세요."
+    mocks["fail"].assert_called_once()

@@ -42,6 +42,7 @@ vllm_image = (
     memory=24576,
     startup_timeout=1200,
     scaledown_window=300,
+    # Scale to zero when idle; the first request after idle waits for a cold start.
     min_containers=0,
     max_containers=1,
     target_concurrency=1,

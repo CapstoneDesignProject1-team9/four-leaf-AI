@@ -68,6 +68,12 @@ class AdvisorAskResponse(BaseModel):
     """교수자 질문에 대한 답변과 근거 집계"""
 
     answer: str = Field(..., description="교수자에게 보여줄 답변")
+    task: str = Field(
+        default="summary",
+        description="수행한 작업: summary(질문 빈도), report(리포트), difficulty(어려운 부분), "
+        "quiz(퀴즈), exam(시험문제)",
+    )
+    item_count: int | None = Field(default=None, description="퀴즈·시험문제의 문항 수")
     topic: str | None = Field(default=None, description="질문에서 파악한 주제. 전체 대상이면 null")
     matched_count: int = Field(..., description="주제와 관련된 학생 질문 수")
     total_count: int = Field(..., description="분석 대상 기간의 전체 학생 질문 수")

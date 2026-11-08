@@ -30,6 +30,10 @@ class Settings(BaseSettings):
     VLLM_PROXY_SECRET: str = ""
     VLLM_MAX_TOKENS: int = 768
     VLLM_TIMEOUT_S: float = 180.0
+    # Modal이 꺼져 있다가 켜지는 동안('no upstreams available') 다시 시도할 최대 시간(초).
+    # nginx /api/ 대기 시간(60초)보다 짧아야 합니다.
+    VLLM_COLD_START_WAIT_S: float = 40.0
+    VLLM_COLD_START_RETRY_INTERVAL_S: float = 5.0
 
     # Clova Studio API 엔드포인트
 
