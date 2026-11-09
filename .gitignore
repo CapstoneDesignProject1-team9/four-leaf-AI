@@ -85,3 +85,6 @@ results_*/
 *.tar.gz
 *.bak
 test-*.out
+
+# Local RAG + student LoRA run artifacts
+output/rag_student_lora/
