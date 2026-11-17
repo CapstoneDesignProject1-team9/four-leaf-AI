@@ -1,4 +1,3 @@
-import asyncio
 import logging
 import time
 
@@ -21,8 +20,10 @@ def _is_cold_start(exc: Exception) -> bool:
     return "no upstreams available" in text or "no healthy upstream" in text
 
 
+# 임베딩·LLM 호출·DB 저장이 모두 블로킹이라 일부러 sync def로 둔다.
+# FastAPI가 스레드풀에서 실행하므로 답변 생성 중에도 /health 등 다른 요청이 막히지 않는다.
 @router.post("/chat", response_model=ChatResponse)
-async def chat(request: ChatRequest):
+def chat(request: ChatRequest):
     """
     AI 튜터 채팅 엔드포인트
 
@@ -52,7 +53,7 @@ async def chat(request: ChatRequest):
                 if not _is_cold_start(e) or time.monotonic() >= deadline:
                     raise
                 logger.info("LLM 서버가 켜지는 중이라 다시 시도합니다.")
-                await asyncio.sleep(settings.VLLM_COLD_START_RETRY_INTERVAL_S)
+                time.sleep(settings.VLLM_COLD_START_RETRY_INTERVAL_S)
     except Exception as e:
         cold = _is_cold_start(e)
         if cold:

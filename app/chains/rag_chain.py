@@ -92,6 +92,19 @@ def _validate(collection: Any, corpus_name: str) -> None:
         )
 
 
+def _open_collection(db_path: Path, collection_name: str, corpus_name: str) -> Any:
+    client = chromadb.PersistentClient(
+        path=str(db_path), settings=Settings(anonymized_telemetry=False)
+    )
+    try:
+        collection = client.get_collection(collection_name, embedding_function=None)
+    except Exception as exc:
+        raise RuntimeError(f"{corpus_name} ChromaDB 컬렉션을 열지 못했습니다.") from exc
+    _validate(collection, corpus_name)
+    logger.info("%s RAG 준비 완료: %s개 청크", corpus_name, collection.metadata["active_chunks"])
+    return collection
+
+
 async def init_vectorstore() -> None:
     global _notice_collection, _syllabi_collection, _embedder
     notice_db_path = Path(settings.CHROMA_PERSIST_DIR)
@@ -99,33 +112,13 @@ async def init_vectorstore() -> None:
         raise RuntimeError(
             f"공지 벡터 DB가 없습니다: {notice_db_path}. embed_notices.py index를 실행하세요."
         )
-    notice_client = chromadb.PersistentClient(
-        path=str(notice_db_path), settings=Settings(anonymized_telemetry=False)
-    )
-    try:
-        notice_collection = notice_client.get_collection(
-            settings.CHROMA_COLLECTION_NAME, embedding_function=None
-        )
-    except Exception as exc:
-        raise RuntimeError("공지 ChromaDB 컬렉션을 열지 못했습니다.") from exc
-    _validate(notice_collection, "공지")
+    notice_collection = _open_collection(notice_db_path, settings.CHROMA_COLLECTION_NAME, "공지")
 
     syllabi_db_path = Path(settings.CHROMA_SYLLABI_PERSIST_DIR)
     syllabi_collection = None
     if syllabi_db_path.is_dir():
-        syllabi_client = chromadb.PersistentClient(
-            path=str(syllabi_db_path), settings=Settings(anonymized_telemetry=False)
-        )
-        try:
-            syllabi_collection = syllabi_client.get_collection(
-                settings.CHROMA_SYLLABI_COLLECTION_NAME, embedding_function=None
-            )
-        except Exception as exc:
-            raise RuntimeError("강의계획서 ChromaDB 컬렉션을 열지 못했습니다.") from exc
-        _validate(syllabi_collection, "강의계획서")
-        logger.info(
-            "강의계획서 RAG 준비 완료: %s개 청크",
-            syllabi_collection.metadata["active_chunks"],
+        syllabi_collection = _open_collection(
+            syllabi_db_path, settings.CHROMA_SYLLABI_COLLECTION_NAME, "강의계획서"
         )
     else:
         logger.warning(
@@ -140,7 +133,6 @@ async def init_vectorstore() -> None:
         syllabi_collection,
         embedder,
     )
-    logger.info("공지 RAG 준비 완료: %s개 청크", notice_collection.metadata["active_chunks"])
 
 
 def _ready() -> tuple[Any, Any | None, BgeM3Embedder]:
@@ -149,19 +141,11 @@ def _ready() -> tuple[Any, Any | None, BgeM3Embedder]:
     return _notice_collection, _syllabi_collection, _embedder
 
 
-def _search_collection(
-    collection: Any,
-    vector: list[float],
-    top_k: int,
-    metadata_filter: dict[str, Any] | None = None,
-) -> list[Document]:
-    where_filter: dict[str, Any] = {"active": True}
-    if metadata_filter:
-        where_filter = {"$and": [{"active": True}, metadata_filter]}
+def _search_collection(collection: Any, vector: list[float], top_k: int) -> list[Document]:
     result = collection.query(
         query_embeddings=[vector],
         n_results=min(top_k, int(collection.metadata["active_chunks"])),
-        where=where_filter,
+        where={"active": True},
         include=["documents", "metadatas", "distances"],
     )
     return [

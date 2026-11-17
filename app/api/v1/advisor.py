@@ -8,6 +8,7 @@
    학생 질문에서 드러난 개념을 바탕으로 새 문항을 만든다. 실패하면 집계를 그대로 문장으로 만든다.
 """
 
+import asyncio
 import logging
 from dataclasses import dataclass
 from functools import lru_cache
@@ -278,8 +279,11 @@ async def ask_advisor(request: AdvisorAskRequest):
     '학생들이 어려워하는 부분 알려줘', '운영체제 퀴즈 5문제 만들어줘', '시험문제 만들어줘'
     """
     try:
-        purge_expired_chat_logs()
-        questions = fetch_recent_questions(days=request.days, limit=settings.ADVISOR_MAX_QUESTIONS)
+        # 블로킹 DB 호출이 이벤트 루프를 막지 않도록 스레드에서 실행한다.
+        await asyncio.to_thread(purge_expired_chat_logs)
+        questions = await asyncio.to_thread(
+            fetch_recent_questions, days=request.days, limit=settings.ADVISOR_MAX_QUESTIONS
+        )
     except Exception:
         logger.exception("학생 질문 기록 조회 실패")
         raise HTTPException(status_code=503, detail="학생 질문 기록을 불러오지 못했습니다.")

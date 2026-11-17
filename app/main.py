@@ -22,7 +22,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title="Four-Leaf AI Tutor",
-    description="대학생활 및 진로 상담 AI 튜터 서비스 (LangChain + HyperCLOVA X)",
+    description="대학생활 및 진로 상담 AI 튜터 서비스 (BGE-M3 RAG + vLLM Llama 3.1 LoRA)",
     version="1.0.0",
     lifespan=lifespan,
 )

@@ -1,36 +1,5 @@
-# -----------------------------------------
-# FastAPI Core
-# -----------------------------------------
-fastapi==0.115.0
-uvicorn[standard]==0.30.6
-python-dotenv==1.0.1
-pydantic-settings==2.5.2
-httpx==0.27.2
-psycopg[binary]>=3.2,<4
-
-# -----------------------------------------
-# LangChain
-# -----------------------------------------
-langchain==0.3.27
-langchain-core>=0.3.75,<0.4.0
-langchain-community==0.3.27
-langchain-text-splitters==0.3.9
-langchain-ollama==0.2.3
-
-# -----------------------------------------
-# Vector Store & Embeddings (RAG)
-# -----------------------------------------
-chromadb==1.0.20
-
-# Alternative Korean embeddings (NAVER Clova Studio)
-# (call the Clova Embedding API directly, or use sentence-transformers)
-sentence-transformers==3.1.1
-
-# -----------------------------------------
-# Document Loaders (RAG knowledge base)
-# -----------------------------------------
-pypdf==4.3.1         # load PDF documents
-python-docx==1.1.2   # load Word documents
+# 개발·평가·학습용 전체 의존성. API 서버 런타임 의존성은 requirements-runtime.txt에만 적는다.
+-r requirements-runtime.txt
 
 # -----------------------------------------
 # Test
@@ -38,7 +7,6 @@ python-docx==1.1.2   # load Word documents
 pytest==8.3.3
 pytest-asyncio==0.24.0
 pytest-mock==3.14.0
-httpx==0.27.2         # for the FastAPI TestClient
 
 # -----------------------------------------
 # Fine-Tuning & Research (LLM Training)
@@ -56,26 +24,19 @@ tqdm>=4.66.4
 # bitsandbytes>=0.43.3
 # vllm>=0.5.0          # fast serving of the fine-tuned model
 
-
+# -----------------------------------------
+# Synthetic data generation, evaluation (RAGAS)
+# -----------------------------------------
 langchain-google-genai>=2.1.12,<3.0.0
-
-# Evaluation and async generation
+langchain-anthropic>=0.3,<1
 aiohttp>=3.10,<4
 ragas>=0.2.15,<0.4
 scipy>=1.13,<2
 statsmodels>=0.14,<1
 rouge-score>=0.1.2,<1
-langchain-anthropic>=0.3,<1
-langchain-openai>=0.3,<1
 
-# automated lookup of the WebSquare syllabus page
+# -----------------------------------------
+# Knowledge base preprocessing / crawling
+# -----------------------------------------
+pypdf==4.3.1
 selenium==4.49.0
-
-# -----------------------------------------
-# Evaluation (RAGAS)
-# -----------------------------------------
-ragas>=0.2.0           # RAG 파이프라인 평가 프레임워크
-datasets>=2.20.0       # HuggingFace datasets (RAGAS 입력 형식)
-langchain-openai>=0.2.0  # RAGAS 기본 LLM/임베딩 백엔드 (OpenAI)
-
-langchain-openai>=0.1.0  # OpenAI LLM integration

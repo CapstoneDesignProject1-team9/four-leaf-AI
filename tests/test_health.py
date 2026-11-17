@@ -432,13 +432,13 @@ def test_chat_retries_while_llm_server_wakes_up(client):
         RuntimeError('Error code: 500 - {"error":"no upstreams available"}'),
         {"result": "깨어난 뒤 답변", "source_documents": []},
     ]
-    with patch("app.api.v1.chat.asyncio.sleep", new=AsyncMock()) as sleep:
+    with patch("app.api.v1.chat.time.sleep") as sleep:
         response = test_client.post("/api/v1/tutor/chat", json={"message": "질문"})
 
     assert response.status_code == 200
     assert response.json()["answer"] == "깨어난 뒤 답변"
     assert mocks["builder"].return_value.invoke.call_count == 2
-    sleep.assert_awaited_once()
+    sleep.assert_called_once()
     mocks["complete"].assert_called_once()
 
 
@@ -447,7 +447,7 @@ def test_chat_returns_503_when_llm_server_stays_cold(client):
     mocks["builder"].return_value.invoke.side_effect = RuntimeError("no upstreams available")
     with (
         patch("app.api.v1.chat.settings.VLLM_COLD_START_WAIT_S", 0.0),
-        patch("app.api.v1.chat.asyncio.sleep", new=AsyncMock()),
+        patch("app.api.v1.chat.time.sleep"),
     ):
         response = test_client.post("/api/v1/tutor/chat", json={"message": "질문"})
 

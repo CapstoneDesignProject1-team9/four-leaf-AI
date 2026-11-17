@@ -9,9 +9,6 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
-    # ─────────────────────────────────────────
-    # Google Gemini
-    GOOGLE_API_KEY: str = ""
     # 교수자 어드바이저(Claude)
     ANTHROPIC_API_KEY: str = ""
     ADVISOR_MODEL: str = "claude-opus-5-5"
@@ -35,19 +32,6 @@ class Settings(BaseSettings):
     # nginx /api/ 대기 시간(60초)보다 짧아야 합니다.
     VLLM_COLD_START_WAIT_S: float = 40.0
     VLLM_COLD_START_RETRY_INTERVAL_S: float = 5.0
-
-    # Clova Studio API 엔드포인트
-
-    # 사용 모델 (HyperCLOVA X)
-    # HCX-DASH-001: 빠른 응답 (추천)
-    # HCX-003: 고성능
-
-    # ─────────────────────────────────────────
-    # 앱 설정
-    # ─────────────────────────────────────────
-    APP_ENV: str = "development"
-    HOST: str = "0.0.0.0"
-    PORT: int = 8000
 
     # CORS (Frontend URL)
     ALLOWED_ORIGINS: list[str] = ["http://localhost", "http://localhost:3000"]
@@ -74,16 +58,6 @@ class Settings(BaseSettings):
     DB_NAME: str = "fourleaf_dev"
     DB_USER: str = "fourleaf"
     DB_PASSWORD: str = "devpassword"
-
-    # ─────────────────────────────────────────
-    # Backend API (AI → Spring Boot 호출 시)
-    # ─────────────────────────────────────────
-    BACKEND_BASE_URL: str = "http://backend:8080"
-
-    # LangChain Tracing (선택)
-    LANGCHAIN_TRACING_V2: bool = False
-    LANGCHAIN_API_KEY: str = ""
-    LANGCHAIN_PROJECT: str = "four-leaf-ai"
 
 
 settings = Settings()
