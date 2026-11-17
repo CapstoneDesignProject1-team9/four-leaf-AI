@@ -35,7 +35,8 @@ class BgeM3Embedder:
             / "snapshots"
             / settings.EMBEDDING_MODEL_REVISION
         )
-        if not snapshot.is_dir():
+        # 폴더만 있고 가중치가 없으면(다운로드가 중간에 끊긴 경우) 이어서 받는다.
+        if not (snapshot / "pytorch_model.bin").is_file():
             # Download the pinned public model once into the persistent cache volume.
             # Subsequent container starts reuse this snapshot without another download.
             from huggingface_hub import snapshot_download
@@ -45,6 +46,8 @@ class BgeM3Embedder:
                     repo_id=settings.EMBEDDING_MODEL_NAME,
                     revision=settings.EMBEDDING_MODEL_REVISION,
                     cache_dir=settings.EMBEDDING_MODEL_CACHE_DIR,
+                    # 쓰지 않는 ONNX 사본(약 2GB)과 이미지는 받지 않는다.
+                    ignore_patterns=["onnx/*", "imgs/*", "*.jpg"],
                 )
             )
         if settings.EMBEDDING_DEVICE == "cpu":
