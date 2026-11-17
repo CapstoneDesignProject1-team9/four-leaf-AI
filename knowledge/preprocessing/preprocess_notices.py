@@ -181,8 +181,14 @@ def main() -> None:
     # 사용자가 지정한 상대 경로는 기존처럼 현재 실행 폴더를 기준으로 한다.
     project_root = Path(__file__).resolve().parents[2]
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--input", type=Path, default=project_root / "knowledge/raw/notices/knu_notices_all.jsonl")
-    parser.add_argument("--output", type=Path, default=project_root / "knowledge/processed/notices/knu_documents.jsonl")
+    parser.add_argument(
+        "--input", type=Path, default=project_root / "knowledge/raw/notices/knu_notices_all.jsonl"
+    )
+    parser.add_argument(
+        "--output",
+        type=Path,
+        default=project_root / "knowledge/processed/notices/knu_documents.jsonl",
+    )
     args = parser.parse_args()
     report_path = args.output.with_suffix(".report.json")
     paths = [p.resolve() for p in (args.input, args.output, report_path)]

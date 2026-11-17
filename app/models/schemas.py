@@ -6,8 +6,12 @@ class ChatRequest(BaseModel):
 
     message: str = Field(..., description="사용자 메시지", min_length=1, max_length=2000)
     session_id: str | None = Field(None, description="대화 세션 ID (멀티턴 대화용)")
-    course_name: str | None = Field(None, description="관련 강의명 (선택)", max_length=200)
-    model_name: str | None = Field(None, description="vLLM 모델 또는 등록된 LoRA 어댑터 이름", max_length=200)
+    course_name: str | None = Field(
+        None, description="사용하지 않음(이전 클라이언트 호환용)", max_length=200
+    )
+    model_name: str | None = Field(
+        None, description="vLLM 모델 또는 등록된 LoRA 어댑터 이름", max_length=200
+    )
 
 
 class SourceDocument(BaseModel):
@@ -24,7 +28,9 @@ class ChatResponse(BaseModel):
     answer: str = Field(..., description="AI 튜터 답변")
     sources: list[SourceDocument] = Field(default=[], description="참고한 문서 목록")
     session_id: str | None = None
-    course_name: str | None = Field(default=None, description="자동 분류 또는 지정된 과목명")
+    course_name: str | None = Field(
+        default=None, description="사용하지 않음(이전 클라이언트 호환용)"
+    )
 
 
 class HealthResponse(BaseModel):
@@ -33,19 +39,45 @@ class HealthResponse(BaseModel):
     version: str
 
 
-class AdvisorReportRequest(BaseModel):
-    """교수자용 통계/요약 요청 스키마"""
+class AdvisorAskRequest(BaseModel):
+    """교수자가 학생 질문 기록에 대해 묻는 요청"""
 
-    course_name: str = Field(..., description="강의명")
-    student_questions: list[str] = Field(
-        default_factory=list,
-        description="분석할 학생 질문 목록. 비우면 저장된 질문을 강의명 기준으로 조회",
+    question: str = Field(
+        ...,
+        min_length=1,
+        max_length=1000,
+        description="교수자 질문 (예: 컴퓨터구조 관련 학생들 질문은 뭐가 많았어?)",
+    )
+    days: int | None = Field(
+        default=None,
+        ge=1,
+        le=124,
+        description="최근 며칠 동안의 질문만 볼지. 비우면 보관 기간 전체",
     )
 
 
-class AdvisorReportResponse(BaseModel):
-    """교수자용 통계/요약 응답 스키마"""
+class QuestionGroup(BaseModel):
+    """비슷한 학생 질문 묶음"""
 
-    summary: str = Field(..., description="학생 질문 전반적 요약")
-    keywords: list[str] = Field(default=[], description="자주 언급된 핵심 키워드")
-    recommendations: list[str] = Field(default=[], description="교수자를 위한 AI 제안 사항")
+    label: str = Field(..., description="질문 유형 이름")
+    count: int = Field(..., description="이 유형에 속한 질문 수")
+    examples: list[str] = Field(default=[], description="대표 질문(최신순 최대 3개)")
+
+
+class AdvisorAskResponse(BaseModel):
+    """교수자 질문에 대한 답변과 근거 집계"""
+
+    answer: str = Field(..., description="교수자에게 보여줄 답변")
+    task: str = Field(
+        default="summary",
+        description="수행한 작업: summary(질문 빈도), report(리포트), difficulty(어려운 부분), "
+        "quiz(퀴즈), exam(시험문제)",
+    )
+    item_count: int | None = Field(default=None, description="퀴즈·시험문제의 문항 수")
+    topic: str | None = Field(default=None, description="질문에서 파악한 주제. 전체 대상이면 null")
+    matched_count: int = Field(..., description="주제와 관련된 학생 질문 수")
+    total_count: int = Field(..., description="분석 대상 기간의 전체 학생 질문 수")
+    period_days: int | None = Field(
+        default=None, description="분석 기간(일). null이면 보관 기간 전체"
+    )
+    groups: list[QuestionGroup] = Field(default=[], description="질문 유형별 집계(많은 순)")

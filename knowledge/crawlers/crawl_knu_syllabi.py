@@ -14,11 +14,15 @@ from datetime import date
 from pathlib import Path
 
 from selenium import webdriver
-from selenium.common.exceptions import StaleElementReferenceException, TimeoutException, WebDriverException
+from selenium.common.exceptions import (
+    StaleElementReferenceException,
+    TimeoutException,
+    WebDriverException,
+)
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import WebDriverWait
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -67,7 +71,9 @@ COURSE_FIELDS = tuple(GRID_COLUMNS)
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="경북대학교 IT대학 강의계획서 수집기")
     parser.add_argument("--year", type=int, default=date.today().year, help="개설연도")
-    parser.add_argument("--semester", default="2학기", help="개설학기 (예: 1학기, 2학기, 계절학기(하계))")
+    parser.add_argument(
+        "--semester", default="2학기", help="개설학기 (예: 1학기, 2학기, 계절학기(하계))"
+    )
     parser.add_argument(
         "--department",
         action="append",
@@ -99,9 +105,7 @@ def make_driver(headless: bool = False) -> webdriver.Chrome:
 
 
 def wait_for_id(driver: webdriver.Chrome, element_id: str, timeout: int):
-    return WebDriverWait(driver, timeout).until(
-        EC.presence_of_element_located((By.ID, element_id))
-    )
+    return WebDriverWait(driver, timeout).until(ec.presence_of_element_located((By.ID, element_id)))
 
 
 def choose_websquare_option(
@@ -173,7 +177,9 @@ def choose_websquare_option(
             return
         except StaleElementReferenceException:
             time.sleep(0.2)
-    raise StaleElementReferenceException(f"{element_id}이 계속 갱신되어 '{value}'를 선택하지 못했습니다.")
+    raise StaleElementReferenceException(
+        f"{element_id}이 계속 갱신되어 '{value}'를 선택하지 못했습니다."
+    )
 
 
 def set_search_filters(driver: webdriver.Chrome, year: int, semester: str, timeout: int) -> None:
@@ -231,9 +237,9 @@ def click_search(driver: webdriver.Chrome, timeout: int) -> None:
     )
     if previous_codes:
         WebDriverWait(driver, timeout).until(
-            lambda current: tuple(
-                row["course_code"] for row in read_rendered_rows(current)
-            ) != previous_codes
+            lambda current: (
+                tuple(row["course_code"] for row in read_rendered_rows(current)) != previous_codes
+            )
         )
     else:
         WebDriverWait(driver, timeout).until(
@@ -327,7 +333,7 @@ def read_syllabus_tabs(driver: webdriver.Chrome, timeout: int) -> dict[str, str]
     for name, suffix in SYLLABUS_TABS.items():
         tab_id = f"popupContent_tabCon_tab_{suffix}_tabHTML"
         try:
-            tab = WebDriverWait(driver, timeout).until(EC.element_to_be_clickable((By.ID, tab_id)))
+            tab = WebDriverWait(driver, timeout).until(ec.element_to_be_clickable((By.ID, tab_id)))
             tab.click()
             time.sleep(0.15)
             details[name] = driver.find_element(By.ID, "popupContent").text.strip()
@@ -413,9 +419,13 @@ def course_metadata_from_syllabus(details: dict[str, str]) -> dict[str, str]:
     if re.search(r"School of Computer Science and Engineering|컴퓨터학부", text, re.IGNORECASE):
         metadata["department"] = "컴퓨터학부"
 
-    credits = re.search(r"(?:\bCredits\b|학점)\s+(\d+)\s*-\s*(\d+)\s*-\s*(\d+)", text, re.IGNORECASE)
+    credits = re.search(
+        r"(?:\bCredits\b|학점)\s+(\d+)\s*-\s*(\d+)\s*-\s*(\d+)", text, re.IGNORECASE
+    )
     if credits:
-        metadata["credits"], metadata["lecture_hours"], metadata["practice_hours"] = credits.groups()
+        metadata["credits"], metadata["lecture_hours"], metadata["practice_hours"] = (
+            credits.groups()
+        )
 
     room = re.search(r"(?:^|\s)([A-Z]?\d{3}[A-Z]?)\s*$", metadata["classroom"])
     if room:
@@ -549,7 +559,10 @@ def collect_manual_details(
                 )
             except (TimeoutException, WebDriverException) as exc:
                 if "no such window" not in str(exc).lower():
-                    print(f"  [상세 읽기 실패] {exc.msg if isinstance(exc, WebDriverException) else exc}", flush=True)
+                    print(
+                        f"  [상세 읽기 실패] {exc.msg if isinstance(exc, WebDriverException) else exc}",
+                        flush=True,
+                    )
             finally:
                 try:
                     current_handles = set(driver.window_handles)
@@ -636,8 +649,7 @@ def main() -> int:
                     total_attempted += 1
                     number = total_attempted
                     print(
-                        f"[{number}] {row['course_code']} {row['course_name']} "
-                        f"({department})",
+                        f"[{number}] {row['course_code']} {row['course_name']} ({department})",
                         flush=True,
                     )
                     handles = open_course_detail(driver, row, args.timeout)
@@ -664,8 +676,7 @@ def main() -> int:
         return 1
     except WebDriverException as exc:
         print(
-            f"[Selenium 오류: {stage}] "
-            f"{exc.msg if isinstance(exc, WebDriverException) else exc}",
+            f"[Selenium 오류: {stage}] {exc.msg if isinstance(exc, WebDriverException) else exc}",
             file=sys.stderr,
         )
         return 1

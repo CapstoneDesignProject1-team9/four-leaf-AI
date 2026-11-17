@@ -1,0 +1,295 @@
+﻿Dataset,Score Source,Model,Topic,Metric,N,Mean,SD,Median,Q1,Q3,P95,CI95_Lower,CI95_Upper
+student,Claude,Base Model,ALL,Overall Score,30,1.3333333333333333,0.6064784348631227,1.0,1.0,1.75,2.549999999999997,1.1068705639439955,1.559796102722671
+student,Claude,Base Model,ALL,Accuracy,30,1.4,0.7701320979389589,1.0,1.0,1.75,3.0,1.1124279485152027,1.6875720514847972
+student,Claude,Base Model,ALL,Completeness,30,1.1666666666666667,0.5306686305052324,1.0,1.0,1.0,2.549999999999997,0.9685117434509962,1.3648215898823373
+student,Claude,Base Model,ALL,Groundedness,30,1.3666666666666667,0.718395402284138,1.0,1.0,1.0,3.0,1.0984134148349656,1.6349199184983678
+student,Claude,Base Model,ALL,Clarity,30,3.066666666666667,0.7396799556440672,3.0,3.0,3.75,4.0,2.790465631992213,3.3428677013411208
+student,Claude,Base Model,ALL,Usefulness,30,1.3666666666666667,0.718395402284138,1.0,1.0,1.75,2.549999999999997,1.0984134148349656,1.6349199184983678
+student,Claude,Base Model,ALL,Role Fit,30,1.9333333333333333,0.5208304597621878,2.0,2.0,2.0,3.0,1.7388520434475898,2.127814623219077
+student,Claude,Base Model,ALL,ROUGE-L,30,0.23360472619090983,0.20732332830023614,0.19805194805194803,0.06896551724137932,0.3480392156862745,0.6366666666666665,0.15618892311048738,0.3110205292713323
+student,Claude,Base Model,ALL,Generation Latency (s),30,5.932296666666665,4.046073964285782,5.0214,3.25175,7.2848749999999995,12.197684999999998,4.42146781862518,7.44312551470815
+student,Claude,Base Model,ALL,Hallucination Rate,30,0.8666666666666667,,,,,,,
+student,Claude,Base Model + Professor LoRA,ALL,Overall Score,30,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model + Professor LoRA,ALL,Accuracy,30,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model + Professor LoRA,ALL,Completeness,30,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model + Professor LoRA,ALL,Groundedness,30,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model + Professor LoRA,ALL,Clarity,30,2.066666666666667,0.9802650357071221,2.5,1.0,3.0,3.0,1.7006296866842294,2.4327036466491045
+student,Claude,Base Model + Professor LoRA,ALL,Usefulness,30,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model + Professor LoRA,ALL,Role Fit,30,1.4666666666666666,0.507416263404925,1.0,1.0,2.0,2.0,1.277194320020403,1.6561390133129301
+student,Claude,Base Model + Professor LoRA,ALL,ROUGE-L,30,0.1888939479089932,0.1288436045090638,0.18857142857142856,0.06263616557734206,0.309375,0.37174447174447167,0.14078295530327517,0.23700494051471122
+student,Claude,Base Model + Professor LoRA,ALL,Generation Latency (s),30,26.24356,12.967553508012697,22.719,15.56855,40.09685,40.18431,21.40139594136903,31.085724058630966
+student,Claude,Base Model + Professor LoRA,ALL,Hallucination Rate,30,1.0,,,,,,,
+student,Claude,Base Model + RAG,ALL,Overall Score,30,2.466666666666667,0.9732042112432565,2.0,2.0,3.0,4.0,2.1032662418696084,2.830067091463725
+student,Claude,Base Model + RAG,ALL,Accuracy,30,2.933333333333333,1.3628907749221197,3.0,2.0,4.0,5.0,2.424421554246411,3.442245112420255
+student,Claude,Base Model + RAG,ALL,Completeness,30,2.2,0.9247553264475439,2.0,1.25,3.0,3.549999999999997,1.8546906861047472,2.5453093138952534
+student,Claude,Base Model + RAG,ALL,Groundedness,30,3.1666666666666665,1.288766674084136,3.0,2.0,4.0,5.0,2.685433281714324,3.647900051619009
+student,Claude,Base Model + RAG,ALL,Clarity,30,3.8666666666666667,0.819307248726686,4.0,3.25,4.0,5.0,3.560732312101727,4.172601021231606
+student,Claude,Base Model + RAG,ALL,Usefulness,30,2.433333333333333,0.9352607356658147,2.0,2.0,3.0,4.0,2.0841012351668224,2.782565431499844
+student,Claude,Base Model + RAG,ALL,Role Fit,30,2.7333333333333334,1.048260737942924,3.0,2.0,3.75,4.0,2.341906340862871,3.1247603258037957
+student,Claude,Base Model + RAG,ALL,ROUGE-L,30,0.32449907409310774,0.2344945044674365,0.3279569892473118,0.12823275862068967,0.5220588235294118,0.6047826086956521,0.23693738708891723,0.4120607610972983
+student,Claude,Base Model + RAG,ALL,Faithfulness,20,0.8816666666666666,0.30674198159830324,1.0,1.0,1.0,1.0,0.7381070002248667,1.0252263331084663
+student,Claude,Base Model + RAG,ALL,Context Precision,30,0.6000462962567842,0.426354876391798,0.7527777777464352,0.06249999999375,0.9999999999,0.99999999998,0.44084276897534563,0.7592498235382228
+student,Claude,Base Model + RAG,ALL,Generation Latency (s),30,47.277826666666655,18.81672724081227,41.40445,34.9104,50.540499999999994,81.20335999999999,40.251545241244045,54.304108092089265
+student,Claude,Base Model + RAG,ALL,Hallucination Rate,30,0.36666666666666664,,,,,,,
+student,Claude,Base Model + Student LoRA,ALL,Overall Score,30,1.1333333333333333,0.43417248545530474,1.0,1.0,1.0,2.0,0.9712106628528056,1.295456003813861
+student,Claude,Base Model + Student LoRA,ALL,Accuracy,30,1.2,0.7611243951073873,1.0,1.0,1.0,2.0,0.9157914800306047,1.4842085199693953
+student,Claude,Base Model + Student LoRA,ALL,Completeness,30,1.0333333333333334,0.18257418583505536,1.0,1.0,1.0,1.0,0.96515901192891,1.101507654737757
+student,Claude,Base Model + Student LoRA,ALL,Groundedness,30,1.2,0.6102571532587293,1.0,1.0,1.0,2.0,0.9721262339726621,1.427873766027338
+student,Claude,Base Model + Student LoRA,ALL,Clarity,30,2.9,0.8030115728972382,3.0,3.0,3.0,4.0,2.6001505507923968,3.199849449207603
+student,Claude,Base Model + Student LoRA,ALL,Usefulness,30,1.1333333333333333,0.43417248545530474,1.0,1.0,1.0,2.0,0.9712106628528056,1.295456003813861
+student,Claude,Base Model + Student LoRA,ALL,Role Fit,30,1.9333333333333333,0.6396838299494919,2.0,2.0,2.0,3.0,1.6944714656452682,2.1721952010213985
+student,Claude,Base Model + Student LoRA,ALL,ROUGE-L,30,0.21887412362912853,0.16352733004391254,0.2361111111111111,0.09090909090909091,0.31006493506493504,0.4748081841432225,0.15781201506306436,0.2799362321951927
+student,Claude,Base Model + Student LoRA,ALL,Generation Latency (s),30,9.215986666666668,9.111796213198064,6.27285,3.853275,11.487575,28.52597499999993,5.813586043769293,12.618387289564042
+student,Claude,Base Model + Student LoRA,ALL,Hallucination Rate,30,0.9666666666666667,,,,,,,
+student,Claude,Base Model,course_and_student_operations,Overall Score,6,1.1666666666666667,0.408248290463863,1.0,1.0,1.0,1.75,0.7382363607272809,1.5950969726060524
+student,Claude,Base Model,course_and_student_operations,Accuracy,6,1.1666666666666667,0.408248290463863,1.0,1.0,1.0,1.75,0.7382363607272809,1.5950969726060524
+student,Claude,Base Model,course_and_student_operations,Completeness,6,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model,course_and_student_operations,Groundedness,6,1.1666666666666667,0.408248290463863,1.0,1.0,1.0,1.75,0.7382363607272809,1.5950969726060524
+student,Claude,Base Model,course_and_student_operations,Clarity,6,3.3333333333333335,0.5163977794943222,3.0,3.0,3.75,4.0,2.791407099168844,3.8752595674978227
+student,Claude,Base Model,course_and_student_operations,Usefulness,6,1.1666666666666667,0.408248290463863,1.0,1.0,1.0,1.75,0.7382363607272809,1.5950969726060524
+student,Claude,Base Model,course_and_student_operations,Role Fit,6,2.0,0.0,2.0,2.0,2.0,2.0,2.0,2.0
+student,Claude,Base Model,course_and_student_operations,ROUGE-L,6,0.3074229691876751,0.18926072483860362,0.3529411764705882,0.24894957983193275,0.35294117647058826,0.5168067226890757,0.10880601930949724,0.5060399190658529
+student,Claude,Base Model,course_and_student_operations,Generation Latency (s),6,7.442766666666667,3.6906420063000787,7.2814499999999995,5.69225,10.136275,11.676825000000001,3.569675411158144,11.31585792217519
+student,Claude,Base Model,course_and_student_operations,Hallucination Rate,6,1.0,,,,,,,
+student,Claude,Base Model + Professor LoRA,course_and_student_operations,Overall Score,6,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model + Professor LoRA,course_and_student_operations,Accuracy,6,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model + Professor LoRA,course_and_student_operations,Completeness,6,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model + Professor LoRA,course_and_student_operations,Groundedness,6,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model + Professor LoRA,course_and_student_operations,Clarity,6,1.6666666666666667,1.0327955589886446,1.0,1.0,2.5,3.0,0.5828141983376876,2.750519134995646
+student,Claude,Base Model + Professor LoRA,course_and_student_operations,Usefulness,6,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model + Professor LoRA,course_and_student_operations,Role Fit,6,1.3333333333333333,0.5163977794943223,1.0,1.0,1.75,2.0,0.7914070991688437,1.8752595674978227
+student,Claude,Base Model + Professor LoRA,course_and_student_operations,ROUGE-L,6,0.10810030451574569,0.13334972940119974,0.05668449197860963,0.025355113636363634,0.13970588235294118,0.3063725490196078,-0.03184165408835872,0.24804226311985011
+student,Claude,Base Model + Professor LoRA,course_and_student_operations,Generation Latency (s),6,31.97843333333333,13.590768366603365,40.0915,27.792125000000002,40.10572500000001,40.170425,17.715796635848825,46.24107003081784
+student,Claude,Base Model + Professor LoRA,course_and_student_operations,Hallucination Rate,6,1.0,,,,,,,
+student,Claude,Base Model + RAG,course_and_student_operations,Overall Score,6,2.6666666666666665,0.5163977794943222,3.0,2.25,3.0,3.0,2.1247404325021773,3.208592900831156
+student,Claude,Base Model + RAG,course_and_student_operations,Accuracy,6,3.5,1.378404875209022,3.5,2.25,4.75,5.0,2.0534527977492756,4.946547202250724
+student,Claude,Base Model + RAG,course_and_student_operations,Completeness,6,2.5,0.5477225575051661,2.5,2.0,3.0,3.0,1.9252004273791008,3.074799572620899
+student,Claude,Base Model + RAG,course_and_student_operations,Groundedness,6,3.6666666666666665,1.2110601416389968,3.5,3.0,4.75,5.0,2.3957369919732248,4.937596341360108
+student,Claude,Base Model + RAG,course_and_student_operations,Clarity,6,4.166666666666667,0.752772652709081,4.0,4.0,4.75,5.0,3.376680216174715,4.956653117158619
+student,Claude,Base Model + RAG,course_and_student_operations,Usefulness,6,2.6666666666666665,0.5163977794943222,3.0,2.25,3.0,3.0,2.1247404325021773,3.208592900831156
+student,Claude,Base Model + RAG,course_and_student_operations,Role Fit,6,3.3333333333333335,0.816496580927726,3.5,3.0,4.0,4.0,2.476472721454562,4.190193945212105
+student,Claude,Base Model + RAG,course_and_student_operations,ROUGE-L,6,0.38063725490196076,0.25447621874238263,0.4852941176470588,0.2113970588235294,0.5661764705882353,0.5970588235294118,0.11358084144773795,0.6476936683561836
+student,Claude,Base Model + RAG,course_and_student_operations,Faithfulness,5,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model + RAG,course_and_student_operations,Context Precision,6,0.8481481480850617,0.2704971797786353,0.9999999999,0.8166666666227778,0.9999999999,0.99999999996,0.5642787671340104,1.132017529036113
+student,Claude,Base Model + RAG,course_and_student_operations,Generation Latency (s),6,39.54581666666667,7.031262219094567,38.7187,34.9104,45.49865,47.5194,32.1669595004947,46.924673832838636
+student,Claude,Base Model + RAG,course_and_student_operations,Hallucination Rate,6,0.3333333333333333,,,,,,,
+student,Claude,Base Model + Student LoRA,course_and_student_operations,Overall Score,6,1.3333333333333333,0.816496580927726,1.0,1.0,1.0,2.5,0.47647272145456165,2.190193945212105
+student,Claude,Base Model + Student LoRA,course_and_student_operations,Accuracy,6,1.6666666666666667,1.632993161855452,1.0,1.0,1.0,4.0,-0.04705455709087647,3.3803878904242097
+student,Claude,Base Model + Student LoRA,course_and_student_operations,Completeness,6,1.1666666666666667,0.408248290463863,1.0,1.0,1.0,1.75,0.7382363607272809,1.5950969726060524
+student,Claude,Base Model + Student LoRA,course_and_student_operations,Groundedness,6,1.5,1.224744871391589,1.0,1.0,1.0,3.25,0.2147090821818427,2.7852909178181573
+student,Claude,Base Model + Student LoRA,course_and_student_operations,Clarity,6,3.0,1.2649110640673518,3.0,3.0,3.0,4.5,1.672557248068968,4.327442751931032
+student,Claude,Base Model + Student LoRA,course_and_student_operations,Usefulness,6,1.3333333333333333,0.816496580927726,1.0,1.0,1.0,2.5,0.47647272145456165,2.190193945212105
+student,Claude,Base Model + Student LoRA,course_and_student_operations,Role Fit,6,2.3333333333333335,0.816496580927726,2.0,2.0,2.0,3.5,1.4764727214545619,3.190193945212105
+student,Claude,Base Model + Student LoRA,course_and_student_operations,ROUGE-L,6,0.26006402561024405,0.16669461211758535,0.24489795918367346,0.2010204081632653,0.37142857142857144,0.45294117647058824,0.08512875867541295,0.4349992925450752
+student,Claude,Base Model + Student LoRA,course_and_student_operations,Generation Latency (s),6,12.25335,14.016245230124937,6.3542000000000005,6.23105,10.676825,33.134975000000004,-2.4557972820152028,26.9624972820152
+student,Claude,Base Model + Student LoRA,course_and_student_operations,Hallucination Rate,6,0.8333333333333334,,,,,,,
+student,Claude,Base Model,curriculum_and_major,Overall Score,6,1.3333333333333333,0.5163977794943222,1.0,1.0,1.75,2.0,0.7914070991688438,1.8752595674978227
+student,Claude,Base Model,curriculum_and_major,Accuracy,6,1.3333333333333333,0.5163977794943222,1.0,1.0,1.75,2.0,0.7914070991688438,1.8752595674978227
+student,Claude,Base Model,curriculum_and_major,Completeness,6,1.1666666666666667,0.408248290463863,1.0,1.0,1.0,1.75,0.7382363607272809,1.5950969726060524
+student,Claude,Base Model,curriculum_and_major,Groundedness,6,1.3333333333333333,0.816496580927726,1.0,1.0,1.0,2.5,0.47647272145456165,2.190193945212105
+student,Claude,Base Model,curriculum_and_major,Clarity,6,3.0,0.6324555320336759,3.0,3.0,3.0,3.75,2.336278624034484,3.663721375965516
+student,Claude,Base Model,curriculum_and_major,Usefulness,6,1.3333333333333333,0.5163977794943222,1.0,1.0,1.75,2.0,0.7914070991688438,1.8752595674978227
+student,Claude,Base Model,curriculum_and_major,Role Fit,6,1.8333333333333333,0.752772652709081,2.0,1.25,2.0,2.75,1.043346882841381,2.6233197838252855
+student,Claude,Base Model,curriculum_and_major,ROUGE-L,6,0.2735857561415371,0.2618472959072948,0.23333333333333334,0.08505747126436783,0.38333333333333336,0.6294117647058823,-0.0012061283939679979,0.5483776406770422
+student,Claude,Base Model,curriculum_and_major,Generation Latency (s),6,6.733933333333334,3.31532205353668,5.38375,4.97705,7.992225,11.55325,3.2547162126187987,10.213150454047868
+student,Claude,Base Model,curriculum_and_major,Hallucination Rate,6,0.6666666666666666,,,,,,,
+student,Claude,Base Model + Professor LoRA,curriculum_and_major,Overall Score,6,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model + Professor LoRA,curriculum_and_major,Accuracy,6,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model + Professor LoRA,curriculum_and_major,Completeness,6,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model + Professor LoRA,curriculum_and_major,Groundedness,6,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model + Professor LoRA,curriculum_and_major,Clarity,6,1.5,0.8366600265340756,1.0,1.0,1.75,2.75,0.6219791496788212,2.378020850321179
+student,Claude,Base Model + Professor LoRA,curriculum_and_major,Usefulness,6,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model + Professor LoRA,curriculum_and_major,Role Fit,6,1.1666666666666667,0.408248290463863,1.0,1.0,1.0,1.75,0.7382363607272809,1.5950969726060524
+student,Claude,Base Model + Professor LoRA,curriculum_and_major,ROUGE-L,6,0.23152027301123687,0.1732587878088284,0.30625,0.09307228915662649,0.3508522727272727,0.38257575757575757,0.04969632615947647,0.4133442198629973
+student,Claude,Base Model + Professor LoRA,curriculum_and_major,Generation Latency (s),6,32.61573333333333,11.636257044542573,40.041250000000005,24.069,40.1237,40.203675,20.40423047579964,44.827236190867026
+student,Claude,Base Model + Professor LoRA,curriculum_and_major,Hallucination Rate,6,1.0,,,,,,,
+student,Claude,Base Model + RAG,curriculum_and_major,Overall Score,6,2.0,0.8944271909999159,2.0,1.25,2.75,3.0,1.0613562284726354,2.9386437715273646
+student,Claude,Base Model + RAG,curriculum_and_major,Accuracy,6,2.3333333333333335,1.2110601416389968,2.5,1.25,3.0,3.75,1.0624036586398915,3.6042630080267752
+student,Claude,Base Model + RAG,curriculum_and_major,Completeness,6,1.8333333333333333,1.1690451944500122,1.5,1.0,2.0,3.5,0.6064956416283593,3.060171025038307
+student,Claude,Base Model + RAG,curriculum_and_major,Groundedness,6,2.0,0.8944271909999159,2.0,1.25,2.75,3.0,1.0613562284726354,2.9386437715273646
+student,Claude,Base Model + RAG,curriculum_and_major,Clarity,6,3.3333333333333335,1.0327955589886446,4.0,2.5,4.0,4.0,2.2494808650043545,4.4171858016623124
+student,Claude,Base Model + RAG,curriculum_and_major,Usefulness,6,2.0,0.8944271909999159,2.0,1.25,2.75,3.0,1.0613562284726354,2.9386437715273646
+student,Claude,Base Model + RAG,curriculum_and_major,Role Fit,6,2.1666666666666665,0.983192080250175,2.5,1.25,3.0,3.0,1.1348698567886601,3.198463476544673
+student,Claude,Base Model + RAG,curriculum_and_major,ROUGE-L,6,0.30115095332486636,0.21592428527032706,0.2899262899262899,0.1844888366627497,0.42424242424242425,0.567632850241546,0.07455231284311759,0.5277495938066151
+student,Claude,Base Model + RAG,curriculum_and_major,Faithfulness,3,0.3333333333333333,0.5773502691896258,0.0,0.0,0.5,0.8999999999999999,-1.100884243249821,1.7675509099164874
+student,Claude,Base Model + RAG,curriculum_and_major,Context Precision,6,0.29166666664375,0.45871196477905213,0.0,0.0,0.5624999999718749,0.937499999915625,-0.18972201764209884,0.7730553509295989
+student,Claude,Base Model + RAG,curriculum_and_major,Generation Latency (s),6,62.198,30.83293893536586,57.186899999999994,38.26775,78.321325,103.718375,29.840814998490515,94.55518500150949
+student,Claude,Base Model + RAG,curriculum_and_major,Hallucination Rate,6,0.6666666666666666,,,,,,,
+student,Claude,Base Model + Student LoRA,curriculum_and_major,Overall Score,6,1.1666666666666667,0.408248290463863,1.0,1.0,1.0,1.75,0.7382363607272809,1.5950969726060524
+student,Claude,Base Model + Student LoRA,curriculum_and_major,Accuracy,6,1.1666666666666667,0.408248290463863,1.0,1.0,1.0,1.75,0.7382363607272809,1.5950969726060524
+student,Claude,Base Model + Student LoRA,curriculum_and_major,Completeness,6,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model + Student LoRA,curriculum_and_major,Groundedness,6,1.1666666666666667,0.408248290463863,1.0,1.0,1.0,1.75,0.7382363607272809,1.5950969726060524
+student,Claude,Base Model + Student LoRA,curriculum_and_major,Clarity,6,2.6666666666666665,1.0327955589886446,3.0,2.25,3.0,3.75,1.5828141983376873,3.7505191349956455
+student,Claude,Base Model + Student LoRA,curriculum_and_major,Usefulness,6,1.1666666666666667,0.408248290463863,1.0,1.0,1.0,1.75,0.7382363607272809,1.5950969726060524
+student,Claude,Base Model + Student LoRA,curriculum_and_major,Role Fit,6,2.0,0.6324555320336759,2.0,2.0,2.0,2.75,1.3362786240344842,2.663721375965516
+student,Claude,Base Model + Student LoRA,curriculum_and_major,ROUGE-L,6,0.21329727293216139,0.2486054114028214,0.13793103448275865,0.0,0.42190669371196754,0.5176470588235293,-0.04759810606496295,0.4741926519292857
+student,Claude,Base Model + Student LoRA,curriculum_and_major,Generation Latency (s),6,13.754266666666666,13.555455608376528,9.725249999999999,5.61095,13.678825,33.708349999999996,-0.47131156379156636,27.9798448971249
+student,Claude,Base Model + Student LoRA,curriculum_and_major,Hallucination Rate,6,1.0,,,,,,,
+student,Claude,Base Model,graduation_and_student_status,Overall Score,6,1.1666666666666667,0.408248290463863,1.0,1.0,1.0,1.75,0.7382363607272809,1.5950969726060524
+student,Claude,Base Model,graduation_and_student_status,Accuracy,6,1.1666666666666667,0.408248290463863,1.0,1.0,1.0,1.75,0.7382363607272809,1.5950969726060524
+student,Claude,Base Model,graduation_and_student_status,Completeness,6,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model,graduation_and_student_status,Groundedness,6,1.1666666666666667,0.408248290463863,1.0,1.0,1.0,1.75,0.7382363607272809,1.5950969726060524
+student,Claude,Base Model,graduation_and_student_status,Clarity,6,2.5,1.0488088481701516,2.5,2.0,3.0,3.75,1.3993426152919866,3.6006573847080134
+student,Claude,Base Model,graduation_and_student_status,Usefulness,6,1.1666666666666667,0.408248290463863,1.0,1.0,1.0,1.75,0.7382363607272809,1.5950969726060524
+student,Claude,Base Model,graduation_and_student_status,Role Fit,6,1.5,0.5477225575051661,1.5,1.0,2.0,2.0,0.9252004273791009,2.074799572620899
+student,Claude,Base Model,graduation_and_student_status,ROUGE-L,6,0.09808612440191387,0.12908910018914155,0.045454545454545456,0.0,0.15909090909090906,0.2822966507177033,-0.03738457805867472,0.23355682686250245
+student,Claude,Base Model,graduation_and_student_status,Generation Latency (s),6,7.871066666666667,6.709646430227652,6.22655,4.272025,7.9572,17.666575,0.8297245716849035,14.912408761648429
+student,Claude,Base Model,graduation_and_student_status,Hallucination Rate,6,1.0,,,,,,,
+student,Claude,Base Model + Professor LoRA,graduation_and_student_status,Overall Score,6,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model + Professor LoRA,graduation_and_student_status,Accuracy,6,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model + Professor LoRA,graduation_and_student_status,Completeness,6,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model + Professor LoRA,graduation_and_student_status,Groundedness,6,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model + Professor LoRA,graduation_and_student_status,Clarity,6,2.3333333333333335,1.0327955589886446,3.0,1.5,3.0,3.0,1.2494808650043543,3.4171858016623124
+student,Claude,Base Model + Professor LoRA,graduation_and_student_status,Usefulness,6,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model + Professor LoRA,graduation_and_student_status,Role Fit,6,1.8333333333333333,0.408248290463863,2.0,2.0,2.0,2.0,1.4049030273939476,2.261763639272719
+student,Claude,Base Model + Professor LoRA,graduation_and_student_status,ROUGE-L,6,0.19385896534832703,0.14918169908136927,0.21111111111111114,0.08191489361702128,0.29555555555555557,0.36378378378378373,0.03730237351210006,0.35041555718455397
+student,Claude,Base Model + Professor LoRA,graduation_and_student_status,Generation Latency (s),6,22.88515,13.47659931032306,16.01505,14.0266,34.25255,40.1387,8.742326379149338,37.02797362085066
+student,Claude,Base Model + Professor LoRA,graduation_and_student_status,Hallucination Rate,6,1.0,,,,,,,
+student,Claude,Base Model + RAG,graduation_and_student_status,Overall Score,6,2.3333333333333335,1.0327955589886446,2.0,2.0,2.75,3.75,1.2494808650043543,3.4171858016623124
+student,Claude,Base Model + RAG,graduation_and_student_status,Accuracy,6,3.0,1.5491933384829668,3.0,2.0,4.0,4.75,1.3742212975065313,4.625778702493468
+student,Claude,Base Model + RAG,graduation_and_student_status,Completeness,6,2.0,0.8944271909999159,2.0,1.25,2.75,3.0,1.0613562284726354,2.9386437715273646
+student,Claude,Base Model + RAG,graduation_and_student_status,Groundedness,6,3.3333333333333335,1.2110601416389966,3.5,2.25,4.0,4.75,2.0624036586398917,4.604263008026775
+student,Claude,Base Model + RAG,graduation_and_student_status,Clarity,6,3.8333333333333335,0.752772652709081,4.0,3.25,4.0,4.75,3.0433468828413814,4.623319783825286
+student,Claude,Base Model + RAG,graduation_and_student_status,Usefulness,6,2.3333333333333335,1.0327955589886446,2.0,2.0,2.75,3.75,1.2494808650043543,3.4171858016623124
+student,Claude,Base Model + RAG,graduation_and_student_status,Role Fit,6,2.6666666666666665,1.0327955589886446,3.0,2.25,3.0,3.75,1.5828141983376873,3.7505191349956455
+student,Claude,Base Model + RAG,graduation_and_student_status,ROUGE-L,6,0.23978345546972993,0.19284658862789528,0.2211328976034858,0.1252723311546841,0.32352941176470584,0.4924242424242424,0.037403372331256984,0.4421635386082029
+student,Claude,Base Model + RAG,graduation_and_student_status,Faithfulness,5,0.96,0.08944271909999157,1.0,1.0,1.0,1.0,0.8489421957920882,1.0710578042079117
+student,Claude,Base Model + RAG,graduation_and_student_status,Context Precision,6,0.5131944444228876,0.3135639296198004,0.5166666666327777,0.43749999997187494,0.6427083333161545,0.8822916666446093,0.184129281294033,0.8422596075517423
+student,Claude,Base Model + RAG,graduation_and_student_status,Generation Latency (s),6,40.98773333333334,11.75205083237248,37.242999999999995,34.201375,40.225375,58.321650000000005,28.654712347972385,53.32075431869429
+student,Claude,Base Model + RAG,graduation_and_student_status,Hallucination Rate,6,0.3333333333333333,,,,,,,
+student,Claude,Base Model + Student LoRA,graduation_and_student_status,Overall Score,6,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model + Student LoRA,graduation_and_student_status,Accuracy,6,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model + Student LoRA,graduation_and_student_status,Completeness,6,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model + Student LoRA,graduation_and_student_status,Groundedness,6,1.1666666666666667,0.408248290463863,1.0,1.0,1.0,1.75,0.7382363607272809,1.5950969726060524
+student,Claude,Base Model + Student LoRA,graduation_and_student_status,Clarity,6,2.5,0.5477225575051661,2.5,2.0,3.0,3.0,1.9252004273791008,3.074799572620899
+student,Claude,Base Model + Student LoRA,graduation_and_student_status,Usefulness,6,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model + Student LoRA,graduation_and_student_status,Role Fit,6,1.6666666666666667,0.5163977794943223,2.0,1.25,2.0,2.0,1.1247404325021773,2.2085929008311562
+student,Claude,Base Model + Student LoRA,graduation_and_student_status,ROUGE-L,6,0.11715488215488218,0.08321418888126525,0.10101010101010102,0.09090909090909091,0.14777777777777779,0.2275,0.029826946597846266,0.2044828177119181
+student,Claude,Base Model + Student LoRA,graduation_and_student_status,Generation Latency (s),6,8.060866666666666,3.5727672332054694,7.37355,5.920225,10.126624999999999,12.77,4.311477399088279,11.810255934245053
+student,Claude,Base Model + Student LoRA,graduation_and_student_status,Hallucination Rate,6,1.0,,,,,,,
+student,Claude,Base Model,out_of_scope_abstention,Overall Score,2,3.0,0.0,3.0,3.0,3.0,3.0,3.0,3.0
+student,Claude,Base Model,out_of_scope_abstention,Accuracy,2,3.5,0.7071067811865476,3.5,3.25,3.75,3.95,-2.853102368087347,9.853102368087347
+student,Claude,Base Model,out_of_scope_abstention,Completeness,2,3.0,0.0,3.0,3.0,3.0,3.0,3.0,3.0
+student,Claude,Base Model,out_of_scope_abstention,Groundedness,2,2.5,0.7071067811865476,2.5,2.25,2.75,2.95,-3.853102368087347,8.853102368087347
+student,Claude,Base Model,out_of_scope_abstention,Clarity,2,4.0,0.0,4.0,4.0,4.0,4.0,4.0,4.0
+student,Claude,Base Model,out_of_scope_abstention,Usefulness,2,3.5,0.7071067811865476,3.5,3.25,3.75,3.95,-2.853102368087347,9.853102368087347
+student,Claude,Base Model,out_of_scope_abstention,Role Fit,2,3.0,0.0,3.0,3.0,3.0,3.0,3.0,3.0
+student,Claude,Base Model,out_of_scope_abstention,ROUGE-L,2,0.6333333333333333,0.04714045207910316,0.6333333333333333,0.6166666666666667,0.6499999999999999,0.6633333333333333,0.20979317546084358,1.056873491205823
+student,Claude,Base Model,out_of_scope_abstention,Generation Latency (s),2,3.299,0.13364318164425754,3.299,3.25175,3.34625,3.38405,2.0982636524314913,4.499736347568509
+student,Claude,Base Model,out_of_scope_abstention,Hallucination Rate,2,1.0,,,,,,,
+student,Claude,Base Model + Professor LoRA,out_of_scope_abstention,Overall Score,2,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model + Professor LoRA,out_of_scope_abstention,Accuracy,2,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model + Professor LoRA,out_of_scope_abstention,Completeness,2,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model + Professor LoRA,out_of_scope_abstention,Groundedness,2,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model + Professor LoRA,out_of_scope_abstention,Clarity,2,3.0,0.0,3.0,3.0,3.0,3.0,3.0,3.0
+student,Claude,Base Model + Professor LoRA,out_of_scope_abstention,Usefulness,2,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model + Professor LoRA,out_of_scope_abstention,Role Fit,2,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model + Professor LoRA,out_of_scope_abstention,ROUGE-L,2,0.14756258234519104,0.03726517950917247,0.14756258234519104,0.13438735177865613,0.16073781291172595,0.1712779973649539,-0.18725177170420804,0.4823769363945901
+student,Claude,Base Model + Professor LoRA,out_of_scope_abstention,Generation Latency (s),2,10.3417,9.030036438464688,10.3417,7.149100000000001,13.5343,16.08838,-70.78995848142266,91.47335848142266
+student,Claude,Base Model + Professor LoRA,out_of_scope_abstention,Hallucination Rate,2,1.0,,,,,,,
+student,Claude,Base Model + RAG,out_of_scope_abstention,Overall Score,2,1.5,0.7071067811865476,1.5,1.25,1.75,1.95,-4.853102368087347,7.853102368087347
+student,Claude,Base Model + RAG,out_of_scope_abstention,Accuracy,2,1.5,0.7071067811865476,1.5,1.25,1.75,1.95,-4.853102368087347,7.853102368087347
+student,Claude,Base Model + RAG,out_of_scope_abstention,Completeness,2,1.5,0.7071067811865476,1.5,1.25,1.75,1.95,-4.853102368087347,7.853102368087347
+student,Claude,Base Model + RAG,out_of_scope_abstention,Groundedness,2,2.5,2.1213203435596424,2.5,1.75,3.25,3.8499999999999996,-16.55930710426204,21.55930710426204
+student,Claude,Base Model + RAG,out_of_scope_abstention,Clarity,2,3.5,0.7071067811865476,3.5,3.25,3.75,3.95,-2.853102368087347,9.853102368087347
+student,Claude,Base Model + RAG,out_of_scope_abstention,Usefulness,2,1.5,0.7071067811865476,1.5,1.25,1.75,1.95,-4.853102368087347,7.853102368087347
+student,Claude,Base Model + RAG,out_of_scope_abstention,Role Fit,2,1.5,0.7071067811865476,1.5,1.25,1.75,1.95,-4.853102368087347,7.853102368087347
+student,Claude,Base Model + RAG,out_of_scope_abstention,ROUGE-L,2,0.1230195712954334,0.021087993474342523,0.1230195712954334,0.11556383970177075,0.130475302889096,0.1364398881640261,-0.0664485328786534,0.31248767546952017
+student,Claude,Base Model + RAG,out_of_scope_abstention,Faithfulness,1,0.8333333333333334,,0.8333333333333334,0.8333333333333334,0.8333333333333334,0.8333333333333334,,
+student,Claude,Base Model + RAG,out_of_scope_abstention,Context Precision,2,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+student,Claude,Base Model + RAG,out_of_scope_abstention,Generation Latency (s),2,65.86955,20.404061145884658,65.86955,58.655625,73.08347499999999,78.854615,-117.45366600281804,249.19276600281805
+student,Claude,Base Model + RAG,out_of_scope_abstention,Hallucination Rate,2,0.5,,,,,,,
+student,Claude,Base Model + Student LoRA,out_of_scope_abstention,Overall Score,2,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model + Student LoRA,out_of_scope_abstention,Accuracy,2,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model + Student LoRA,out_of_scope_abstention,Completeness,2,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model + Student LoRA,out_of_scope_abstention,Groundedness,2,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model + Student LoRA,out_of_scope_abstention,Clarity,2,3.5,0.7071067811865476,3.5,3.25,3.75,3.95,-2.853102368087347,9.853102368087347
+student,Claude,Base Model + Student LoRA,out_of_scope_abstention,Usefulness,2,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model + Student LoRA,out_of_scope_abstention,Role Fit,2,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model + Student LoRA,out_of_scope_abstention,ROUGE-L,2,0.26666666666666666,0.0,0.26666666666666666,0.26666666666666666,0.26666666666666666,0.26666666666666666,0.26666666666666666,0.26666666666666666
+student,Claude,Base Model + Student LoRA,out_of_scope_abstention,Generation Latency (s),2,4.5607,1.988101425984097,4.5607,3.8578,5.2636,5.82592,-13.30168261811438,22.423082618114382
+student,Claude,Base Model + Student LoRA,out_of_scope_abstention,Hallucination Rate,2,1.0,,,,,,,
+student,Claude,Base Model,registration_and_academic_calendar,Overall Score,6,1.3333333333333333,0.5163977794943223,1.0,1.0,1.75,2.0,0.7914070991688437,1.8752595674978227
+student,Claude,Base Model,registration_and_academic_calendar,Accuracy,6,1.5,0.8366600265340756,1.0,1.0,1.75,2.75,0.6219791496788212,2.378020850321179
+student,Claude,Base Model,registration_and_academic_calendar,Completeness,6,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model,registration_and_academic_calendar,Groundedness,6,1.6666666666666667,1.0327955589886446,1.0,1.0,2.5,3.0,0.5828141983376876,2.750519134995646
+student,Claude,Base Model,registration_and_academic_calendar,Clarity,6,3.1666666666666665,0.752772652709081,3.0,3.0,3.75,4.0,2.3766802161747145,3.9566531171586186
+student,Claude,Base Model,registration_and_academic_calendar,Usefulness,6,1.3333333333333333,0.5163977794943223,1.0,1.0,1.75,2.0,0.7914070991688437,1.8752595674978227
+student,Claude,Base Model,registration_and_academic_calendar,Role Fit,6,2.0,0.0,2.0,2.0,2.0,2.0,2.0,2.0
+student,Claude,Base Model,registration_and_academic_calendar,ROUGE-L,6,0.18313167977414802,0.12867404346587644,0.2149122807017544,0.09339080459770116,0.2657894736842106,0.31666666666666665,0.04809655263153226,0.3181668069167638
+student,Claude,Base Model,registration_and_academic_calendar,Generation Latency (s),6,3.8420500000000004,2.4655265244973537,2.6929499999999997,2.397275,4.6423,7.498374999999999,1.2546385940835973,6.4294614059164035
+student,Claude,Base Model,registration_and_academic_calendar,Hallucination Rate,6,0.6666666666666666,,,,,,,
+student,Claude,Base Model + Professor LoRA,registration_and_academic_calendar,Overall Score,6,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model + Professor LoRA,registration_and_academic_calendar,Accuracy,6,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model + Professor LoRA,registration_and_academic_calendar,Completeness,6,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model + Professor LoRA,registration_and_academic_calendar,Groundedness,6,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model + Professor LoRA,registration_and_academic_calendar,Clarity,6,2.0,1.0954451150103321,2.0,1.0,3.0,3.0,0.8504008547582018,3.1495991452417984
+student,Claude,Base Model + Professor LoRA,registration_and_academic_calendar,Usefulness,6,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model + Professor LoRA,registration_and_academic_calendar,Role Fit,6,1.5,0.5477225575051661,1.5,1.0,2.0,2.0,0.9252004273791009,2.074799572620899
+student,Claude,Base Model + Professor LoRA,registration_and_academic_calendar,ROUGE-L,6,0.26507085081797727,0.06765014085506356,0.2675606641123882,0.20767195767195767,0.3189655172413792,0.34195402298850575,0.19407638196069016,0.3360653196752644
+student,Claude,Base Model + Professor LoRA,registration_and_academic_calendar,Generation Latency (s),6,27.466116666666668,13.858192204673259,28.0462,14.9594,40.065675,40.14855,12.922835862553844,42.00939747077949
+student,Claude,Base Model + Professor LoRA,registration_and_academic_calendar,Hallucination Rate,6,1.0,,,,,,,
+student,Claude,Base Model + RAG,registration_and_academic_calendar,Overall Score,6,2.8333333333333335,0.983192080250175,2.5,2.0,3.75,4.0,1.801536523455327,3.86513014321134
+student,Claude,Base Model + RAG,registration_and_academic_calendar,Accuracy,6,3.1666666666666665,1.1690451944500122,3.0,2.25,3.75,4.75,1.9398289749616926,4.39350435837164
+student,Claude,Base Model + RAG,registration_and_academic_calendar,Completeness,6,2.1666666666666665,0.983192080250175,2.5,1.25,3.0,3.0,1.1348698567886601,3.198463476544673
+student,Claude,Base Model + RAG,registration_and_academic_calendar,Groundedness,6,3.3333333333333335,1.0327955589886444,3.0,3.0,3.75,4.75,2.2494808650043545,4.4171858016623124
+student,Claude,Base Model + RAG,registration_and_academic_calendar,Clarity,6,4.0,0.8944271909999159,4.0,3.25,4.75,5.0,3.0613562284726354,4.938643771527365
+student,Claude,Base Model + RAG,registration_and_academic_calendar,Usefulness,6,2.8333333333333335,0.983192080250175,2.5,2.0,3.75,4.0,1.801536523455327,3.86513014321134
+student,Claude,Base Model + RAG,registration_and_academic_calendar,Role Fit,6,3.0,0.8944271909999159,3.0,2.25,3.75,4.0,2.0613562284726354,3.9386437715273646
+student,Claude,Base Model + RAG,registration_and_academic_calendar,ROUGE-L,6,0.39294898592811306,0.2909245188802608,0.343108504398827,0.2833478639930253,0.4879679144385027,0.7861990950226244,0.0876424272955752,0.6982555445606509
+student,Claude,Base Model + RAG,registration_and_academic_calendar,Faithfulness,3,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model + RAG,registration_and_academic_calendar,Context Precision,6,0.8055555554819445,0.40023141450117466,0.9999999999,0.8749999999437499,0.9999999999,0.9999999999,0.38553844489842926,1.2255726660654598
+student,Claude,Base Model + RAG,registration_and_academic_calendar,Generation Latency (s),6,46.977583333333335,13.107072063800773,43.36965,38.650975,50.697874999999996,65.850775,33.22255477489579,60.73261189177088
+student,Claude,Base Model + RAG,registration_and_academic_calendar,Hallucination Rate,6,0.3333333333333333,,,,,,,
+student,Claude,Base Model + Student LoRA,registration_and_academic_calendar,Overall Score,6,1.1666666666666667,0.408248290463863,1.0,1.0,1.0,1.75,0.7382363607272809,1.5950969726060524
+student,Claude,Base Model + Student LoRA,registration_and_academic_calendar,Accuracy,6,1.1666666666666667,0.408248290463863,1.0,1.0,1.0,1.75,0.7382363607272809,1.5950969726060524
+student,Claude,Base Model + Student LoRA,registration_and_academic_calendar,Completeness,6,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model + Student LoRA,registration_and_academic_calendar,Groundedness,6,1.1666666666666667,0.408248290463863,1.0,1.0,1.0,1.75,0.7382363607272809,1.5950969726060524
+student,Claude,Base Model + Student LoRA,registration_and_academic_calendar,Clarity,6,3.1666666666666665,0.40824829046386296,3.0,3.0,3.0,3.75,2.7382363607272806,3.5950969726060524
+student,Claude,Base Model + Student LoRA,registration_and_academic_calendar,Usefulness,6,1.1666666666666667,0.408248290463863,1.0,1.0,1.0,1.75,0.7382363607272809,1.5950969726060524
+student,Claude,Base Model + Student LoRA,registration_and_academic_calendar,Role Fit,6,2.1666666666666665,0.40824829046386296,2.0,2.0,2.0,2.75,1.7382363607272808,2.5950969726060524
+student,Claude,Base Model + Student LoRA,registration_and_academic_calendar,ROUGE-L,6,0.2814199476225607,0.16302317173843786,0.3103448275862069,0.235632183908046,0.3617171006333568,0.4505323868677906,0.11033762107136016,0.4525022741737612
+student,Claude,Base Model + Student LoRA,registration_and_academic_calendar,Generation Latency (s),6,5.2325,2.7419433633829855,4.32245,2.98315,7.63125,8.660725,2.3550069118896286,8.109993088110372
+student,Claude,Base Model + Student LoRA,registration_and_academic_calendar,Hallucination Rate,6,1.0,,,,,,,
+student,Claude,Base Model,student_financial_or_travel_support,Overall Score,4,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model,student_financial_or_travel_support,Accuracy,4,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model,student_financial_or_travel_support,Completeness,4,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model,student_financial_or_travel_support,Groundedness,4,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model,student_financial_or_travel_support,Clarity,4,3.0,0.0,3.0,3.0,3.0,3.0,3.0,3.0
+student,Claude,Base Model,student_financial_or_travel_support,Usefulness,4,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model,student_financial_or_travel_support,Role Fit,4,2.0,0.0,2.0,2.0,2.0,2.0,2.0,2.0
+student,Claude,Base Model,student_financial_or_travel_support,ROUGE-L,4,0.14202898550724638,0.10860866084171128,0.15362318840579708,0.1,0.1956521739130435,0.24782608695652175,-0.030791630201511294,0.314849601216004
+student,Claude,Base Model,student_financial_or_travel_support,Generation Latency (s),4,4.008,0.6293396433299482,4.0634,3.7461,4.3252999999999995,4.63106,3.00658018865802,5.00941981134198
+student,Claude,Base Model,student_financial_or_travel_support,Hallucination Rate,4,1.0,,,,,,,
+student,Claude,Base Model + Professor LoRA,student_financial_or_travel_support,Overall Score,4,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model + Professor LoRA,student_financial_or_travel_support,Accuracy,4,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model + Professor LoRA,student_financial_or_travel_support,Completeness,4,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model + Professor LoRA,student_financial_or_travel_support,Groundedness,4,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model + Professor LoRA,student_financial_or_travel_support,Clarity,4,2.75,0.5,3.0,2.75,3.0,3.0,1.954388423679073,3.545611576320927
+student,Claude,Base Model + Professor LoRA,student_financial_or_travel_support,Usefulness,4,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model + Professor LoRA,student_financial_or_travel_support,Role Fit,4,1.75,0.5,2.0,1.75,2.0,2.0,0.9543884236790731,2.545611576320927
+student,Claude,Base Model + Professor LoRA,student_financial_or_travel_support,ROUGE-L,4,0.14509772760492298,0.05985076300929374,0.14326830828269907,0.12021343377275581,0.16815260211486627,0.20945469624714902,0.04986180780125414,0.2403336474085918
+student,Claude,Base Model + Professor LoRA,student_financial_or_travel_support,Generation Latency (s),4,19.2377,5.95700529796642,21.4951,18.418,22.314799999999998,23.284879999999998,9.758775249465646,28.716624750534354
+student,Claude,Base Model + Professor LoRA,student_financial_or_travel_support,Hallucination Rate,4,1.0,,,,,,,
+student,Claude,Base Model + RAG,student_financial_or_travel_support,Overall Score,4,3.0,1.4142135623730951,3.5,2.5,4.0,4.0,0.7496706367718167,5.250329363228183
+student,Claude,Base Model + RAG,student_financial_or_travel_support,Accuracy,4,3.25,1.707825127659933,3.5,2.5,4.25,4.85,0.532469116203985,5.967530883796015
+student,Claude,Base Model + RAG,student_financial_or_travel_support,Completeness,4,3.0,0.816496580927726,3.0,2.75,3.25,3.8499999999999996,1.700771736374889,4.2992282636251105
+student,Claude,Base Model + RAG,student_financial_or_travel_support,Groundedness,4,4.0,1.4142135623730951,4.5,3.5,5.0,5.0,1.7496706367718167,6.250329363228183
+student,Claude,Base Model + RAG,student_financial_or_travel_support,Clarity,4,4.25,0.5,4.0,4.0,4.25,4.85,3.454388423679073,5.045611576320927
+student,Claude,Base Model + RAG,student_financial_or_travel_support,Usefulness,4,2.75,1.2583057392117916,3.0,2.5,3.25,3.8499999999999996,0.7477547746640747,4.752245225335925
+student,Claude,Base Model + RAG,student_financial_or_travel_support,Role Fit,4,3.0,1.4142135623730951,3.5,2.5,4.0,4.0,0.7496706367718167,5.250329363228183
+student,Claude,Base Model + RAG,student_financial_or_travel_support,ROUGE-L,4,0.4004522956135859,0.2772123670067571,0.5046082949308756,0.3214285714285714,0.5836320191158901,0.5908004778972521,-0.04065444096621679,0.8415590321933886
+student,Claude,Base Model + RAG,student_financial_or_travel_support,Faithfulness,3,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model + RAG,student_financial_or_travel_support,Context Precision,4,0.8124999999754167,0.3750000000002777,0.9999999999733333,0.81249999996875,0.99999999998,0.99999999998,0.2157913177342795,1.409208682216554
+student,Claude,Base Model + RAG,student_financial_or_travel_support,Generation Latency (s),4,37.085225,9.353093042544803,36.1749,29.7622,43.497924999999995,46.875744999999995,22.20236680188927,51.96808319811073
+student,Claude,Base Model + RAG,student_financial_or_travel_support,Hallucination Rate,4,0.0,,,,,,,
+student,Claude,Base Model + Student LoRA,student_financial_or_travel_support,Overall Score,4,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model + Student LoRA,student_financial_or_travel_support,Accuracy,4,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model + Student LoRA,student_financial_or_travel_support,Completeness,4,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model + Student LoRA,student_financial_or_travel_support,Groundedness,4,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model + Student LoRA,student_financial_or_travel_support,Clarity,4,3.0,0.0,3.0,3.0,3.0,3.0,3.0,3.0
+student,Claude,Base Model + Student LoRA,student_financial_or_travel_support,Usefulness,4,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0
+student,Claude,Base Model + Student LoRA,student_financial_or_travel_support,Role Fit,4,1.75,0.5,2.0,1.75,2.0,2.0,0.9543884236790731,2.545611576320927
+student,Claude,Base Model + Student LoRA,student_financial_or_travel_support,ROUGE-L,4,0.20031840140535792,0.1392425554696895,0.24154589371980675,0.16666666666666666,0.27519762845849804,0.30958498023715414,-0.021247576691029613,0.42188437950174545
+student,Claude,Base Model + Student LoRA,student_financial_or_travel_support,Generation Latency (s),4,7.888075,4.788334268041445,8.11785,4.084675000000001,11.92125,12.13113,0.26876665010406775,15.507383349895932
+student,Claude,Base Model + Student LoRA,student_financial_or_travel_support,Hallucination Rate,4,1.0,,,,,,,

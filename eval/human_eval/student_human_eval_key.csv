@@ -1,0 +1,241 @@
+﻿question_id,blind_label,model
+S001,A,Base Model + RAG
+S001,B,Base Model + Student LoRA
+S001,C,Base Model + Student LoRA + RAG
+S001,D,Base Model
+S002,A,Base Model + Student LoRA
+S002,B,Base Model + Student LoRA + RAG
+S002,C,Base Model
+S002,D,Base Model + RAG
+S003,A,Base Model + Student LoRA
+S003,B,Base Model
+S003,C,Base Model + RAG
+S003,D,Base Model + Student LoRA + RAG
+S004,A,Base Model + RAG
+S004,B,Base Model + Student LoRA
+S004,C,Base Model + Student LoRA + RAG
+S004,D,Base Model
+S005,A,Base Model + RAG
+S005,B,Base Model + Student LoRA + RAG
+S005,C,Base Model
+S005,D,Base Model + Student LoRA
+S006,A,Base Model + RAG
+S006,B,Base Model
+S006,C,Base Model + Student LoRA + RAG
+S006,D,Base Model + Student LoRA
+S007,A,Base Model + RAG
+S007,B,Base Model
+S007,C,Base Model + Student LoRA + RAG
+S007,D,Base Model + Student LoRA
+S008,A,Base Model + Student LoRA + RAG
+S008,B,Base Model
+S008,C,Base Model + Student LoRA
+S008,D,Base Model + RAG
+S009,A,Base Model + Student LoRA + RAG
+S009,B,Base Model + RAG
+S009,C,Base Model + Student LoRA
+S009,D,Base Model
+S010,A,Base Model + Student LoRA + RAG
+S010,B,Base Model
+S010,C,Base Model + Student LoRA
+S010,D,Base Model + RAG
+S011,A,Base Model + Student LoRA + RAG
+S011,B,Base Model + Student LoRA
+S011,C,Base Model + RAG
+S011,D,Base Model
+S012,A,Base Model + RAG
+S012,B,Base Model
+S012,C,Base Model + Student LoRA
+S012,D,Base Model + Student LoRA + RAG
+S013,A,Base Model + Student LoRA
+S013,B,Base Model
+S013,C,Base Model + Student LoRA + RAG
+S013,D,Base Model + RAG
+S014,A,Base Model + Student LoRA + RAG
+S014,B,Base Model + RAG
+S014,C,Base Model
+S014,D,Base Model + Student LoRA
+S015,A,Base Model + Student LoRA
+S015,B,Base Model + RAG
+S015,C,Base Model
+S015,D,Base Model + Student LoRA + RAG
+S016,A,Base Model + Student LoRA
+S016,B,Base Model
+S016,C,Base Model + Student LoRA + RAG
+S016,D,Base Model + RAG
+S017,A,Base Model + Student LoRA
+S017,B,Base Model + Student LoRA + RAG
+S017,C,Base Model
+S017,D,Base Model + RAG
+S018,A,Base Model + RAG
+S018,B,Base Model + Student LoRA + RAG
+S018,C,Base Model + Student LoRA
+S018,D,Base Model
+S019,A,Base Model
+S019,B,Base Model + Student LoRA
+S019,C,Base Model + Student LoRA + RAG
+S019,D,Base Model + RAG
+S020,A,Base Model + Student LoRA + RAG
+S020,B,Base Model + Student LoRA
+S020,C,Base Model + RAG
+S020,D,Base Model
+S021,A,Base Model + Student LoRA + RAG
+S021,B,Base Model
+S021,C,Base Model + Student LoRA
+S021,D,Base Model + RAG
+S022,A,Base Model + RAG
+S022,B,Base Model + Student LoRA
+S022,C,Base Model
+S022,D,Base Model + Student LoRA + RAG
+S023,A,Base Model + Student LoRA + RAG
+S023,B,Base Model
+S023,C,Base Model + RAG
+S023,D,Base Model + Student LoRA
+S024,A,Base Model + Student LoRA
+S024,B,Base Model + Student LoRA + RAG
+S024,C,Base Model
+S024,D,Base Model + RAG
+S025,A,Base Model + Student LoRA
+S025,B,Base Model
+S025,C,Base Model + Student LoRA + RAG
+S025,D,Base Model + RAG
+S026,A,Base Model
+S026,B,Base Model + RAG
+S026,C,Base Model + Student LoRA
+S026,D,Base Model + Student LoRA + RAG
+S027,A,Base Model
+S027,B,Base Model + RAG
+S027,C,Base Model + Student LoRA + RAG
+S027,D,Base Model + Student LoRA
+S028,A,Base Model + Student LoRA + RAG
+S028,B,Base Model
+S028,C,Base Model + RAG
+S028,D,Base Model + Student LoRA
+S029,A,Base Model + Student LoRA
+S029,B,Base Model
+S029,C,Base Model + RAG
+S029,D,Base Model + Student LoRA + RAG
+S030,A,Base Model + Student LoRA + RAG
+S030,B,Base Model + RAG
+S030,C,Base Model + Student LoRA
+S030,D,Base Model
+S031,A,Base Model
+S031,B,Base Model + RAG
+S031,C,Base Model + Student LoRA + RAG
+S031,D,Base Model + Student LoRA
+S032,A,Base Model
+S032,B,Base Model + RAG
+S032,C,Base Model + Student LoRA + RAG
+S032,D,Base Model + Student LoRA
+S033,A,Base Model + Student LoRA + RAG
+S033,B,Base Model + RAG
+S033,C,Base Model
+S033,D,Base Model + Student LoRA
+S034,A,Base Model
+S034,B,Base Model + RAG
+S034,C,Base Model + Student LoRA
+S034,D,Base Model + Student LoRA + RAG
+S035,A,Base Model + Student LoRA + RAG
+S035,B,Base Model + RAG
+S035,C,Base Model + Student LoRA
+S035,D,Base Model
+S036,A,Base Model + Student LoRA
+S036,B,Base Model
+S036,C,Base Model + Student LoRA + RAG
+S036,D,Base Model + RAG
+S037,A,Base Model + Student LoRA + RAG
+S037,B,Base Model + RAG
+S037,C,Base Model + Student LoRA
+S037,D,Base Model
+S038,A,Base Model
+S038,B,Base Model + Student LoRA + RAG
+S038,C,Base Model + RAG
+S038,D,Base Model + Student LoRA
+S039,A,Base Model
+S039,B,Base Model + RAG
+S039,C,Base Model + Student LoRA
+S039,D,Base Model + Student LoRA + RAG
+S040,A,Base Model
+S040,B,Base Model + RAG
+S040,C,Base Model + Student LoRA
+S040,D,Base Model + Student LoRA + RAG
+S041,A,Base Model + RAG
+S041,B,Base Model
+S041,C,Base Model + Student LoRA
+S041,D,Base Model + Student LoRA + RAG
+S042,A,Base Model + Student LoRA + RAG
+S042,B,Base Model
+S042,C,Base Model + Student LoRA
+S042,D,Base Model + RAG
+S043,A,Base Model
+S043,B,Base Model + RAG
+S043,C,Base Model + Student LoRA
+S043,D,Base Model + Student LoRA + RAG
+S044,A,Base Model + Student LoRA
+S044,B,Base Model + RAG
+S044,C,Base Model
+S044,D,Base Model + Student LoRA + RAG
+S045,A,Base Model + Student LoRA
+S045,B,Base Model
+S045,C,Base Model + Student LoRA + RAG
+S045,D,Base Model + RAG
+S046,A,Base Model + RAG
+S046,B,Base Model + Student LoRA + RAG
+S046,C,Base Model
+S046,D,Base Model + Student LoRA
+S047,A,Base Model + Student LoRA + RAG
+S047,B,Base Model + RAG
+S047,C,Base Model + Student LoRA
+S047,D,Base Model
+S048,A,Base Model + Student LoRA + RAG
+S048,B,Base Model + Student LoRA
+S048,C,Base Model
+S048,D,Base Model + RAG
+S049,A,Base Model + Student LoRA
+S049,B,Base Model + RAG
+S049,C,Base Model + Student LoRA + RAG
+S049,D,Base Model
+S050,A,Base Model
+S050,B,Base Model + Student LoRA + RAG
+S050,C,Base Model + RAG
+S050,D,Base Model + Student LoRA
+S051,A,Base Model + Student LoRA + RAG
+S051,B,Base Model + RAG
+S051,C,Base Model
+S051,D,Base Model + Student LoRA
+S052,A,Base Model
+S052,B,Base Model + Student LoRA
+S052,C,Base Model + RAG
+S052,D,Base Model + Student LoRA + RAG
+S053,A,Base Model + Student LoRA + RAG
+S053,B,Base Model + RAG
+S053,C,Base Model
+S053,D,Base Model + Student LoRA
+S054,A,Base Model + RAG
+S054,B,Base Model
+S054,C,Base Model + Student LoRA
+S054,D,Base Model + Student LoRA + RAG
+S055,A,Base Model
+S055,B,Base Model + Student LoRA
+S055,C,Base Model + RAG
+S055,D,Base Model + Student LoRA + RAG
+S056,A,Base Model + Student LoRA + RAG
+S056,B,Base Model
+S056,C,Base Model + RAG
+S056,D,Base Model + Student LoRA
+S057,A,Base Model
+S057,B,Base Model + Student LoRA
+S057,C,Base Model + Student LoRA + RAG
+S057,D,Base Model + RAG
+S058,A,Base Model
+S058,B,Base Model + Student LoRA + RAG
+S058,C,Base Model + Student LoRA
+S058,D,Base Model + RAG
+S059,A,Base Model
+S059,B,Base Model + Student LoRA + RAG
+S059,C,Base Model + RAG
+S059,D,Base Model + Student LoRA
+S060,A,Base Model + Student LoRA
+S060,B,Base Model + Student LoRA + RAG
+S060,C,Base Model + RAG
+S060,D,Base Model

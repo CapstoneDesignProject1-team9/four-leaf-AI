@@ -1,122 +1,86 @@
-# Four‑Leaf AI 튜터 평가 스위트
+# 평가 파이프라인
 
-## 📖 개요
-`four-leaf-AI/eval/` 패키지는 **자체 포함형 파이프라인**을 제공합니다.
-1️⃣ 네 가지 어댑터 구성(Base, Base + RAG, Base + LoRA, Base + RAG + LoRA)의 답변을 생성합니다 – `generate_answers.py`(이전 `generate_answers_final.py`)를 참고하십시오.
-2️⃣ 각 답변을 Claude(Anthropic API)에게 보내 **1~5점**의 품질 점수와 이유 텍스트를 얻습니다.
-3️⃣ `rouge_score` 라이브러리를 사용해 **ROUGE‑L** 유사도를 계산합니다.
-4️⃣ RAGAS Faithfulness·Context Precision, human 점수 상관, 통계 검정을 계산하고 결과를 CSV로 저장합니다.
+평가기는 저장된 모델 응답을 채점해 문항별 결과, 조건별 요약, 계획된 가설 검정 결과를 CSV로 만듭니다. 같은 질문 ID를 조건 간 대응시켜 비교합니다.
 
-비동기 처리, 동시 실행 제한, 진행 로그 출력 등 실용적인 기능을 갖추었습니다.
+## 비교 조건
 
-### Human 점수 수집과 분석
-`human_evaluation.csv`에 한 행마다 한 평가자의 점수를 기록합니다. 열은
-`question_id,rater_id,model,score`이며 점수 범위는 1~5입니다. 파일은 현재 질문과 모델 조합별 빈 행으로 준비되어 있습니다. 평가자는 `rater_id`와 `score`를 채워 제출하면 됩니다. 사람 점수는 자동으로 만들지 않습니다.
+학생용 데이터셋은 아래 5조건입니다.
 
-RAGAS 평가를 사용하려면 답변 생성 시 수집한 `contexts`가 필요합니다. 데이터셋에 문맥이 없으면 RAGAS 지표는 계산하지 않습니다. Claude 평가에는 `ANTHROPIC_API_KEY` 하나를 사용하며, RAGAS용 Claude 모델은 선택적으로 `RAGAS_ANTHROPIC_MODEL`로 지정할 수 있습니다. 미지정 시 `ANTHROPIC_MODEL` 값을 사용합니다.
+- Base Model
+- Base Model + RAG
+- Base Model + Student LoRA
+- Base Model + Professor LoRA
+- Base Model + Student LoRA + RAG
 
-통계 출력은 일원 ANOVA 및 질문별 paired t-test를 포함합니다. ANOVA는 질문 간 반복측정을 독립 표본처럼 취급할 수 있으므로 논문에서는 paired 비교 결과와 효과크기를 함께 해석하고 분석 설계를 명시하세요.
+교수용 데이터셋은 Base Model, Student LoRA, Professor LoRA를 비교합니다. 교수자용 RAG 문서는 없으므로 RAG 지표는 학생용 RAG 응답에만 계산됩니다.
 
----
-## 🛠️ 핵심 파일
-| 파일 | 목적 |
-|------|------|
-| [`generate_answers.py`](file:///Users/tak/Desktop/CDP1-team9-fourleaf/four-leaf-AI/eval/generate_answers.py) | 네 가지 답변 변형을 생성하고 `eval_dataset.json`에 저장합니다. |
-| [`evaluate.py`](file:///Users/tak/Desktop/CDP1-team9-fourleaf/four-leaf-AI/eval/evaluate.py) | Claude 기반 평가, ROUGE‑L 계산, CSV 요약 생성 (`eval_results.csv`). |
-| `eval_dataset.json` | 입력 데이터셋: `question`, `ground_truth`, 그리고 `models` dict(답변이 채워질 자리) 포함. |
-| `eval_results.csv` | 논문에 활용할 최종 결과 테이블. |
+## 응답 생성과 평가
 
----
-## 📊 구현된 평가 지표
-| 지표 | 얻는 방법 | 의미 |
-|------|----------|------|
-| **Opus Score** (Claude) | `evaluate.py`가 LangChain 프롬프트(164‑191줄)를 구성하고 JSON 파서를 통해 `EvalResult` 객체로 파싱합니다. 점수는 1‑5 정수. | **전체 답변 품질**을 LLM(Claude) 관점에서 평가(정확성, 완전성, 어조, 환각 포함). |
-| **ROUGE‑L** | `calculate_rouge_l`(62‑74줄)에서 `rouge_score` 라이브러리 사용. | **표면적인 어휘 겹침**을 측정하여 정답과의 내용 일치 정도를 반영. |
-| **RAGAS Faithfulness / Context Precision** | `eval_dataset.json`의 `contexts`에 답변에 사용된 검색 문맥을 저장하고 `ragas.evaluate`로 계산합니다. | 문맥이 없는 기존 답변은 공란으로 둡니다. |
-| **Human correlation** | `human_evaluation.csv`의 평가자 점수 평균과 Opus Score 간 Pearson·Spearman을 계산합니다. | 최초 실행 때 빈 템플릿이 생성되며, 실제 평가 점수 입력 후 계산됩니다. |
-| **통계 검정** | One-way ANOVA, 질문별 paired t-test, Bonferroni 보정 p값, paired Cohen's d. | 결과는 로그와 `statistical_tests.csv`에 저장됩니다. |
+교수자용 합성 평가 데이터 초안은 다음 명령으로 재생성합니다. 기본 출력은 기존 파일을 덮어쓰지 않는 `professor_eval_dataset_v3.json`입니다. 시나리오와 학생 질문 묶음은 실제 수강생 자료가 아니므로 교수자 검토 및 학습·평가 데이터 중복 검토 후 분석에 사용하세요.
 
-두 지표는 각각 질문‑답변마다(266‑291줄) 로그로 출력되고, 구성별 평균으로 요약됩니다(296‑302줄).
-
----
-## ▶️ 파이프라인 실행 방법
 ```bash
-# 1️⃣ 가상환경 활성화 & API 키 로드
-source .venv/bin/activate
-export $(cat four-leaf-AI/.env | xargs)   # ANTHROPIC_API_KEY 등
-
-# 2️⃣ 네 가지 구성 모두에 대한 답변 생성 (기본)
-python -m four_leaf_AI.eval.generate_answers   # 옵션: --mode base|rag|lora|rag_lora
-
-# 3️⃣ 평가 실행
-python -m four_leaf_AI.eval.evaluate
-```
-명령을 수행하면 `eval_results.csv` 파일이 동일 폴더에 생성됩니다.
-
----
-## 📑 논문에 포함할 내용
-| 섹션 | 제안 내용 |
-|------|----------|
-| **데이터셋 설명** | 질문 수(현재 30개), 정답 출처, 각 질문에 네 가지 어댑터 답변이 존재함을 기술. |
-| **자동 평가 지표** | **평균 Opus Score**와 **평균 ROUGE‑L**을 표(Table 1) 형태로 보고. 사용한 Claude 모델 버전(`claude-3-opus-20240229`) 명시. |
-| **통계적 비교** | Opus Score에 대한 **ANOVA** 혹은 **pairwise t‑test** 결과를 제시해 구성 간 유의미한 차이를 입증. (현재 코드에 미구현 – 아래 *권고사항* 참고) |
-| **인간‑AI 상관관계** | 인간 평가(`human_evaluation.csv`)와 Opus Score 간 **Pearson / Spearman** 상관계수와 95 % CI를 보고. (미구현) |
-| **판정자 간 일관성** | 인간 평점에 대한 **Fleiss’ Kappa**와 p‑값 제시. (미구현) |
-| **시각화** | 구성별 평균 Opus/ROUGE‑L 바 차트, Opus vs. 인간 점수 산점도, 구성별 ROUGE‑L 박스플롯 등. 현재 자동 생성 코드는 없으므로 추가 필요. |
-
----
-## ✅ 현재 지표 적합성 평가
-| 지표 | 논문에 적합? | 비고 |
-|------|-------------|------|
-| Opus Score | ✅ | AI‑튜터 품질을 종합적으로 평가하는 핵심 지표. |
-| ROUGE‑L | ✅ (주의 필요) | 표면적 겹침만 반영하므로 보조 지표로 활용. |
-| 인간‑AI 상관관계 | ❌ *미구현* | “Claude Opus 점수가 인간 평가와 0.82 이상 상관한다”는 주장을 뒷받침하려면 추가 구현 필요. |
-| Fleiss’ Kappa | ❌ *미구현* | 인간 평점의 신뢰성을 보여주려면 필요. |
-| 통계적 유의성 검사 (ANOVA, t‑test, 효과크기) | ❌ *미구현* | 구성 간 차이를 실증하려면 반드시 포함해야 함. |
-| 시각화 (그래프) | ❌ *미구현* | 논문에 그림이 요구되므로 자동 생성 로직을 추가하는 것이 바람직. |
-
-핵심 자동 지표는 적절하지만, **인간 평가와의 상관관계, 판정자 간 일관성, 통계적 검정, 시각화**가 현재 파이프라인에 없으므로 보강이 필요합니다.
-
----
-## 📈 권고사항 – 추가·제거 항목
-### 추가
-1. **인간‑AI 상관관계**
-   - `human_evaluation.csv`(칼럼: `question_id`, `rater_id`, `score`)를 읽어 `scipy.stats.bootstrap`으로 Pearson·Spearman 계수를 95 % CI와 함께 계산.
-2. **판정자 간 일관성**
-   - `statsmodels.stats.inter_rater.fleiss_kappa`를 이용해 Fleiss’ Kappa와 p‑값을 산출.
-3. **통계 검정**
-   - Opus Score에 대한 일원 ANOVA를 수행하고, 사후 검정으로 Bonferroni 보정된 pairwise t‑test와 Cohen’s d 효과크기를 보고.
-4. **시각화 자동 생성** (PNG 저장)
-   - 구성별 평균 Opus ± 95 % CI 바 차트.
-   - Opus vs. 인간 평균 점수 산점도(회귀선 포함).
-   - 구성별 ROUGE‑L 박스플롯.
-5. **추가 지표 (선택)** – Faithfulness 혹은 Hallucination 여부를 Claude 프롬프팅에 추가하고, Boolean 필드로 파싱.
-
-### 제거 / 단순화
-- 인간 평가를 수집하지 않을 경우, 논문에서 상관관계·Kappa 섹션을 완전히 삭제하고 자동 지표만 기술.
-- 현재 `evaluate.py`가 출력하는 Claude 사유(`reason`)는 필요에 따라 정성적 분석에만 활용하고, 표에는 포함하지 않아도 무방.
-
----
-## 📂 디렉터리 구조 (README 포함 후)
-```
-four-leaf-AI/
-└─ eval/
-   ├─ generate_answers.py      # 답변 생성 (네 구성)
-   ├─ evaluate.py             # Claude 평가 + ROUGE‑L, CSV 출력
-   ├─ eval_dataset.json       # 입력 데이터셋
-   ├─ eval_results.csv        # 출력 테이블 (논문에 바로 활용)
-   ├─ README.md               # **이 파일**
-   └─ (향후) *.png            # 권고사항에 따라 자동 생성되는 그림 파일
+python eval/generate_professor_eval_dataset.py
 ```
 
----
-## 🛠️ 빠른 시작 체크리스트
-- [ ] `requirements.txt`에 명시된 파이썬 패키지 설치 (`pip install -r requirements.txt`).
-- [ ] Ollama가 실행 중인지 확인 (`ollama serve`).
-- [ ] RAG FastAPI 서비스가 `http://localhost:8000/qa`에서 동작하는지 확인.
-- [ ] `four-leaf-AI/.env`에 `ANTHROPIC_API_KEY`(및 필요시 `ANTHROPIC_MODEL`) 설정.
-- [ ] 위 **파이프라인 실행 방법** 순서대로 실행.
-- [ ] 논문에 넣을 통계·시각화 코드를 *권고사항*에 따라 `evaluate.py`에 추가.
+각 요청은 서로 다른 수업 준비·과제 운영·평가·접근성·소통 지원 작업을 요청합니다. 모델 응답 생성기는 `student_questions`를 프롬프트에 포함해야 합니다.
 
----
-*작성자: Antigravity 코딩 어시스턴트*
+먼저 두 어댑터를 다음 위치에 둡니다. 각 디렉터리에는 PEFT 형식의 `adapter_config.json`과 `adapter_model.safetensors`(또는 `adapter_model.bin`)가 있어야 합니다. `adapter_config.json`의 `base_model_name_or_path`는 두 어댑터 모두 `meta-llama/Llama-3.1-8B-Instruct`이며 `VLLM_BASE_MODEL`도 이 값으로 맞춥니다. 현재 rank는 16입니다.
+
+```text
+four-leaf-AI/models/student-lora/adapter_student_llama/
+four-leaf-AI/models/professor-lora/adapter_professor_llama/
+```
+
+vLLM은 두 폴더를 `student-lora`, `professor-lora`라는 모델명으로 등록합니다. NVIDIA GPU가 있는 Linux Docker host에서 저장소 루트 기준으로 서비스를 시작합니다.
+
+```bash
+cd four-leaf-infra
+# 처음 한 번만: .env.dev.example을 복사하고 필요한 API 키를 채움
+cp .env.dev.example .env.dev
+docker compose -f docker-compose.dev.yml --profile gpu up -d --build
+```
+
+RAG 검색은 키워드 라우팅 없이 공지·강의계획서 두 컬렉션에서 cosine 거리 상위 5개 청크를 가져옵니다(에브리타임 강의평 제외). vLLM과 AI/RAG 서비스가 준비되면 `four-leaf-AI/`에서 생성·평가를 실행합니다. 생성기는 vLLM `/v1/models`에서 base와 두 어댑터가 등록됐는지 확인하고, 준비 전이면 최대 3분 대기합니다.
+
+```bash
+python eval/generate_answers.py --dataset student_eval_dataset.json
+python eval/evaluate.py
+```
+
+평가할 JSON은 `EVAL_DATASET_PATH`로 선택할 수 있습니다.
+
+```bash
+EVAL_DATASET_PATH=eval/professor_eval_dataset.json python eval/evaluate.py
+```
+
+RAGAS는 `ANTHROPIC_API_KEY`로 Claude를 평가 LLM으로 사용합니다. RAGAS 점수는 해당 응답의 검색 문맥이 저장되어 있을 때만 계산됩니다. 모델 응답이 비어 있거나 `[ERROR]`로 시작하면 평가에서 제외됩니다.
+
+## 자동 생성되는 CSV
+
+| 파일 | 내용 |
+|---|---|
+| `student_eval_results.csv` / `professor_eval_results.csv` | 문항별 모델 응답, Claude 평가 항목별 점수, ROUGE-L, RAGAS, 환각 여부, 생성 latency |
+| `student_condition_summary.csv` / `professor_condition_summary.csv` | 조건별(학생은 주제별 포함) 평균·표준편차·중앙값·사분위수·95% 신뢰구간 |
+| `student_hypothesis_tests.csv` / `professor_hypothesis_tests.csv` | 사전 지정 대비의 paired t-test, Wilcoxon, Holm 보정 p값, 평균차, Cohen's dz, 신뢰구간. human 점수가 있으면 사람 평가 결과도 포함 |
+| `student_human_scores_by_item.csv` / `professor_human_scores_by_item.csv` | 문항·모델·평가 차원별 평가자 평균 |
+| `student_human_rater_agreement.csv` / `professor_human_rater_agreement.csv` | 평가자 점수가 충분히 입력된 경우 Fleiss’ kappa |
+| `student_human_judge_correlation.csv` / `professor_human_judge_correlation.csv` | 사람 점수와 Claude 점수의 Pearson·Spearman 상관, p값 및 문항 단위 bootstrap 신뢰구간 |
+
+학생용 가설 검정은 Base의 RAG 효과, RAG 없는 Student LoRA 효과, 결합 조건 대 Base, RAG×Student LoRA 상호작용, Professor LoRA의 학생 질문 전이, 두 역할 LoRA 차이를 계산합니다. 교수용은 Professor LoRA 개선, Student LoRA 전이, 두 어댑터 차이를 계산합니다. 출력되는 모든 쌍별 통계가 연구 가설은 아니므로, 논문에는 사전에 정한 주요 대비를 중심으로 보고합니다.
+
+## 사람 평가 (학생용)
+
+학생용 인간평가는 **정확성(1~5)과 응답 유형(1 정답·부분정답 / 2 답변 유보 / 3 다른 학기 정보 사용 / 4 근거 없는 사실 날조)** 두 가지만 기록합니다. 기준과 절차는 [HUMAN_EVAL_GUIDE.md](HUMAN_EVAL_GUIDE.md)를 따릅니다.
+
+```bash
+python eval/human_eval.py sheet     # 맹검 시트·템플릿·키 생성 (응답 생성 완료 후)
+python eval/human_eval.py analyze   # eval/human_eval/ratings/*.csv 분석
+```
+
+분석 결과(`student_human_by_item.csv`, `student_human_summary.csv`, `student_human_tests.csv`, `student_human_agreement.csv`)는 `eval/human_eval/`에 저장됩니다. 이전 형식의 `student_human_evaluation.csv`(정확성·유용성·간결성·유창성)는 v2 30문항 평가 기록으로 남겨 둡니다.
+
+## 해석 범위
+
+Claude 채점은 자동 보조 평가이며 논문 주장의 유일한 근거로 사용하지 않습니다. 사람 평가를 주요 결과로 보고, 평가자 간 일치도와 사전 지정 통계 대비를 함께 확인하세요. latency는 생성 API 왕복시간을 저장하며 평가자 호출 시간과 구분합니다. 생성 latency가 없는 기존 응답은 요약에서 제외됩니다.
+
+현재 `generate_answers.py`는 학생 질문 생성 경로입니다. 교수용 평가를 실행하려면 교수용 세 조건의 응답을 같은 문항 ID로 `professor_eval_dataset.json`의 `models`에 채운 뒤 `EVAL_DATASET_PATH`로 지정합니다.

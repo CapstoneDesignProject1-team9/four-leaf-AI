@@ -49,14 +49,19 @@ def search(args):
     embedder = engine.Embedder(args.device, args.cache_dir, meta["model_revision"], args.offline)
     results = collection.query(
         query_embeddings=embedder.encode([args.question]),
-        n_results=min(args.top_k, count), where=where,
+        n_results=min(args.top_k, count),
+        where=where,
         include=["documents", "metadatas", "distances"],
     )
-    for index, (text, metadata, distance) in enumerate(zip(
-        results["documents"][0], results["metadatas"][0], results["distances"][0]
-    ), 1):
-        print(f"\n[{index}] {metadata.get('course_name', '')} / {metadata.get('professor') or '교수 미표기'}")
-        print(f"학기: {metadata.get('semester', '')} / 별점: {metadata.get('rating')} / 추천: {metadata.get('recommendation_count')}")
+    for index, (text, metadata, distance) in enumerate(
+        zip(results["documents"][0], results["metadatas"][0], results["distances"][0]), 1
+    ):
+        print(
+            f"\n[{index}] {metadata.get('course_name', '')} / {metadata.get('professor') or '교수 미표기'}"
+        )
+        print(
+            f"학기: {metadata.get('semester', '')} / 별점: {metadata.get('rating')} / 추천: {metadata.get('recommendation_count')}"
+        )
         print(f"거리: {distance:.4f} (낮을수록 유사, 정답 확률 아님)")
         print(f"리뷰 문서: {metadata.get('document_id')} / 출처: {metadata.get('url')}\n{text}")
     if not results["ids"][0]:
@@ -73,7 +78,9 @@ def main(argv=None):
     parser.add_argument("--device", choices=["cpu", "cuda"], default="cpu")
     parser.add_argument("--batch-size", type=int, default=8)
     parser.add_argument("--top-k", type=int, default=5)
-    parser.add_argument("--offline", action="store_true", help="기존 모델 캐시만 사용, 다운로드 금지")
+    parser.add_argument(
+        "--offline", action="store_true", help="기존 모델 캐시만 사용, 다운로드 금지"
+    )
     parser.add_argument("--course-name", help="검색 시 과목명 정확 일치 필터")
     parser.add_argument("--professor", help="검색 시 교수명 정확 일치 필터")
     args = parser.parse_args(argv)
@@ -95,7 +102,9 @@ def main(argv=None):
             try:
                 handle = lock.open("x", encoding="utf-8")
             except FileExistsError as exc:
-                raise ValueError("에타 index 잠금 파일이 있습니다. 다른 작업 종료 여부를 먼저 확인하세요.") from exc
+                raise ValueError(
+                    "에타 index 잠금 파일이 있습니다. 다른 작업 종료 여부를 먼저 확인하세요."
+                ) from exc
             try:
                 with handle:
                     handle.write("Everytime index in progress. Do not run concurrent writers.\n")
@@ -107,7 +116,9 @@ def main(argv=None):
     except ImportError as exc:
         parser.exit(1, f"필수 패키지 없음: {exc}. requirements-embedding.txt를 설치하세요.\n")
     except KeyboardInterrupt:
-        parser.exit(130, "\n중단했습니다. 같은 index 명령으로 저장된 배치부터 재개할 수 있습니다.\n")
+        parser.exit(
+            130, "\n중단했습니다. 같은 index 명령으로 저장된 배치부터 재개할 수 있습니다.\n"
+        )
     except (ValueError, OSError) as exc:
         parser.exit(1, f"실행 실패: {exc}\n")
     return 0

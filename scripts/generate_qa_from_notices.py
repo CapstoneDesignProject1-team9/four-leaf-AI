@@ -124,11 +124,10 @@ def make_anthropic_generator(model_name):
     """generate_qa.py 와 같은 프롬프트/스키마로 Claude 모델을 호출하는 생성 함수."""
     import logging
 
+    from generate_qa import QADataset
     from langchain_anthropic import ChatAnthropic
     from langchain_core.output_parsers import JsonOutputParser
     from langchain_core.prompts import ChatPromptTemplate
-
-    from generate_qa import QADataset
 
     logger = logging.getLogger("generate_qa_from_notices")
     llm = ChatAnthropic(model=model_name, max_tokens=2048)
