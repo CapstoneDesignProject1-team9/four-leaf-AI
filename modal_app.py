@@ -1,7 +1,8 @@
 """Serve the Llama 3.1 base model and the student LoRA on Modal with vLLM.
 
-The API is OpenAI-compatible. Pass ``base-model`` or ``student-lora`` as the
-request's ``model`` value.
+The API is OpenAI-compatible. Pass ``meta-llama/Llama-3.1-8B-Instruct``
+(same as the app's ``VLLM_BASE_MODEL``) or ``student-lora`` as the request's
+``model`` value.
 """
 
 import subprocess
@@ -79,8 +80,9 @@ class LlamaServer:
             "0.0.0.0",
             "--port",
             str(PORT),
+            # 앱의 VLLM_BASE_MODEL, 로컬 docker-compose vLLM과 같은 이름으로 서빙한다.
             "--served-model-name",
-            "base-model",
+            BASE_MODEL,
             "--enable-lora",
             "--max-loras",
             "1",
