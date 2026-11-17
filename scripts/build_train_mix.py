@@ -1,10 +1,13 @@
 """Build a mixed SFT set: notices/syllabi/out-of-scope (new) + cleaned reviews (subsampled)."""
+
 import argparse
 import json
 import random
 import re
 
-JUNK = re.compile(r"scanned_|completeness|unverified|리뷰 요소 없음|수집을 시도|로딩 지연|화면 변경 여부")
+JUNK = re.compile(
+    r"scanned_|completeness|unverified|리뷰 요소 없음|수집을 시도|로딩 지연|화면 변경 여부"
+)
 OPENING = "후기에 따르면"
 
 
