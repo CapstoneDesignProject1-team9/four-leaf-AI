@@ -385,7 +385,12 @@ async def classify_posts(posts: list[dict]) -> dict[str, str]:
                 category = NONE_LABEL
             cache[post["post_id"]] = category
             with open(CLASSIFY_CACHE_PATH, "a", encoding="utf-8") as f:
-                f.write(json.dumps({"post_id": post["post_id"], "category": category}, ensure_ascii=False) + "\n")
+                f.write(
+                    json.dumps(
+                        {"post_id": post["post_id"], "category": category}, ensure_ascii=False
+                    )
+                    + "\n"
+                )
 
     await asyncio.gather(*(one(p) for p in todo))
     return cache
@@ -402,7 +407,9 @@ def notice_pairs(body_len: int) -> int:
     return 5
 
 
-def build_items(posts: list[dict], categories: dict[str, str], syllabi: list[dict]) -> dict[str, list]:
+def build_items(
+    posts: list[dict], categories: dict[str, str], syllabi: list[dict]
+) -> dict[str, list]:
     items: dict[str, list] = {c: [] for c in BUCKETS}
     for p in posts:
         cat = categories.get(p["post_id"])
@@ -818,7 +825,9 @@ def plan_quotas(items: dict[str, list]) -> dict[str, int]:
     extra = {**category_extra, ABSTAIN_LABEL: abstain_extra}
     logger.info("범주별 현황 (문서 수 / 예상 생성 가능량 / 이번 목표 추가량)")
     for c in BUCKETS:
-        logger.info(f"  {c:10s} 문서 {len(items[c]):4d} | 가능 {pair_capacity[c]:4d} | 목표 +{extra[c]:4d}")
+        logger.info(
+            f"  {c:10s} 문서 {len(items[c]):4d} | 가능 {pair_capacity[c]:4d} | 목표 +{extra[c]:4d}"
+        )
     if sum(pair_capacity[c] for c in CATEGORIES) < total_left - abstain_extra:
         logger.warning(
             f"원본 양이 부족해 목표보다 적게 생성될 수 있습니다 (범주 가능량 합계 {sum(pair_capacity[c] for c in CATEGORIES)}개)"
@@ -852,9 +861,13 @@ async def main():
 
     posts = load_notice_posts(load_exclude_ids())
     syllabi = load_syllabi()
-    logger.info(f"사용 가능한 공지 {len(posts)}개(post_id 기준, OCR 경고·짧은 글 제외), 강의계획서 {len(syllabi)}개")
+    logger.info(
+        f"사용 가능한 공지 {len(posts)}개(post_id 기준, OCR 경고·짧은 글 제외), 강의계획서 {len(syllabi)}개"
+    )
     if not posts and not syllabi:
-        logger.error(f"원본이 없습니다. {DATA_DIR} 아래에 *notices*.jsonl, *syllabus*.jsonl이 있는지 확인하세요")
+        logger.error(
+            f"원본이 없습니다. {DATA_DIR} 아래에 *notices*.jsonl, *syllabus*.jsonl이 있는지 확인하세요"
+        )
         return
 
     if TEST_MODE:
