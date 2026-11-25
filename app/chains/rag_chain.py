@@ -11,11 +11,13 @@ from pathlib import Path
 from typing import Any
 
 import chromadb
+import numpy as np
 from chromadb.config import Settings
 from langchain_core.documents import Document
 from langchain_openai import ChatOpenAI
 from sentence_transformers import SentenceTransformer
 
+from app.chains.lexical import Bm25Index
 from app.chains.semester import Term, current_term, parse_question, parse_title
 from app.core.config import settings
 
@@ -24,6 +26,9 @@ logger = logging.getLogger(__name__)
 _notice_collection: Any | None = None
 _syllabi_collection: Any | None = None
 _embedder: Any | None = None
+_lexical: tuple[Bm25Index, list[tuple[Any, str, str, dict]]] | None = (
+    None  # 색인, (컬렉션, id, 본문, 메타)
+)
 
 
 class BgeM3Embedder:
@@ -113,7 +118,7 @@ def _open_collection(db_path: Path, collection_name: str, corpus_name: str) -> A
 
 
 async def init_vectorstore() -> None:
-    global _notice_collection, _syllabi_collection, _embedder
+    global _notice_collection, _syllabi_collection, _embedder, _lexical
     notice_db_path = Path(settings.CHROMA_PERSIST_DIR)
     if not notice_db_path.is_dir():
         raise RuntimeError(
@@ -135,11 +140,25 @@ async def init_vectorstore() -> None:
 
     embedder = BgeM3Embedder()
     embedder.load()
-    _notice_collection, _syllabi_collection, _embedder = (
+    lexical = _build_lexical([c for c in (notice_collection, syllabi_collection) if c is not None])
+    _notice_collection, _syllabi_collection, _embedder, _lexical = (
         notice_collection,
         syllabi_collection,
         embedder,
+        lexical,
     )
+
+
+def _build_lexical(collections: list[Any]) -> tuple[Bm25Index, list[tuple[Any, str, str, dict]]]:
+    docs: list[tuple[Any, str, str, dict]] = []
+    for collection in collections:
+        got = collection.get(where={"active": True}, include=["documents", "metadatas"])
+        docs.extend(
+            (collection, i, text, metadata)
+            for i, text, metadata in zip(got["ids"], got["documents"], got["metadatas"])
+        )
+    logger.info("키워드(BM25) 색인 준비 완료: %s개 청크", len(docs))
+    return Bm25Index([text for _, _, text, _ in docs]), docs
 
 
 def _ready() -> tuple[Any, Any | None, BgeM3Embedder]:
@@ -167,7 +186,10 @@ def _search_collection(collection: Any, vector: list[float], top_k: int) -> list
 CANDIDATE_FACTOR = 4
 # 기준 학기 자료가 빠진 다른 학기 자료보다 이만큼(cosine 거리)까지 멀어도 같은 주제로 본다.
 RELEVANCE_MARGIN = 0.05
-MAX_TERM_OPTIONS = 3  # 되물을 때 보여줄 학기 수
+MAX_TERM_OPTIONS = 3
+MAX_CHUNKS_PER_SOURCE = (
+    2  # top_k 안에서 한 공지·강의계획서가 차지할 수 있는 청크 수  # 되물을 때 보여줄 학기 수
+)
 
 
 @dataclass
@@ -206,23 +228,96 @@ def _excluded(term: Term | None, target: Term, explicit: bool) -> bool:
     return not target.matches(term)
 
 
+def search_candidates(vector: list[float]) -> list[Document]:
+    """두 컬렉션에서 학기 필터 전 후보를 cosine 거리순으로 가져온다."""
+    notice_collection, syllabi_collection, _ = _ready()
+    n = settings.RAG_TOP_K * CANDIDATE_FACTOR
+    candidates = _search_collection(notice_collection, vector, n)
+    if syllabi_collection is not None:
+        candidates.extend(_search_collection(syllabi_collection, vector, n))
+    candidates.sort(key=lambda d: d.metadata["distance"])
+    return candidates
+
+
+def merge_candidates(*lists: list[Document]) -> list[Document]:
+    """같은 청크는 더 가까운 거리 하나만 남기고 거리순으로 합친다."""
+    best: dict[str, Document] = {}
+    for doc in (d for docs in lists for d in docs):
+        key = doc.page_content
+        if key not in best or doc.metadata["distance"] < best[key].metadata["distance"]:
+            best[key] = doc
+    return sorted(best.values(), key=lambda d: d.metadata["distance"])
+
+
+def gather_candidates(question: str, target: Term, explicit: bool) -> list[Document]:
+    """벡터 검색과 키워드(BM25) 검색 결과를 순위 융합(RRF)으로 합친다.
+
+    - 학기를 말하지 않은 질문은 기준 학기를 붙여 한 번 더 벡터 검색한다. 수강신청처럼 학기마다
+      비슷한 공지가 수십 개면 최신 학기 공지가 후보에 들지 못하기 때문이다.
+    - 키워드 검색은 공지 제목·과목명이 그대로 겹치는 자료를 보완한다.
+    """
+    _, _, embedder = _ready()
+    vector = embedder.embed_query(question)
+    dense = search_candidates(vector)
+    if not explicit:
+        with_term = search_candidates(embedder.embed_query(f"{question} {target.label()}"))
+        dense = merge_candidates(dense, with_term)
+    return fuse_rankings(dense, _lexical_candidates(question, vector, target, explicit))
+
+
+def _lexical_candidates(
+    question: str, vector: list[float], target: Term, explicit: bool
+) -> list[Document]:
+    """BM25 상위 자료 중 기준 학기에 맞는 것. 학기 판정에 쓰도록 실제 cosine 거리를 붙인다."""
+    if _lexical is None:
+        return []
+    index, docs = _lexical
+    n = settings.RAG_TOP_K * CANDIDATE_FACTOR
+    picked = [
+        docs[i]
+        for i in index.search(question, n * 3)
+        if not _excluded(doc_term(Document(page_content="", metadata=docs[i][3])), target, explicit)
+    ][:n]
+    query = np.asarray(vector)
+    distance: dict[tuple[int, str], float] = {}
+    for collection in {id(c): c for c, _, _, _ in picked}.values():
+        got = collection.get(
+            ids=[i for c, i, _, _ in picked if c is collection], include=["embeddings"]
+        )
+        distance.update(
+            ((id(collection), i), float(1 - np.dot(query, e)))
+            for i, e in zip(got["ids"], got["embeddings"])
+        )
+    return [
+        Document(page_content=text, metadata={**metadata, "distance": distance[(id(c), i)]})
+        for c, i, text, metadata in picked
+    ]
+
+
+def fuse_rankings(*rankings: list[Document], k: int = 60) -> list[Document]:
+    """Reciprocal Rank Fusion. 같은 청크는 거리가 가까운 쪽 메타데이터를 쓴다."""
+    score: dict[str, float] = {}
+    docs: dict[str, Document] = {}
+    for ranking in rankings:
+        for rank, doc in enumerate(ranking):
+            key = doc.page_content
+            score[key] = score.get(key, 0.0) + 1 / (k + rank)
+            if key not in docs or doc.metadata["distance"] < docs[key].metadata["distance"]:
+                docs[key] = doc
+    return sorted(docs.values(), key=lambda d: -score[d.page_content])
+
+
 def retrieve(question: str, today: date | None = None) -> Retrieval:
     """공지·강의계획서 두 컬렉션을 함께 검색하고 기준 학기와 다른 학기 자료를 거른다.
 
     두 컬렉션은 같은 BGE-M3(정규화) 임베딩과 cosine 공간을 쓰므로 거리를 그대로 비교할 수 있다.
     기준 학기는 질문에 학기가 있으면 그 학기, 없으면 현재 학기다.
     """
-    notice_collection, syllabi_collection, embedder = _ready()
-    vector = embedder.embed_query(question)
-    n = settings.RAG_TOP_K * CANDIDATE_FACTOR
-    candidates = _search_collection(notice_collection, vector, n)
-    if syllabi_collection is not None:
-        candidates.extend(_search_collection(syllabi_collection, vector, n))
-    candidates.sort(key=lambda d: d.metadata["distance"])
-
-    candidates, section_options = pick_section(candidates, question)
     asked = parse_question(question, today)
-    retrieval = filter_by_term(candidates, asked or current_term(today), asked is not None)
+    target = asked or current_term(today)
+    candidates = gather_candidates(question, target, asked is not None)
+    candidates, section_options = pick_section(candidates, question)
+    retrieval = filter_by_term(candidates, target, asked is not None)
     retrieval.section_options = section_options
     return retrieval
 
@@ -282,7 +377,10 @@ def clarify(retrieval: Retrieval) -> tuple[str, list[str]] | None:
             retrieval.section_options,
         )
     if retrieval.top_excluded and not retrieval.has_target and retrieval.other_terms:
-        terms = sorted(retrieval.other_terms, key=Term.order, reverse=True)[:MAX_TERM_OPTIONS]
+        terms = retrieval.other_terms
+        # '겨울계절학기'처럼 콕 집어 물었으면 다른 해의 같은 학기를 먼저 보여준다.
+        same = [t for t in terms if retrieval.explicit and t.season == retrieval.target.season]
+        terms = sorted(same or terms, key=Term.order, reverse=True)[:MAX_TERM_OPTIONS]
         ask = (
             "아래 학기 자료로 알려드릴까요?"
             if retrieval.explicit
@@ -293,6 +391,21 @@ def clarify(retrieval: Retrieval) -> tuple[str, list[str]] | None:
             [t.label() for t in terms],
         )
     return None
+
+
+def _limit_per_source(docs: list[Document], top_k: int) -> list[Document]:
+    """한 공지의 청크가 top_k를 다 차지하지 않도록 자료당 MAX_CHUNKS_PER_SOURCE개까지만 고른다."""
+    picked: list[Document] = []
+    counts: dict[str, int] = {}
+    for doc in docs:
+        source = str(doc.metadata.get("url") or doc.page_content)
+        if counts.get(source, 0) >= MAX_CHUNKS_PER_SOURCE:
+            continue
+        counts[source] = counts.get(source, 0) + 1
+        picked.append(doc)
+        if len(picked) == top_k:
+            break
+    return picked
 
 
 def filter_by_term(candidates: list[Document], target: Term, explicit: bool) -> Retrieval:
@@ -311,7 +424,7 @@ def filter_by_term(candidates: list[Document], target: Term, explicit: bool) -> 
         best_excluded = min(best_excluded, doc.metadata["distance"])
         if term is not None and term not in others:
             others.append(term)
-    kept = kept[:top_k]
+    kept = _limit_per_source(kept, top_k)
     # 강의계획서처럼 주제가 다른 기준 학기 자료만 있으면 기준 학기 자료가 없는 것으로 본다.
     has_target = any(
         (t := doc_term(d))

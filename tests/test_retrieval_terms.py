@@ -1,7 +1,7 @@
 import pytest
 from langchain_core.documents import Document
 
-from app.chains.rag_chain import clarify, filter_by_term, pick_section
+from app.chains.rag_chain import clarify, filter_by_term, merge_candidates, pick_section
 from app.chains.semester import Term
 
 NOW = Term(2026, "2")
@@ -95,3 +95,11 @@ def test_clarify_semester_when_target_missing():
     text, options = clarify(filter_by_term([close, older], NOW, explicit=False))
     assert "2026학년도 2학기 자료는 찾지 못했어요" in text
     assert options == ["2025학년도 1학기", "2021학년도 2학기"]
+
+
+def test_merge_candidates_keeps_closest_copy():
+    a = Document(page_content="x", metadata={"distance": 0.3})
+    b = Document(page_content="x", metadata={"distance": 0.2})
+    c = Document(page_content="y", metadata={"distance": 0.25})
+    merged = merge_candidates([a, c], [b])
+    assert [(d.page_content, d.metadata["distance"]) for d in merged] == [("x", 0.2), ("y", 0.25)]

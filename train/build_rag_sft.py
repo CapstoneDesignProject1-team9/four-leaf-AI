@@ -5,6 +5,7 @@
 - 정답 공지가 자료에 있으면(기본 80%) → 그 자료로 답하고,
 - 정답 공지를 빼고 관련 없는 자료만 남기면(20%) → 거절하도록
 가르친다. 정답 공지는 QA 쌍을 만든 원문 URL로 찾는다.
+검색 자료는 서빙(rag_chain.retrieve)과 같은 학기·분반 필터를 거친다.
 
 실행 (프로젝트 루트, 벡터 DB와 임베딩 모델이 있는 곳):
     python train/build_rag_sft.py
@@ -19,6 +20,7 @@ import json
 import random
 import re
 import sys
+from datetime import date
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -26,6 +28,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from langchain_core.documents import Document  # noqa: E402
 
 from app.chains import rag_chain  # noqa: E402
+from app.chains.semester import Term, current_term, parse_question  # noqa: E402
 from app.core.config import settings  # noqa: E402
 
 REFUSAL = (
@@ -70,25 +73,51 @@ def make_example(
     return docs, answer
 
 
-def _retrieve(question: str, top_k: int, gold_url: str) -> tuple[list[Document], list[Document]]:
-    notice, syllabi, embedder = rag_chain._ready()
-    vector = embedder.embed_query(question)
-    # 정답 공지를 빼도 top_k가 남도록 넉넉히 가져온다.
-    docs = rag_chain._search_collection(notice, vector, top_k * 3)
-    if syllabi is not None:
-        docs += rag_chain._search_collection(syllabi, vector, top_k * 3)
-    docs.sort(key=lambda d: d.metadata["distance"])
+def serving_question(
+    question: str, gold_term: Term | None, today: date | None = None
+) -> tuple[str, Term, bool] | None:
+    """서빙에서 이 질문이 정답 공지에 닿는 모습으로 (질문, 기준 학기, 학기 명시 여부)를 만든다.
+
+    - 질문에 학기가 있으면 그대로. 정답 공지와 학기가 어긋나면 None(학습에서 뺀다).
+    - 학기가 없는데 정답 공지가 특정 학기 공지면, 서빙에서는 학기를 되물은 뒤
+      학생 답을 합친 질문('… 2025학년도 1학기')으로 답하므로 그 모습으로 만든다.
+    - 둘 다 아니면(학기 무관 공지) 현재 학기 기준 그대로.
+    """
+    asked = parse_question(question, today)
+    if asked is not None:
+        if gold_term is not None and rag_chain._excluded(gold_term, asked, True):
+            return None
+        return question, asked, True
+    if gold_term is not None and gold_term.season is not None:
+        return f"{question} {gold_term.label()}", gold_term, True
+    return question, current_term(today), False
+
+
+def _gold(vector: list[float], gold_url: str) -> list[Document]:
+    notice, _, _ = rag_chain._ready()
     result = notice.query(
         query_embeddings=[vector],
         n_results=MAX_GOLD,
         where={"$and": [{"url": gold_url}, {"active": True}]},
         include=["documents", "metadatas", "distances"],
     )
-    gold = [
+    return [
         Document(page_content=t, metadata={**m, "distance": float(d)})
         for t, m, d in zip(result["documents"][0], result["metadatas"][0], result["distances"][0])
     ]
-    return docs, gold
+
+
+def _distractors(
+    question: str, target: Term, explicit: bool, gold_url: str
+) -> tuple[list[Document], bool]:
+    """서빙과 같은 후보 검색·분반·학기 필터를 거친 top_k에서 정답 공지만 뺀 자료와,
+    서빙에서 정답 공지가 top_k에 들었는지."""
+    candidates = rag_chain.gather_candidates(question, target, explicit)
+    candidates, _ = rag_chain.pick_section(candidates, question)
+    served = rag_chain.filter_by_term(candidates, target, explicit).documents
+    others = [d for d in candidates if d.metadata.get("url") != gold_url]
+    distractors = rag_chain.filter_by_term(others, target, explicit).documents
+    return distractors, any(d.metadata.get("url") == gold_url for d in served)
 
 
 def main() -> None:
@@ -115,18 +144,30 @@ def main() -> None:
     val_urls = set(urls[: max(1, int(len(urls) * a.val_ratio))])
 
     rows = {"train": [], "val": []}
-    stats = {"eval_overlap": 0, "no_gold": 0, "answer": 0, "refusal": 0, "gold_in_top_k": 0}
+    stats = dict.fromkeys(
+        ["eval_overlap", "no_gold", "term_mismatch", "term_appended", "answer", "refusal"], 0
+    )
+    stats["gold_in_top_k"] = 0
     for i, (question, answer, url) in enumerate(pairs, 1):
         if normalize(question) in excluded:
             stats["eval_overlap"] += 1
             continue
-        retrieved, gold = _retrieve(question, top_k, url)
+        _, _, embedder = rag_chain._ready()
+        gold = _gold(embedder.embed_query(question), url)
         if not gold:  # 원문 공지가 현재 색인에 없음
             stats["no_gold"] += 1
             continue
-        stats["gold_in_top_k"] += any(d.metadata.get("url") == url for d in retrieved[:top_k])
+        served = serving_question(question, rag_chain.doc_term(gold[0]))
+        if served is None:
+            stats["term_mismatch"] += 1
+            continue
+        if served[0] != question:
+            stats["term_appended"] += 1
+        question, target, explicit = served
+        distractors, gold_hit = _distractors(question, target, explicit, url)
+        stats["gold_in_top_k"] += gold_hit
         docs, completion = make_example(
-            answer, retrieved, gold, url, rng.random() < a.p_oracle, rng, top_k
+            answer, distractors, gold, url, rng.random() < a.p_oracle, rng, top_k
         )
         stats["answer" if completion != REFUSAL else "refusal"] += 1
         rows["val" if url in val_urls else "train"].append(
