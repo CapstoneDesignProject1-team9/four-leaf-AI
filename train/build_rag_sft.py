@@ -174,6 +174,8 @@ def main() -> None:
             {
                 "prompt": [{"role": "user", "content": rag_chain.build_prompt(question, docs)}],
                 "completion": [{"role": "assistant", "content": completion}],
+                # 학습에는 쓰지 않는다. 답변을 다시 쓸 때 출처 표시에 쓴다.
+                "source": {"title": gold[0].metadata.get("title", ""), "url": url},
             }
         )
         if i % 50 == 0:
