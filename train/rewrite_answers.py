@@ -7,6 +7,9 @@ build_rag_sft.py가 만든 답변은 '~입니다/~요'가 섞이고 프롬프트
     python train/rewrite_answers.py sample --n 3      # 동기 호출로 몇 개 미리 보기
     python train/rewrite_answers.py submit            # 배치 제출 → data/rewrite_batch_id.txt
     python train/rewrite_answers.py collect           # 결과를 받아 rag_sft_*.jsonl 덮어쓰기
+API 없이 직접 다시 쓸 때:
+    python train/rewrite_answers.py export work.jsonl # 질문·원래 답변·출처만 뽑기
+    python train/rewrite_answers.py apply out.jsonl   # {"id", "text"} 줄을 검사 후 반영
 build_rag_sft.py를 다시 돌리면 답변이 원래대로 돌아가므로 이 스크립트도 다시 돌려야 한다.
 """
 
@@ -133,32 +136,83 @@ def collect() -> None:
     batch = client.messages.batches.retrieve(BATCH_ID_FILE.read_text().strip())
     if batch.processing_status != "ended":
         raise SystemExit(f"아직 처리 중: {batch.request_counts}")
+    _apply(
+        (r.custom_id, _text(r.result.message) if r.result.type == "succeeded" else None)
+        for r in client.messages.batches.results(batch.id)
+    )
+
+
+def export(path: str) -> None:
+    with open(path, "w", encoding="utf-8") as f:
+        for split, i, row in targets():
+            item = {
+                "id": f"{split}-{i}",
+                "question": row["prompt"][0]["content"].split("[질문]\n")[-1],
+                "answer": row["completion"][0]["content"],
+                **row.get("source", {}),
+            }
+            f.write(json.dumps(item, ensure_ascii=False) + "\n")
+
+
+def apply(paths: list[str]) -> None:
+    items = []
+    for path in paths:
+        with open(path, encoding="utf-8") as f:
+            items += [json.loads(line) for line in f if line.strip()]
+    _apply((item["id"], item["text"]) for item in items)
+
+
+def _finish(text: str, row: dict) -> str:
+    """굵은 글씨를 지우고, 출처 줄이 없으면 정답 공지 제목·URL로 붙인다."""
+    text = text.replace("**", "").strip()
+    source = row.get("source")
+    if source and "참고:" not in text:
+        text += f"\n\n참고: {source['title']} ({source['url']})"
+    return text
+
+
+def _apply(results) -> None:
+    """다시 쓴 답(없으면 원래 답)을 다듬어 반영한다. 검사에 걸리면 원래 답을 다듬어 쓴다."""
+    rewritten = {custom_id: text for custom_id, text in results if text}
     rows = {split: load(split) for split in SPLITS}
-    kept = replaced = 0
-    for result in client.messages.batches.results(batch.id):
-        split, i = result.custom_id.split("-")
-        row = rows[split][int(i)]
-        text = _text(result.result.message) if result.result.type == "succeeded" else None
-        issues = problems(text, row) if text else ["실패"]
-        if issues:  # 검사를 통과하지 못하면 원래 답변을 둔다.
-            kept += 1
-            print(f"  {result.custom_id}: 원래 답변 유지 ({', '.join(issues)})")
-            continue
-        row["completion"][0]["content"] = text
-        replaced += 1
+    counts = {"다시 씀": 0, "원래 답 유지(검사 실패)": 0, "원래 답 다듬기만": 0}
+    for split, items in rows.items():
+        for i, row in enumerate(items):
+            original = row["completion"][0]["content"]
+            if original == REFUSAL:
+                continue
+            custom_id = f"{split}-{i}"
+            final = _finish(rewritten.get(custom_id, original), row)
+            if custom_id not in rewritten:
+                counts["원래 답 다듬기만"] += 1
+            elif issues := problems(final, row):
+                print(f"  {custom_id}: 원래 답 유지 ({', '.join(issues)})")
+                final = _finish(original, row)
+                counts["원래 답 유지(검사 실패)"] += 1
+            else:
+                counts["다시 씀"] += 1
+            row["completion"][0]["content"] = final
     for split, items in rows.items():
         with open(_path(split), "w", encoding="utf-8") as f:
             for row in items:
                 f.write(json.dumps(row, ensure_ascii=False) + "\n")
-    print(f"다시 쓴 답변 {replaced}개, 원래 유지 {kept}개")
+    print(counts)
 
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("command", choices=["sample", "submit", "collect"])
+    ap.add_argument("command", choices=["sample", "submit", "collect", "export", "apply"])
+    ap.add_argument("files", nargs="*")
     ap.add_argument("--n", type=int, default=3)
     a = ap.parse_args()
-    {"sample": lambda: sample(a.n), "submit": submit, "collect": collect}[a.command]()
+    commands = {
+        "sample": lambda: sample(a.n),
+        "submit": submit,
+        "collect": collect,
+        "export": lambda: export(a.files[0]),
+        "apply": lambda: apply(a.files),
+    }
+    commands[a.command]()
 
 
 if __name__ == "__main__":
