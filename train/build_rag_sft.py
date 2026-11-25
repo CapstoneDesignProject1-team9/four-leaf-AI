@@ -116,13 +116,13 @@ def make_example(
     answer: str,
     retrieved: list[Document],
     gold: list[Document],
-    gold_url: str,
+    gold_key: str,
     with_oracle: bool,
     rng: random.Random,
     top_k: int,
 ) -> tuple[list[Document], str]:
     """검색 자료와 정답 문서로 학습용 (자료 목록, 정답 출력)을 만든다."""
-    distractors = [d for d in retrieved if d.metadata.get("url") != gold_url]
+    distractors = [d for d in retrieved if rag_chain.source_key(d) != gold_key]
     if not with_oracle:
         return distractors[:top_k], REFUSAL
     oracle = gold[:MAX_GOLD]
@@ -215,16 +215,16 @@ def _gold(vector: list[float], collection: str, where: dict) -> list[Document]:
 
 
 def _distractors(
-    question: str, target: Term, explicit: bool, gold_url: str
+    question: str, target: Term, explicit: bool, gold_key: str
 ) -> tuple[list[Document], bool]:
     """서빙과 같은 후보 검색·분반·학기 필터를 거친 top_k에서 정답 문서만 뺀 자료와,
     서빙에서 정답 문서가 top_k에 들었는지."""
     candidates = rag_chain.gather_candidates(question, target, explicit)
     candidates, _ = rag_chain.pick_section(candidates, question)
     served = rag_chain.filter_by_term(candidates, target, explicit).documents
-    others = [d for d in candidates if d.metadata.get("url") != gold_url]
+    others = [d for d in candidates if rag_chain.source_key(d) != gold_key]
     distractors = rag_chain.filter_by_term(others, target, explicit).documents
-    return distractors, any(d.metadata.get("url") == gold_url for d in served)
+    return distractors, any(rag_chain.source_key(d) == gold_key for d in served)
 
 
 def is_val(key: str, ratio: float) -> bool:
@@ -308,12 +308,12 @@ def main() -> None:
             question, target, explicit = served
             answer = rewrites.get(question, item.answer)
             stats["rewritten"] += question in rewrites
-            gold_url = gold[0].metadata.get("url", "")
-            distractors, gold_hit = _distractors(question, target, explicit, gold_url)
+            gold_key = rag_chain.source_key(gold[0])
+            distractors, gold_hit = _distractors(question, target, explicit, gold_key)
             stats["gold_in_top_k"] += gold_hit
             with_oracle = item.mode == "abstain_doc" or rng.random() < a.p_oracle
             docs, completion = make_example(
-                answer, distractors, gold, gold_url, with_oracle, rng, top_k
+                answer, distractors, gold, gold_key, with_oracle, rng, top_k
             )
             if completion != REFUSAL:
                 completion = with_source(completion, gold[0])
@@ -324,8 +324,11 @@ def main() -> None:
                 if completion != REFUSAL
                 else "refusal"
             ] += 1
-            group = gold_url
-            source = {"title": gold[0].metadata.get("title", ""), "url": gold_url}
+            group = gold_key
+            source = {
+                "title": gold[0].metadata.get("title", ""),
+                "url": gold[0].metadata.get("url", ""),
+            }
 
         rows["val" if is_val(group, a.val_ratio) else "train"].append(
             {

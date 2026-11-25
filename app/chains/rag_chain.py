@@ -393,12 +393,20 @@ def clarify(retrieval: Retrieval) -> tuple[str, list[str]] | None:
     return None
 
 
+def source_key(doc: Document) -> str:
+    """자료 하나를 가리키는 키. 강의계획서는 URL이 모두 같아 강좌번호로 구분한다."""
+    md = doc.metadata
+    if md.get("source_type") == "syllabus" and md.get("course_code"):
+        return str(md["course_code"])
+    return str(md.get("url") or doc.page_content)
+
+
 def _limit_per_source(docs: list[Document], top_k: int) -> list[Document]:
     """한 공지의 청크가 top_k를 다 차지하지 않도록 자료당 MAX_CHUNKS_PER_SOURCE개까지만 고른다."""
     picked: list[Document] = []
     counts: dict[str, int] = {}
     for doc in docs:
-        source = str(doc.metadata.get("url") or doc.page_content)
+        source = source_key(doc)
         if counts.get(source, 0) >= MAX_CHUNKS_PER_SOURCE:
             continue
         counts[source] = counts.get(source, 0) + 1
