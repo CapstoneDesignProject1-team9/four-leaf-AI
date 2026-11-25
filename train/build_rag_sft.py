@@ -94,6 +94,8 @@ def load_generated(path: str, url_by_wr_id: dict[str, str]) -> tuple[list[Item],
                 items.append(
                     Item(question, answer, mode, "syllabi", {"course_code": row["course_code"]})
                 )
+            elif doc_kind == "공지사항" and row.get("url"):
+                items.append(Item(question, answer, mode, "notice", {"url": row["url"]}))
             elif doc_kind == "공지사항" and str(row.get("post_id")) in url_by_wr_id:
                 url = url_by_wr_id[str(row["post_id"])]
                 items.append(Item(question, answer, mode, "notice", {"url": url}))
@@ -184,16 +186,18 @@ def serving_question(
     - 질문에 학기가 있으면 그대로. 정답 문서와 학기가 어긋나면 None(학습에서 뺀다).
     - 학기가 없는데 정답 문서가 특정 학기 문서면, 서빙에서는 학기를 되물은 뒤
       학생 답을 합친 질문('… 2025학년도 1학기')으로 답하므로 그 모습으로 만든다.
-    - 둘 다 아니면(학기 무관 문서) 현재 학기 기준 그대로.
+    - 둘 다 아니거나 정답 문서가 현재 학기 문서면 현재 학기 기준 그대로.
     """
     asked = parse_question(question, today)
     if asked is not None:
         if gold_term is not None and rag_chain._excluded(gold_term, asked, True):
             return None
         return question, asked, True
-    if gold_term is not None and gold_term.season is not None:
+    now = current_term(today)
+    # 현재 학기 문서면 서빙에서도 되묻지 않고 바로 답하므로 질문을 그대로 둔다.
+    if gold_term is not None and gold_term.season is not None and gold_term != now:
         return f"{question} {gold_term.label()}", gold_term, True
-    return question, current_term(today), False
+    return question, now, False
 
 
 def _gold(vector: list[float], collection: str, where: dict) -> list[Document]:
@@ -244,7 +248,10 @@ def main() -> None:
     ap.add_argument("--qa", default="data/notice_qa_dataset.jsonl")
     ap.add_argument("--sources", default="data/notice_qa_dataset.sources.jsonl")
     ap.add_argument(
-        "--generated", help="generate_qa_student.py 결과 (output/synthetic_qa_dataset.jsonl)"
+        "--generated",
+        nargs="*",
+        default=[],
+        help="generate_qa_student.py 형식 QA 파일들 (output/synthetic_qa_dataset.jsonl 등)",
     )
     ap.add_argument("--rewrites", default="data/rag_sft_rewrites.jsonl")
     ap.add_argument("--exclude", default="eval/student_eval_dataset.json", help="평가셋 질문 제외")
@@ -266,10 +273,12 @@ def main() -> None:
     )
     stats |= {"answer": 0, "refusal": 0, "abstain_doc": 0, "out_of_scope": 0, "gold_in_top_k": 0}
     if a.generated:
-        generated, stats["generated_unmatched"] = load_generated(
-            a.generated, notice_urls_by_wr_id()
-        )
-        items += generated
+        url_by_wr_id = notice_urls_by_wr_id()
+        stats["generated_unmatched"] = 0
+        for path in a.generated:
+            generated, unmatched = load_generated(path, url_by_wr_id)
+            items += generated
+            stats["generated_unmatched"] += unmatched
 
     rows = {"train": [], "val": []}
     seen: set[str] = set()
@@ -306,8 +315,12 @@ def main() -> None:
                 continue
             stats["term_appended"] += served[0] != item.question
             question, target, explicit = served
-            answer = rewrites.get(question, item.answer)
-            stats["rewritten"] += question in rewrites
+            # 다시 쓴 답은 예전 규칙(현재 학기도 학기를 붙임)의 질문으로 저장된 것도 있다.
+            term = rag_chain.doc_term(gold[0])
+            legacy = f"{item.question} {term.label()}" if term else item.question
+            rewritten = rewrites.get(question) or rewrites.get(legacy)
+            answer = rewritten or item.answer
+            stats["rewritten"] += rewritten is not None
             gold_key = rag_chain.source_key(gold[0])
             distractors, gold_hit = _distractors(question, target, explicit, gold_key)
             stats["gold_in_top_k"] += gold_hit
