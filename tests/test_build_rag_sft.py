@@ -5,7 +5,14 @@ from datetime import date
 from langchain_core.documents import Document
 
 from app.chains.semester import Term
-from train.build_rag_sft import REFUSAL, load_generated, make_example, serving_question, with_source
+from train.build_rag_sft import (
+    REFUSAL,
+    load_generated,
+    make_example,
+    serving_question,
+    to_haeyo,
+    with_source,
+)
 
 
 def _doc(url: str) -> Document:
@@ -107,3 +114,12 @@ def test_with_source_appends_once_and_strips_bold():
     text = with_source("**9월 1일**에 시작해요.", gold)
     assert text == "9월 1일에 시작해요.\n\n참고: 수강신청 안내 (https://a/1)"
     assert with_source(text, gold) == text
+
+
+def test_to_haeyo_converts_formal_endings():
+    assert to_haeyo("신청하시면 됩니다. 기간은 9월까지입니다. 장소는 IT5호관입니다.") == (
+        "신청하시면 돼요. 기간은 9월까지예요. 장소는 IT5호관이에요."
+    )
+    assert to_haeyo("확인해 주시기 바랍니다. 수록해 주시면 된답니다.") == (
+        "확인해 주세요. 수록해 주시면 된답니다."
+    )

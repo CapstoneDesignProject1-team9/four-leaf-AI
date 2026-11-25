@@ -131,9 +131,46 @@ def make_example(
     return docs, answer
 
 
+def _ida(m: re.Match) -> str:
+    """'입니다' → 받침 있으면 '이에요', 없으면 '예요'."""
+    prev = m.group(1)
+    code = ord(prev) - 0xAC00
+    no_batchim = 0 <= code <= 11171 and code % 28 == 0
+    return prev + ("예요" if no_batchim else "이에요")
+
+
+# 합니다체 → 해요체. 답변 말투를 서빙 챗봇과 맞춘다. '된답니다'처럼 이미 부드러운 말은 두고,
+# 아래에 없는 어미는 data/rag_sft_rewrites.jsonl에서 직접 고친다.
+_HAEYO = [
+    ("주시기 바랍니다", "주세요"),
+    ("하시기 바랍니다", "하세요"),
+    ("보시기 바랍니다", "보세요"),
+    ("됩니다", "돼요"),
+    ("합니다", "해요"),
+    ("있습니다", "있어요"),
+    ("없습니다", "없어요"),
+    ("드립니다", "드려요"),
+    ("집니다", "져요"),
+    ("갑니다", "가요"),
+    ("누릅니다", "눌러요"),
+    ("같습니다", "같아요"),
+    ("않습니다", "않아요"),
+    ("좋겠습니다", "좋겠어요"),
+    ("다릅니다", "달라요"),
+    ("받습니다", "받아요"),
+]
+
+
+def to_haeyo(text: str) -> str:
+    for formal, polite in _HAEYO:
+        text = text.replace(formal, polite)
+    return re.sub(r"(.)입니다", _ida, text)
+
+
 def with_source(answer: str, gold: Document) -> str:
-    """서빙 지침('사용한 자료의 제목과 URL')대로 끝에 출처 줄을 붙인다. 굵은 글씨는 지운다."""
-    answer = answer.replace("**", "").strip()
+    """해요체로 맞추고 굵은 글씨를 지운 뒤, 서빙 지침('사용한 자료의 제목과 URL')대로
+    끝에 출처 줄을 붙인다. 출처 줄의 공지 제목은 바꾸지 않는다."""
+    answer = to_haeyo(answer.replace("**", "").strip())
     if "참고:" in answer:
         return answer
     return f"{answer}\n\n참고: {gold.metadata.get('title', '')} ({gold.metadata.get('url', '')})"
