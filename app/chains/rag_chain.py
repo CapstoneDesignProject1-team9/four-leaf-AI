@@ -4,6 +4,9 @@ from __future__ import annotations
 
 import json
 import logging
+import re
+from dataclasses import dataclass, field
+from datetime import date
 from pathlib import Path
 from typing import Any
 
@@ -13,6 +16,7 @@ from langchain_core.documents import Document
 from langchain_openai import ChatOpenAI
 from sentence_transformers import SentenceTransformer
 
+from app.chains.semester import Term, current_term, parse_question, parse_title
 from app.core.config import settings
 
 logger = logging.getLogger(__name__)
@@ -159,19 +163,176 @@ def _search_collection(collection: Any, vector: list[float], top_k: int) -> list
     ]
 
 
-def search_documents(question: str) -> list[Document]:
-    """공지·강의계획서 두 컬렉션을 질문 키워드와 무관하게 함께 검색한다.
+# 학기가 다른 자료를 걸러내도 top_k가 남도록 컬렉션마다 top_k의 몇 배를 본다.
+CANDIDATE_FACTOR = 4
+# 기준 학기 자료가 빠진 다른 학기 자료보다 이만큼(cosine 거리)까지 멀어도 같은 주제로 본다.
+RELEVANCE_MARGIN = 0.05
+MAX_TERM_OPTIONS = 3  # 되물을 때 보여줄 학기 수
+
+
+@dataclass
+class Retrieval:
+    documents: list[Document]
+    target: Term  # 답변 기준 학기
+    explicit: bool  # 질문에 학기가 있었는지
+    other_terms: list[Term] = field(default_factory=list)  # 걸러낸 다른 학기(검색 순위 순)
+    displaced: bool = False  # 거르지 않았다면 top_k에 들었을 다른 학기 자료가 있었는지
+    has_target: bool = False  # 같은 주제의 기준 학기 자료가 남았는지
+    top_excluded: bool = False  # 가장 관련 높은 자료가 다른 학기라 빠졌는지
+    section_options: list[str] = field(default_factory=list)  # 분반을 되물을 때의 선택지
+
+    @property
+    def note(self) -> str | None:
+        """학기를 말하지 않았고 다른 학기 자료를 실제로 밀어냈다면 기준 학기를 밝힌다."""
+        if self.explicit or not (self.displaced and self.has_target):
+            return None
+        return f"{self.target.label()} 기준으로 안내드려요. 다른 학기가 궁금하면 말씀해 주세요."
+
+
+def doc_term(doc: Document) -> Term | None:
+    md = doc.metadata
+    if md.get("source_type") == "syllabus":
+        return parse_title(f"{md.get('year', '')} {md.get('semester', '')}")
+    return parse_title(str(md.get("title", "")))
+
+
+def _excluded(term: Term | None, target: Term, explicit: bool) -> bool:
+    """학기가 명시된 자료는 기준 학기와 다르면 뺀다. 연도만 있는 자료(교육과정 등)는
+    질문이 연도를 콕 집었을 때만 연도로 거른다."""
+    if term is None:
+        return False
+    if term.season is None:
+        return explicit and term.year != target.year
+    return not target.matches(term)
+
+
+def retrieve(question: str, today: date | None = None) -> Retrieval:
+    """공지·강의계획서 두 컬렉션을 함께 검색하고 기준 학기와 다른 학기 자료를 거른다.
 
     두 컬렉션은 같은 BGE-M3(정규화) 임베딩과 cosine 공간을 쓰므로 거리를 그대로 비교할 수 있다.
-    컬렉션마다 상위 k개를 가져와 cosine 거리 오름차순으로 합친 뒤 전체 상위 k개를 반환한다.
+    기준 학기는 질문에 학기가 있으면 그 학기, 없으면 현재 학기다.
     """
     notice_collection, syllabi_collection, embedder = _ready()
     vector = embedder.embed_query(question)
-    docs = _search_collection(notice_collection, vector, settings.RAG_TOP_K)
+    n = settings.RAG_TOP_K * CANDIDATE_FACTOR
+    candidates = _search_collection(notice_collection, vector, n)
     if syllabi_collection is not None:
-        docs.extend(_search_collection(syllabi_collection, vector, settings.RAG_TOP_K))
-    docs.sort(key=lambda d: d.metadata["distance"])
-    return docs[: settings.RAG_TOP_K]
+        candidates.extend(_search_collection(syllabi_collection, vector, n))
+    candidates.sort(key=lambda d: d.metadata["distance"])
+
+    candidates, section_options = pick_section(candidates, question)
+    asked = parse_question(question, today)
+    retrieval = filter_by_term(candidates, asked or current_term(today), asked is not None)
+    retrieval.section_options = section_options
+    return retrieval
+
+
+def pick_section(candidates: list[Document], question: str) -> tuple[list[Document], list[str]]:
+    """가장 관련 높은 자료가 여러 분반 과목의 강의계획서일 때 분반을 고른다.
+
+    질문에 강좌번호·'N분반'·담당교수 이름이 있으면 그 분반만 남기고,
+    없으면 후보를 그대로 두고 되물을 분반 선택지를 돌려준다.
+    """
+    if not candidates or candidates[0].metadata.get("source_type") != "syllabus":
+        return candidates, []
+    course = str(candidates[0].metadata.get("course_code", "")).split("-")[0]
+    sections: dict[str, str] = {}  # 강좌번호 → 담당교수
+    for doc in candidates:
+        code = str(doc.metadata.get("course_code", ""))
+        if doc.metadata.get("source_type") == "syllabus" and code.startswith(f"{course}-"):
+            sections.setdefault(code, str(doc.metadata.get("instructor", "")))
+    if len(sections) < 2:
+        return candidates, []
+
+    def asked_for(code: str, instructor: str) -> bool:
+        number = int(code.rsplit("-", 1)[1])
+        return (
+            code in question
+            or re.search(rf"(?<!\d)0*{number}\s*분반", question) is not None
+            or (bool(instructor) and instructor in question)
+        )
+
+    chosen = {code for code, instructor in sections.items() if asked_for(code, instructor)}
+    if not chosen:
+        return candidates, [
+            f"{code} ({instructor} 교수)" if instructor else code
+            for code, instructor in sorted(sections.items())
+        ]
+    kept = [
+        d
+        for d in candidates
+        if not (
+            d.metadata.get("source_type") == "syllabus"
+            and str(d.metadata.get("course_code", "")).startswith(f"{course}-")
+            and d.metadata.get("course_code") not in chosen
+        )
+    ]
+    return kept, []
+
+
+def clarify(retrieval: Retrieval) -> tuple[str, list[str]] | None:
+    """답하기 전에 되물어야 하면 (되묻는 말, 선택지)를 돌려준다. LLM을 거치지 않는다."""
+    if retrieval.section_options:
+        top = retrieval.documents[0].metadata if retrieval.documents else {}
+        title = (
+            str(top.get("title", "")).split(" (")[0] if top.get("source_type") == "syllabus" else ""
+        )
+        return (
+            f"{title or '이 과목'}은(는) 분반마다 담당 교수님과 수업 운영이 달라요. 몇 분반 기준으로 알려드릴까요?",
+            retrieval.section_options,
+        )
+    if retrieval.top_excluded and not retrieval.has_target and retrieval.other_terms:
+        terms = sorted(retrieval.other_terms, key=Term.order, reverse=True)[:MAX_TERM_OPTIONS]
+        ask = (
+            "아래 학기 자료로 알려드릴까요?"
+            if retrieval.explicit
+            else "어느 학기 기준으로 알려드릴까요?"
+        )
+        return (
+            f"{retrieval.target.label()} 자료는 찾지 못했어요. {ask}",
+            [t.label() for t in terms],
+        )
+    return None
+
+
+def filter_by_term(candidates: list[Document], target: Term, explicit: bool) -> Retrieval:
+    """거리순 후보에서 기준 학기와 다른 학기 자료를 빼고 top_k를 고른다."""
+    top_k = settings.RAG_TOP_K
+    kept: list[Document] = []
+    others: list[Term] = []
+    displaced = False
+    best_excluded = float("inf")
+    for rank, doc in enumerate(candidates):
+        term = doc_term(doc)
+        if not _excluded(term, target, explicit):
+            kept.append(doc)
+            continue
+        displaced = displaced or rank < top_k
+        best_excluded = min(best_excluded, doc.metadata["distance"])
+        if term is not None and term not in others:
+            others.append(term)
+    kept = kept[:top_k]
+    # 강의계획서처럼 주제가 다른 기준 학기 자료만 있으면 기준 학기 자료가 없는 것으로 본다.
+    has_target = any(
+        (t := doc_term(d))
+        and t.season
+        and target.matches(t)
+        and d.metadata["distance"] <= best_excluded + RELEVANCE_MARGIN
+        for d in kept
+    )
+    return Retrieval(
+        documents=kept,
+        target=target,
+        explicit=explicit,
+        other_terms=others,
+        displaced=displaced,
+        has_target=has_target,
+        top_excluded=bool(candidates) and _excluded(doc_term(candidates[0]), target, explicit),
+    )
+
+
+def search_documents(question: str) -> list[Document]:
+    return retrieve(question).documents
 
 
 def _context(documents: list[Document]) -> str:
@@ -217,13 +378,16 @@ class NoticeRagChain:
     def __init__(self, llm: Any) -> None:
         self.llm = llm
 
-    def invoke(self, inputs: dict[str, str]) -> dict[str, Any]:
+    def invoke(self, inputs: dict[str, str], retrieval: Retrieval | None = None) -> dict[str, Any]:
         question = str(inputs.get("query", "")).strip()
         if not question:
             raise ValueError("질문이 비어 있습니다.")
-        documents = search_documents(question)
-        response = self.llm.invoke(build_prompt(question, documents))
-        return {"result": str(response.content), "source_documents": documents}
+        retrieval = retrieval or retrieve(question)
+        response = self.llm.invoke(build_prompt(question, retrieval.documents))
+        answer = str(response.content)
+        if retrieval.note:
+            answer = f"{retrieval.note}\n\n{answer}"
+        return {"result": answer, "source_documents": retrieval.documents}
 
 
 def _served_model_names() -> set[str]:

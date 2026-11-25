@@ -132,13 +132,31 @@ def fail_chat_log(log_id: int, *, error: str) -> None:
 
 def fetch_recent_questions(*, days: int | None, limit: int) -> list[StoredQuestion]:
     """Return up to `limit` of the newest questions, optionally within the last `days` days."""
-    query = "SELECT id, question, answer, created_at FROM chat_logs"
+    # 되물은 턴은 다음 턴에 학생 답과 합친 질문으로 다시 저장되므로 빼서 두 번 세지 않는다.
+    query = (
+        "SELECT id, question, answer, created_at FROM chat_logs"
+        " WHERE model_name IS DISTINCT FROM 'clarify'"
+    )
     params: list[object] = []
     if days is not None:
-        query += " WHERE created_at >= now() - make_interval(days => %s)"
+        query += " AND created_at >= now() - make_interval(days => %s)"
         params.append(days)
     query += " ORDER BY created_at DESC, id DESC LIMIT %s"
     params.append(limit)
     with _connect() as connection:
         rows = connection.execute(query, params).fetchall()
     return [StoredQuestion(int(r[0]), r[1], r[2], r[3]) for r in rows]
+
+
+def pending_clarification(session_id: str, *, within_minutes: int = 30) -> str | None:
+    """이 세션의 마지막 턴이 최근에 되물은 답변이었다면 그때의 학생 질문을 돌려준다."""
+    with _connect() as connection:
+        row = connection.execute(
+            """
+            SELECT question, model_name FROM chat_logs
+            WHERE session_id = %s AND created_at >= now() - make_interval(mins => %s)
+            ORDER BY created_at DESC, id DESC LIMIT 1
+            """,
+            (session_id, within_minutes),
+        ).fetchone()
+    return row[0] if row and row[1] == "clarify" else None

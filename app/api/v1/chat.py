@@ -1,17 +1,43 @@
 import logging
+import re
 import time
 
 from fastapi import APIRouter, HTTPException
 
-from app.chains.rag_chain import build_rag_chain, resolve_model_name
+from app.chains.rag_chain import build_rag_chain, clarify, resolve_model_name, retrieve
+from app.chains.semester import parse_question
 from app.core.config import settings
 from app.models.schemas import ChatRequest, ChatResponse, SourceDocument
-from app.storage.chat_logs import complete_chat_log, create_chat_log, fail_chat_log
+from app.storage.chat_logs import (
+    complete_chat_log,
+    create_chat_log,
+    fail_chat_log,
+    pending_clarification,
+)
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
 
 COLD_START_DETAIL = "AI 모델을 준비하고 있어요. 1~2분 후 다시 질문해 주세요."
+# 되묻는 답변을 chat_logs에 표시하는 model_name. 다음 턴에서 직전 질문과 합칠 때 쓴다.
+CLARIFY_MODEL = "clarify"
+# 되물음에 대한 답으로 볼 표현: 학기(parse_question)·강좌번호·N분반·교수
+_SECTION_REPLY = re.compile(r"[A-Z]{4}\d{4}-\d{3}|\d+\s*분반|교수")
+
+
+def _with_previous_question(request: ChatRequest) -> str:
+    """직전 턴에 학기·분반을 되물었고 이번 메시지가 그 답이면 직전 질문과 합친다."""
+    message = request.message.strip()
+    if not request.session_id:
+        return message
+    if parse_question(message) is None and not _SECTION_REPLY.search(message):
+        return message
+    try:
+        previous = pending_clarification(request.session_id)
+    except Exception:
+        logger.exception("직전 대화 조회 실패")
+        return message
+    return f"{previous} {message}" if previous else message
 
 
 def _is_cold_start(exc: Exception) -> bool:
@@ -35,18 +61,24 @@ def chat(request: ChatRequest):
     질문은 답변 생성 전에 chat_logs에 저장하고, 답변이 나오면 같은 행에 답변·모델·출처를 기록한다.
     기록 저장이 실패해도 학생에게는 답변을 돌려준다.
     """
+    question = _with_previous_question(request)
     log_id: int | None = None
     try:
-        log_id = create_chat_log(question=request.message, session_id=request.session_id)
+        log_id = create_chat_log(question=question, session_id=request.session_id)
     except Exception:
         logger.exception("질문 기록 저장 실패")
 
     deadline = time.monotonic() + settings.VLLM_COLD_START_WAIT_S
     try:
         chain = build_rag_chain(request.model_name)
+        retrieval = retrieve(question)
+        if asked_back := clarify(retrieval):
+            return _clarification(request, log_id, *asked_back)
         while True:
             try:
-                result = chain.invoke({"query": request.message, "model_name": request.model_name})
+                result = chain.invoke(
+                    {"query": question, "model_name": request.model_name}, retrieval
+                )
                 break
             except Exception as e:
                 # 첫 요청이 Modal 컨테이너를 깨우므로, 켜질 때까지 잠시 다시 시도한다.
@@ -91,3 +123,15 @@ def chat(request: ChatRequest):
             logger.exception("답변 기록 저장 실패")
 
     return ChatResponse(answer=answer, sources=sources, session_id=request.session_id)
+
+
+def _clarification(
+    request: ChatRequest, log_id: int | None, answer: str, options: list[str]
+) -> ChatResponse:
+    """학기·분반이 애매하면 LLM을 부르지 않고 선택지와 함께 되묻는다."""
+    if log_id is not None:
+        try:
+            complete_chat_log(log_id, answer=answer, model_name=CLARIFY_MODEL, sources=[])
+        except Exception:
+            logger.exception("답변 기록 저장 실패")
+    return ChatResponse(answer=answer, options=options, session_id=request.session_id)

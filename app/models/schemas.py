@@ -28,6 +28,10 @@ class ChatResponse(BaseModel):
     answer: str = Field(..., description="AI 튜터 답변")
     sources: list[SourceDocument] = Field(default=[], description="참고한 문서 목록")
     session_id: str | None = None
+    options: list[str] = Field(
+        default=[],
+        description="되묻는 답변일 때 학생이 고를 선택지(학기·분반). 고른 값을 그대로 다음 message로 보낸다",
+    )
     course_name: str | None = Field(
         default=None, description="사용하지 않음(이전 클라이언트 호환용)"
     )

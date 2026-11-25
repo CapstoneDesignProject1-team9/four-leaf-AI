@@ -21,6 +21,9 @@ def client():
         patch("app.api.v1.chat.complete_chat_log") as mock_complete,
         patch("app.api.v1.chat.fail_chat_log") as mock_fail,
         patch("app.api.v1.chat.build_rag_chain") as mock_builder,
+        patch("app.api.v1.chat.retrieve") as mock_retrieve,
+        patch("app.api.v1.chat.clarify", return_value=None) as mock_clarify,
+        patch("app.api.v1.chat.pending_clarification", return_value=None) as mock_pending,
     ):
         from app.main import app
 
@@ -33,6 +36,9 @@ def client():
             "complete": mock_complete,
             "fail": mock_fail,
             "builder": mock_builder,
+            "retrieve": mock_retrieve,
+            "clarify": mock_clarify,
+            "pending": mock_pending,
         }
         with TestClient(app) as test_client:
             yield test_client, mocks
@@ -84,8 +90,46 @@ def test_chat_saves_question_and_answer(client):
     assert kwargs["model_name"]
     mocks["fail"].assert_not_called()
     mocks["builder"].return_value.invoke.assert_called_once_with(
-        {"query": question, "model_name": None}
+        {"query": question, "model_name": None}, mocks["retrieve"].return_value
     )
+
+
+def test_chat_asks_back_without_calling_llm(client):
+    test_client, mocks = client
+    options = ["2026학년도 1학기", "2025학년도 2학기"]
+    mocks["clarify"].return_value = ("어느 학기 기준으로 알려드릴까요?", options)
+
+    response = test_client.post("/api/v1/tutor/chat", json={"message": "수강신청 언제야?"})
+
+    assert response.status_code == 200
+    assert response.json()["options"] == options
+    mocks["builder"].return_value.invoke.assert_not_called()
+    assert mocks["complete"].call_args.kwargs["model_name"] == "clarify"
+
+
+def test_reply_to_clarification_is_merged_with_previous_question(client):
+    test_client, mocks = client
+    mocks["pending"].return_value = "수강신청 언제야?"
+
+    response = test_client.post(
+        "/api/v1/tutor/chat", json={"message": "2025학년도 1학기", "session_id": "s1"}
+    )
+
+    assert response.status_code == 200
+    merged = "수강신청 언제야? 2025학년도 1학기"
+    mocks["pending"].assert_called_once_with("s1")
+    mocks["retrieve"].assert_called_once_with(merged)
+    mocks["create"].assert_called_once_with(question=merged, session_id="s1")
+
+
+def test_new_question_after_clarification_is_not_merged(client):
+    test_client, mocks = client
+    mocks["pending"].return_value = "수강신청 언제야?"
+
+    test_client.post("/api/v1/tutor/chat", json={"message": "휴학 어떻게 해?", "session_id": "s1"})
+
+    mocks["pending"].assert_not_called()
+    mocks["retrieve"].assert_called_once_with("휴학 어떻게 해?")
 
 
 def test_chat_generation_failure_marks_log_failed(client):
