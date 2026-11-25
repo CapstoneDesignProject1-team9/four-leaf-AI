@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import logging
+import re
 from dataclasses import dataclass, field
 from datetime import date
 from pathlib import Path
@@ -166,6 +167,7 @@ def _search_collection(collection: Any, vector: list[float], top_k: int) -> list
 CANDIDATE_FACTOR = 4
 # 기준 학기 자료가 빠진 다른 학기 자료보다 이만큼(cosine 거리)까지 멀어도 같은 주제로 본다.
 RELEVANCE_MARGIN = 0.05
+MAX_TERM_OPTIONS = 3  # 되물을 때 보여줄 학기 수
 
 
 @dataclass
@@ -177,6 +179,7 @@ class Retrieval:
     displaced: bool = False  # 거르지 않았다면 top_k에 들었을 다른 학기 자료가 있었는지
     has_target: bool = False  # 같은 주제의 기준 학기 자료가 남았는지
     top_excluded: bool = False  # 가장 관련 높은 자료가 다른 학기라 빠졌는지
+    section_options: list[str] = field(default_factory=list)  # 분반을 되물을 때의 선택지
 
     @property
     def note(self) -> str | None:
@@ -217,8 +220,79 @@ def retrieve(question: str, today: date | None = None) -> Retrieval:
         candidates.extend(_search_collection(syllabi_collection, vector, n))
     candidates.sort(key=lambda d: d.metadata["distance"])
 
+    candidates, section_options = pick_section(candidates, question)
     asked = parse_question(question, today)
-    return filter_by_term(candidates, asked or current_term(today), asked is not None)
+    retrieval = filter_by_term(candidates, asked or current_term(today), asked is not None)
+    retrieval.section_options = section_options
+    return retrieval
+
+
+def pick_section(candidates: list[Document], question: str) -> tuple[list[Document], list[str]]:
+    """가장 관련 높은 자료가 여러 분반 과목의 강의계획서일 때 분반을 고른다.
+
+    질문에 강좌번호·'N분반'·담당교수 이름이 있으면 그 분반만 남기고,
+    없으면 후보를 그대로 두고 되물을 분반 선택지를 돌려준다.
+    """
+    if not candidates or candidates[0].metadata.get("source_type") != "syllabus":
+        return candidates, []
+    course = str(candidates[0].metadata.get("course_code", "")).split("-")[0]
+    sections: dict[str, str] = {}  # 강좌번호 → 담당교수
+    for doc in candidates:
+        code = str(doc.metadata.get("course_code", ""))
+        if doc.metadata.get("source_type") == "syllabus" and code.startswith(f"{course}-"):
+            sections.setdefault(code, str(doc.metadata.get("instructor", "")))
+    if len(sections) < 2:
+        return candidates, []
+
+    def asked_for(code: str, instructor: str) -> bool:
+        number = int(code.rsplit("-", 1)[1])
+        return (
+            code in question
+            or re.search(rf"(?<!\d)0*{number}\s*분반", question) is not None
+            or (bool(instructor) and instructor in question)
+        )
+
+    chosen = {code for code, instructor in sections.items() if asked_for(code, instructor)}
+    if not chosen:
+        return candidates, [
+            f"{code} ({instructor} 교수)" if instructor else code
+            for code, instructor in sorted(sections.items())
+        ]
+    kept = [
+        d
+        for d in candidates
+        if not (
+            d.metadata.get("source_type") == "syllabus"
+            and str(d.metadata.get("course_code", "")).startswith(f"{course}-")
+            and d.metadata.get("course_code") not in chosen
+        )
+    ]
+    return kept, []
+
+
+def clarify(retrieval: Retrieval) -> tuple[str, list[str]] | None:
+    """답하기 전에 되물어야 하면 (되묻는 말, 선택지)를 돌려준다. LLM을 거치지 않는다."""
+    if retrieval.section_options:
+        top = retrieval.documents[0].metadata if retrieval.documents else {}
+        title = (
+            str(top.get("title", "")).split(" (")[0] if top.get("source_type") == "syllabus" else ""
+        )
+        return (
+            f"{title or '이 과목'}은(는) 분반마다 담당 교수님과 수업 운영이 달라요. 몇 분반 기준으로 알려드릴까요?",
+            retrieval.section_options,
+        )
+    if retrieval.top_excluded and not retrieval.has_target and retrieval.other_terms:
+        terms = sorted(retrieval.other_terms, key=Term.order, reverse=True)[:MAX_TERM_OPTIONS]
+        ask = (
+            "아래 학기 자료로 알려드릴까요?"
+            if retrieval.explicit
+            else "어느 학기 기준으로 알려드릴까요?"
+        )
+        return (
+            f"{retrieval.target.label()} 자료는 찾지 못했어요. {ask}",
+            [t.label() for t in terms],
+        )
+    return None
 
 
 def filter_by_term(candidates: list[Document], target: Term, explicit: bool) -> Retrieval:

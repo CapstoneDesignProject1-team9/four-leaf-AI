@@ -14,6 +14,7 @@ _FULL = re.compile(_YEAR + _SEP + r"([12])\s*학기")
 _FULL_SEASONAL = re.compile(_YEAR + _SEP + r"(여름|하계|겨울|동계)\s*(?:계절|학기)")
 _SEASON_ONLY = re.compile(r"(?<!\d)([12])\s*학기")
 _SEASONAL_ONLY = re.compile(r"(여름|하계|겨울|동계)\s*(?:계절|학기)")
+_SEASON_ORDER = ("1", "여름", "2", "겨울")  # 한 학년도 안의 순서
 _ALIASES = {"하계": "여름", "동계": "겨울"}
 _YEAR_ONLY = re.compile(_YEAR)
 _RELATIVE = {
@@ -37,6 +38,10 @@ class Term:
         """정규 학기(1·2) 기준으로 n학기 앞뒤."""
         index = self.year * 2 + (0 if self.season in ("1", "여름") else 1) + n
         return Term(index // 2, "1" if index % 2 == 0 else "2")
+
+    def order(self) -> tuple[int, int]:
+        """최신순 정렬용. 연도만 있으면 그해의 맨 앞."""
+        return self.year, -1 if self.season is None else _SEASON_ORDER.index(self.season)
 
     def matches(self, other: Term) -> bool:
         if self.year != other.year:

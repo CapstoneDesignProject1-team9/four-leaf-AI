@@ -3,7 +3,7 @@ import time
 
 from fastapi import APIRouter, HTTPException
 
-from app.chains.rag_chain import build_rag_chain, resolve_model_name
+from app.chains.rag_chain import build_rag_chain, clarify, resolve_model_name, retrieve
 from app.core.config import settings
 from app.models.schemas import ChatRequest, ChatResponse, SourceDocument
 from app.storage.chat_logs import complete_chat_log, create_chat_log, fail_chat_log
@@ -12,6 +12,8 @@ logger = logging.getLogger(__name__)
 router = APIRouter()
 
 COLD_START_DETAIL = "AI 모델을 준비하고 있어요. 1~2분 후 다시 질문해 주세요."
+# 되묻는 답변을 chat_logs에 표시하는 model_name. 다음 턴에서 직전 질문과 합칠 때 쓴다.
+CLARIFY_MODEL = "clarify"
 
 
 def _is_cold_start(exc: Exception) -> bool:
@@ -44,9 +46,14 @@ def chat(request: ChatRequest):
     deadline = time.monotonic() + settings.VLLM_COLD_START_WAIT_S
     try:
         chain = build_rag_chain(request.model_name)
+        retrieval = retrieve(request.message)
+        if question := clarify(retrieval):
+            return _clarification(request, log_id, *question)
         while True:
             try:
-                result = chain.invoke({"query": request.message, "model_name": request.model_name})
+                result = chain.invoke(
+                    {"query": request.message, "model_name": request.model_name}, retrieval
+                )
                 break
             except Exception as e:
                 # 첫 요청이 Modal 컨테이너를 깨우므로, 켜질 때까지 잠시 다시 시도한다.
@@ -91,3 +98,15 @@ def chat(request: ChatRequest):
             logger.exception("답변 기록 저장 실패")
 
     return ChatResponse(answer=answer, sources=sources, session_id=request.session_id)
+
+
+def _clarification(
+    request: ChatRequest, log_id: int | None, answer: str, options: list[str]
+) -> ChatResponse:
+    """학기·분반이 애매하면 LLM을 부르지 않고 선택지와 함께 되묻는다."""
+    if log_id is not None:
+        try:
+            complete_chat_log(log_id, answer=answer, model_name=CLARIFY_MODEL, sources=[])
+        except Exception:
+            logger.exception("답변 기록 저장 실패")
+    return ChatResponse(answer=answer, options=options, session_id=request.session_id)
