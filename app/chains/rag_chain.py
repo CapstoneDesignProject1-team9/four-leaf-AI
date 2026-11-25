@@ -206,20 +206,25 @@ def _excluded(term: Term | None, target: Term, explicit: bool) -> bool:
     return not target.matches(term)
 
 
+def search_candidates(vector: list[float]) -> list[Document]:
+    """두 컬렉션에서 학기 필터 전 후보를 cosine 거리순으로 가져온다."""
+    notice_collection, syllabi_collection, _ = _ready()
+    n = settings.RAG_TOP_K * CANDIDATE_FACTOR
+    candidates = _search_collection(notice_collection, vector, n)
+    if syllabi_collection is not None:
+        candidates.extend(_search_collection(syllabi_collection, vector, n))
+    candidates.sort(key=lambda d: d.metadata["distance"])
+    return candidates
+
+
 def retrieve(question: str, today: date | None = None) -> Retrieval:
     """공지·강의계획서 두 컬렉션을 함께 검색하고 기준 학기와 다른 학기 자료를 거른다.
 
     두 컬렉션은 같은 BGE-M3(정규화) 임베딩과 cosine 공간을 쓰므로 거리를 그대로 비교할 수 있다.
     기준 학기는 질문에 학기가 있으면 그 학기, 없으면 현재 학기다.
     """
-    notice_collection, syllabi_collection, embedder = _ready()
-    vector = embedder.embed_query(question)
-    n = settings.RAG_TOP_K * CANDIDATE_FACTOR
-    candidates = _search_collection(notice_collection, vector, n)
-    if syllabi_collection is not None:
-        candidates.extend(_search_collection(syllabi_collection, vector, n))
-    candidates.sort(key=lambda d: d.metadata["distance"])
-
+    _, _, embedder = _ready()
+    candidates = search_candidates(embedder.embed_query(question))
     candidates, section_options = pick_section(candidates, question)
     asked = parse_question(question, today)
     retrieval = filter_by_term(candidates, asked or current_term(today), asked is not None)
