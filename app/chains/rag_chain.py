@@ -217,17 +217,40 @@ def search_candidates(vector: list[float]) -> list[Document]:
     return candidates
 
 
+def merge_candidates(*lists: list[Document]) -> list[Document]:
+    """같은 청크는 더 가까운 거리 하나만 남기고 거리순으로 합친다."""
+    best: dict[str, Document] = {}
+    for doc in (d for docs in lists for d in docs):
+        key = doc.page_content
+        if key not in best or doc.metadata["distance"] < best[key].metadata["distance"]:
+            best[key] = doc
+    return sorted(best.values(), key=lambda d: d.metadata["distance"])
+
+
+def gather_candidates(question: str, target: Term, explicit: bool) -> list[Document]:
+    """학기를 말하지 않은 질문은 기준 학기를 붙여 한 번 더 검색해 합친다.
+
+    수강신청처럼 학기마다 비슷한 공지가 수십 개면 최신 학기 공지가 후보에 들지 못하기 때문이다.
+    """
+    _, _, embedder = _ready()
+    candidates = search_candidates(embedder.embed_query(question))
+    if explicit:
+        return candidates
+    with_term = search_candidates(embedder.embed_query(f"{question} {target.label()}"))
+    return merge_candidates(candidates, with_term)
+
+
 def retrieve(question: str, today: date | None = None) -> Retrieval:
     """공지·강의계획서 두 컬렉션을 함께 검색하고 기준 학기와 다른 학기 자료를 거른다.
 
     두 컬렉션은 같은 BGE-M3(정규화) 임베딩과 cosine 공간을 쓰므로 거리를 그대로 비교할 수 있다.
     기준 학기는 질문에 학기가 있으면 그 학기, 없으면 현재 학기다.
     """
-    _, _, embedder = _ready()
-    candidates = search_candidates(embedder.embed_query(question))
-    candidates, section_options = pick_section(candidates, question)
     asked = parse_question(question, today)
-    retrieval = filter_by_term(candidates, asked or current_term(today), asked is not None)
+    target = asked or current_term(today)
+    candidates = gather_candidates(question, target, asked is not None)
+    candidates, section_options = pick_section(candidates, question)
+    retrieval = filter_by_term(candidates, target, asked is not None)
     retrieval.section_options = section_options
     return retrieval
 
@@ -287,7 +310,10 @@ def clarify(retrieval: Retrieval) -> tuple[str, list[str]] | None:
             retrieval.section_options,
         )
     if retrieval.top_excluded and not retrieval.has_target and retrieval.other_terms:
-        terms = sorted(retrieval.other_terms, key=Term.order, reverse=True)[:MAX_TERM_OPTIONS]
+        terms = retrieval.other_terms
+        # '겨울계절학기'처럼 콕 집어 물었으면 다른 해의 같은 학기를 먼저 보여준다.
+        same = [t for t in terms if retrieval.explicit and t.season == retrieval.target.season]
+        terms = sorted(same or terms, key=Term.order, reverse=True)[:MAX_TERM_OPTIONS]
         ask = (
             "아래 학기 자료로 알려드릴까요?"
             if retrieval.explicit

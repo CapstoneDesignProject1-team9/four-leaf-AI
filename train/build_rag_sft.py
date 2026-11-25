@@ -112,8 +112,7 @@ def _distractors(
 ) -> tuple[list[Document], bool]:
     """서빙과 같은 후보 검색·분반·학기 필터를 거친 top_k에서 정답 공지만 뺀 자료와,
     서빙에서 정답 공지가 top_k에 들었는지."""
-    _, _, embedder = rag_chain._ready()
-    candidates = rag_chain.search_candidates(embedder.embed_query(question))
+    candidates = rag_chain.gather_candidates(question, target, explicit)
     candidates, _ = rag_chain.pick_section(candidates, question)
     served = rag_chain.filter_by_term(candidates, target, explicit).documents
     others = [d for d in candidates if d.metadata.get("url") != gold_url]
