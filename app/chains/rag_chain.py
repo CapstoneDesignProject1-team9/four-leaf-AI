@@ -203,6 +203,16 @@ ANSWER_INSTRUCTIONS = (
 )
 
 
+def build_prompt(question: str, documents: list[Document]) -> str:
+    """서빙과 LoRA 학습(train/build_rag_sft.py)이 함께 쓰는 프롬프트. 바꾸면 재학습이 필요하다."""
+    return (
+        f"당신은 경북대학교 학생을 돕는 AI 튜터입니다. 한국어로 자연스럽고 직접적으로 답변하세요.\n\n"
+        f"[답변 지침]\n{ANSWER_INSTRUCTIONS}\n\n"
+        f"[검색 자료]\n{_context(documents)}\n\n"
+        f"[질문]\n{question}"
+    )
+
+
 class NoticeRagChain:
     def __init__(self, llm: Any) -> None:
         self.llm = llm
@@ -212,13 +222,7 @@ class NoticeRagChain:
         if not question:
             raise ValueError("질문이 비어 있습니다.")
         documents = search_documents(question)
-        prompt = (
-            f"당신은 경북대학교 학생을 돕는 AI 튜터입니다. 한국어로 자연스럽고 직접적으로 답변하세요.\n\n"
-            f"[답변 지침]\n{ANSWER_INSTRUCTIONS}\n\n"
-            f"[검색 자료]\n{_context(documents)}\n\n"
-            f"[질문]\n{question}"
-        )
-        response = self.llm.invoke(prompt)
+        response = self.llm.invoke(build_prompt(question, documents))
         return {"result": str(response.content), "source_documents": documents}
 
 
