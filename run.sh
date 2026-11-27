@@ -14,7 +14,7 @@ export TRITON_CACHE_DIR=/tmp/triton_cache_$USER
 
 source /abr/coss36/miniforge3/etc/profile.d/conda.sh
 conda activate ai
-cd /abr/coss36/four-leaf-AI
+cd "$SLURM_SUBMIT_DIR"  # sbatch를 실행한 폴더(최신 코드)에서 학습
 
 nvidia-smi
 python train/finetune.py "$@"
