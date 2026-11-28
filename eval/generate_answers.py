@@ -124,17 +124,23 @@ class LocalTransformersBackend:
                 raise RuntimeError("LoRA adapters were not loaded")
             self.model.set_adapter("professor")
 
-        encoded = self.tokenizer.apply_chat_template(
-            [
+        messages = [{"role": "user", "content": text}]
+        # RAG 프롬프트는 페르소나를 이미 담고 있고, 서빙(vLLM)·RAFT 학습도 system 없이 user 한 개만 보낸다.
+        if mode not in RAG_MODES:
+            messages.insert(
+                0,
                 {
                     "role": "system",
                     "content": "당신은 경북대학교 컴퓨터학부 학생을 돕는 AI 튜터입니다. 한국어로 질문에 직접 답하고, 모르는 내용은 추측하지 마세요.",
                 },
-                {"role": "user", "content": text},
-            ],
+            )
+        # return_dict=True: transformers 4.x는 텐서, 5.x는 dict를 돌려주므로 dict로 고정한다.
+        encoded = self.tokenizer.apply_chat_template(
+            messages,
             tokenize=True,
             add_generation_prompt=True,
             return_tensors="pt",
+            return_dict=True,
         )
         device = self.model.get_input_embeddings().weight.device
         input_ids = encoded["input_ids"].to(device)
