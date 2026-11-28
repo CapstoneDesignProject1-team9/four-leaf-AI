@@ -27,6 +27,9 @@ class Settings(BaseSettings):
     VLLM_PROXY_KEY: str = ""
     VLLM_PROXY_SECRET: str = ""
     VLLM_MAX_TOKENS: int = 768
+    # 생성한 토큰에만 거는 반복 벌점(OpenAI frequency_penalty). greedy에서 같은 문장을 되풀이하는 걸 막는다.
+    # repetition_penalty는 프롬프트 토큰까지 벌점을 줘 검색 자료의 날짜·이름 인용을 방해하므로 쓰지 않는다.
+    VLLM_FREQUENCY_PENALTY: float = 0.3
     VLLM_TIMEOUT_S: float = 180.0
     # Modal이 꺼져 있다가 켜지는 동안('no upstreams available') 다시 시도할 최대 시간(초).
     # nginx /api/ 대기 시간(60초)보다 짧아야 합니다.

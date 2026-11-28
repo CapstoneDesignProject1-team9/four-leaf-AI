@@ -542,6 +542,7 @@ def build_rag_chain(model_name: str | None = None) -> NoticeRagChain:
             default_headers=headers,
             temperature=0.0,
             max_tokens=settings.VLLM_MAX_TOKENS,
+            frequency_penalty=settings.VLLM_FREQUENCY_PENALTY,
             timeout=settings.VLLM_TIMEOUT_S,
         )
     )
