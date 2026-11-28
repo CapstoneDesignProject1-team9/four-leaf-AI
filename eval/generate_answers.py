@@ -36,6 +36,25 @@ MODE_KEYS = {
 # The student evaluation compares these four conditions; --mode all generates exactly these.
 STUDENT_MODES = ("base", "rag", "student_lora", "student_lora_rag")
 RAG_MODES = {"rag", "student_lora_rag"}
+# 서빙(app/core/config.py VLLM_FREQUENCY_PENALTY)과 같은 반복 벌점. 생성한 토큰에만 건다.
+FREQUENCY_PENALTY = float(os.getenv("VLLM_FREQUENCY_PENALTY", "0.3"))
+
+
+def frequency_penalty_processor(prompt_len: int, penalty: float):
+    """vLLM frequency_penalty와 같게: 생성된 토큰의 등장 횟수 × penalty를 logit에서 뺀다."""
+    from transformers import LogitsProcessor, LogitsProcessorList
+
+    class _Penalty(LogitsProcessor):
+        def __call__(self, input_ids, scores):
+            generated = input_ids[:, prompt_len:]
+            if penalty and generated.shape[1]:
+                counts = scores.new_zeros(scores.shape).scatter_add_(
+                    1, generated, scores.new_ones(generated.shape)
+                )
+                scores = scores - penalty * counts
+            return scores
+
+    return LogitsProcessorList([_Penalty()])
 
 
 def build_generation_question(item: dict) -> str:
@@ -155,6 +174,9 @@ class LocalTransformersBackend:
                         input_ids=input_ids,
                         attention_mask=attention_mask,
                         max_new_tokens=int(os.getenv("LOCAL_MAX_NEW_TOKENS", "768")),
+                        logits_processor=frequency_penalty_processor(
+                            input_ids.shape[-1], FREQUENCY_PENALTY
+                        ),
                         do_sample=False,
                     )
             else:
@@ -162,6 +184,9 @@ class LocalTransformersBackend:
                     input_ids=input_ids,
                     attention_mask=attention_mask,
                     max_new_tokens=int(os.getenv("LOCAL_MAX_NEW_TOKENS", "768")),
+                    logits_processor=frequency_penalty_processor(
+                        input_ids.shape[-1], FREQUENCY_PENALTY
+                    ),
                     do_sample=False,
                 )
         return self.tokenizer.decode(
@@ -218,6 +243,7 @@ async def _generate_vllm(session: aiohttp.ClientSession, question: str, model_na
         ],
         "temperature": 0.0,
         "max_tokens": int(os.getenv("VLLM_MAX_TOKENS", "768")),
+        "frequency_penalty": FREQUENCY_PENALTY,
     }
     data = await _post(session, VLLM_CHAT_COMPLETIONS_URL, payload)
     choices = data.get("choices") or []
